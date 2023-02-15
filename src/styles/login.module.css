@@ -4,7 +4,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
+  background: #447b91;
   
 }
 .login_cont {
@@ -22,6 +22,7 @@
   height: 100%;
   text-align: left;
   background: #335d6e;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .input_container {
   display: flex;
