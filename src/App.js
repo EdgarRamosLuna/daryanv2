@@ -17,8 +17,8 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route exact path="/" element={<Header />}>
-          <Route exact path="/" element={<Login3 />} />
+        <Route exact path="/" element={<Login3 />} />
+        <Route element={<Header />}>
           <Route exact path="/user/reports" element={<Reports />} />
           <Route exact path="/user/reports/create" element={<Create />} />
           <Route exact path="/user/my-account" element={<Settings />} />
