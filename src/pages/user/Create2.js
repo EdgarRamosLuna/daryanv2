@@ -3,7 +3,7 @@ import Select from "../../components/Select";
 import { MainContext } from "../../context/MainContext";
 import { Table } from "../../styles/Styles";
 import SecondTableCreate from "./SecondTableCreate";
-const Create = () => {
+const Create2 = () => {
   const { data, setData } = useContext(MainContext);
   //console.log(data);
 
@@ -17,7 +17,7 @@ const Create = () => {
     <>
       <div className="container">
         <div className="title">
-          <h3>REPORTE DE INSPECCION</h3>
+          <h3>REPORTE POR HORAS</h3>
           <br />
         </div>
         <form>
@@ -226,189 +226,8 @@ const Create = () => {
       <div className="container c2">
         <SecondTableCreate />
       </div>
-      <div className="container" style={{overflowY:'scroll'}}>
-        <Table>
-          <table>
-            <thead className="no-sticky">
-              <tr>
-                <th>
-                  <i
-                    className="fa-solid fa-circle-plus"
-                    style={{ color: "transparent" }}
-                  ></i>
-                </th>
-                <th>Item</th>
-                <th>Fecha</th>
-                <th>Lote</th>
-                <th>Serie</th>
-                <th>Cantidad Inspeccionada</th>
-                <th>Piezas NG:</th>
-                <th>Piezas Ok:</th>
-                <th>Piezas Retrabajadas:</th>
-                <th>Scrap:</th>
-                <th>A </th>
-                <th>B </th>
-                <th>C </th>
-                <th>D </th>
-                <th>E </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="hidden">
-                <td> </td>
-                <td> </td>
-                <td>
-                  <input />
-                </td>
-                <td>
-                  <input />
-                </td>
-
-                <td>
-                  <input />
-                </td>
-                <td>
-                  <input />
-                </td>
-
-                <td>
-                  <input />
-                </td>
-                <td>
-                  <input />
-                </td>
-
-                <td>
-                  <input />
-                </td>
-                <td>
-                  <input />
-                </td>
-
-                <td>
-                  <input />
-                </td>
-                <td>
-                  <input />
-                </td>
-
-                <td>
-                  <input />
-                </td>
-                <td>
-                  <input />
-                </td>
-
-                <td>
-                  <input />
-                </td>
-              </tr>
-            </tbody>
-            <tfoot className="tfooter">
-              <tr>
-                <td colSpan={5} style={{ textAlign: "center" }}>
-                  Totales
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-              </tr>
-              <tr>
-                <td colSpan={5} style={{ textAlign: "center" }}>
-                  <div>REALIZO</div>
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                </td>
-                <td colSpan={5} style={{ textAlign: "center" }}>
-                  <div>OBSERVACIONES</div>
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                </td>
-                <td colSpan={1} style={{ textAlign: "center" }}>
-                  <div> </div>
-                  <input type="text" placeholder="A" readOnly /> <br />
-                  <input type="text" placeholder="B" readOnly /> <br />
-                  <input type="text" placeholder="C" readOnly /> <br />
-                  <input type="text" placeholder="D" readOnly /> <br />
-                  <input type="text" placeholder="E" readOnly /> <br />
-                </td>
-                <td colSpan={4} style={{ textAlign: "center" }}>
-                  <div>INCIDENTES</div>
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                </td>
-              </tr>
-              <tr>
-              <td colSpan={1}>
-                
-                </td>
-                <td colSpan={4} style={{ textAlign: "center" }}>
-                  <div>ELABORO</div>
-                  <div className="firm">
-                    <input type="" name="" value="" className="firm-input" />
-                  </div>
-                </td>
-                <td colSpan={1}>
-                
-                </td>
-                <td colSpan={4} style={{ textAlign: "center" }}>
-                  <div>REVISO</div>
-                  <div className="firm">
-                    <input type="" name="" value="" className="firm-input" />
-                  </div>
-                </td>
-                <td colSpan={1}>
-                
-                </td>
-                <td colSpan={4} style={{ textAlign: "center" }}>
-                  <div>AUTORIZO</div>
-                  <div className="firm">
-                    <input type="" name="" value="" className="firm-input" />
-                  </div>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        </Table>
-      </div>
     </>
   );
 };
 
-export default Create;
+export default Create2;

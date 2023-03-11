@@ -1,63 +1,31 @@
 import React, { useContext, useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
+import ReportsTable from "../../components/admin/Reports";
 import { MainContext } from "../../context/MainContext";
-import {
-  faFileLines,
-  faUser,
-  faGear,
-  faRightFromBracket,
-  faUsers,
-  faTrash,
-  faPenToSquare,
-  faFilePdf,
-} from "@fortawesome/free-solid-svg-icons";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-const data = [
-  {
-    id: 1,
-    date: "14/02/2023 11:29 a. m.",
-  },
-  {
-    id: 2,
-    date: "14/02/2023 10:50 a. m.",
-  },
-];
-const columns = [
-  {
-    name: "Id Reporte",
-    selector: (row) => row.id,
-  },
-  {
-    name: "Fecha",
-    selector: (row) => row.date,
-  },
-  {
-    name: "Usuario",
-    selector: (row) => row.usuario,
-  },
-  {
-    name: "",
-    selector: (row) => row.actions,
-  },
-  /* {
-          name: 'Img',
-          selector: row => <>
-          <Image 
-          src={`https://oasistienda.com/a/uploads/multimedia/${row.file_name}`}
-          //   className={styles.vercelLogo}
-          alt={row.nombre}
-          width={300}
-          height={300}
-          priority
-          />
-          </>,<FontAwesomeIcon icon="fa-solid faFilePdf" />
-      },*/
-];
+
+
 
 const Reports = () => {
-  const { dataSes, dataT, dataTS, reportData } = useContext(MainContext);
+  const { dataSes, dataT, dataTS, reportData, data, setData } = useContext(MainContext);
   //console.log(dataT);
+  
+  useEffect(() => {
+    fetch("http://phpstack-921351-3198370.cloudwaysapps.com/server/api/get_sales")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Request failed.');
+      }
+      return response.json();
+    })
+    .then(data => {
+   //  console.log(data);
+      setData(data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }, []);
+  /*
   const [dataTa, setDataTa] = useState([]);
   useEffect(() => {
     const date = new Date();
@@ -85,11 +53,11 @@ const Reports = () => {
           usuario: "Ramon Salazar",
           actions: (
             <div className="actions">
-              <FontAwesomeIcon icon={faTrash} color="red" />
               <FontAwesomeIcon icon={faPenToSquare} color="green" />
               <a href="/assets/reporte.pdf" download>
                 <FontAwesomeIcon icon={faFilePdf} color="brown" />
               </a>
+              <FontAwesomeIcon icon={faTrash} color="red" />
             </div>
           ),
         },
@@ -97,10 +65,10 @@ const Reports = () => {
     });
     return () => {};
   }, [reportData]);
-  console.log(dataTa.sort((a, b) => b.id - a.id));
+  console.log(dataTa.sort((a, b) => b.id - a.id));*/
   return (
     <div className="report-cointainer">
-      <DataTable columns={columns} data={dataTa} pagination />
+      <ReportsTable data={data} />
     </div>
   );
 };

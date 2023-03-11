@@ -17,22 +17,10 @@ export const MainContextProvider = ({ children }) => {
   // const dataTS = localStorage.getItem("dataTable");
   //JSON.parse(dataTS)
 
-  const [data, setData] = useState({
-    data: "data",
-    data2: "data2",
-    data3: "data3",
-    data4: "data4",
-    data5: "data5",
-    data6: "data6",
-    data7: "data7",
-    data8: "data8",
-    data9: "data9",
-    data10: "data10",
-    data11: "data11",
-    data12: "data12",
-  });
+  const [idDelete, setIdDelete] = useState("");
+  const [data, setData] = useState([]);
   const dataTS = localStorage.getItem("dataTable");
-  console.log(dataTS);
+  //console.log(data);
   const [reportData, setReportData] = useState(
     dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
   );
@@ -58,10 +46,50 @@ export const MainContextProvider = ({ children }) => {
     setDataT(reportData);
   };
 
-  const [dataT, setDataT] = useState(dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS));
+  const [dataT, setDataT] = useState(
+    dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
+  );
+  const [confirm, setConfirm] = useState(false);
+  const hanldeDel = (id) => {
+    //console.log(data, id);
+    setIdDelete(id);
+    setConfirm(true);
+  };
+  const handleConfirm = (callback) => {
+    setConfirm(false);
+  };
+  const [showModalU, setShowModalU] = useState(false);
+  const [showModalE, setShowModalE] = useState(false);
+  const [showModalC, setShowModalC] = useState(false);
+  const [updateId, setUpdateId] = useState(false);
+  const [delType, setDelType] = useState(0);
   return (
     <MainContext.Provider
-      value={{ dataSes, dataT, data, setData, saveReport, dataTS, reportData }}
+      value={{
+        dataSes,
+        dataT,
+        data,
+        setData,
+        saveReport,
+        dataTS,
+        reportData,
+        confirm,
+        setConfirm,
+        hanldeDel,
+        idDelete,
+        setIdDelete,
+        handleConfirm,
+        showModalU,
+        setShowModalU,
+        updateId,
+        setUpdateId,
+        showModalE,
+        setShowModalE,
+        showModalC,
+        setShowModalC,
+        delType,
+        setDelType,
+      }}
     >
       {children}
     </MainContext.Provider>

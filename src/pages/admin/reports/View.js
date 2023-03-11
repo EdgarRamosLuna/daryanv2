@@ -1,9 +1,10 @@
 import React, { useContext, useState } from "react";
-import Select from "../../components/Select";
-import { MainContext } from "../../context/MainContext";
-import { Table } from "../../styles/Styles";
+import Select from "../../../components/Select";
+import { MainContext } from "../../../context/MainContext";
+import { StyledForm, Table } from "../../../styles/Styles";
+
 import SecondTableCreate from "./SecondTableCreate";
-const Create = () => {
+const View = () => {
   const { data, setData } = useContext(MainContext);
   //console.log(data);
 
@@ -20,7 +21,7 @@ const Create = () => {
           <h3>REPORTE DE INSPECCION</h3>
           <br />
         </div>
-        <form>
+        <StyledForm>
           <div className="form-container">
             <label htmlFor="data">Planta:</label>
             <input
@@ -160,20 +161,6 @@ const Create = () => {
             </select>
           </div>
           <div className="form-container">
-            <label htmlFor="data8">Tipo de servicio:</label>
-
-            <Select
-              id="data9"
-              name="data9"
-              value={data.data9}
-              callback={handleSelect}
-            >
-              <option value="1">Selección</option>
-              <option value="2">Retrabajo</option>
-              <option value="O">Otros</option>
-            </Select>
-          </div>
-          <div className="form-container">
             <label htmlFor="data10">Numero de parte:</label>
             <input
               type="text"
@@ -191,20 +178,55 @@ const Create = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data8">Control para el cliente:</label>
-            <Select
-              id="data11"
-              name="data11"
-              value={data.data11}
-              callback={handleSelect}
-            >
-              <option value="1">Fecha de produccion</option>
-              <option value="2">Fecha de aprobado</option>
-              <option value="3">Serie</option>
-              <option value="4">Lote</option>
-              <option value="O">Otros</option>
-            </Select>
+            <label htmlFor="data8">Tipo de servicio:</label>
+
+            <div className="container-checkbox">
+              <label>
+                <input type="checkbox" name="fruit[]" value="apple" />
+                Selección
+              </label>
+            
+              <label>
+                <input type="checkbox" name="fruit[]" value="banana" />
+                Retrabajo
+              </label>
+            
+              <label>
+                <input type="checkbox" name="fruit[]" value="orange" />
+                Otros
+              </label>
+            </div>
           </div>
+          
+          <div className="form-container">
+            <label htmlFor="data8">Control para el cliente:</label>
+
+            <div className="container-checkbox">
+            <label>
+                <input type="checkbox" name="" value="apple" />
+                Fecha de produccion
+              </label>
+            
+              <label>
+                <input type="checkbox" name="" value="banana" />
+                Fecha de aprobado
+              </label>
+            
+              <label>
+                <input type="checkbox" name="" value="orange" />
+                Serie
+              </label>
+              <label>
+                <input type="checkbox" name="" value="orange" />
+                Lote
+              </label>
+              <label>
+                <input type="checkbox" name="" value="orange" />
+                Otros
+              </label>
+            </div>
+          </div>
+
 
           {/*
         <label htmlFor="subject">Subject:</label>
@@ -221,11 +243,12 @@ const Create = () => {
           placeholder="Enter your message"
           required
         ></textarea>*/}
-        </form>
+        </StyledForm>
       </div>
       <div className="container c2">
         <SecondTableCreate />
       </div>
+
       <div className="container" style={{overflowY:'scroll'}}>
         <Table>
           <table>
@@ -359,11 +382,41 @@ const Create = () => {
                 </td>
                 <td colSpan={1} style={{ textAlign: "center" }}>
                   <div> </div>
-                  <input type="text" placeholder="A" readOnly /> <br />
-                  <input type="text" placeholder="B" readOnly /> <br />
-                  <input type="text" placeholder="C" readOnly /> <br />
-                  <input type="text" placeholder="D" readOnly /> <br />
-                  <input type="text" placeholder="E" readOnly /> <br />
+                  <input
+                    type="text"
+                    placeholder="A"
+                    readOnly
+                    style={{ textAlign: "center" }}
+                  />{" "}
+                  <br />
+                  <input
+                    type="text"
+                    placeholder="B"
+                    readOnly
+                    style={{ textAlign: "center" }}
+                  />{" "}
+                  <br />
+                  <input
+                    type="text"
+                    placeholder="C"
+                    readOnly
+                    style={{ textAlign: "center" }}
+                  />{" "}
+                  <br />
+                  <input
+                    type="text"
+                    placeholder="D"
+                    readOnly
+                    style={{ textAlign: "center" }}
+                  />{" "}
+                  <br />
+                  <input
+                    type="text"
+                    placeholder="E"
+                    readOnly
+                    style={{ textAlign: "center" }}
+                  />{" "}
+                  <br />
                 </td>
                 <td colSpan={4} style={{ textAlign: "center" }}>
                   <div>INCIDENTES</div>
@@ -375,27 +428,21 @@ const Create = () => {
                 </td>
               </tr>
               <tr>
-              <td colSpan={1}>
-                
-                </td>
+                <td colSpan={1}></td>
                 <td colSpan={4} style={{ textAlign: "center" }}>
                   <div>ELABORO</div>
                   <div className="firm">
                     <input type="" name="" value="" className="firm-input" />
                   </div>
                 </td>
-                <td colSpan={1}>
-                
-                </td>
+                <td colSpan={1}></td>
                 <td colSpan={4} style={{ textAlign: "center" }}>
                   <div>REVISO</div>
                   <div className="firm">
                     <input type="" name="" value="" className="firm-input" />
                   </div>
                 </td>
-                <td colSpan={1}>
-                
-                </td>
+                <td colSpan={1}></td>
                 <td colSpan={4} style={{ textAlign: "center" }}>
                   <div>AUTORIZO</div>
                   <div className="firm">
@@ -411,4 +458,4 @@ const Create = () => {
   );
 };
 
-export default Create;
+export default View;

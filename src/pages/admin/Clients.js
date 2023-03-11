@@ -1,78 +1,73 @@
-import React from "react";
-import DataTable from "react-data-table-component";
-import {
-  faFileLines,
-  faUser,
-  faGear,
-  faRightFromBracket,
-  faUsers,
-  faTrash,
-  faPenToSquare,
-  faFilePdf,
-} from "@fortawesome/free-solid-svg-icons";
+import React, { useContext, useEffect, useState } from "react";
+import { MainContext } from "../../context/MainContext";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-const data = [
-  {
-    user: 1,
-    name: "name",
-    email: "correo@daryan.com",
-    actions: (
-      <div className="actions">
-        <FontAwesomeIcon icon={faTrash} color="red" />
-        <FontAwesomeIcon icon={faPenToSquare} color="green" />
-        
-      </div>
-    ),
-  },
-  {
-    user: 2,
-    name: "name",
-    email: "correo@daryan.com",
-    actions: (
-      <div className="actions">
-        <FontAwesomeIcon icon={faTrash} color="red" />
-        <FontAwesomeIcon icon={faPenToSquare} color="green" />
-        
-      </div>
-    ),
-  },
-];
-const columns = [
-  {
-    name: "Usuario",
-    selector: (row) => row.user,
-  },
-  {
-    name: "Nombre",
-    selector: (row) => row.name,
-  },
-  {
-    name: "Correo",
-    selector: (row) => row.email,
-  },
-  {
-    name: "",
-    selector: (row) => row.actions,
-  },
-  /* {
-            name: 'Img',
-            selector: row => <>
-            <Image 
-            src={`https://oasistienda.com/a/uploads/multimedia/${row.file_name}`}
-            //   className={styles.vercelLogo}
-            alt={row.nombre}
-            width={300}
-            height={300}
-            priority
-            />
-            </>,
-        },*/
-];
+import ClientsTable from "../../components/admin/Clients";
+
+
 const Clients = () => {
+  const { dataSes, dataT, dataTS, reportData } = useContext(MainContext);
+  //console.log(dataT);
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    fetch("http://phpstack-921351-3198370.cloudwaysapps.com/server/api/get_sales")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Request failed.');
+      }
+      return response.json();
+    })
+    .then(data => {
+     console.log(data);
+      setData(data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }, []);
+  /*
+  const [dataTa, setDataTa] = useState([]);
+  useEffect(() => {
+    const date = new Date();
+
+    let dateFormatter = new Intl.DateTimeFormat("es-MX", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    let timeFormatter = new Intl.DateTimeFormat("es-MX", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+    let formattedDatef =
+      dateFormatter.format(date) + " " + timeFormatter.format(date);
+    //console.log(formattedDatef);
+    dataT.forEach((element, index) => {
+      console.log(index);
+      setDataTa((prev) => [
+        ...prev,
+        {
+          id: index + 1,
+          date: formattedDatef,
+          usuario: "Ramon Salazar",
+          actions: (
+            <div className="actions">
+              <FontAwesomeIcon icon={faPenToSquare} color="green" />
+              <a href="/assets/reporte.pdf" download>
+                <FontAwesomeIcon icon={faFilePdf} color="brown" />
+              </a>
+              <FontAwesomeIcon icon={faTrash} color="red" />
+            </div>
+          ),
+        },
+      ]);
+    });
+    return () => {};
+  }, [reportData]);
+  console.log(dataTa.sort((a, b) => b.id - a.id));*/
   return (
     <div className="report-cointainer">
-      <DataTable columns={columns} data={data} pagination />
+      <ClientsTable data={data} />
     </div>
   );
 };

@@ -13,6 +13,9 @@ import Settings from "./pages/user/Settings";
 import Users from "./pages/admin/Users";
 import Clients from "./pages/admin/Clients";
 import Employees from "./pages/admin/Employees";
+import Create2 from "./pages/user/Create2";
+import CreateUser from "./pages/admin/users/Create";
+import View from "./pages/admin/reports/View";
 function App() {
   return (
     <div className="App">
@@ -20,10 +23,13 @@ function App() {
         <Route exact path="/" element={<Login3 />} />
         <Route element={<Header />}>
           <Route exact path="/user/reports" element={<Reports />} />
-          <Route exact path="/user/reports/create" element={<Create />} />
+          <Route exact path="/user/reports/create/1" element={<Create />} />
+          <Route exact path="/user/reports/create/2" element={<Create2 />} />
           <Route exact path="/user/my-account" element={<Settings />} />
           <Route exact path="/admin/reports" element={<Reports3 />} />
+          <Route exact path="/admin/reports/:id" element={<View />} />
           <Route exact path="/admin/users" element={<Users />} />
+          
           <Route exact path="/admin/clients" element={<Clients />} />
           <Route exact path="/admin/employees" element={<Employees/>} />
           <Route exact path="/admin/my-account" element={<Settings />} />

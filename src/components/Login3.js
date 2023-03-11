@@ -1,7 +1,9 @@
+
+
 import { useEffect, useState } from "react";
 import style from "../styles/login.module.css";
 
-export default function Login3() {
+export default function LoginAdmin() {
   const [user, setUser] = useState(" ");
   const [password, setPassword] = useState("");
   const cleanField = (e) => {
@@ -12,9 +14,9 @@ export default function Login3() {
   const handleClick = (e) => {
     // console.log('Se ha clickeao');
     localStorage.setItem("sesType", "admin");
-    //router.push('/admin/reports');
+    //router.push('/user/reports');
     window.location.replace("/admin/reports");
-    //adminouter
+    //useRouter
   };
   const [sesion, setSession] = useState(null);
 
@@ -29,6 +31,14 @@ export default function Login3() {
       <div className={style.login}>
         <div className={style.login_cont}>
           <div className={style.login_form}>
+            <div className={style.logo}>
+              <img
+                src="/assets/img/logo.png"
+                alt="Daryan"
+                width={100}
+                height={50}
+              />
+            </div>
             <div className={style.input_container}>
               <label htmlFor="user">Usuario:</label>
               <input
@@ -49,9 +59,17 @@ export default function Login3() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+            <div className={style.forget_container}>
+                <div className="">
+                    <span>
+                      Olvidtaste tu contraseña?
+                    </span>
+                </div>
+            </div>
             <div className={style.button_container}>
               <button onClick={(e) => handleClick(e)}>Entrar</button>
             </div>
+            
           </div>
         </div>
       </div>

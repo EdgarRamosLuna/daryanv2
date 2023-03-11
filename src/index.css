@@ -1,14 +1,14 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
@@ -75,33 +75,21 @@ code {
   color: #fff;
 }
 
-.create_report{
-   
+.create_report {
 }
-.container{
+.container {
+}
 
+.form_data {
+  width: 35.33%;
+  display: flex;
+  flex-direction: column;
 }
-.form{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    justify-content: space-evenly;
-    width: 70%;
-    background: #fff;
-    margin: 0px auto;
-    padding: 33px 0;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-}
-.form_data{
-    width: 35.33%;
-    display: flex;
-    flex-direction: column;
-}
-.form_data input{
-    height: 30px;
-    outline: unset;
-    box-sizing: border-box;
-    padding: 0 5px;
+.form_data input {
+  height: 30px;
+  outline: unset;
+  box-sizing: border-box;
+  padding: 0 5px;
 }
 .header {
   width: 50px;
@@ -118,13 +106,13 @@ code {
   width: 200px;
   transition: all 0.3s;
 }
-.header a{
+.header a {
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center ;
+  align-items: center;
 }
-.linkText{
+.linkText {
   white-space: pre;
   position: absolute;
   left: 50px;
@@ -160,18 +148,19 @@ code {
   overflow: hidden;
 }
 
-.subHeader{
-    width: 100%;
-    height: 50px;
-    background-color: #335d6e;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    box-sizing: border-box;
-    padding: 0 25px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.subHeader {
+  width: 100%;
+  height: 50px;
+  background-color: #335d6e;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 25px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.subHeader a, .subHeader button{
+.subHeader a,
+.subHeader button {
   width: auto;
   border: 1px solid;
   box-sizing: border-box;
@@ -179,46 +168,46 @@ code {
   border-radius: 5px;
   font-size: 0.8em;
   background-color: transparent;
-  color:#fff;
+  color: #fff;
   cursor: pointer;
 }
-.logo{
-    height: 50px !important;
-    width: 100%;
-    justify-content: center;
-    font-size: 0.9em;
+.logo {
+  height: 50px !important;
+  width: 100%;
+  justify-content: center;
+  font-size: 0.9em;
 }
-.logo:hover{
-    background-color: transparent !important;
-    cursor: pointer;
+.logo:hover {
+  cursor: pointer;
 }
-.children{
-    width: 100%;
-    display: flex;
-    box-sizing: border-box;
-    padding: 30px 25px;
-    height: 100%;
-    overflow-y: auto;
+.children {
+  width: 100%;
+  display: flex;
+  box-sizing: border-box;
+  padding: 30px 25px;
+  height: 100%;
+  overflow-y: auto;
 }
-*{
+* {
   padding: 0;
   margin: 0;
 }
-a{
+a {
   color: #fff;
   text-decoration: none;
 }
 .report-cointainer {
   width: 100%;
 }
-form {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
+
+.ex-m {
+  transition: all 0.3s;
+  margin-bottom: 49px;
 }
 
-input[type="text"], select, textarea {
+input,
+select,
+textarea {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -231,7 +220,7 @@ input[type="text"], select, textarea {
 }
 
 input[type="submit"] {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   padding: 14px 20px;
   margin: 8px 0;
@@ -248,13 +237,27 @@ input[type="submit"]:hover {
   border-radius: 5px;
   background-color: #f2f2f2;
   padding: 20px;
- /* max-width: 600px;*/
+  /* max-width: 600px;*/
   width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+.active{
+  transition: all 0.3s;
+  background: #050220;
 }
 .form-container {
-  width: 32.33%;
+  width: 24%;
+  position: relative;
 }
-h1, h2, h3, h4, h5, h6, label, input {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label,
+input {
   color: #447b91;
 }
 .actions {
@@ -262,12 +265,129 @@ h1, h2, h3, h4, h5, h6, label, input {
   display: flex;
   gap: 15px;
   font-size: 20px;
+  justify-content: center;
 }
-.actions a{
+.actions a {
   margin: 0;
   padding: 0;
   display: flex;
 }
-svg{
+svg {
   cursor: pointer;
+}
+html,
+body,
+* {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-monse);
+}
+.logo {
+  justify-content: center;
+  background: #fff;
+  box-sizing: border-box;
+  padding: 5px;
+}
+.logo img {
+  width: 100%;
+  transition: all 0.3s;
+}
+
+.other-input {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  display: flex;
+  border: none;
+  padding-top: 4px;
+}
+legend {
+  margin: 0 auto;
+  color: #447b91;
+}
+fieldset {
+  position: absolute;
+  width: 100%;
+  border: 1px solid #447b91;
+  border-radius: 4px;
+}
+.cont-item {
+  width: 20%;
+}
+.cont-item form {
+  display: flex;
+  flex-wrap: nowrap;
+}
+.c2 {
+  gap: 15px;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+  overflow: auto;
+  height: 50%;
+  padding: 0 20px;
+}
+.ci2 {
+  width: 80%;
+}
+label {
+  white-space: pre;
+}
+.addItem {
+  width: 60px;
+  height: 60px;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  background: #570000;
+  border: 0;
+  cursor: pointer;
+}
+tfoot {
+  position: relative;
+}
+tfoot tr {
+  /*position: absolute;
+  left: -20px;*/
+}
+tfoot td {
+  /*position: fixed;
+  z-index: 9;
+  bottom: 0;
+  width: auto;*/
+}
+.btns-header {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+}
+
+input.firm-input {
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  border-radius: 0;
+  max-width: 70%;
+}
+input[type="checkbox"] {
+  width: auto;
+}
+.tfooter{
+  position: relative;
+  transform: translateY(-100px);
+  z-index: 100;
+  background: #f2f2f2;
+}
+
+.container-checkbox {
+    display: flex;
+    flex-direction: column;
+}
+.container-checkbox label {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 7px;
+  width: 100%;
 }

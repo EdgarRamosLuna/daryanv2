@@ -8,8 +8,8 @@ import {
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { Link, Outlet } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import SubHeader from "./SubHeader";
 const linksUser = [
   {
@@ -18,12 +18,12 @@ const linksUser = [
     ico: faFileLines,
     fun: () => {},
   },
- /* {
+  {
     label: "Mi Cuenta",
     route: "/user/my-account",
     ico: faGear,
     fun: () => {},
-  },*/
+  },
   {
     label: "Salir",
     route: "/user/login",
@@ -116,18 +116,26 @@ export default function Header() {
       setMapData(linksAdmin);
     }
   }, []);
+  const pathname = useLocation().pathname;
+
+  console.log(pathname.includes("reports"));
   return (
     <>
       <header className={style.header}>
         <div className="menu-container">
           <nav>
             <ul>
-              <li className={style.logo}>Logo</li>
+            <li className={style.logo}>
+                <Link href="/app/admin" className="logo">
+                  <img src="/assets/img/logo.png" alt="Daryan Saltillo" />
+                </Link>
+              </li>
               {mapData.map(({ label, route, ico, fun }, ind) => (
                 <li key={route}>
                   <Link
                     to={route}
                     onClick={(e) => (label === "Salir" ? fun(e) : "")}
+                    className={pathname.includes(`${route}`) ? "active" : ""}
                   >
                     <div className={style.ico}>
                       <FontAwesomeIcon icon={ico} />
