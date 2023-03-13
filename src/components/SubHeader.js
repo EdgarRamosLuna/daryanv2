@@ -56,6 +56,7 @@ export default function SubHeader() {
   const handleClose = () => {
     setConfirm(false);
     setShowModalClient(false);
+    setShowModalUser(false);
     setShowModalU(false);
     setShowModalE(false);
     setShowModalC(false);
