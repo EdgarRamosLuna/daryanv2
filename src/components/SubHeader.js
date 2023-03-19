@@ -1,6 +1,6 @@
 import style from "./styles.module.css";
 
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useContext, useState } from "react";
 import { MainContext } from "../context/MainContext";
 import Modal from "./Modal";
@@ -10,6 +10,8 @@ import UpdateEmployee from "../pages/admin/employees/Update";
 import CreateEmployee from "../pages/admin/employees/Create";
 import CreateClient from "../pages/admin/clients/Create";
 import UpdateClient from "../pages/admin/clients/Update";
+import CreateSupplier from "../pages/admin/suppliers/Create";
+import UpdateSupplier from "../pages/admin/suppliers/Update";
 
 let val;
 if (typeof window !== "undefined") {
@@ -18,8 +20,10 @@ if (typeof window !== "undefined") {
   val = value;
 }
 export default function SubHeader() {
-  const pathname = useLocation().pathname;
+  let pathname = useLocation().pathname;
+
   const {
+    dataSes,
     saveReport,
     confirm,
     setConfirm,
@@ -34,6 +38,8 @@ export default function SubHeader() {
     setShowModalC,
     updateId,
     setUpdateId,
+    showModalS,
+    setShowModalS,
   } = useContext(MainContext);
   //console.log(useParams());
 
@@ -43,6 +49,8 @@ export default function SubHeader() {
   const [showModalClient, setShowModalClient] = useState(false);
   const [showModalEmployee, setShowModalEmployee] = useState(false);
   const [showModalUser, setShowModalUser] = useState(false);
+  const [showModalSupplier, setShowModalSupplier] = useState(false);
+  const [tableName, setTableName] = useState("");
 
   const handleClickModal = () => {
     setShowModalUser(true);
@@ -53,6 +61,9 @@ export default function SubHeader() {
   const handleClickModal3 = () => {
     setShowModalClient(true);
   };
+  const handleClickModal4 = () => {
+    setShowModalSupplier(true);
+  };
   const handleClose = () => {
     setConfirm(false);
     setShowModalClient(false);
@@ -61,12 +72,27 @@ export default function SubHeader() {
     setShowModalE(false);
     setShowModalC(false);
     setShowModalEmployee(false);
+    setShowModalSupplier(false);
+    setShowModalS(false);
     //    showModalE, setShowModalE
   };
 
   const callbackConfirm = (id) => {
     setData((data) => data.filter((data) => data.id !== `${id}`));
     setConfirm(false);
+  };
+  const p = useParams().id;
+  const [params, setParams] = useState(p);
+  if (typeof p !== "undefined") {
+    console.log(dataSes);
+  }
+  //console.log(useLocation())
+  const navigate = useNavigate();
+  //console.log(pathname.slice(-1));
+
+  const handleLink = (e) => {
+    let idCreate = pathname.slice(-1);
+    navigate(`/user/reports/create/${idCreate}/table2`);
   };
   return (
     <>
@@ -85,6 +111,11 @@ export default function SubHeader() {
           <CreateEmployee />
         </Modal>
       )}
+      {showModalSupplier === true && (
+        <Modal callback={handleClose}>
+          <CreateSupplier />
+        </Modal>
+      )}
 
       {showModalU === true && (
         <Modal callback={handleClose}>
@@ -94,6 +125,11 @@ export default function SubHeader() {
       {showModalE === true && (
         <Modal callback={handleClose}>
           <UpdateEmployee id={updateId} />
+        </Modal>
+      )}
+      {showModalS === true && (
+        <Modal callback={handleClose}>
+          <UpdateSupplier id={updateId} />
         </Modal>
       )}
       {showModalC === true && (
@@ -108,36 +144,71 @@ export default function SubHeader() {
               Estas seguro que deseas borrar?
             </div>
             <div className="delete-confirm-btns">
-              <button onClick={handleClose} className="btn btn-danger">Cancelar</button>
-              <button onClick={() => callbackConfirm(idDelete)} className="btn btn-success">Confirmar</button>
+              <button onClick={handleClose} className="btn btn-danger">
+                Cancelar
+              </button>
+              <button
+                onClick={() => callbackConfirm(idDelete, tableName)}
+                className="btn btn-success"
+              >
+                Confirmar
+              </button>
             </div>
           </div>
         </Modal>
       )}
-      <div className={style.subHeader}>
+      <div className={style.subHeader}>  <div className="btns-header">
+
         {pathname === "/user/reports" && (
-          <div className="btns-header">
+          <>
             <Link to="/user/reports/create/1">
-              <center>Reporte de inspeccion</center>{" "}
+              <center>
+                <i class="fa-solid fa-plus"></i>Reporte de inspeccion
+              </center>
             </Link>
             <Link to="/user/reports/create/2">
-              <center>Reporte por horas</center>{" "}
+              <center>
+                <i class="fa-solid fa-plus"></i>Reporte por horas
+              </center>
             </Link>
-          </div>
+          </>
         )}
         {pathname === "/user/reports/create/1" && (
           <button onClick={(e) => saveReport(e)}>Enviar Reporte</button>
         )}
         {pathname === "/user/reports/create/2" && (
-          <button onClick={(e) => saveReport(e)}>Enviar Reporte</button>
+          <>
+            <button onClick={(e) => saveReport(e)}>Enviar Reporte</button>
+            <button onClick={(e) => handleLink(e)}>Tabla de muestreo</button>
+          </>
         )}
         {pathname === "/admin/users/create" && (
           <button onClick={(e) => saveReport(e)}>Guardar</button>
         )}
+        {dataSes === "admin" &&
+          pathname.includes("admin") &&
+          pathname.includes("reports") &&
+          typeof p !== "undefined" && (
+            <button onClick={(e) => saveReport(e)}>
+              Finalizar Revision & Aprobar Reporte
+            </button>
+          )}
+        {pathname.includes("table2") && (
+          <>
+            <button onClick={(e) => navigate(-1)}>
+              Regresar
+            </button>
+            <button onClick={(e) => saveReport(e)}>
+              Guardar
+            </button>
+          
+          </>
+          )}
+        
         {pathname === "/admin/users" && (
           <>
             <button onClick={handleClickModal}>
-              <center>Crear usuario</center>{" "}
+              <center>Crear usuario</center>
             </button>
           </>
         )}
@@ -155,6 +226,14 @@ export default function SubHeader() {
             </button>
           </>
         )}
+        {pathname === "/admin/suppliers" && (
+          <>
+            <button onClick={handleClickModal4}>
+              <center>Crear proveedor</center>
+            </button>
+          </>
+        )}
+         </div>
       </div>
     </>
   );

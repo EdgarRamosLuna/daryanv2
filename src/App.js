@@ -2,20 +2,24 @@ import logo from "./logo.svg";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
-import Reports from "./pages/user/Reports";
+import Reports from "./pages/employee/Reports";
 import Reports2 from "./pages/client/Reports";
 import Reports3 from "./pages/admin/Reports";
 import Login from "./components/Login";
 import Login3 from "./components/Login3";
 import Login2 from "./components/Login2";
-import Create from "./pages/user/Create";
-import Settings from "./pages/user/Settings";
+import Create from "./pages/employee/Create";
+import Settings from "./pages/employee/Settings";
 import Users from "./pages/admin/Users";
 import Clients from "./pages/admin/Clients";
 import Employees from "./pages/admin/Employees";
-import Create2 from "./pages/user/Create2";
+import Create2 from "./pages/employee/Create2";
 import CreateUser from "./pages/admin/users/Create";
 import View from "./pages/admin/reports/View";
+import View2 from "./pages/employee/reports/View";
+import View3 from "./pages/employee/reports/View2";
+import Suppliers from "./pages/admin/Suppliers";
+import Create3 from "./pages/employee/Create3";
 function App() {
   return (
     <div className="App">
@@ -25,13 +29,17 @@ function App() {
           <Route exact path="/user/reports" element={<Reports />} />
           <Route exact path="/user/reports/create/1" element={<Create />} />
           <Route exact path="/user/reports/create/2" element={<Create2 />} />
+          <Route exact path="/user/reports/create/2/:t" element={<Create3 />} />
           <Route exact path="/user/my-account" element={<Settings />} />
           <Route exact path="/admin/reports" element={<Reports3 />} />
           <Route exact path="/admin/reports/:id" element={<View />} />
+          <Route exact path="/user/reports/:id" element={<View2 />} />
+          <Route exact path="/user/reports/2/:id" element={<View3 />} />
           <Route exact path="/admin/users" element={<Users />} />
           
           <Route exact path="/admin/clients" element={<Clients />} />
           <Route exact path="/admin/employees" element={<Employees/>} />
+          <Route exact path="/admin/suppliers" element={<Suppliers/>} />
           <Route exact path="/admin/my-account" element={<Settings />} />
           <Route exact path="/client/reports" element={<Reports2 />} />
           <Route exact path="/client/my-account" element={<Settings />} />

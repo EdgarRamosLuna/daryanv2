@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
-import Select from "../../../components/Select";
-import { MainContext } from "../../../context/MainContext";
-import { StyledForm, Table } from "../../../styles/Styles";
+import { MainContext } from "../../context/MainContext";
+import { StyledForm, Table } from "../../styles/Styles";
 
 import SecondTableCreate from "./SecondTableCreate";
-const View = () => {
+import SecondTableCreate2 from "./SecondTableCreate2";
+const Create2 = () => {
   const { data, setData } = useContext(MainContext);
   //console.log(data);
 
@@ -18,7 +18,7 @@ const View = () => {
     <>
       <div className="container">
         <div className="title">
-          <h3>REPORTE DE INSPECCION</h3>
+          <h3>REPORTE POR HORAS</h3>
           <br />
         </div>
         <StyledForm>
@@ -40,7 +40,7 @@ const View = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data2">Proveedor:</label>
+            <label htmlFor="data2">Numero de parte:</label>
             <input
               type="text"
               id="data2"
@@ -91,7 +91,7 @@ const View = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data5">Nombre de parte:</label>
+            <label htmlFor="data5">Mesa:</label>
             <input
               type="text"
               id="data5"
@@ -108,7 +108,7 @@ const View = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data6">Horas Trabajadas:</label>
+            <label htmlFor="data6">Nombre de parte:</label>
             <input
               type="text"
               id="data6"
@@ -116,23 +116,6 @@ const View = () => {
               placeholder=""
               required
               value={data.data6}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div className="form-container">
-            <label htmlFor="data7">Rate:</label>
-            <input
-              type="text"
-              id="data7"
-              name="data7"
-              placeholder=""
-              required
-              value={data.data7}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -160,73 +143,6 @@ const View = () => {
               <option value="3">3</option>
             </select>
           </div>
-          <div className="form-container">
-            <label htmlFor="data10">Numero de parte:</label>
-            <input
-              type="text"
-              id="data10"
-              name="data10"
-              placeholder=""
-              required
-              value={data.data10}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div className="form-container">
-            <label htmlFor="data8">Tipo de servicio:</label>
-
-            <div className="container-checkbox">
-              <label>
-                <input type="checkbox" name="fruit[]" value="apple" />
-                Selección
-              </label>
-            
-              <label>
-                <input type="checkbox" name="fruit[]" value="banana" />
-                Retrabajo
-              </label>
-            
-              <label>
-                <input type="checkbox" name="fruit[]" value="orange" />
-                Otros
-              </label>
-            </div>
-          </div>
-          
-          <div className="form-container">
-            <label htmlFor="data8">Control para el cliente:</label>
-
-            <div className="container-checkbox">
-            <label>
-                <input type="checkbox" name="" value="apple" />
-                Fecha de produccion
-              </label>
-            
-              <label>
-                <input type="checkbox" name="" value="banana" />
-                Fecha de aprobado
-              </label>
-            
-              <label>
-                <input type="checkbox" name="" value="orange" />
-                Serie
-              </label>
-              <label>
-                <input type="checkbox" name="" value="orange" />
-                Lote
-              </label>
-              <label>
-                <input type="checkbox" name="" value="orange" />
-                Otros
-              </label>
-            </div>
-          </div>
-
 
           {/*
         <label htmlFor="subject">Subject:</label>
@@ -246,10 +162,10 @@ const View = () => {
         </StyledForm>
       </div>
       <div className="container c2">
-        <SecondTableCreate />
+        <SecondTableCreate2 />
       </div>
 
-      <div className="container" style={{overflowY:'scroll'}}>
+      <div className="container" style={{ overflowY: "scroll" }}>
         <Table>
           <table>
             <thead className="no-sticky">
@@ -261,24 +177,25 @@ const View = () => {
                   ></i>
                 </th>
                 <th>Item</th>
-                <th>Fecha</th>
-                <th>Lote</th>
-                <th>Serie</th>
-                <th>Cantidad Inspeccionada</th>
-                <th>Piezas NG:</th>
-                <th>Piezas Ok:</th>
-                <th>Piezas Retrabajadas:</th>
-                <th>Scrap:</th>
-                <th>A </th>
-                <th>B </th>
-                <th>C </th>
-                <th>D </th>
-                <th>E </th>
+                <th>Defecto</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7</th>
+                <th>8 </th>
+                <th>9 </th>
+                <th>10 </th>
+                <th>11 </th>
+                <th>12 </th>
+                <th>Total </th>
               </tr>
             </thead>
             <tbody>
               <tr className="hidden">
-                <td></td>
+                <td> </td>
                 <td> </td>
                 <td>
                   <input />
@@ -286,7 +203,18 @@ const View = () => {
                 <td>
                   <input />
                 </td>
-
+                <td>
+                  <input />
+                </td>
+                <td>
+                  <input />
+                </td>
+                <td>
+                  <input />
+                </td>
+                <td>
+                  <input />
+                </td>
                 <td>
                   <input />
                 </td>
@@ -307,21 +235,9 @@ const View = () => {
                 <td>
                   <input />
                 </td>
-
                 <td>
                   <input />
                 </td>
-                <td>
-                  <input />
-                </td>
-
-                <td>
-                  <input />
-                </td>
-                <td>
-                  <input />
-                </td>
-
                 <td>
                   <input />
                 </td>
@@ -329,8 +245,19 @@ const View = () => {
             </tbody>
             <tfoot className="tfooter">
               <tr>
-                <td colSpan={5} style={{ textAlign: "center" }}>
-                  Totales
+                <td> </td>
+                <td> </td>
+                <td style={{ textAlign: "center" }}>
+                  <div style={{ width: "300px" }}>Total de defectos</div>
+                </td>
+                <td>
+                  <input type="text" />
+                </td>
+                <td>
+                  <input type="text" />
+                </td>
+                <td>
+                  <input type="text" />
                 </td>
                 <td>
                   <input type="text" />
@@ -364,86 +291,81 @@ const View = () => {
                 </td>
               </tr>
               <tr>
-                <td colSpan={5} style={{ textAlign: "center" }}>
-                  <div>REALIZO</div>
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                </td>
-                <td colSpan={5} style={{ textAlign: "center" }}>
-                  <div>OBSERVACIONES</div>
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                </td>
-                <td colSpan={1} style={{ textAlign: "center" }}>
-                  <div> </div>
-                  <input
-                    type="text"
-                    placeholder="A"
-                    readOnly
-                    style={{ textAlign: "center" }}
-                  />{" "}
-                  <br />
-                  <input
-                    type="text"
-                    placeholder="B"
-                    readOnly
-                    style={{ textAlign: "center" }}
-                  />{" "}
-                  <br />
-                  <input
-                    type="text"
-                    placeholder="C"
-                    readOnly
-                    style={{ textAlign: "center" }}
-                  />{" "}
-                  <br />
-                  <input
-                    type="text"
-                    placeholder="D"
-                    readOnly
-                    style={{ textAlign: "center" }}
-                  />{" "}
-                  <br />
-                  <input
-                    type="text"
-                    placeholder="E"
-                    readOnly
-                    style={{ textAlign: "center" }}
-                  />{" "}
-                  <br />
-                </td>
-                <td colSpan={4} style={{ textAlign: "center" }}>
-                  <div>INCIDENTES</div>
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                </td>
-              </tr>
-              <tr>
-                <td colSpan={1}></td>
-                <td colSpan={4} style={{ textAlign: "center" }}>
-                  <div>ELABORO</div>
-                  <div className="firm">
-                    <input type="" name="" value="" className="firm-input" />
+                <td> </td>
+                <td> </td>
+                <td style={{ textAlign: "center" }}>
+                  <div style={{ width: "300px" }}>
+                    Total de piezas inspreccionadas
                   </div>
                 </td>
-                <td colSpan={1}></td>
-                <td colSpan={4} style={{ textAlign: "center" }}>
+                <td>
+                  <input type="text" />
+                </td>
+                <td>
+                  <input type="text" />
+                </td>
+                <td>
+                  <input type="text" />
+                </td>
+                <td>
+                  <input type="text" />
+                </td>
+                <td>
+                  <input type="text" />
+                </td>
+                <td>
+                  <input type="text" />
+                </td>
+                <td>
+                  <input type="text" />
+                </td>
+                <td>
+                  <input type="text" />
+                </td>
+                <td>
+                  <input type="text" />
+                </td>
+                <td>
+                  <input type="text" />
+                </td>
+                <td>
+                  <input type="text" />
+                </td>
+                <td>
+                  <input type="text" />
+                </td>
+                <td>
+                  <input type="text" />
+                </td>
+              </tr>
+              <tr>
+                <td colSpan={3} style={{ textAlign: "center" }}>
+                  <div>INSPECTOR</div>
+                  <input type="text" /> <br />
+                  <input type="text" /> <br />
+                  <input type="text" /> <br />
+                  <input type="text" /> <br />
+                  <input type="text" /> <br />
+                </td>
+                <td colSpan={13} style={{ textAlign: "center" }}>
+                  <div>COMENTARIOS</div>
+                  <input type="text" /> <br />
+                  <input type="text" /> <br />
+                  <input type="text" /> <br />
+                  <input type="text" /> <br />
+                  <input type="text" /> <br />
+                </td>
+              </tr>
+              <tr>
+                
+                <td colSpan={8} style={{ textAlign: "center" }}>
                   <div>REVISO</div>
                   <div className="firm">
                     <input type="" name="" value="" className="firm-input" />
                   </div>
                 </td>
-                <td colSpan={1}></td>
-                <td colSpan={4} style={{ textAlign: "center" }}>
+                
+                <td colSpan={8} style={{ textAlign: "center" }}>
                   <div>AUTORIZO</div>
                   <div className="firm">
                     <input type="" name="" value="" className="firm-input" />
@@ -458,4 +380,4 @@ const View = () => {
   );
 };
 
-export default View;
+export default Create2;

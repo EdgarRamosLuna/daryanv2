@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Table } from "../../../styles/Styles";
+import { Table } from "../../styles/Styles";
 
-export default function SecondTableCreate() {
+export default function SecondTableCreate2() {
   const [divs, setDivs] = useState([
     { id: 1, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
     { id: 2, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
@@ -18,11 +18,6 @@ export default function SecondTableCreate() {
     { id: 13, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
     { id: 14, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
     { id: 15, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 16, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 17, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 18, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 19, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 20, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
   ]);
 
   function handleAddDiv() {
@@ -60,19 +55,20 @@ export default function SecondTableCreate() {
               <i className="fa-solid fa-circle-plus" onClick={handleAddDiv}></i>
             </th>
             <th>Item</th>
-            <th>Fecha</th>
-            <th>Lote</th>
-            <th>Serie</th>
-            <th>Cantidad Inspeccionada</th>
-            <th>Piezas NG:</th>
-            <th>Piezas Ok:</th>
-            <th>Piezas Retrabajadas:</th>
-            <th>Scrap:</th>
-            <th>A </th>
-            <th>B </th>
-            <th>C </th>
-            <th>D </th>
-            <th>E </th>
+            <th>Defecto</th>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th>5</th>
+            <th>6</th>
+            <th>7</th>
+            <th>8 </th>
+            <th>9 </th>
+            <th>10 </th>
+            <th>11 </th>
+            <th>12 </th>
+            <th>Total </th>
           </tr>
         </thead>
         <tbody>
@@ -80,63 +76,64 @@ export default function SecondTableCreate() {
             <tr key={div.id}>
               <td></td>
 
-              <td className="table-center">{div.id}</td>
+              <td>{div.id}</td>
 
-              <td className="table-center">
+              <td>
                 <input
                   value={div.values[1]}
                   onChange={(e) => handleInputChange(div.id, 1, e.target.value)}
+                  style={{ minWidth: "300px" }}
                 />
               </td>
-              <td className="table-center">
+              <td>
                 <input
                   value={div.values[2]}
                   onChange={(e) => handleInputChange(div.id, 2, e.target.value)}
                 />
               </td>
-              <td className="table-center">
+              <td>
                 <input
                   value={div.values[3]}
                   onChange={(e) => handleInputChange(div.id, 3, e.target.value)}
                 />
               </td>
-              <td className="table-center">
+              <td>
                 <input
                   value={div.values[4]}
                   onChange={(e) => handleInputChange(div.id, 4, e.target.value)}
                 />
               </td>
-              <td className="table-center">
+              <td>
                 <input
                   value={div.values[5]}
                   onChange={(e) => handleInputChange(div.id, 5, e.target.value)}
                 />
               </td>
-              <td className="table-center">
+              <td>
                 <input
                   value={div.values[6]}
                   onChange={(e) => handleInputChange(div.id, 6, e.target.value)}
                 />
               </td>
-              <td className="table-center">
+              <td>
                 <input
                   value={div.values[7]}
                   onChange={(e) => handleInputChange(div.id, 7, e.target.value)}
                 />
               </td>
-              <td className="table-center">
+              <td>
                 <input
                   value={div.values[8]}
                   onChange={(e) => handleInputChange(div.id, 8, e.target.value)}
                 />
               </td>
-              <td className="table-center">
+              <td>
                 <input
                   value={div.values[9]}
                   onChange={(e) => handleInputChange(div.id, 9, e.target.value)}
                 />
               </td>
-              <td className="table-center">
+              <td>
                 <input
                   value={div.values[10]}
                   onChange={(e) =>
@@ -144,7 +141,7 @@ export default function SecondTableCreate() {
                   }
                 />
               </td>
-              <td className="table-center">
+              <td>
                 <input
                   value={div.values[11]}
                   onChange={(e) =>
@@ -152,7 +149,7 @@ export default function SecondTableCreate() {
                   }
                 />
               </td>
-              <td className="table-center">
+              <td>
                 <input
                   value={div.values[12]}
                   onChange={(e) =>
@@ -160,7 +157,7 @@ export default function SecondTableCreate() {
                   }
                 />
               </td>
-              <td className="table-center">
+              <td>
                 <input
                   value={div.values[13]}
                   onChange={(e) =>
@@ -168,11 +165,18 @@ export default function SecondTableCreate() {
                   }
                 />
               </td>
+              <td>
+                <input
+                  value={div.values[14]}
+                  onChange={(e) =>
+                    handleInputChange(div.id, 14, e.target.value)
+                  }
+                />
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-      
     </Table>
   );
 }

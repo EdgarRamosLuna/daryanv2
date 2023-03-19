@@ -12,6 +12,7 @@ import es from "date-fns/locale/es";
 import Loader from "../Loader";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
+import StatusBtn from "../StatusBtn";
 registerLocale("es", es);
 function UsersTable({ data }) {
 
@@ -218,7 +219,7 @@ function UsersTable({ data }) {
                     <tr key={index}>
                       <td className="table-center">Usuario {item.id}</td>
                       <td className="table-center">correo@email.com</td>
-                      <td className="table-center">Activo</td>
+                      <td className="table-center"><StatusBtn status={1} id={item.id} /></td>
                       <td className="table-center">
                         <div className="actions">
                           <i

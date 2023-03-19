@@ -81,6 +81,12 @@ const linksAdmin = [
     ico: faUsers,
     fun: (e) => {},
   },
+  {
+    label: "Proveedores",
+    route: "/admin/suppliers",
+    ico: faUsers,
+    fun: (e) => {},
+  },
   /*{
     label: "Mi Cuenta",
     route: "/admin/my-account",

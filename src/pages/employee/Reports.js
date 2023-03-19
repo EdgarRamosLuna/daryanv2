@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import ReportsTable from "../../components/client/Reports";
-
+import ReportsTable from "../../components/employee/Reports";
 
 import { MainContext } from "../../context/MainContext";
 

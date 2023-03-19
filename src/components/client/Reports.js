@@ -184,7 +184,7 @@ function ReportsTable({ data }) {
   //console.log(checkList);
   const navigate = useNavigate();
   const singleView = (id) => {
-    navigate(`/admin/reports/${id}`);
+    navigate(`/user/reports/${id}`);
   };
   const [activeTab, setActiveTab] = useState(1);
   const tabSwitch = (tab) => {
@@ -330,10 +330,6 @@ function ReportsTable({ data }) {
                         onClick={(e) => e.stopPropagation()}
                       >
                         <div className="actions">
-                          <i
-                            className="fa-solid fa-trash"
-                            onClick={() => hanldeDel(item.id)}
-                          ></i>
                           <Link
                             to={`/admin/reports/${item.id}`}
                             style={{ color: "green" }}
@@ -357,7 +353,6 @@ function ReportsTable({ data }) {
                   <th>
                     <Checkbox type="all" id={0} callback={handleCheckBox} />
                   </th>
-
                   <th># Reporte</th>
                   <th># Parte</th>
                   <th>Planta</th>
@@ -396,10 +391,6 @@ function ReportsTable({ data }) {
                         onClick={(e) => e.stopPropagation()}
                       >
                         <div className="actions">
-                          <i
-                            className="fa-solid fa-trash"
-                            onClick={() => hanldeDel(item.id)}
-                          ></i>
                           <Link
                             to={`/admin/reports/${item.id}`}
                             style={{ color: "green" }}

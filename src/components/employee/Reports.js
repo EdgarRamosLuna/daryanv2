@@ -184,7 +184,10 @@ function ReportsTable({ data }) {
   //console.log(checkList);
   const navigate = useNavigate();
   const singleView = (id) => {
-    navigate(`/admin/reports/${id}`);
+    navigate(`/user/reports/${id}`);
+  };
+  const singleView2 = (id) => {
+    navigate(`/user/reports/2/${id}`);
   };
   const [activeTab, setActiveTab] = useState(1);
   const tabSwitch = (tab) => {
@@ -289,9 +292,6 @@ function ReportsTable({ data }) {
             <table>
               <thead>
                 <tr>
-                  <th>
-                    <Checkbox type="all" id={0} callback={handleCheckBox} />
-                  </th>
                   <th># Reporte</th>
                   <th># Parte</th>
                   <th>Planta</th>
@@ -309,16 +309,6 @@ function ReportsTable({ data }) {
                 ) : (
                   getPaginatedData().map((item, index) => (
                     <tr key={index} onClick={(e) => singleView(item.id)}>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Checkbox
-                          type="single"
-                          id={item.id}
-                          callback={handleCheckBox}
-                        />
-                      </td>
                       <td className="table-center">{item.id}</td>
                       <td className="table-center">5454455</td>
                       <td className="table-center">Planta</td>
@@ -330,17 +320,12 @@ function ReportsTable({ data }) {
                         onClick={(e) => e.stopPropagation()}
                       >
                         <div className="actions">
-                          <i
-                            className="fa-solid fa-trash"
-                            onClick={() => hanldeDel(item.id)}
-                          ></i>
                           <Link
                             to={`/admin/reports/${item.id}`}
                             style={{ color: "green" }}
                           >
                             <i className="fa-solid fa-eye"></i>
                           </Link>
-                          <i className="fa-solid fa-file-pdf"></i>
                         </div>
                       </td>
                     </tr>
@@ -354,10 +339,6 @@ function ReportsTable({ data }) {
             <table>
               <thead>
                 <tr>
-                  <th>
-                    <Checkbox type="all" id={0} callback={handleCheckBox} />
-                  </th>
-
                   <th># Reporte</th>
                   <th># Parte</th>
                   <th>Planta</th>
@@ -374,17 +355,7 @@ function ReportsTable({ data }) {
                   </Loader>
                 ) : (
                   getPaginatedData().map((item, index) => (
-                    <tr key={index} onClick={(e) => singleView(item.id)}>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Checkbox
-                          type="single"
-                          id={item.id}
-                          callback={handleCheckBox}
-                        />
-                      </td>
+                    <tr key={index} onClick={(e) => singleView2(item.id)}>
                       <td className="table-center">{item.id}</td>
                       <td className="table-center">5454455</td>
                       <td className="table-center">Planta</td>
@@ -396,17 +367,12 @@ function ReportsTable({ data }) {
                         onClick={(e) => e.stopPropagation()}
                       >
                         <div className="actions">
-                          <i
-                            className="fa-solid fa-trash"
-                            onClick={() => hanldeDel(item.id)}
-                          ></i>
                           <Link
                             to={`/admin/reports/${item.id}`}
                             style={{ color: "green" }}
                           >
                             <i className="fa-solid fa-eye"></i>
                           </Link>
-                          <i className="fa-solid fa-file-pdf"></i>
                         </div>
                       </td>
                     </tr>

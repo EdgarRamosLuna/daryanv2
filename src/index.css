@@ -326,6 +326,27 @@ fieldset {
   height: 50%;
   padding: 0 20px;
 }
+.c3 {
+  
+  justify-content: center;
+  align-items: end;
+  text-align: center;
+}
+.title h3{
+  text-transform: uppercase;
+}
+th{
+  text-transform: uppercase;
+}
+.c4{
+  gap: 15px;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+  overflow: auto;
+  height: 80%;
+  padding: 0 20px;
+  justify-content: center;
+}
 .ci2 {
   width: 80%;
 }
@@ -362,7 +383,15 @@ tfoot td {
   display: flex;
   gap: 10px;
 }
-
+.btns-header center {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  align-items: center;
+}
+i{
+  cursor: pointer;
+}
 input.firm-input {
   border-left: 0;
   border-right: 0;

@@ -25,7 +25,7 @@ import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import { Link, useNavigate } from "react-router-dom";
 registerLocale("es", es);
-function ReportsTable({ data }) {
+function ReportsTable2({ data }) {
   const { hanldeDel } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const [lastnameFilter, setLastnameFilter] = useState("");
@@ -184,12 +184,12 @@ function ReportsTable({ data }) {
   //console.log(checkList);
   const navigate = useNavigate();
   const singleView = (id) => {
-    navigate(`/admin/reports/${id}`);
+    navigate(`/user/reports/${id}`);
   };
   const [activeTab, setActiveTab] = useState(1);
-  const tabSwitch = (tab) => {
+  const tabSwitch = (tab) =>{
     setActiveTab(tab);
-  };
+  }
   return (
     <Table>
       <div className="table-container">
@@ -270,152 +270,62 @@ function ReportsTable({ data }) {
         </div>
         <div className="tab-container">
           <div className="tab-items">
-            <div
-              className={`tab-item ${activeTab === 1 ? "active" : ""}`}
-              onClick={() => tabSwitch(1)}
-            >
+            <div className={`tab-item ${activeTab === 1 ? "active": ""}`} onClick={() => tabSwitch(1)}>
               <p>Reportes de inspeccion</p>
             </div>
-            <div
-              className={`tab-item ${activeTab === 2 ? "active" : ""}`}
-              onClick={() => tabSwitch(2)}
-            >
+            <div className={`tab-item ${activeTab === 2 ? "active": ""}`} onClick={() => tabSwitch(2)}>
               <p>Reportes por hora</p>
             </div>
           </div>
         </div>
-        {activeTab === 1 ? (
-          <div className="table-body table-reports">
-            <table>
-              <thead>
-                <tr>
-                  <th>
-                    <Checkbox type="all" id={0} callback={handleCheckBox} />
-                  </th>
-                  <th># Reporte</th>
-                  <th># Parte</th>
-                  <th>Planta</th>
-                  <th>Proveedor</th>
-                  <th>Fecha</th>
-                  <th>Status</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {getPaginatedData().length === 0 ? (
-                  <Loader>
-                    <img src="/assets/img/loading2.svg" alt="" />
-                  </Loader>
-                ) : (
-                  getPaginatedData().map((item, index) => (
-                    <tr key={index} onClick={(e) => singleView(item.id)}>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Checkbox
-                          type="single"
-                          id={item.id}
-                          callback={handleCheckBox}
-                        />
-                      </td>
-                      <td className="table-center">{item.id}</td>
-                      <td className="table-center">5454455</td>
-                      <td className="table-center">Planta</td>
-                      <td className="table-center">Proveedor</td>
-                      <td className="table-center">{item.date}</td>
-                      <td className="table-center">Pendiente</td>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <div className="actions">
-                          <i
-                            className="fa-solid fa-trash"
-                            onClick={() => hanldeDel(item.id)}
-                          ></i>
-                          <Link
-                            to={`/admin/reports/${item.id}`}
-                            style={{ color: "green" }}
-                          >
-                            <i className="fa-solid fa-eye"></i>
-                          </Link>
-                          <i className="fa-solid fa-file-pdf"></i>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="table-body table-reports">
-            <table>
-              <thead>
-                <tr>
-                  <th>
-                    <Checkbox type="all" id={0} callback={handleCheckBox} />
-                  </th>
-
-                  <th># Reporte</th>
-                  <th># Parte</th>
-                  <th>Planta</th>
-                  <th>Mesa</th>
-                  <th>Fecha</th>
-                  <th>Status</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {getPaginatedData().length === 0 ? (
-                  <Loader>
-                    <img src="/assets/img/loading2.svg" alt="" />
-                  </Loader>
-                ) : (
-                  getPaginatedData().map((item, index) => (
-                    <tr key={index} onClick={(e) => singleView(item.id)}>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Checkbox
-                          type="single"
-                          id={item.id}
-                          callback={handleCheckBox}
-                        />
-                      </td>
-                      <td className="table-center">{item.id}</td>
-                      <td className="table-center">5454455</td>
-                      <td className="table-center">Planta</td>
-                      <td className="table-center">Proveedor</td>
-                      <td className="table-center">{item.date}</td>
-                      <td className="table-center">Pendiente</td>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <div className="actions">
-                          <i
-                            className="fa-solid fa-trash"
-                            onClick={() => hanldeDel(item.id)}
-                          ></i>
-                          <Link
-                            to={`/admin/reports/${item.id}`}
-                            style={{ color: "green" }}
-                          >
-                            <i className="fa-solid fa-eye"></i>
-                          </Link>
-                          <i className="fa-solid fa-file-pdf"></i>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <div className="table-body table-reports">
+          <table>
+            <thead>
+              <tr>
+               
+                <th># Reporte</th>
+                <th># Parte</th>
+                <th>Planta</th>
+                <th>Proveedor</th>
+                <th>Fecha</th>
+                <th>Status</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {getPaginatedData().length === 0 ? (
+                <Loader>
+                  <img src="/assets/img/loading2.svg" alt="" />
+                </Loader>
+              ) : (
+                getPaginatedData().map((item, index) => (
+                  <tr key={index} onClick={(e) => singleView(item.id)}>
+                  
+                    <td className="table-center">{item.id}</td>
+                    <td className="table-center">5454455</td>
+                    <td className="table-center">Planta</td>
+                    <td className="table-center">Proveedor</td>
+                    <td className="table-center">{item.date}</td>
+                    <td className="table-center">Pendiente</td>
+                    <td
+                      className="table-center"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="actions">
+                        <Link
+                          to={`/admin/reports/${item.id}`}
+                          style={{ color: "green" }}
+                        >
+                          <i className="fa-solid fa-eye"></i>
+                        </Link>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
         <div className="pagination">
           <span>
             Página {currentPage} de {totalPages}
@@ -459,4 +369,4 @@ function ReportsTable({ data }) {
   );
 }
 
-export default ReportsTable;
+export default ReportsTable2;

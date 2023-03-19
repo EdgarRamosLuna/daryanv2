@@ -1,28 +1,30 @@
 import React, { useState } from "react";
-import { Table } from "../../styles/Styles";
+import { Table } from "../../../styles/Styles";
+
+
 
 export default function SecondTableCreate() {
   const [divs, setDivs] = useState([
-    { id: 1, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 2, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 3, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 4, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 5, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 6, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 7, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 8, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 9, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 10, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 11, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 12, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 13, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 14, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 15, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 16, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 17, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 18, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 19, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
-    { id: 20, values: ["", "", "", "", "", "", "", "", "", "", "", "", "" ] },
+    { id: 1, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 2, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 3, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 4, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 5, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 6, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 7, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 8, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 9, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 10, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 11, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 12, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 13, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 14, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 15, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 16, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 17, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 18, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 19, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
+    { id: 20, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
   ]);
 
   function handleAddDiv() {
@@ -35,11 +37,11 @@ export default function SecondTableCreate() {
     if (scrollHeight > clientHeight) {
       //tableWrapper.scrollTop = scrollHeight - clientHeight;
       setTimeout(() => {
-          tableWrapper.scrollTo({ top: scrollHeight, behavior: 'smooth' });
-    }, 100);
+        tableWrapper.scrollTo({ top: scrollHeight, behavior: "smooth" });
+      }, 100);
     }
   }
-  console.log(divs);
+
   function handleInputChange(divId, inputIndex, newValue) {
     setDivs((prevDivs) => {
       const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
@@ -52,15 +54,15 @@ export default function SecondTableCreate() {
   }
 
   return (
-      <Table>
-      
+    <Table>
       <table>
         <thead>
           <tr>
             <th>
-              <i className="fa-solid fa-circle-plus" onClick={handleAddDiv}></i>
+              <i className="fa-solid fa-circle-plus" style={{color:'transparent'}}></i>
             </th>
             <th>Item</th>
+            <th>Fecha</th>
             <th>Lote</th>
             <th>Serie</th>
             <th>Cantidad Inspeccionada</th>
@@ -79,61 +81,70 @@ export default function SecondTableCreate() {
           {divs.map((div) => (
             <tr key={div.id}>
               <td></td>
-              <td>
-                {div.id}
-              </td>
+
+              <td>{div.id}</td>
+
               <td>
                 <input
                   value={div.values[1]}
                   onChange={(e) => handleInputChange(div.id, 1, e.target.value)}
+                  readOnly
                 />
               </td>
               <td>
                 <input
                   value={div.values[2]}
                   onChange={(e) => handleInputChange(div.id, 2, e.target.value)}
+                  readOnly
                 />
               </td>
               <td>
                 <input
                   value={div.values[3]}
                   onChange={(e) => handleInputChange(div.id, 3, e.target.value)}
+                  readOnly
                 />
               </td>
               <td>
                 <input
                   value={div.values[4]}
                   onChange={(e) => handleInputChange(div.id, 4, e.target.value)}
+                  readOnly
                 />
               </td>
               <td>
                 <input
                   value={div.values[5]}
                   onChange={(e) => handleInputChange(div.id, 5, e.target.value)}
+                  readOnly
                 />
               </td>
               <td>
                 <input
                   value={div.values[6]}
                   onChange={(e) => handleInputChange(div.id, 6, e.target.value)}
+                  readOnly
                 />
               </td>
               <td>
                 <input
                   value={div.values[7]}
                   onChange={(e) => handleInputChange(div.id, 7, e.target.value)}
+                  readOnly
                 />
               </td>
               <td>
                 <input
                   value={div.values[8]}
                   onChange={(e) => handleInputChange(div.id, 8, e.target.value)}
+                  readOnly
                 />
               </td>
               <td>
                 <input
                   value={div.values[9]}
                   onChange={(e) => handleInputChange(div.id, 9, e.target.value)}
+                  readOnly
                 />
               </td>
               <td>
@@ -142,6 +153,7 @@ export default function SecondTableCreate() {
                   onChange={(e) =>
                     handleInputChange(div.id, 10, e.target.value)
                   }
+                  readOnly
                 />
               </td>
               <td>
@@ -150,6 +162,7 @@ export default function SecondTableCreate() {
                   onChange={(e) =>
                     handleInputChange(div.id, 11, e.target.value)
                   }
+                  readOnly
                 />
               </td>
               <td>
@@ -158,18 +171,23 @@ export default function SecondTableCreate() {
                   onChange={(e) =>
                     handleInputChange(div.id, 12, e.target.value)
                   }
+                  readOnly
+                />
+              </td>
+              <td>
+                <input
+                  value={div.values[12]}
+                  onChange={(e) =>
+                    handleInputChange(div.id, 12, e.target.value)
+                  }
+                  readOnly
                 />
               </td>
             </tr>
           ))}
         </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan={5}></td>
-          </tr>
-        </tfoot>
       </table>
-      </Table>
-
+      
+    </Table>
   );
 }

@@ -1,9 +1,10 @@
 import React, { useContext, useState } from "react";
-import Select from "../../../components/Select";
 import { MainContext } from "../../../context/MainContext";
 import { StyledForm, Table } from "../../../styles/Styles";
-
 import SecondTableCreate from "./SecondTableCreate";
+
+
+
 const View = () => {
   const { data, setData } = useContext(MainContext);
   //console.log(data);
@@ -31,12 +32,7 @@ const View = () => {
               placeholder=""
               required
               value={data.data}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              readOnly
             />
           </div>
           <div className="form-container">
@@ -48,12 +44,7 @@ const View = () => {
               placeholder=""
               required
               value={data.data2}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              readOnly
             />
           </div>
           <div className="form-container">
@@ -65,12 +56,7 @@ const View = () => {
               placeholder=""
               required
               value={data.data3}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              readOnly
             />
           </div>
           <div className="form-container">
@@ -82,12 +68,7 @@ const View = () => {
               placeholder=""
               required
               value={data.data4}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              readOnly
             />
           </div>
           <div className="form-container">
@@ -99,12 +80,7 @@ const View = () => {
               placeholder=""
               required
               value={data.data5}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              readOnly
             />
           </div>
           <div className="form-container">
@@ -116,12 +92,7 @@ const View = () => {
               placeholder=""
               required
               value={data.data6}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              readOnly
             />
           </div>
           <div className="form-container">
@@ -133,32 +104,21 @@ const View = () => {
               placeholder=""
               required
               value={data.data7}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              readOnly
             />
           </div>
           <div className="form-container">
             <label htmlFor="data8">Turno:</label>
-            <select
+            <input
+              type="text"
               id="data8"
               name="data8"
+              placeholder=""
               required
               value={data.data8}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
-            >
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
+              readOnly
+            />
+            
           </div>
           <div className="form-container">
             <label htmlFor="data10">Numero de parte:</label>
@@ -169,12 +129,7 @@ const View = () => {
               placeholder=""
               required
               value={data.data10}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              readOnly
             />
           </div>
           <div className="form-container">
@@ -182,17 +137,17 @@ const View = () => {
 
             <div className="container-checkbox">
               <label>
-                <input type="checkbox" name="fruit[]" value="apple" />
+                <input type="checkbox" name="" value="apple"/>
                 Selección
               </label>
             
               <label>
-                <input type="checkbox" name="fruit[]" value="banana" />
+                <input type="checkbox" name="" value="banana" />
                 Retrabajo
               </label>
             
               <label>
-                <input type="checkbox" name="fruit[]" value="orange" />
+                <input type="checkbox" name="" value="orange" />
                 Otros
               </label>
             </div>
@@ -278,7 +233,7 @@ const View = () => {
             </thead>
             <tbody>
               <tr className="hidden">
-                <td></td>
+                <td> </td>
                 <td> </td>
                 <td>
                   <input />

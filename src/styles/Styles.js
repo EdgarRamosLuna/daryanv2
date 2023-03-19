@@ -11,7 +11,41 @@ export const Table = styled.div`
     font-size: 14px;
     line-height: 1.4;
   }
-
+  .tab-container {
+    width: 100%;
+    display: flex;
+  }
+  .tab-items {
+    width: 100%;
+    display: flex;
+    box-sizing: border-box;
+    border: 1px solid #570000;
+    border-top: 0;
+    border-bottom: 0;
+    border-right: 0;
+  }
+  .tab-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #570000;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    border-bottom: 0;
+    border-left: 0;
+    cursor: pointer;
+    transition: all 0.3s;
+    &:hover {
+      transition: all 0.3s;
+      background: #570000;
+      color: #fff;
+    }
+  }
+  .active {
+    transition: all 0.3s;
+    background: #570000;
+    color: #fff;
+  }
   thead {
     background-color: #570000;
     color: #fff;
@@ -66,7 +100,7 @@ export const Table = styled.div`
     border-right: 0;
   }
   .table-body {
-    max-height: 727.188px;
+    max-height: 666px;
     overflow-y: auto;
   }
   .boton-paginacion {
@@ -359,4 +393,26 @@ export const StyledModal = styled.div`
       font-size: 1.5em;
     }
   }
+`;
+
+export const SettingsStyle = styled.div`
+  display: flex;
+  flex-direction: column;
+  // background: #f3f3f3;
+  background: transparent;
+  width: 60%;
+  box-sizing: border-box;
+  padding: 15px 25px;
+  position: relative;
+  margin: 0 auto;
+`;
+
+export const StyledStatusBtn = styled.button`
+  box-sizing: border-box;
+  padding: 5px 25px;
+  border-radius: 5px;
+  border: 0;
+  background: ${(props) => (props.statusBtn === 1 ? "green" : "red")};
+  color: #fff;
+  cursor: pointer;
 `;

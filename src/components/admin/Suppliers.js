@@ -14,9 +14,9 @@ import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import StatusBtn from "../StatusBtn";
 registerLocale("es", es);
-function EmployeesTable({ data }) {
+function SuppliersTable({ data }) {
 
-  const {hanldeDel, setShowModalE, updateId, setUpdateId} = useContext(MainContext);
+  const {hanldeDel, setShowModalS, updateId, setUpdateId} = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const [lastnameFilter, setLastnameFilter] = useState("");
   const today = new Date();
@@ -175,7 +175,7 @@ function EmployeesTable({ data }) {
 
   const updateUser = (id_user) =>{
     setUpdateId(id_user);
-    setShowModalE(true);
+    setShowModalS(true);
   }
   return (
     <>
@@ -281,4 +281,4 @@ function EmployeesTable({ data }) {
   );
 }
 
-export default EmployeesTable;
+export default SuppliersTable;
