@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
+import Select from "../../../components/Select";
+import { MainContext } from "../../../context/MainContext";
 import { StyledForm } from "../../../styles/Styles";
-import Select from "../../components/Select";
-import { MainContext } from "../../context/MainContext";
-import { Table } from "../../styles/Styles";
-import SecondTableCreate from "./SecondTableCreate";
+import SecondTableCreate2 from "./SecondTableCreate2";
+
 const View2 = () => {
   const { data, setData } = useContext(MainContext);
   //console.log(data);
@@ -225,7 +225,7 @@ const View2 = () => {
         </StyledForm>
       </div>
       <div className="container c2">
-        <SecondTableCreate />
+        <SecondTableCreate2 />
       </div>
     </>
   );

@@ -18,6 +18,7 @@ import CreateUser from "./pages/admin/users/Create";
 import View from "./pages/admin/reports/View";
 import View2 from "./pages/employee/reports/View";
 import View3 from "./pages/employee/reports/View2";
+import View4 from "./pages/admin/reports/View2";
 import Suppliers from "./pages/admin/Suppliers";
 import Create3 from "./pages/employee/Create3";
 function App() {
@@ -35,6 +36,7 @@ function App() {
           <Route exact path="/admin/reports/:id" element={<View />} />
           <Route exact path="/user/reports/:id" element={<View2 />} />
           <Route exact path="/user/reports/2/:id" element={<View3 />} />
+          <Route exact path="/admin/reports/2/:id" element={<View4 />} />
           <Route exact path="/admin/users" element={<Users />} />
           
           <Route exact path="/admin/clients" element={<Clients />} />

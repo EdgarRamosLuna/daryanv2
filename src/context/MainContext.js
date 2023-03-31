@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
-
+import { useLocation } from "react-router-dom";
+import axios from "axios";
 export const MainContext = createContext();
 export const MainContextProvider = ({ children }) => {
   const dataSes = localStorage.getItem("sesType");
@@ -24,23 +25,44 @@ export const MainContextProvider = ({ children }) => {
   const [reportData, setReportData] = useState(
     dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
   );
+  const [dataToSave, setDataToSave] = useState([]);
   const saveReport = (e) => {
-    e.target.innerHTML = '<img src="/assets/img/loading2.svg" alt="" />';
+    //  console.log(dataToSave);
+    axios
+      .post("http://localhost/daryan-server/api/save", dataToSave)
+      .then((res) => {
+        /*      const copyToSave = dataToSave.slice();
+
+      copyToSave[0].customerControlTable.forEach((control, i) =>{
+
+
+          console.log(control.values);
+        
+       // const vals = control.values.filter(v => v !== []);
+
+      });*/
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    //  console.log('toy guardando klk');
+    /*e.target.innerHTML = '<img src="/assets/img/loading2.svg" alt="" />';
     // console.log(data);
     //setData(data);
     setReportData((prev) => [...prev, data]);
     setTimeout(() => {
       e.target.innerHTML = "Enviar Reporte";
       window.location.replace("/user/reports");
-    }, 1000);
+    }, 1000);*/
     // setDataT(prev => [...prev, data]);
   };
-  useEffect(() => {
+  /*useEffect(() => {
     if (reportData.length !== 0) {
       //console.log(reportData);
       saveData();
     }
-  }, [reportData]);
+  }, [reportData]);*/
   const saveData = () => {
     localStorage.setItem("dataTable", JSON.stringify(reportData));
     setDataT(reportData);
@@ -58,6 +80,29 @@ export const MainContextProvider = ({ children }) => {
   const handleConfirm = (callback) => {
     setConfirm(false);
   };
+  const location = useLocation();
+  /*
+  useEffect(() => {
+    if (location.pathname === "/user/reports") {
+      fetch(
+        "http://phpstack-921351-3198370.cloudwaysapps.com/server/api/get_sales"
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Request failed.");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          
+          setData(data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    // console.log('Route changed to:', location.pathname);
+  }, [location]);*/
   const [showModalU, setShowModalU] = useState(false);
   const [showModalE, setShowModalE] = useState(false);
   const [showModalS, setShowModalS] = useState(false);
@@ -66,6 +111,7 @@ export const MainContextProvider = ({ children }) => {
   const [delType, setDelType] = useState(0);
   const [numFilas, setNumFilas] = useState(20);
   const [numColumnas, setNumColumnas] = useState(16);
+  const [dbColumns, setDbColumns] = useState(["A", "B", "C", "D", "E"]);
   const ABECEDARIO = [
     "A",
     "B",
@@ -109,7 +155,8 @@ export const MainContextProvider = ({ children }) => {
       }
       nextVal = siguiente;
     });
-    //console.log(valoresComunes);
+    /*const commonVal = valoresComunes.slice();
+    commonVal.push(nextVal);*/
 
     return nextVal;
   };
@@ -129,30 +176,43 @@ export const MainContextProvider = ({ children }) => {
     setNumFilas(numFilas - 1);
   };
   const eliminarColumna = (penultimate) => {
-    console.log(penultimate);
+    //console.log(penultimate);
     setTitulosColumnas((prev) => {
-      const newArray = [...prev];
+      const newArray = prev.slice();
       newArray.splice(-2, 1);
       return newArray;
     });
-    setDivs((prevDatos) =>
-      prevDatos.map((fila) => ({
-        ...fila,
-        values: fila.values.slice(0, -1),
-      }))
-    );
+
+    setDivs((prevDatos) => {
+      const newD = prevDatos.map((fila) => {
+        const newArra = fila.values;
+        newArra.pop();
+      });
+      return prevDatos;
+    });
     setNumColumnas((prev) => prev - 1);
   };
+//console.log(divs);
   const agregarColumna = (e) => {
     setNumColumnas((prev) => prev + 1);
     setTitulosColumnas((prevTitulos) => {
       const nextLetter = getNextLetter(prevTitulos);
-      console.log(nextLetter);
+      setDbColumns((prev) => [...prev, nextLetter]);
+      //   console.log(nextLetter);
       const newArr = [...prevTitulos, nextLetter];
       const arrayCopy = newArr.slice();
       const penultimate = arrayCopy.slice(-2, -1)[0];
       arrayCopy.splice(-2, 1);
       arrayCopy.push(penultimate);
+      const tableWrapper = document.querySelector(".c2");
+      const scrollWidth = tableWrapper.scrollWidth;
+      const clientWidth = tableWrapper.clientWidth;
+      if (scrollWidth >= clientWidth) {
+        //tableWrapper.scrollTop = scrollWidth - clientWidth;
+        setTimeout(() => {
+          tableWrapper.scrollTo({ left: scrollWidth, behavior: "smooth" });
+        }, 100);
+      }
       // console.log(arrayCopy);
 
       //  newArr.push(penultimate);
@@ -188,8 +248,8 @@ export const MainContextProvider = ({ children }) => {
     }
   };
   const [titulosColumnas, setTitulosColumnas] = useState([
-    <></>,
-    "Item",
+    "",
+    "Items",
     "Fecha",
     "Lote",
     "Serie",
@@ -236,8 +296,23 @@ export const MainContextProvider = ({ children }) => {
         });
       }
     }
-    //console.log(penultimate);
-  }, [titulosColumnas]);
+  //  console.log(penultimate);
+  }, [numColumnas]);
+  //console.log(titulosColumnas);
+  const [total1, setTotal1] = useState(0);
+  const [total2, setTotal2] = useState(0);
+  const [total3, setTotal3] = useState(0);
+  const [total4, setTotal4] = useState(0);
+  const [total5, setTotal5] = useState(0);
+  const [total6, setTotal6] = useState(0);
+  const [total7, setTotal7] = useState(0);
+  const [total8, setTotal8] = useState(0);
+  const [total9, setTotal9] = useState(0);
+  const [total10, setTotal10] = useState(0);
+  const [total11, setTotal11] = useState(0);
+  const [total12, setTotal12] = useState(0);
+  const [total13, setTotal13] = useState(0);
+  const [total14, setTotal14] = useState(0);
   return (
     <MainContext.Provider
       value={{
@@ -246,6 +321,8 @@ export const MainContextProvider = ({ children }) => {
         data,
         setData,
         saveReport,
+        dataToSave,
+        setDataToSave,
         dataTS,
         reportData,
         confirm,
@@ -278,6 +355,36 @@ export const MainContextProvider = ({ children }) => {
         eliminarFila,
         divs,
         setDivs,
+        total1,
+        setTotal1,
+        total2,
+        setTotal2,
+        total3,
+        setTotal3,
+        total4,
+        setTotal4,
+        total5,
+        setTotal5,
+        total6,
+        setTotal6,
+        total7,
+        setTotal7,
+        total8,
+        setTotal8,
+        total9,
+        setTotal9,
+        total10,
+        setTotal10,
+        total11,
+        setTotal11,
+        total12,
+        setTotal12,
+        total13,
+        setTotal13,
+        total14,
+        setTotal14,
+        dbColumns,
+        setDbColumns,
       }}
     >
       {children}

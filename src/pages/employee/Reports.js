@@ -11,6 +11,7 @@ const Reports = () => {
   //console.log(dataT);
   
   useEffect(() => {
+    console.log("Estoy entrando pichurria")
     fetch("http://phpstack-921351-3198370.cloudwaysapps.com/server/api/get_sales")
     .then(response => {
       if (!response.ok) {

@@ -184,7 +184,12 @@ function ReportsTable({ data }) {
   //console.log(checkList);
   const navigate = useNavigate();
   const singleView = (id) => {
-    navigate(`/admin/reports/${id}`);
+    if(activeTab === 1){
+      navigate(`/admin/reports/${id}`);
+
+    }else{
+      navigate(`/admin/reports/2/${id}`);
+    }
   };
   const [activeTab, setActiveTab] = useState(1);
   const tabSwitch = (tab) => {

@@ -161,6 +161,7 @@ export const Table = styled.div`
     display: flex;
     margin: 10px 0;
     min-height: 57px;
+    align-items: center;
   }
   .filter-container {
     display: flex;
@@ -273,6 +274,15 @@ export const Table = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
+  }
+
+  .table-data tr {
+    input {
+      padding-left: 0;
+      padding-right: 0;
+      text-align: center;
+      min-width: 100px;
+    }
   }
 `;
 
@@ -415,4 +425,11 @@ export const StyledStatusBtn = styled.button`
   background: ${(props) => (props.statusBtn === 1 ? "green" : "red")};
   color: #fff;
   cursor: pointer;
+`;
+
+export const InputDate = styled.input`
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+  min-width: 80px;
 `;

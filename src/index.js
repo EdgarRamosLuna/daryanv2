@@ -5,11 +5,13 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { MainContextProvider } from "./context/MainContext";
+import GlobalStyle from "./styles/GobalStyles";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <MainContextProvider>
+      <GlobalStyle/>
       <App />
     </MainContextProvider>
   </BrowserRouter>

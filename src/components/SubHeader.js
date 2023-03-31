@@ -190,7 +190,7 @@ export default function SubHeader() {
           pathname.includes("reports") &&
           typeof p !== "undefined" && (
             <button onClick={(e) => saveReport(e)}>
-              Finalizar Revision & Aprobar Reporte
+              Aprobar Reporte
             </button>
           )}
         {pathname.includes("table2") && (

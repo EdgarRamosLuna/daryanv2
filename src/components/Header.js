@@ -124,7 +124,7 @@ export default function Header() {
   }, []);
   const pathname = useLocation().pathname;
 
-  console.log(pathname.includes("reports"));
+  //console.log(pathname.includes("reports"));
   return (
     <>
       <header className={style.header}>

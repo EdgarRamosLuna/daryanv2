@@ -1,11 +1,6 @@
 import React, { useContext, useState } from "react";
 import { MainContext } from "../../../context/MainContext";
 import { StyledForm, Table } from "../../../styles/Styles";
-
-
-
-
-import SecondTableCreate from "./SecondTableCreate";
 import SecondTableCreate2 from "./SecondTableCreate2";
 
 const View2 = () => {

@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { Table } from "../../styles/Styles";
+import React, { useContext, useState } from "react";
+import { MainContext } from "../../../context/MainContext";
+import { Table } from "../../../styles/Styles";
 
 export default function SecondTableCreate2() {
+  const { eliminarColumna, agregarFila, numColumnas } = useContext(MainContext);
   const [divs, setDivs] = useState([
     { id: 1, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
     { id: 2, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
@@ -19,7 +21,10 @@ export default function SecondTableCreate2() {
     { id: 14, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
     { id: 15, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
   ]);
-
+  const eliminarFila = (itemId) => {
+    //console.log(penultimate);
+    setDivs((prevDatos) => prevDatos.filter((item) => item.id !== itemId));
+  };
   function handleAddDiv() {
     const newId = divs.length + 1;
     const newValues = ["", "", "", "", "", "", "", "", "", "", "", "", "", ""];
@@ -74,7 +79,12 @@ export default function SecondTableCreate2() {
         <tbody>
           {divs.map((div) => (
             <tr key={div.id}>
-              <td></td>
+              <td>
+                <i
+                  className="fa-solid fa-trash"
+                  onClick={() => eliminarFila(div.id)}
+                ></i>
+              </td>
 
               <td>{div.id}</td>
 

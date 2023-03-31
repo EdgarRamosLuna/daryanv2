@@ -1,11 +1,13 @@
-import React, { useContext, useState } from "react";
-import Select from "../../../components/Select";
+import React, { useContext, useEffect, useState } from "react";
 import { MainContext } from "../../../context/MainContext";
 import { StyledForm, Table } from "../../../styles/Styles";
 
+
+
 import SecondTableCreate from "./SecondTableCreate";
 const View = () => {
-  const { data, setData } = useContext(MainContext);
+  const { data, setData, numFilas, numColumnas, titulosColumnas } =
+    useContext(MainContext);
   //console.log(data);
 
   const handleSelect = (e, type) => {
@@ -14,6 +16,31 @@ const View = () => {
       [e.target.dataset.name || e.target.name]: e.target.value,
     });
   };
+  const [divs, setDivs] = useState(() => {
+    const filas = [];
+    for (let i = 1; i <= numFilas; i++) {
+      filas.push({
+        id: i,
+        values: Array.from({ length: numColumnas - 3 }, () => ""),
+      });
+    }
+    return filas;
+  });
+  useEffect(() => {
+    setDivs((prev) => {
+      const filas = [];
+      for (let i = 1; i <= numFilas; i++) {
+        filas.push({
+          id: i,
+          values: Array.from({ length: numColumnas - 3 }, () => ""),
+        });
+      }
+      return filas;
+    })
+    return () => {
+      
+    };
+  }, [numColumnas]);
   return (
     <>
       <div className="container">
@@ -185,33 +212,33 @@ const View = () => {
                 <input type="checkbox" name="fruit[]" value="apple" />
                 Selección
               </label>
-            
+
               <label>
                 <input type="checkbox" name="fruit[]" value="banana" />
                 Retrabajo
               </label>
-            
+
               <label>
                 <input type="checkbox" name="fruit[]" value="orange" />
                 Otros
               </label>
             </div>
           </div>
-          
+
           <div className="form-container">
             <label htmlFor="data8">Control para el cliente:</label>
 
             <div className="container-checkbox">
-            <label>
+              <label>
                 <input type="checkbox" name="" value="apple" />
                 Fecha de produccion
               </label>
-            
+
               <label>
                 <input type="checkbox" name="" value="banana" />
                 Fecha de aprobado
               </label>
-            
+
               <label>
                 <input type="checkbox" name="" value="orange" />
                 Serie
@@ -226,7 +253,6 @@ const View = () => {
               </label>
             </div>
           </div>
-
 
           {/*
         <label htmlFor="subject">Subject:</label>
@@ -249,122 +275,79 @@ const View = () => {
         <SecondTableCreate />
       </div>
 
-      <div className="container" style={{overflowY:'scroll'}}>
+      <div className="container" style={{ overflowY: "scroll" }}>
         <Table>
           <table>
             <thead className="no-sticky">
               <tr>
-                <th>
-                  <i
-                    className="fa-solid fa-circle-plus"
-                    style={{ color: "transparent" }}
-                  ></i>
-                </th>
-                <th>Item</th>
-                <th>Fecha</th>
-                <th>Lote</th>
-                <th>Serie</th>
-                <th>Cantidad Inspeccionada</th>
-                <th>Piezas NG:</th>
-                <th>Piezas Ok:</th>
-                <th>Piezas Retrabajadas:</th>
-                <th>Scrap:</th>
-                <th>A </th>
-                <th>B </th>
-                <th>C </th>
-                <th>D </th>
-                <th>E </th>
+                {titulosColumnas.map((titulo, i) =>
+                  i === 0 || i === titulosColumnas.length - 1 ? (
+                    <th>
+                      <i
+                        className="fa-solid fa-circle-plus"
+                        style={{ color: "transparent" }}
+                      ></i>
+                    </th>
+                  ) : (
+                    <th key={i}>{titulo}</th>
+                  )
+                )}
               </tr>
             </thead>
             <tbody>
-              <tr className="hidden">
-                <td></td>
-                <td> </td>
-                <td>
-                  <input />
-                </td>
-                <td>
-                  <input />
-                </td>
-
-                <td>
-                  <input />
-                </td>
-                <td>
-                  <input />
-                </td>
-
-                <td>
-                  <input />
-                </td>
-                <td>
-                  <input />
-                </td>
-
-                <td>
-                  <input />
-                </td>
-                <td>
-                  <input />
-                </td>
-
-                <td>
-                  <input />
-                </td>
-                <td>
-                  <input />
-                </td>
-
-                <td>
-                  <input />
-                </td>
-                <td>
-                  <input />
-                </td>
-
-                <td>
-                  <input />
-                </td>
-              </tr>
+              {divs.map(
+                (fila, i) =>
+                  i === 0 && (
+                    <tr key={fila.id} className="hidden">
+                      {fila.values.map((valor, i) => (
+                        <>
+                          {i <= 1 || i === fila.values.length - 1 ? (
+                            <td key={i} className="table-center">
+                               
+                            </td>
+                          ) : <td key={i} className="table-center">
+                          <input type="" name="" value="" />
+                        </td>}
+                        </>
+                      ))}
+                    </tr>
+                  )
+              )}
             </tbody>
             <tfoot className="tfooter">
+              {divs.map(
+                (fila, i) =>
+                  i === 0 && (
+                    <tr key={fila.id}>
+                      {fila.values.map((valor, i) => (
+                        <>
+                          {i === 0 ||
+                          i === 1 ||
+                          i === fila.values.length - 1 ? (
+                            <>
+                              {i === 1 && (
+                                <td
+                                  key={i}
+                                  className="table-center"
+                                  colSpan={5}
+                                >
+                                  Totales
+                                </td>
+                              )}
+                              {i === 0 && <></>}
+                            </>
+                          ) : (
+                            <td key={i} className="table-center">
+                              <input value={fila.values[i]} />
+                            </td>
+                          )}
+                        </>
+                      ))}
+                    </tr>
+                  )
+              )}
               <tr>
-                <td colSpan={5} style={{ textAlign: "center" }}>
-                  Totales
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-                <td>
-                  <input type="text" />
-                </td>
-              </tr>
-              <tr>
-                <td colSpan={5} style={{ textAlign: "center" }}>
+              <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
                   <div>REALIZO</div>
                   <input type="text" /> <br />
                   <input type="text" /> <br />
@@ -372,7 +355,7 @@ const View = () => {
                   <input type="text" /> <br />
                   <input type="text" /> <br />
                 </td>
-                <td colSpan={5} style={{ textAlign: "center" }}>
+                <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
                   <div>OBSERVACIONES</div>
                   <input type="text" /> <br />
                   <input type="text" /> <br />
@@ -418,7 +401,7 @@ const View = () => {
                   />{" "}
                   <br />
                 </td>
-                <td colSpan={4} style={{ textAlign: "center" }}>
+                <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
                   <div>INCIDENTES</div>
                   <input type="text" /> <br />
                   <input type="text" /> <br />
@@ -429,21 +412,21 @@ const View = () => {
               </tr>
               <tr>
                 <td colSpan={1}></td>
-                <td colSpan={4} style={{ textAlign: "center" }}>
+                <td colSpan={numColumnas / 4} style={{ textAlign: "center" }}>
                   <div>ELABORO</div>
                   <div className="firm">
                     <input type="" name="" value="" className="firm-input" />
                   </div>
                 </td>
                 <td colSpan={1}></td>
-                <td colSpan={4} style={{ textAlign: "center" }}>
+                <td colSpan={numColumnas / 4} style={{ textAlign: "center" }}>
                   <div>REVISO</div>
                   <div className="firm">
                     <input type="" name="" value="" className="firm-input" />
                   </div>
                 </td>
                 <td colSpan={1}></td>
-                <td colSpan={4} style={{ textAlign: "center" }}>
+                <td colSpan={numColumnas / 4} style={{ textAlign: "center" }}>
                   <div>AUTORIZO</div>
                   <div className="firm">
                     <input type="" name="" value="" className="firm-input" />

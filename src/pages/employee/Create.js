@@ -3,18 +3,57 @@ import { MainContext } from "../../context/MainContext";
 import { StyledForm, Table } from "../../styles/Styles";
 
 import SecondTableCreate from "./SecondTableCreate";
+import DatePickerInput from "../../components/DateInput";
 const Create = () => {
-  const { data, setData, numFilas, numColumnas, titulosColumnas } =
-    useContext(MainContext);
+  const [data, setData] = useState([]);
+  const {
+    numFilas,
+    numColumnas,
+    titulosColumnas,
+    total1,
+    divs,
+    setDivs,
+    setTotal1,
+    total2,
+    setTotal2,
+    total3,
+    setTotal3,
+    total4,
+    setTotal4,
+    total5,
+    setTotal5,
+    total6,
+    setTotal6,
+    total7,
+    setTotal7,
+    total8,
+    setTotal8,
+    total9,
+    setTotal9,
+    total10,
+    setTotal10,
+    total11,
+    setTotal11,
+    total12,
+    setTotal12,
+    total13,
+    setTotal13,
+    total14,
+    setTotal14,
+    dataToSave,
+    setDataToSave,
+  } = useContext(MainContext);
   //console.log(data);
-
-  const handleSelect = (e, type) => {
+  const [producedBy, setProducedBy] = useState("");
+  const [checkedBy, setCheckedBy] = useState("");
+  const [authorizedBy, setAuthorizedBy] = useState("");
+ /* const handleSelect = (e, type) => {
     setData({
       ...data,
       [e.target.dataset.name || e.target.name]: e.target.value,
     });
-  };
-  const [divs, setDivs] = useState(() => {
+  };*/
+  const [divs2, setDivs2] = useState(() => {
     const filas = [];
     for (let i = 1; i <= numFilas; i++) {
       filas.push({
@@ -24,8 +63,84 @@ const Create = () => {
     }
     return filas;
   });
+
+  const [reportFooter, setReportFooter] = useState(() => {
+    const filas = [];
+    for (let i = 1; i <= numColumnas - 3; i++) {
+      if (i > 7) {
+        filas.push({
+          id: i,
+          values: Array.from({ length: 1 }, () => ""),
+        });
+      }
+    }
+    return filas;
+  });
+  const [reportFooter2, setReportFooter2] = useState(() => {
+    const filas = [];
+    for (let i = 1; i <= numColumnas - 3; i++) {
+      if (i > 7) {
+        filas.push({
+          id: i,
+          values: Array.from({ length: 1 }, () => ""),
+        });
+      }
+    }
+    return filas;
+  });
+  const [reportFooter3, setReportFooter3] = useState(() => {
+    const filas = [];
+    for (let i = 1; i <= numColumnas - 3; i++) {
+      if (i > 7) {
+        filas.push({
+          id: i,
+          values: Array.from({ length: 1 }, () => ""),
+        });
+      }
+    }
+    return filas;
+  });
+  /*console.log(reportFooter);
+  console.log(reportFooter2);
+  console.log(reportFooter3);*/
+  const handleUpdate = (hanldeId = 1, divId, inputIndex, newValue) => {
+    if (hanldeId === 1) {
+      setReportFooter((prevDivs) => {
+        const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
+        const updatedDiv = { ...prevDivs[divToUpdateIndex] };
+        updatedDiv.values[inputIndex] = newValue;
+        const updatedDivs = [...prevDivs];
+        updatedDivs[divToUpdateIndex] = updatedDiv;
+        return updatedDivs;
+      });
+    }
+    if (hanldeId === 2) {
+      setReportFooter2((prevDivs) => {
+        const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
+        const updatedDiv = { ...prevDivs[divToUpdateIndex] };
+        updatedDiv.values[inputIndex] = newValue;
+        const updatedDivs = [...prevDivs];
+        updatedDivs[divToUpdateIndex] = updatedDiv;
+        return updatedDivs;
+      });
+    }
+    if (hanldeId === 3) {
+      setReportFooter3((prevDivs) => {
+        const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
+        const updatedDiv = { ...prevDivs[divToUpdateIndex] };
+        updatedDiv.values[inputIndex] = newValue;
+        const updatedDivs = [...prevDivs];
+        updatedDivs[divToUpdateIndex] = updatedDiv;
+        return updatedDivs;
+      });
+    }
+  };
+
+  const [serviceType, setServiceType] = useState([]);
+  const [customerControl, setCustomerControl] = useState([]);
+  //console.log(divs)
   useEffect(() => {
-    setDivs((prev) => {
+    setDivs2((prev) => {
       const filas = [];
       for (let i = 1; i <= numFilas; i++) {
         filas.push({
@@ -34,11 +149,77 @@ const Create = () => {
         });
       }
       return filas;
-    })
-    return () => {
-      
-    };
+    });
+    setReportFooter((prev) => {
+      const filas = [];
+      for (let i = 1; i <= numColumnas - 3; i++) {
+        if (i > 7) {
+          filas.push({
+            id: i,
+            values: Array.from({ length: 1 }, () => ""),
+          });
+        }
+      }
+      return filas;
+    });
+    setReportFooter2((prev) => {
+      const filas = [];
+      for (let i = 1; i <= numColumnas - 3; i++) {
+        if (i > 7) {
+          filas.push({
+            id: i,
+            values: Array.from({ length: 1 }, () => ""),
+          });
+        }
+      }
+      return filas;
+    });
+    setReportFooter3((prev) => {
+      const filas = [];
+      for (let i = 1; i <= numColumnas - 3; i++) {
+        if (i > 7) {
+          filas.push({
+            id: i,
+            values: Array.from({ length: 1 }, () => ""),
+          });
+        }
+      }
+      return filas;
+    });
+
+    return () => {};
   }, [numColumnas]);
+
+  useEffect(() => {
+    //console.log()
+    const newArray = [
+      {
+        data: data,
+        serviceType: serviceType,
+        customerControl: customerControl,
+        customerControlTable: divs,
+        madeBy: reportFooter,
+        observations: reportFooter2,
+        incidents: reportFooter3,
+        producedBy: producedBy,
+        checkedBy: checkedBy,
+        authorizedBy: authorizedBy
+      },
+    ];
+    setDataToSave(newArray);
+  }, [data, serviceType, customerControl, divs, reportFooter, reportFooter2, reportFooter3, producedBy, checkedBy, authorizedBy]);
+
+  /*console.log(data);
+  console.log(dataToSave)
+  console.log(customerControl);*/
+  //console.log(dataToSave)
+  const [dumpValue, setDumpValue] = useState('');
+  const handleDate = (name, date) =>{
+    setData({
+      ...data,
+      [name]: date,
+    })
+  }
   return (
     <>
       <div className="container">
@@ -52,10 +233,11 @@ const Create = () => {
             <input
               type="text"
               id="data"
-              name="data"
+              name="plant"
               placeholder=""
               required
-              value={data.data}
+              value={data.plant}
+              defaultValue=""
               onChange={(e) =>
                 setData({
                   ...data,
@@ -69,10 +251,11 @@ const Create = () => {
             <input
               type="text"
               id="data2"
-              name="data2"
+              name="supplier"
               placeholder=""
               required
-              value={data.data2}
+              defaultValue=""
+              value={data.supplier}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -83,30 +266,18 @@ const Create = () => {
           </div>
           <div className="form-container">
             <label htmlFor="data3">Fecha:</label>
-            <input
-              type="text"
-              id="data3"
-              name="data3"
-              placeholder=""
-              required
-              value={data.data3}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
-            />
+            <DatePickerInput id="data3" name="date" value={data.date} setDate={handleDate} />
           </div>
           <div className="form-container">
             <label htmlFor="data4">No. de Reporte:</label>
             <input
               type="text"
               id="data4"
-              name="data4"
+              name="report_number"
               placeholder=""
               required
-              value={data.data4}
+              defaultValue=""
+              value={data.report_number}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -120,10 +291,11 @@ const Create = () => {
             <input
               type="text"
               id="data5"
-              name="data5"
+              name="part_name"
               placeholder=""
               required
-              value={data.data5}
+              defaultValue=""
+              value={data.part_name}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -137,10 +309,11 @@ const Create = () => {
             <input
               type="text"
               id="data6"
-              name="data6"
+              name="worked_hours"
               placeholder=""
               required
-              value={data.data6}
+              defaultValue=""
+              value={data.worked_hours}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -154,10 +327,11 @@ const Create = () => {
             <input
               type="text"
               id="data7"
-              name="data7"
+              name="rate"
               placeholder=""
               required
-              value={data.data7}
+              defaultValue=""
+              value={data.rate}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -170,9 +344,10 @@ const Create = () => {
             <label htmlFor="data8">Turno:</label>
             <select
               id="data8"
-              name="data8"
+              name="shift"
               required
-              value={data.data8}
+              defaultValue="0"
+              value={data.shift}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -180,6 +355,7 @@ const Create = () => {
                 })
               }
             >
+              <option value="0">Selecciona una opcion</option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -190,10 +366,11 @@ const Create = () => {
             <input
               type="text"
               id="data10"
-              name="data10"
+              name="part_number"
               placeholder=""
               required
-              value={data.data10}
+              defaultValue=""
+              value={data.part_number}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -207,19 +384,53 @@ const Create = () => {
 
             <div className="container-checkbox">
               <label>
-                <input type="checkbox" name="fruit[]" value="apple" />
+                <input
+                  type="checkbox"
+                  name="st1"
+                  defaultValue="1"
+                  value={serviceType.st1}
+                  onChange={(e) =>
+                    setServiceType({
+                      ...serviceType,
+                      [e.target.dataset.name || e.target.name]: e.target.value,
+                    })
+                  }
+                />
                 Selección
               </label>
 
               <label>
-                <input type="checkbox" name="fruit[]" value="banana" />
+                <input
+                  type="checkbox"
+                  name="st2"
+                  defaultValue="2"
+                  value={serviceType.st2}
+                  onChange={(e) =>
+                    setServiceType({
+                      ...serviceType,
+                      [e.target.dataset.name || e.target.name]: e.target.value,
+                    })
+                  }
+                />
                 Retrabajo
               </label>
-
-              <label>
-                <input type="checkbox" name="fruit[]" value="orange" />
-                Otros
-              </label>
+              <label htmlFor=""> </label>
+              <label htmlFor=""> </label>
+              <label htmlFor=""> </label>
+              <div className="others-container">
+                <label>Otros</label>
+                <input
+                  type="text"
+                  name="st3"
+                  value={serviceType.st3}
+                  onChange={(e) =>
+                    setServiceType({
+                      ...serviceType,
+                      [e.target.dataset.name || e.target.name]: e.target.value,
+                    })
+                  }
+                />
+              </div>
             </div>
           </div>
 
@@ -228,27 +439,81 @@ const Create = () => {
 
             <div className="container-checkbox">
               <label>
-                <input type="checkbox" name="" value="apple" />
+                <input
+                  type="checkbox"
+                  name="cc1"
+                  defaultValue="1"
+                  value={customerControl.cc1}
+                  onChange={(e) =>
+                    setCustomerControl({
+                      ...customerControl,
+                      [e.target.dataset.name || e.target.name]: e.target.value,
+                    })
+                  }
+                />
                 Fecha de produccion
               </label>
 
               <label>
-                <input type="checkbox" name="" value="banana" />
+                <input
+                  type="checkbox"
+                  name="cc2"
+                  defaultValue="2"
+                  value={customerControl.cc2}
+                  onChange={(e) =>
+                    setCustomerControl({
+                      ...customerControl,
+                      [e.target.dataset.name || e.target.name]: e.target.value,
+                    })
+                  }
+                />
                 Fecha de aprobado
               </label>
 
               <label>
-                <input type="checkbox" name="" value="orange" />
+                <input
+                  type="checkbox"
+                  name="cc3"
+                  defaultValue="3"
+                  value={customerControl.cc3}
+                  onChange={(e) =>
+                    setCustomerControl({
+                      ...customerControl,
+                      [e.target.dataset.name || e.target.name]: e.target.value,
+                    })
+                  }
+                />
                 Serie
               </label>
               <label>
-                <input type="checkbox" name="" value="orange" />
+                <input
+                  type="checkbox"
+                  name="cc4"
+                  defaultValue="4"
+                  value={customerControl.cc4}
+                  onChange={(e) =>
+                    setCustomerControl({
+                      ...customerControl,
+                      [e.target.dataset.name || e.target.name]: e.target.value,
+                    })
+                  }
+                />
                 Lote
               </label>
-              <label>
-                <input type="checkbox" name="" value="orange" />
-                Otros
-              </label>
+              <div className="others-container">
+                <label>Otros</label>
+                <input
+                  type="text"
+                  name="cc5"
+                  value={customerControl.cc5}
+                  onChange={(e) =>
+                    setCustomerControl({
+                      ...customerControl,
+                      [e.target.dataset.name || e.target.name]: e.target.value,
+                    })
+                  }
+                />
+              </div>
             </div>
           </div>
 
@@ -275,12 +540,12 @@ const Create = () => {
 
       <div className="container" style={{ overflowY: "scroll" }}>
         <Table>
-          <table>
+          <table >
             <thead className="no-sticky">
               <tr>
                 {titulosColumnas.map((titulo, i) =>
                   i === 0 || i === titulosColumnas.length - 1 ? (
-                    <th>
+                    <th key={i}>
                       <i
                         className="fa-solid fa-circle-plus"
                         style={{ color: "transparent" }}
@@ -293,7 +558,7 @@ const Create = () => {
               </tr>
             </thead>
             <tbody>
-              {divs.map(
+              {divs2.map(
                 (fila, i) =>
                   i === 0 && (
                     <tr key={fila.id} className="hidden">
@@ -303,9 +568,11 @@ const Create = () => {
                             <td key={i} className="table-center">
                                
                             </td>
-                          ) : <td key={i} className="table-center">
-                          <input type="" name="" value="" />
-                        </td>}
+                          ) : (
+                            <td key={i} className="table-center">
+                              <input type="" name="" value={dumpValue} onChange={() => setDumpValue('')}  />
+                            </td>
+                          )}
                         </>
                       ))}
                     </tr>
@@ -313,7 +580,7 @@ const Create = () => {
               )}
             </tbody>
             <tfoot className="tfooter">
-              {divs.map(
+              {divs2.map(
                 (fila, i) =>
                   i === 0 && (
                     <tr key={fila.id}>
@@ -336,7 +603,20 @@ const Create = () => {
                             </>
                           ) : (
                             <td key={i} className="table-center">
-                              <input value={fila.values[i]} />
+                              {i === 2 && <input value={total1} onChange={() => setDumpValue('')} />}
+                              {i === 3 && <input value={total2} onChange={() => setDumpValue('')} />}
+                              {i === 4 && <input value={total3} onChange={() => setDumpValue('')} />}
+                              {i === 5 && <input value={total4} onChange={() => setDumpValue('')} />}
+                              {i === 6 && <input value={total5} onChange={() => setDumpValue('')} />}
+                              {i === 7 && <input value={total6} onChange={() => setDumpValue('')} />}
+                              {i === 8 && <input value={total7} onChange={() => setDumpValue('')} />}
+                              {i === 9 && <input value={total8} onChange={() => setDumpValue('')} />}
+                              {i === 10 && <input value={total9} onChange={() => setDumpValue('')} />}
+                              {i === 11 && <input value={total10} onChange={() => setDumpValue('')} />}
+                              {i === 12 && <input value={total11} onChange={() => setDumpValue('')} />}
+                              {i === 13 && <input value={total12} onChange={() => setDumpValue('')} />}
+                              {i === 14 && <input value={total13} onChange={() => setDumpValue('')} />}
+                              {i === 15 && <input value={total14} onChange={() => setDumpValue('')} />}
                             </td>
                           )}
                         </>
@@ -345,67 +625,184 @@ const Create = () => {
                   )
               )}
               <tr>
-              <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
+                <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
                   <div>REALIZO</div>
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
+                  {reportFooter.map(
+                    (fila, i) =>
+                      i < reportFooter.length - 1 &&
+                      fila.values.map((valor, i) => (
+                        <>
+                          <input
+                            value={valor}
+                            onChange={(e) =>
+                              handleUpdate(1, fila.id, i, e.target.value)
+                            }
+                            key={i}
+                          />{" "}
+                          <br />
+                        </>
+                      ))
+                  )}
                 </td>
                 <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
                   <div>OBSERVACIONES</div>
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
+                  {reportFooter2.map(
+                    (fila, j) =>
+                      j < reportFooter2.length - 1 &&
+                      fila.values.map((valor, i) => (
+                        <>
+                          <input
+                            value={valor}
+                            onChange={(e) =>
+                              handleUpdate(2, fila.id, i, e.target.value)
+                            }
+                            key={i}
+                          />{" "}
+                          <br />
+                        </>
+                      ))
+                  )}
                 </td>
                 <td colSpan={1} style={{ textAlign: "center" }}>
                   <div> </div>
-                  <input
-                    type="text"
-                    placeholder="A"
-                    readOnly
-                    style={{ textAlign: "center" }}
-                  />{" "}
-                  <br />
-                  <input
-                    type="text"
-                    placeholder="B"
-                    readOnly
-                    style={{ textAlign: "center" }}
-                  />{" "}
-                  <br />
-                  <input
-                    type="text"
-                    placeholder="C"
-                    readOnly
-                    style={{ textAlign: "center" }}
-                  />{" "}
-                  <br />
-                  <input
-                    type="text"
-                    placeholder="D"
-                    readOnly
-                    style={{ textAlign: "center" }}
-                  />{" "}
-                  <br />
-                  <input
-                    type="text"
-                    placeholder="E"
-                    readOnly
-                    style={{ textAlign: "center" }}
-                  />{" "}
-                  <br />
+                  {divs2.map(
+                    (fila, i) =>
+                      i === 0 &&
+                      fila.values.map(
+                        (valor, i) =>
+                          i > 6 && (
+                            <>
+                              {i === 8 && (
+                                <>
+                                  <input
+                                    placeholder="A"
+                                    readOnly
+                                    style={{ textAlign: "center" }}
+                                    key={i}
+                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                  />{" "}
+                                  <br />{" "}
+                                </>
+                              )}
+                              {i === 9 && (
+                                <>
+                                  <input
+                                    placeholder="B"
+                                    readOnly
+                                    style={{ textAlign: "center" }}
+                                    key={i}
+                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                  />{" "}
+                                  <br />{" "}
+                                </>
+                              )}
+                              {i === 10 && (
+                                <>
+                                  <input
+                                    placeholder="C"
+                                    readOnly
+                                    style={{ textAlign: "center" }}
+                                    key={i}
+                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                  />{" "}
+                                  <br />{" "}
+                                </>
+                              )}
+                              {i === 11 && (
+                                <>
+                                  <input
+                                    placeholder="D"
+                                    readOnly
+                                    style={{ textAlign: "center" }}
+                                    key={i}
+                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                  />{" "}
+                                  <br />{" "}
+                                </>
+                              )}
+                              {i === 12 && (
+                                <>
+                                  <input
+                                    placeholder="E"
+                                    readOnly
+                                    style={{ textAlign: "center" }}
+                                    key={i}
+                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                  />{" "}
+                                  <br />{" "}
+                                </>
+                              )}
+                              {i === 13 && (
+                                <>
+                                  <input
+                                    placeholder="F"
+                                    readOnly
+                                    style={{ textAlign: "center" }}
+                                    key={i}
+                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                  />{" "}
+                                  <br />{" "}
+                                </>
+                              )}
+                              {i === 14 && (
+                                <>
+                                  <input
+                                    placeholder="G"
+                                    readOnly
+                                    style={{ textAlign: "center" }}
+                                    key={i}
+                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                  />{" "}
+                                  <br />{" "}
+                                </>
+                              )}
+                              {i === 15 && (
+                                <>
+                                  <input
+                                    placeholder="H"
+                                    readOnly
+                                    style={{ textAlign: "center" }}
+                                    key={i}
+                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                  />{" "}
+                                  <br />{" "}
+                                </>
+                              )}
+                              {i === 16 && (
+                                <>
+                                  <input
+                                    placeholder="I"
+                                    readOnly
+                                    style={{ textAlign: "center" }}
+                                    key={i}
+                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                  />{" "}
+                                  <br />{" "}
+                                </>
+                              )}
+                            </>
+                          )
+                      )
+                  )}
                 </td>
                 <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
                   <div>INCIDENTES</div>
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
-                  <input type="text" /> <br />
+                  {reportFooter3.map(
+                    (fila, i) =>
+                      i < reportFooter3.length - 1 &&
+                      fila.values.map((valor, i) => (
+                        <>
+                          <input
+                            value={valor}
+                            onChange={(e) =>
+                              handleUpdate(3, fila.id, i, e.target.value)
+                            }
+                            key={i}
+                          />{" "}
+                          <br />
+                        </>
+                      ))
+                  )}
                 </td>
               </tr>
               <tr>
@@ -413,21 +810,39 @@ const Create = () => {
                 <td colSpan={numColumnas / 4} style={{ textAlign: "center" }}>
                   <div>ELABORO</div>
                   <div className="firm">
-                    <input type="" name="" value="" className="firm-input" />
+                    <input
+                      type=""
+                      name=""
+                      value={producedBy}
+                      onChange={(e) => setProducedBy(e.target.value)}
+                      className="firm-input"
+                    />
                   </div>
                 </td>
                 <td colSpan={1}></td>
                 <td colSpan={numColumnas / 4} style={{ textAlign: "center" }}>
                   <div>REVISO</div>
                   <div className="firm">
-                    <input type="" name="" value="" className="firm-input" />
+                    <input
+                      type=""
+                      name=""
+                      value={checkedBy}
+                      onChange={(e) => setCheckedBy(e.target.value)}
+                      className="firm-input"
+                    />
                   </div>
                 </td>
                 <td colSpan={1}></td>
                 <td colSpan={numColumnas / 4} style={{ textAlign: "center" }}>
                   <div>AUTORIZO</div>
                   <div className="firm">
-                    <input type="" name="" value="" className="firm-input" />
+                    <input
+                      type=""
+                      name=""
+                      value={authorizedBy}
+                      onChange={(e) => setAuthorizedBy(e.target.value)}
+                      className="firm-input"
+                    />
                   </div>
                 </td>
               </tr>
