@@ -112,6 +112,7 @@
     height: 100%;
     overflow-y: auto;
     flex-wrap: wrap;
+    /*scroll-snap-type: x mandatory;*/
 }
 
 .login {

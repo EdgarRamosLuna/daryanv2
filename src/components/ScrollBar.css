@@ -1,0 +1,26 @@
+.scroll-container {
+    width: 300px;
+    height: 200px;
+    overflow: auto;
+    position: relative;
+  }
+  
+  .scroll-content {
+    /* Estilos del contenido a desplazar */
+  }
+  
+  .scrollbar {
+    width: 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: #ccc;
+    border-radius: 5px;
+    opacity: 0.5;
+    cursor: pointer;
+  }
+  
+  .scrollbar:hover {
+    opacity: 1;
+  }
+  

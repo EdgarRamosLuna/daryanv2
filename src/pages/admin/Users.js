@@ -4,7 +4,7 @@ import UsersTable from "../../components/admin/Users";
 import { MainContext } from "../../context/MainContext";
 
 const Users = () => {
-  const {data, setData} = useContext(MainContext);
+  const {dataUsers, setDataUsers} = useContext(MainContext);
   useEffect(() => {
     fetch(
       "http://phpstack-921351-3198370.cloudwaysapps.com/server/api/get_sales"
@@ -15,9 +15,9 @@ const Users = () => {
         }
         return response.json();
       })
-      .then((data) => {
-        console.log(data);
-        setData(data);
+      .then((dataUsers) => {
+        console.log(dataUsers);
+        setDataUsers(dataUsers);
       })
       .catch((error) => {
         console.log(error);
@@ -25,7 +25,7 @@ const Users = () => {
   }, []);
   return (
     <div className="report-cointainer">
-      <UsersTable data={data} />
+      <UsersTable data={dataUsers} />
     </div>
   );
 };

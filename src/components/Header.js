@@ -87,12 +87,12 @@ const linksAdmin = [
     ico: faUsers,
     fun: (e) => {},
   },
-  /*{
+  {
     label: "Mi Cuenta",
     route: "/admin/my-account",
     ico: faGear,
     fun: (e) => {},
-  },*/
+  },
   {
     label: "Salir",
     route: "/admin/login",

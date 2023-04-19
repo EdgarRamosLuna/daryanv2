@@ -183,9 +183,15 @@ export default function SecondTableCreate() {
   const handleDate = (name, date, id, index) => {
     handleInputChange(id, index, date);
   };
+  const currentDateInSeconds = Math.floor(Date.now() / 1000);
+  const min = 1000000;
+  const max = 9000000;
+
+  const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+
   return (
     <Table>
-      <table className="table-data">
+      <table>
         <thead>
           <tr>
             {titulosColumnas.map((titulo, i) =>
@@ -247,15 +253,26 @@ export default function SecondTableCreate() {
                         index={i}
                         value={valor}
                         setDate={handleDate}
-
                       />
                     ) : (
-                      <input
-                        value={valor}
-                        onChange={(e) =>
-                          handleInputChange(fila.id, i, e.target.value)
-                        }
-                      />
+                      <>
+                        {i >= 3 && i <= 4 ? (
+                          <input
+                            
+                            value={valor}
+                            onChange={(e) =>
+                              handleInputChange(fila.id, i, e.target.value)
+                            }
+                          />
+                        ) : (
+                          <input
+                            value={valor}
+                            onChange={(e) =>
+                              handleInputChange(fila.id, i, e.target.value)
+                            }
+                          />
+                        )}
+                      </>
                     )}
                   </td>
                 )

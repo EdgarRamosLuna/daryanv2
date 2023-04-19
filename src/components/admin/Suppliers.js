@@ -63,7 +63,7 @@ function SuppliersTable({ data }) {
     setNameFilter(event.target.value);
   };
 
-  const filterData = useCallback(() => {
+  const filterData = useCallback((data) => {
     return data.filter((item) => {
       const name = item.id.toLowerCase();
       const id = item.id.toLowerCase();
@@ -75,12 +75,12 @@ function SuppliersTable({ data }) {
         return false;
       }
 
-      if (
-        (dateStart && date < new Date(dateStart).getTime() && dateEnd) ||
-        date > new Date(dateEnd).getTime()
-      ) {
-        return false;
-      }
+      // if (
+      //   (dateStart && date < new Date(dateStart).getTime() && dateEnd) ||
+      //   date > new Date(dateEnd).getTime()
+      // ) {
+      //   return false;
+      // }
       /*
       if () {
         return false;
@@ -88,14 +88,14 @@ function SuppliersTable({ data }) {
 
       return true;
     });
-  }, [nameFilter, dateStart, dateEnd, data]);
+  }, [nameFilter]);
 
-  const filteredData = filterData();
+  const filteredData = filterData(data);
   const getPaginatedData = useCallback(() => {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     return filteredData.slice(startIndex, endIndex);
-  }, [filteredData]);
+  }, [filteredData, currentPage, rowsPerPage]);
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
   const handlePageChange = useCallback(

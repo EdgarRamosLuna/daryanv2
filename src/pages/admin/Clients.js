@@ -7,7 +7,7 @@ import ClientsTable from "../../components/admin/Clients";
 const Clients = () => {
   const { dataSes, dataT, dataTS, reportData } = useContext(MainContext);
   //console.log(dataT);
-  const [data, setData] = useState([]);
+  const [dataClients, setDataClients] = useState([]);
   useEffect(() => {
     fetch("http://phpstack-921351-3198370.cloudwaysapps.com/server/api/get_sales")
     .then(response => {
@@ -16,16 +16,16 @@ const Clients = () => {
       }
       return response.json();
     })
-    .then(data => {
-     console.log(data);
-      setData(data);
+    .then(dataClients => {
+     console.log(dataClients);
+      setDataClients(dataClients);
     })
     .catch(error => {
       console.log(error);
     });
   }, []);
   /*
-  const [dataTa, setDataTa] = useState([]);
+  const [dataClientsTa, setDataClientsTa] = useState([]);
   useEffect(() => {
     const date = new Date();
 
@@ -42,9 +42,9 @@ const Clients = () => {
     let formattedDatef =
       dateFormatter.format(date) + " " + timeFormatter.format(date);
     //console.log(formattedDatef);
-    dataT.forEach((element, index) => {
+    dataClientsT.forEach((element, index) => {
       console.log(index);
-      setDataTa((prev) => [
+      setDataClientsTa((prev) => [
         ...prev,
         {
           id: index + 1,
@@ -63,11 +63,11 @@ const Clients = () => {
       ]);
     });
     return () => {};
-  }, [reportData]);
-  console.log(dataTa.sort((a, b) => b.id - a.id));*/
+  }, [reportDataClients]);
+  console.log(dataClientsTa.sort((a, b) => b.id - a.id));*/
   return (
     <div className="report-cointainer">
-      <ClientsTable data={data} />
+      <ClientsTable data={dataClients} />
     </div>
   );
 };

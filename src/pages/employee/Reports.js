@@ -3,29 +3,29 @@ import ReportsTable from "../../components/employee/Reports";
 
 import { MainContext } from "../../context/MainContext";
 
-
-
-
 const Reports = () => {
-  const { dataSes, dataT, dataTS, reportData, data, setData } = useContext(MainContext);
+  const { dataSes, dataT, dataTS, reportData, data, setData, setNumColumnas } =
+    useContext(MainContext);
   //console.log(dataT);
-  
+
   useEffect(() => {
-    console.log("Estoy entrando pichurria")
-    fetch("http://phpstack-921351-3198370.cloudwaysapps.com/server/api/get_sales")
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Request failed.');
-      }
-      return response.json();
-    })
-    .then(data => {
-   //  console.log(data);
-      setData(data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
+    fetch("http://localhost/daryan-server/api/get")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Request failed.");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const reportes = Object.values(data); 
+          console.log(reportes);
+        localStorage.setItem("dataTable", JSON.stringify(reportes));  
+        setData(reportes);
+        
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
   /*
   const [dataTa, setDataTa] = useState([]);

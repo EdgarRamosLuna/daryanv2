@@ -15,7 +15,7 @@ import { MainContext } from "../../context/MainContext";
 import StatusBtn from "../StatusBtn";
 registerLocale("es", es);
 function ClientsTable({ data }) {
-
+  console.log(data);
   const {hanldeDel, setShowModalC, updateId, setUpdateId} = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const [lastnameFilter, setLastnameFilter] = useState("");
@@ -75,12 +75,12 @@ function ClientsTable({ data }) {
         return false;
       }
 
-      if (
-        (dateStart && date < new Date(dateStart).getTime() && dateEnd) ||
-        date > new Date(dateEnd).getTime()
-      ) {
-        return false;
-      }
+      // if (
+      //   (dateStart && date < new Date(dateStart).getTime() && dateEnd) ||
+      //   date > new Date(dateEnd).getTime()
+      // ) {
+      //   return false;
+      // }
       /*
       if () {
         return false;

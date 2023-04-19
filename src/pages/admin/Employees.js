@@ -4,7 +4,7 @@ import EmployeesTable from "../../components/admin/Employees";
 import { MainContext } from "../../context/MainContext";
 
 const Employees = () => {
-  const {data, setData} = useContext(MainContext);
+  const {dataEmployees, setDataEmployees} = useContext(MainContext);
   useEffect(() => {
     fetch(
       "http://phpstack-921351-3198370.cloudwaysapps.com/server/api/products_pizza"
@@ -15,9 +15,9 @@ const Employees = () => {
         }
         return response.json();
       })
-      .then((data) => {
-        console.log(data);
-        setData(data);
+      .then((dataEmployees) => {
+        console.log(dataEmployees);
+        setDataEmployees(dataEmployees);
       })
       .catch((error) => {
         console.log(error);
@@ -25,7 +25,7 @@ const Employees = () => {
   }, []);
   return (
     <div className="report-cointainer">
-      <EmployeesTable data={data} />
+      <EmployeesTable data={dataEmployees} />
     </div>
   );
 };

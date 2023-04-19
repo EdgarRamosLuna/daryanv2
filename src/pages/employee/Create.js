@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { MainContext } from "../../context/MainContext";
 import { StyledForm, Table } from "../../styles/Styles";
-
-import SecondTableCreate from "./SecondTableCreate";
 import DatePickerInput from "../../components/DateInput";
+import SecondTableCreate from "./SecondTableCreate";
+import ScrollBar from "../../components/ScrollBar";
+
 const Create = () => {
   const [data, setData] = useState([]);
   const {
@@ -42,12 +43,18 @@ const Create = () => {
     setTotal14,
     dataToSave,
     setDataToSave,
+    container1Ref,
+    container2Ref,
+    handleScroll1,
+    handleScroll2,
+    setNumFilas,
+    setNumColumnas
   } = useContext(MainContext);
   //console.log(data);
   const [producedBy, setProducedBy] = useState("");
   const [checkedBy, setCheckedBy] = useState("");
   const [authorizedBy, setAuthorizedBy] = useState("");
- /* const handleSelect = (e, type) => {
+  /* const handleSelect = (e, type) => {
     setData({
       ...data,
       [e.target.dataset.name || e.target.name]: e.target.value,
@@ -203,23 +210,66 @@ const Create = () => {
         incidents: reportFooter3,
         producedBy: producedBy,
         checkedBy: checkedBy,
-        authorizedBy: authorizedBy
+        authorizedBy: authorizedBy,
+        total: {
+          cant: total1,
+          ng: total2,
+          ok: total3,
+          rework: total4,
+          scrap: total5,
+          a: total6,
+          b: total7,
+          c: total8,
+          d: total9,
+          e: total10,
+          f: total11,
+          g: total12,
+          h: total13,
+          i: total14,
+        },
       },
     ];
+  //  console.log(newArray[0]['total']);
     setDataToSave(newArray);
-  }, [data, serviceType, customerControl, divs, reportFooter, reportFooter2, reportFooter3, producedBy, checkedBy, authorizedBy]);
-
+  }, [
+    data,
+    serviceType,
+    customerControl,
+    divs,
+    reportFooter,
+    reportFooter2,
+    reportFooter3,
+    producedBy,
+    checkedBy,
+    authorizedBy,
+    total1,
+    total2,
+    total3,
+    total4,
+    total5,
+    total6,
+    total7,
+    total8,
+    total9,
+    total10,
+    total11,
+    total12,
+    total13,
+    total14,
+  ]);
+  
   /*console.log(data);
   console.log(dataToSave)
   console.log(customerControl);*/
   //console.log(dataToSave)
-  const [dumpValue, setDumpValue] = useState('');
-  const handleDate = (name, date) =>{
+  const [dumpValue, setDumpValue] = useState("");
+  const handleDate = (name, date) => {
     setData({
       ...data,
       [name]: date,
-    })
-  }
+    });
+  };
+  
   return (
     <>
       <div className="container">
@@ -227,6 +277,7 @@ const Create = () => {
           <h3>REPORTE DE INSPECCION</h3>
           <br />
         </div>
+
         <StyledForm>
           <div className="form-container">
             <label htmlFor="data">Planta:</label>
@@ -266,7 +317,13 @@ const Create = () => {
           </div>
           <div className="form-container">
             <label htmlFor="data3">Fecha:</label>
-            <DatePickerInput id="data3" name="date" value={data.date} setDate={handleDate} />
+            <DatePickerInput
+              id="data3"
+              name="date"
+              style={{ textAlign: "left", padding: "12px 20px" }}
+              value={data.date}
+              setDate={handleDate}
+            />
           </div>
           <div className="form-container">
             <label htmlFor="data4">No. de Reporte:</label>
@@ -387,12 +444,12 @@ const Create = () => {
                 <input
                   type="checkbox"
                   name="st1"
-                  defaultValue="1"
-                  value={serviceType.st1}
+                  checked={serviceType.st1}
                   onChange={(e) =>
                     setServiceType({
                       ...serviceType,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
                     })
                   }
                 />
@@ -403,12 +460,12 @@ const Create = () => {
                 <input
                   type="checkbox"
                   name="st2"
-                  defaultValue="2"
-                  value={serviceType.st2}
+                  checked={serviceType.st2}
                   onChange={(e) =>
                     setServiceType({
                       ...serviceType,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
                     })
                   }
                 />
@@ -442,28 +499,27 @@ const Create = () => {
                 <input
                   type="checkbox"
                   name="cc1"
-                  defaultValue="1"
-                  value={customerControl.cc1}
+                  checked={customerControl.cc1}
                   onChange={(e) =>
                     setCustomerControl({
                       ...customerControl,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
                     })
                   }
                 />
                 Fecha de produccion
               </label>
-
               <label>
                 <input
                   type="checkbox"
                   name="cc2"
-                  defaultValue="2"
-                  value={customerControl.cc2}
+                  checked={customerControl.cc2}
                   onChange={(e) =>
                     setCustomerControl({
                       ...customerControl,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
                     })
                   }
                 />
@@ -474,12 +530,12 @@ const Create = () => {
                 <input
                   type="checkbox"
                   name="cc3"
-                  defaultValue="3"
-                  value={customerControl.cc3}
+                  checked={customerControl.cc3}
                   onChange={(e) =>
                     setCustomerControl({
                       ...customerControl,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
                     })
                   }
                 />
@@ -489,12 +545,12 @@ const Create = () => {
                 <input
                   type="checkbox"
                   name="cc4"
-                  defaultValue="4"
-                  value={customerControl.cc4}
+                  checked={customerControl.cc4}
                   onChange={(e) =>
                     setCustomerControl({
                       ...customerControl,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
                     })
                   }
                 />
@@ -534,13 +590,22 @@ const Create = () => {
         ></textarea>*/}
         </StyledForm>
       </div>
-      <div className="container c2">
+      <div
+        className="container c2 scrollX"
+        ref={container1Ref}
+        onScroll={handleScroll1}
+      >
         <SecondTableCreate />
       </div>
 
-      <div className="container" style={{ overflowY: "scroll" }}>
+      <div
+        className="container scrollX c2"
+        ref={container2Ref}
+        onScroll={handleScroll2}
+        style={{ overflow: "scroll", height: "auto" }}
+      >
         <Table>
-          <table >
+          <table>
             <thead className="no-sticky">
               <tr>
                 {titulosColumnas.map((titulo, i) =>
@@ -558,7 +623,7 @@ const Create = () => {
               </tr>
             </thead>
             <tbody>
-              {divs2.map(
+              {divs.map(
                 (fila, i) =>
                   i === 0 && (
                     <tr key={fila.id} className="hidden">
@@ -570,7 +635,12 @@ const Create = () => {
                             </td>
                           ) : (
                             <td key={i} className="table-center">
-                              <input type="" name="" value={dumpValue} onChange={() => setDumpValue('')}  />
+                              <input
+                                type=""
+                                name=""
+                                value={dumpValue}
+                                onChange={() => setDumpValue("")}
+                              />
                             </td>
                           )}
                         </>
@@ -603,20 +673,90 @@ const Create = () => {
                             </>
                           ) : (
                             <td key={i} className="table-center">
-                              {i === 2 && <input value={total1} onChange={() => setDumpValue('')} />}
-                              {i === 3 && <input value={total2} onChange={() => setDumpValue('')} />}
-                              {i === 4 && <input value={total3} onChange={() => setDumpValue('')} />}
-                              {i === 5 && <input value={total4} onChange={() => setDumpValue('')} />}
-                              {i === 6 && <input value={total5} onChange={() => setDumpValue('')} />}
-                              {i === 7 && <input value={total6} onChange={() => setDumpValue('')} />}
-                              {i === 8 && <input value={total7} onChange={() => setDumpValue('')} />}
-                              {i === 9 && <input value={total8} onChange={() => setDumpValue('')} />}
-                              {i === 10 && <input value={total9} onChange={() => setDumpValue('')} />}
-                              {i === 11 && <input value={total10} onChange={() => setDumpValue('')} />}
-                              {i === 12 && <input value={total11} onChange={() => setDumpValue('')} />}
-                              {i === 13 && <input value={total12} onChange={() => setDumpValue('')} />}
-                              {i === 14 && <input value={total13} onChange={() => setDumpValue('')} />}
-                              {i === 15 && <input value={total14} onChange={() => setDumpValue('')} />}
+                              {i === 2 && (
+                                <input
+                                  value={total1}
+                                  onChange={(e) => setTotal1(e.target.value)}
+                                />
+                              )}
+                              {i === 3 && (
+                                <input
+                                  value={total2}
+                                  onChange={(e) => setTotal2(e.target.value)}
+                                />
+                              )}
+                              {i === 4 && (
+                                <input
+                                  value={total3}
+                                  onChange={(e) => setTotal3(e.target.value)}
+                                />
+                              )}
+                              {i === 5 && (
+                                <input
+                                  value={total4}
+                                  onChange={(e) => setTotal4(e.target.value)}
+                                />
+                              )}
+                              {i === 6 && (
+                                <input
+                                  value={total5}
+                                  onChange={(e) => setTotal5(e.target.value)}
+                                />
+                              )}
+                              {i === 7 && (
+                                <input
+                                  value={total6}
+                                  onChange={(e) => setTotal6(e.target.value)}
+                                />
+                              )}
+                              {i === 8 && (
+                                <input
+                                  value={total7}
+                                  onChange={(e) => setTotal7(e.target.value)}
+                                />
+                              )}
+                              {i === 9 && (
+                                <input
+                                  value={total8}
+                                  onChange={(e) => setTotal8(e.target.value)}
+                                />
+                              )}
+                              {i === 10 && (
+                                <input
+                                  value={total9}
+                                  onChange={(e) => setTotal9(e.target.value)}
+                                />
+                              )}
+                              {i === 11 && (
+                                <input
+                                  value={total10}
+                                  onChange={(e) => setTotal10(e.target.value)}
+                                />
+                              )}
+                              {i === 12 && (
+                                <input
+                                  value={total11}
+                                  onChange={(e) => setTotal11(e.target.value)}
+                                />
+                              )}
+                              {i === 13 && (
+                                <input
+                                  value={total12}
+                                  onChange={(e) => setTotal12(e.target.value)}
+                                />
+                              )}
+                              {i === 14 && (
+                                <input
+                                  value={total13}
+                                  onChange={(e) => setTotal13(e.target.value)}
+                                />
+                              )}
+                              {i === 15 && (
+                                <input
+                                  value={total14}
+                                  onChange={(e) => setTotal14(e.target.value)}
+                                />
+                              )}
                             </td>
                           )}
                         </>
@@ -679,7 +819,8 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -691,7 +832,8 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -703,7 +845,8 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -715,7 +858,8 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -727,7 +871,8 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -739,7 +884,8 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -751,7 +897,8 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -763,7 +910,8 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -775,7 +923,8 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -785,7 +934,10 @@ const Create = () => {
                       )
                   )}
                 </td>
-                <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
+                <td
+                  colSpan={numColumnas > 15 ? numColumnas / 3 : 3}
+                  style={{ textAlign: "center" }}
+                >
                   <div>INCIDENTES</div>
                   {reportFooter3.map(
                     (fila, i) =>
@@ -806,8 +958,7 @@ const Create = () => {
                 </td>
               </tr>
               <tr>
-                <td colSpan={1}></td>
-                <td colSpan={numColumnas / 4} style={{ textAlign: "center" }}>
+                <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
                   <div>ELABORO</div>
                   <div className="firm">
                     <input
@@ -819,8 +970,8 @@ const Create = () => {
                     />
                   </div>
                 </td>
-                <td colSpan={1}></td>
-                <td colSpan={numColumnas / 4} style={{ textAlign: "center" }}>
+
+                <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
                   <div>REVISO</div>
                   <div className="firm">
                     <input
@@ -832,8 +983,8 @@ const Create = () => {
                     />
                   </div>
                 </td>
-                <td colSpan={1}></td>
-                <td colSpan={numColumnas / 4} style={{ textAlign: "center" }}>
+
+                <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
                   <div>AUTORIZO</div>
                   <div className="firm">
                     <input

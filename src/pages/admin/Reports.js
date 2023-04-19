@@ -2,28 +2,40 @@ import React, { useContext, useEffect, useState } from "react";
 import ReportsTable from "../../components/admin/Reports";
 import { MainContext } from "../../context/MainContext";
 
-
-
-
 const Reports = () => {
-  const { dataSes, dataT, dataTS, reportData, data, setData } = useContext(MainContext);
-  //console.log(dataT);
+  const {
+    dataSes,
+    dataT,
+    dataTS,
+    reportData,
+    data,
+    setData,
+    numColumnas,
+    titulosColumnas,
+    setTitulosColumnas,
+    agregarColumna
+  } = useContext(MainContext);
+
   
   useEffect(() => {
-    fetch("http://phpstack-921351-3198370.cloudwaysapps.com/server/api/get_sales")
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Request failed.');
-      }
-      return response.json();
+    fetch("http://localhost/daryan-server/api/get", {
+      cache: "no-cache",
     })
-    .then(data => {
-   //  console.log(data);
-      setData(data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Request failed.");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const reportes = Object.values(data);
+        console.log(reportes);
+        localStorage.setItem("dataTable", JSON.stringify(reportes));
+        setData(reportes);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
   /*
   const [dataTa, setDataTa] = useState([]);
@@ -68,7 +80,7 @@ const Reports = () => {
   console.log(dataTa.sort((a, b) => b.id - a.id));*/
   return (
     <div className="report-cointainer">
-      <ReportsTable data={data} />
+      <ReportsTable data={data.sort((a, b) => a - b).reverse()} />
     </div>
   );
 };

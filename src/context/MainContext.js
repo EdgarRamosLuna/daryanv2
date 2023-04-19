@@ -1,6 +1,8 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import { useRef } from "react";
+import { Toaster, toast } from "sonner";
 export const MainContext = createContext();
 export const MainContextProvider = ({ children }) => {
   const dataSes = localStorage.getItem("sesType");
@@ -20,6 +22,10 @@ export const MainContextProvider = ({ children }) => {
 
   const [idDelete, setIdDelete] = useState("");
   const [data, setData] = useState([]);
+  const [dataUsers, setDataUsers] = useState([]);
+  const [dataEmployees, setDataEmployees] = useState([]);
+  const [dataClients, setDataClients] = useState([]);
+  const [dataSuppliers, setDataSuppliers] = useState([]);
   const dataTS = localStorage.getItem("dataTable");
   //console.log(data);
   const [reportData, setReportData] = useState(
@@ -110,8 +116,8 @@ export const MainContextProvider = ({ children }) => {
   const [updateId, setUpdateId] = useState(false);
   const [delType, setDelType] = useState(0);
   const [numFilas, setNumFilas] = useState(20);
-  const [numColumnas, setNumColumnas] = useState(16);
-  const [dbColumns, setDbColumns] = useState(["A", "B", "C", "D", "E"]);
+  const [numColumnas, setNumColumnas] = useState(15);
+  const [dbColumns, setDbColumns] = useState(["A", "B", "C", "D"]);
   const ABECEDARIO = [
     "A",
     "B",
@@ -192,7 +198,17 @@ export const MainContextProvider = ({ children }) => {
     });
     setNumColumnas((prev) => prev - 1);
   };
-//console.log(divs);
+  //console.log(divs);
+  const container1Ref = useRef(null);
+  const container2Ref = useRef(null);
+
+  const handleScroll1 = () => {
+    container2Ref.current.scrollLeft = container1Ref.current.scrollLeft;
+  };
+
+  const handleScroll2 = () => {
+    container1Ref.current.scrollLeft = container2Ref.current.scrollLeft;
+  };
   const agregarColumna = (e) => {
     setNumColumnas((prev) => prev + 1);
     setTitulosColumnas((prevTitulos) => {
@@ -204,21 +220,18 @@ export const MainContextProvider = ({ children }) => {
       const penultimate = arrayCopy.slice(-2, -1)[0];
       arrayCopy.splice(-2, 1);
       arrayCopy.push(penultimate);
-      const tableWrapper = document.querySelector(".c2");
-      const scrollWidth = tableWrapper.scrollWidth;
-      const clientWidth = tableWrapper.clientWidth;
-      if (scrollWidth >= clientWidth) {
-        //tableWrapper.scrollTop = scrollWidth - clientWidth;
-        setTimeout(() => {
-          tableWrapper.scrollTo({ left: scrollWidth, behavior: "smooth" });
-        }, 100);
-      }
-      // console.log(arrayCopy);
+      const tableWrapper = document.querySelectorAll(".scrollX");
 
-      //  newArr.push(penultimate);
-      /* const lastElement = prevTitulos.pop(); // Elimina el último elemento y lo almacena en una variable
-      prevTitulos.push(lastElement); // Agrega el elemento al final del array
-      */
+      tableWrapper.forEach((element) => {
+        const scrollWidth = element.scrollWidth;
+        const clientWidth = element.clientWidth;
+        if (scrollWidth >= clientWidth) {
+          setTimeout(() => {
+            element.scrollLeft = scrollWidth;
+          }, 200);
+        }
+      });
+
       return arrayCopy;
     });
     setDivs((prevDatos) =>
@@ -228,6 +241,34 @@ export const MainContextProvider = ({ children }) => {
       }))
     );
   };
+
+  const agregarColumna2 = (e) => {
+    setNumColumnas((prev) => prev + 1);
+    setTitulosColumnas((prevTitulos) => {
+      const nextLetter = getNextLetter(prevTitulos);
+      setDbColumns((prev) => [...prev, nextLetter]);
+      //   console.log(nextLetter);
+      const newArr = [...prevTitulos, nextLetter];
+      const arrayCopy = newArr.slice();
+      const penultimate = arrayCopy.slice(-2, -1)[0];
+      arrayCopy.splice(-2, 1);
+      arrayCopy.push(penultimate);
+      // const tableWrapper = document.querySelectorAll(".scrollX");
+
+      // tableWrapper.forEach((element) => {
+      //   const scrollWidth = element.scrollWidth;
+      //   const clientWidth = element.clientWidth;
+      //   if (scrollWidth >= clientWidth) {
+      //     setTimeout(() => {
+      //       element.scrollLeft = scrollWidth;
+      //     }, 200);
+      //   }
+      // });
+
+      return arrayCopy;
+    });
+  };
+
   const agregarFila = (numColumnas) => {
     setDivs((prevDatos) => [
       ...prevDatos,
@@ -262,11 +303,55 @@ export const MainContextProvider = ({ children }) => {
     "B",
     "C",
     "D",
-    "E",
     <>
       <i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i>
     </>,
   ]);
+  const [titulosColumnas2, setTitulosColumnas2] = useState([
+    "",
+    "Items",
+    "Fecha",
+    "Lote",
+    "Serie",
+    "Cantidad Inspeccionada",
+    "Piezas NG:",
+    "Piezas Ok:",
+    "Piezas Retrabajadas:",
+    "Scrap:",
+    "A",
+    "B",
+    "C",
+    "D",
+    <>
+      <i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i>
+    </>,
+  ]);
+  /* useEffect(() => {
+    //console.log(numColumnas);
+    if (numColumnas > 15) {
+    } else {
+      if(numColumnas)
+      setTitulosColumnas([
+        "",
+        "Items",
+        "Fecha",
+        "Lote",
+        "Serie",
+        "Cantidad Inspeccionada",
+        "Piezas NG:",
+        "Piezas Ok:",
+        "Piezas Retrabajadas:",
+        "Scrap:",
+        "A",
+        "B",
+        "C",
+        "D",
+        <>
+          <i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i>
+        </>,
+      ]);
+    }
+  }, [numColumnas]);*/
   useEffect(() => {
     const penultimate = titulosColumnas.slice(-2, -1)[0];
     if (penultimate === "I") {
@@ -282,7 +367,7 @@ export const MainContextProvider = ({ children }) => {
         return prev;
       });
     } else {
-      if (penultimate === "E") {
+      if (penultimate === "D") {
         setTitulosColumnas((prev) => {
           prev[titulosColumnas.length - 1] = (
             <>
@@ -296,7 +381,7 @@ export const MainContextProvider = ({ children }) => {
         });
       }
     }
-  //  console.log(penultimate);
+    //  console.log(penultimate);
   }, [numColumnas]);
   //console.log(titulosColumnas);
   const [total1, setTotal1] = useState(0);
@@ -313,6 +398,19 @@ export const MainContextProvider = ({ children }) => {
   const [total12, setTotal12] = useState(0);
   const [total13, setTotal13] = useState(0);
   const [total14, setTotal14] = useState(0);
+  const [sort, setSort] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const formattedDate = (value) => {
+    const date = new Date(value); // Supongamos que la fecha que quieres formatear es la fecha actual
+
+    const year = date.getFullYear(); // Obtiene el año de la fecha
+    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Obtiene el mes de la fecha y lo convierte a una cadena con dos dígitos, y se agrega un cero inicial si el mes es menor a 10
+    const day = date.getDate().toString().padStart(2, "0"); // Obtiene el día del mes de la fecha y lo convierte a una cadena con dos dígitos, y se agrega un cero inicial si el día es menor a 10
+
+    const result = `${year}-${month}-${day}`; // Combina los valores del año, mes y día en una cadena con el formato deseado
+    return result;
+  };
   return (
     <MainContext.Provider
       value={{
@@ -349,7 +447,10 @@ export const MainContextProvider = ({ children }) => {
         setNumColumnas,
         titulosColumnas,
         setTitulosColumnas,
+        titulosColumnas2,
+        setTitulosColumnas2,
         agregarColumna,
+        agregarColumna2,
         agregarFila,
         eliminarColumna,
         eliminarFila,
@@ -385,8 +486,28 @@ export const MainContextProvider = ({ children }) => {
         setTotal14,
         dbColumns,
         setDbColumns,
+        container1Ref,
+        container2Ref,
+        handleScroll1,
+        handleScroll2,
+        sort,
+        setSort,
+        toast,
+        isLoading,
+        setIsLoading,
+        formattedDate,
+        getNextLetter,
+        dataUsers,
+        setDataUsers,
+        dataEmployees,
+        setDataEmployees,
+        dataClients,
+        setDataClients,
+        dataSuppliers,
+        setDataSuppliers,
       }}
     >
+      <Toaster richColors position="top-center" closeButton />
       {children}
     </MainContext.Provider>
   );

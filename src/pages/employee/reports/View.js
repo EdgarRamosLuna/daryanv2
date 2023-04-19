@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { MainContext } from "../../../context/MainContext";
+import { useParams } from "react-router-dom";
 import { StyledForm, Table } from "../../../styles/Styles";
 import DatePickerInput from "../../../components/DateInput";
 import SecondTableCreate from "./SecondTableCreate";
 
-
-const Create = () => {
-  const [data, setData] = useState([]);
+const View = () => {
   const {
     numFilas,
     numColumnas,
@@ -43,14 +42,158 @@ const Create = () => {
     setTotal14,
     dataToSave,
     setDataToSave,
+    container1Ref,
+    container2Ref,
+    handleScroll1,
+    handleScroll2,
+    data,
+    setData,
+    dataTS,
+    setNumFilas,
+    setNumColumnas,
+    isLoading,
+    setIsLoading,
+    formattedDate,
+    setTitulosColumnas,
+    setDbColumns,
+    getNextLetter,
+    agregarColumna2,
   } = useContext(MainContext);
-  //console.log(data);
+  //setData(dataTS)
+
+  const params = useParams();
+  const idReport = params.id;
+  const eData =
+    data.length === 0
+      ? JSON.parse(dataTS).filter(
+          (data) => Number(data.id) === Number(idReport)
+        )[0]
+      : data.filter((data) => Number(data.id) === Number(idReport))[0];
+  const [dataC, setDataC] = useState(eData);
   const [producedBy, setProducedBy] = useState("");
   const [checkedBy, setCheckedBy] = useState("");
   const [authorizedBy, setAuthorizedBy] = useState("");
- /* const handleSelect = (e, type) => {
-    setData({
-      ...data,
+  console.log(eData);
+
+  // const agregarColumnas = (e) => {
+  //   console.log('sdsd');
+  //   setTitulosColumnas((prevTitulos) => {
+  //     const nextLetter = getNextLetter(prevTitulos);
+  //     setDbColumns((prev) => [...prev, nextLetter]);
+  //     //   console.log(nextLetter);
+  //     const newArr = [...prevTitulos, nextLetter];
+  //     const arrayCopy = newArr.slice();
+  //     const penultimate = arrayCopy.slice(-2, -1)[0];
+  //     arrayCopy.splice(-2, 1);
+  //     arrayCopy.push(penultimate);
+  //     const tableWrapper = document.querySelectorAll(".scrollX");
+
+  //     tableWrapper.forEach((element) => {
+  //       const scrollWidth = element.scrollWidth;
+  //       const clientWidth = element.clientWidth;
+  //       if (scrollWidth >= clientWidth) {
+  //         setTimeout(() => {
+  //           element.scrollLeft = scrollWidth;
+  //         }, 200);
+  //       }
+  //     });
+
+  //     return arrayCopy;
+  //   });
+
+  // };
+  useEffect(() => {
+    if (Object.keys(dataC).length > 0) {
+      setNumFilas(Number(dataC.reports_cc.length));
+      //console.log(numColumnas);
+      const clauses = Number(dataC.report_in.length);
+      const newLength = 11 + clauses;
+      setNumColumnas(newLength);
+    }
+  }, []);
+  useEffect(() => {
+    console.log(numColumnas);
+  }, [numColumnas]);
+  useEffect(() => {
+    //console.log(dataC);
+    //    agregarColumna2();
+
+    setDivs(() => {
+      const filas = [];
+      for (let i = 1; i <= numFilas; i++) {
+        filas.push({
+          id: i,
+          values: Array.from({ length: numColumnas }, () => ""),
+        });
+      }
+
+      for (let j = 0; j < filas.length; j++) {
+        const fil = filas[j];
+        const values = fil.values;
+        //const keys = Object.keys(dataC.reports_cc[j])
+        if (dataC.reports_cc && dataC.reports_cc[j]) {
+          const keys = Object.keys(dataC.reports_cc[j]);
+          for (let k = 0; k < values.length; k++) {
+            switch (k) {
+              case 0:
+                values[k] = dataC.reports_cc[j][keys[k]];
+                break;
+              case 1:
+                values[k] = dataC.reports_cc[j][keys[k + 1]];
+                break;
+              case 2:
+                const date = dataC.reports_cc[j][keys[k + 1]];
+                const fdate = formattedDate(date);
+                values[k] = fdate;
+                break;
+              case 10:
+                values[k] = dataC.reports_cc[j]["A"];
+                break;
+              case 11:
+                values[k] = dataC.reports_cc[j]["B"];
+                break;
+              case 12:
+                values[k] = dataC.reports_cc[j]["C"];
+                break;
+              case 13:
+                values[k] = dataC.reports_cc[j]["D"];
+                break;
+              case 14:
+                values[k] = dataC.reports_cc[j]["E"];
+                break;
+              case 15:
+                values[k] = dataC.reports_cc[j]["F"];
+                break;
+              case 16:
+                values[k] = dataC.reports_cc[j]["G"];
+                break;
+              case 17:
+                values[k] = dataC.reports_cc[j]["H"];
+                break;
+              case 18:
+                values[k] = dataC.reports_cc[j]["I"];
+                break;
+              default:
+                values[k] = dataC.reports_cc[j][keys[k + 1]];
+                break;
+            }
+            // if (k === 0) {
+            //   //values[k] = dataC.reports_cc[j]['item']
+            //   //console.log(dataC.reports_cc[j][keys[k]])
+            //   //console.log();
+            // }
+          }
+        }
+
+        // console.log(values);
+      }
+      //console.log(filas[0].values[0]);
+      return filas;
+    });
+  }, [numFilas, numColumnas]);
+  /* const handleSelect = (e, type) => {
+    setDataC({
+      ...dataC,
       [e.target.dataset.name || e.target.name]: e.target.value,
     });
   };*/
@@ -195,7 +338,7 @@ const Create = () => {
     //console.log()
     const newArray = [
       {
-        data: data,
+        data: dataC,
         serviceType: serviceType,
         customerControl: customerControl,
         customerControlTable: divs,
@@ -204,23 +347,35 @@ const Create = () => {
         incidents: reportFooter3,
         producedBy: producedBy,
         checkedBy: checkedBy,
-        authorizedBy: authorizedBy
+        authorizedBy: authorizedBy,
       },
     ];
     setDataToSave(newArray);
-  }, [data, serviceType, customerControl, divs, reportFooter, reportFooter2, reportFooter3, producedBy, checkedBy, authorizedBy]);
+  }, [
+    dataC,
+    serviceType,
+    customerControl,
+    divs,
+    reportFooter,
+    reportFooter2,
+    reportFooter3,
+    producedBy,
+    checkedBy,
+    authorizedBy,
+  ]);
 
   /*console.log(data);
   console.log(dataToSave)
   console.log(customerControl);*/
   //console.log(dataToSave)
-  const [dumpValue, setDumpValue] = useState('');
-  const handleDate = (name, date) =>{
-    setData({
-      ...data,
+  const [dumpValue, setDumpValue] = useState("");
+  const handleDate = (name, date) => {
+    setDataC({
+      ...dataC,
       [name]: date,
-    })
-  }
+    });
+  };
+
   return (
     <>
       <div className="container">
@@ -228,6 +383,7 @@ const Create = () => {
           <h3>REPORTE DE INSPECCION</h3>
           <br />
         </div>
+
         <StyledForm>
           <div className="form-container">
             <label htmlFor="data">Planta:</label>
@@ -237,14 +393,8 @@ const Create = () => {
               name="plant"
               placeholder=""
               required
-              value={data.plant}
-              defaultValue=""
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              defaultValue={dataC.plant}
+              readOnly
             />
           </div>
           <div className="form-container">
@@ -255,19 +405,21 @@ const Create = () => {
               name="supplier"
               placeholder=""
               required
-              defaultValue=""
-              value={data.supplier}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              defaultValue={dataC.supplier}
+              readOnly
             />
           </div>
           <div className="form-container">
             <label htmlFor="data3">Fecha:</label>
-            <DatePickerInput id="data3" name="date" value={data.date} setDate={handleDate} />
+            <input
+              type="text"
+              id="data2"
+              name="supplier"
+              placeholder=""
+              required
+              defaultValue={dataC.date}
+              readOnly
+            />
           </div>
           <div className="form-container">
             <label htmlFor="data4">No. de Reporte:</label>
@@ -277,14 +429,8 @@ const Create = () => {
               name="report_number"
               placeholder=""
               required
-              defaultValue=""
-              value={data.report_number}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              defaultValue={dataC.report_number}
+              readOnly
             />
           </div>
           <div className="form-container">
@@ -295,14 +441,8 @@ const Create = () => {
               name="part_name"
               placeholder=""
               required
-              defaultValue=""
-              value={data.part_name}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              defaultValue={dataC.part_name}
+              readOnly
             />
           </div>
           <div className="form-container">
@@ -313,14 +453,8 @@ const Create = () => {
               name="worked_hours"
               placeholder=""
               required
-              defaultValue=""
-              value={data.worked_hours}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              defaultValue={dataC.worked_h}
+              readOnly
             />
           </div>
           <div className="form-container">
@@ -331,31 +465,13 @@ const Create = () => {
               name="rate"
               placeholder=""
               required
-              defaultValue=""
-              value={data.rate}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              defaultValue={dataC.rate}
+              readOnly
             />
           </div>
           <div className="form-container">
             <label htmlFor="data8">Turno:</label>
-            <select
-              id="data8"
-              name="shift"
-              required
-              defaultValue="0"
-              value={data.shift}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
-            >
+            <select id="data8" name="shift" required defaultValue={dataC.shift}>
               <option value="0">Selecciona una opcion</option>
               <option value="1">1</option>
               <option value="2">2</option>
@@ -370,14 +486,7 @@ const Create = () => {
               name="part_number"
               placeholder=""
               required
-              defaultValue=""
-              value={data.part_number}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              defaultValue={dataC.part_number}
             />
           </div>
           <div className="form-container">
@@ -388,14 +497,8 @@ const Create = () => {
                 <input
                   type="checkbox"
                   name="st1"
-                  defaultValue="1"
-                  value={serviceType.st1}
-                  onChange={(e) =>
-                    setServiceType({
-                      ...serviceType,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
-                    })
-                  }
+                  checked={serviceType.st1}
+                  readOnly
                 />
                 Selección
               </label>
@@ -404,14 +507,8 @@ const Create = () => {
                 <input
                   type="checkbox"
                   name="st2"
-                  defaultValue="2"
-                  value={serviceType.st2}
-                  onChange={(e) =>
-                    setServiceType({
-                      ...serviceType,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
-                    })
-                  }
+                  checked={serviceType.st2}
+                  readOnly
                 />
                 Retrabajo
               </label>
@@ -424,12 +521,7 @@ const Create = () => {
                   type="text"
                   name="st3"
                   value={serviceType.st3}
-                  onChange={(e) =>
-                    setServiceType({
-                      ...serviceType,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
-                    })
-                  }
+                  readOnly
                 />
               </div>
             </div>
@@ -443,12 +535,12 @@ const Create = () => {
                 <input
                   type="checkbox"
                   name="cc1"
-                  defaultValue="1"
-                  value={customerControl.cc1}
+                  checked={customerControl.cc1}
                   onChange={(e) =>
                     setCustomerControl({
                       ...customerControl,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
                     })
                   }
                 />
@@ -459,12 +551,12 @@ const Create = () => {
                 <input
                   type="checkbox"
                   name="cc2"
-                  defaultValue="2"
-                  value={customerControl.cc2}
+                  checked={customerControl.cc2}
                   onChange={(e) =>
                     setCustomerControl({
                       ...customerControl,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
                     })
                   }
                 />
@@ -475,12 +567,12 @@ const Create = () => {
                 <input
                   type="checkbox"
                   name="cc3"
-                  defaultValue="3"
-                  value={customerControl.cc3}
+                  checked={customerControl.cc3}
                   onChange={(e) =>
                     setCustomerControl({
                       ...customerControl,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
                     })
                   }
                 />
@@ -490,12 +582,12 @@ const Create = () => {
                 <input
                   type="checkbox"
                   name="cc4"
-                  defaultValue="4"
-                  value={customerControl.cc4}
+                  checked={customerControl.cc4}
                   onChange={(e) =>
                     setCustomerControl({
                       ...customerControl,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
                     })
                   }
                 />
@@ -535,11 +627,20 @@ const Create = () => {
         ></textarea>*/}
         </StyledForm>
       </div>
-      <div className="container c2">
-        <SecondTableCreate />
+      <div
+        className="container c2 scrollX"
+        ref={container1Ref}
+        onScroll={handleScroll1}
+      >
+        <SecondTableCreate dataC={dataC} />
       </div>
 
-      <div className="container" style={{ overflowY: "scroll" }}>
+      <div
+        className="container scrollX c2"
+        ref={container2Ref}
+        onScroll={handleScroll2}
+        style={{ overflow: "scroll", height: "auto" }}
+      >
         <Table>
           <table>
             <thead className="no-sticky">
@@ -559,7 +660,7 @@ const Create = () => {
               </tr>
             </thead>
             <tbody>
-              {divs2.map(
+              {divs.map(
                 (fila, i) =>
                   i === 0 && (
                     <tr key={fila.id} className="hidden">
@@ -571,7 +672,7 @@ const Create = () => {
                             </td>
                           ) : (
                             <td key={i} className="table-center">
-                              <input type="" name="" value={dumpValue} onChange={() => setDumpValue('')}  />
+                              <input type="" name="" defaultValue={dumpValue} />
                             </td>
                           )}
                         </>
@@ -604,20 +705,40 @@ const Create = () => {
                             </>
                           ) : (
                             <td key={i} className="table-center">
-                              {i === 2 && <input value={total1} onChange={() => setDumpValue('')} />}
-                              {i === 3 && <input value={total2} onChange={() => setDumpValue('')} />}
-                              {i === 4 && <input value={total3} onChange={() => setDumpValue('')} />}
-                              {i === 5 && <input value={total4} onChange={() => setDumpValue('')} />}
-                              {i === 6 && <input value={total5} onChange={() => setDumpValue('')} />}
-                              {i === 7 && <input value={total6} onChange={() => setDumpValue('')} />}
-                              {i === 8 && <input value={total7} onChange={() => setDumpValue('')} />}
-                              {i === 9 && <input value={total8} onChange={() => setDumpValue('')} />}
-                              {i === 10 && <input value={total9} onChange={() => setDumpValue('')} />}
-                              {i === 11 && <input value={total10} onChange={() => setDumpValue('')} />}
-                              {i === 12 && <input value={total11} onChange={() => setDumpValue('')} />}
-                              {i === 13 && <input value={total12} onChange={() => setDumpValue('')} />}
-                              {i === 14 && <input value={total13} onChange={() => setDumpValue('')} />}
-                              {i === 15 && <input value={total14} onChange={() => setDumpValue('')} />}
+                              {i === 2 && <input defaultValue={total1} />}
+                              {i === 3 && <input defaultValue={total2} />}
+                              {i === 4 && <input defaultValue={total3} />}
+                              {i === 5 && <input defaultValue={total4} />}
+                              {i === 6 && <input defaultValue={total5} />}
+                              {i === 7 && <input defaultValue={total6} />}
+                              {i === 8 && <input defaultValue={total7} />}
+                              {i === 9 && <input defaultValue={total8} />}
+                              {i === 10 && <input defaultValue={total9} />}
+                              {i === 11 && (
+                                <input
+                                  defaultValue={isNaN(total10) ? 0 : total10}
+                                />
+                              )}
+                              {i === 12 && (
+                                <input
+                                  defaultValue={isNaN(total11) ? 0 : total11}
+                                />
+                              )}
+                              {i === 13 && (
+                                <input
+                                  defaultValue={isNaN(total12) ? 0 : total12}
+                                />
+                              )}
+                              {i === 14 && (
+                                <input
+                                  defaultValue={isNaN(total13) ? 0 : total13}
+                                />
+                              )}
+                              {i === 15 && (
+                                <input
+                                  defaultValue={isNaN(total14) ? 0 : total14}
+                                />
+                              )}
                             </td>
                           )}
                         </>
@@ -633,33 +754,19 @@ const Create = () => {
                       i < reportFooter.length - 1 &&
                       fila.values.map((valor, i) => (
                         <>
-                          <input
-                            value={valor}
-                            onChange={(e) =>
-                              handleUpdate(1, fila.id, i, e.target.value)
-                            }
-                            key={i}
-                          />{" "}
-                          <br />
+                          <input defaultValue={valor} key={i} /> <br />
                         </>
                       ))
                   )}
                 </td>
-                <td colSpan={(numColumnas / 3) > 6 ? 5: numColumnas / 3} style={{ textAlign: "center" }}>
+                <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
                   <div>OBSERVACIONES</div>
                   {reportFooter2.map(
                     (fila, j) =>
                       j < reportFooter2.length - 1 &&
                       fila.values.map((valor, i) => (
                         <>
-                          <input
-                            value={valor}
-                            onChange={(e) =>
-                              handleUpdate(2, fila.id, i, e.target.value)
-                            }
-                            key={i}
-                          />{" "}
-                          <br />
+                          <input defaultValue={valor} key={i} /> <br />
                         </>
                       ))
                   )}
@@ -680,7 +787,7 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    defaultValue={dumpValue}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -692,7 +799,7 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    defaultValue={dumpValue}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -704,7 +811,7 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    defaultValue={dumpValue}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -716,7 +823,7 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    defaultValue={dumpValue}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -728,7 +835,7 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    defaultValue={dumpValue}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -740,7 +847,7 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    defaultValue={dumpValue}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -752,7 +859,7 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    defaultValue={dumpValue}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -764,7 +871,7 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    defaultValue={dumpValue}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -776,7 +883,7 @@ const Create = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    value={dumpValue} onChange={() => setDumpValue('')}
+                                    defaultValue={dumpValue}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -786,62 +893,54 @@ const Create = () => {
                       )
                   )}
                 </td>
-                <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
+                <td
+                  colSpan={numColumnas > 15 ? numColumnas / 3 : 3}
+                  style={{ textAlign: "center" }}
+                >
                   <div>INCIDENTES</div>
                   {reportFooter3.map(
                     (fila, i) =>
                       i < reportFooter3.length - 1 &&
                       fila.values.map((valor, i) => (
                         <>
-                          <input
-                            value={valor}
-                            onChange={(e) =>
-                              handleUpdate(3, fila.id, i, e.target.value)
-                            }
-                            key={i}
-                          />{" "}
-                          <br />
+                          <input defaultValue={valor} key={i} /> <br />
                         </>
                       ))
                   )}
                 </td>
               </tr>
               <tr>
-                <td colSpan={1}></td>
-                <td colSpan={numColumnas / 4} style={{ textAlign: "center" }}>
+                <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
                   <div>ELABORO</div>
                   <div className="firm">
                     <input
                       type=""
                       name=""
-                      value={producedBy}
-                      onChange={(e) => setProducedBy(e.target.value)}
+                      defaultValue={producedBy}
                       className="firm-input"
                     />
                   </div>
                 </td>
-                <td colSpan={1}></td>
-                <td colSpan={numColumnas / 4} style={{ textAlign: "center" }}>
+
+                <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
                   <div>REVISO</div>
                   <div className="firm">
                     <input
                       type=""
                       name=""
-                      value={checkedBy}
-                      onChange={(e) => setCheckedBy(e.target.value)}
+                      defaultValue={checkedBy}
                       className="firm-input"
                     />
                   </div>
                 </td>
-                <td colSpan={1}></td>
-                <td colSpan={numColumnas / 4} style={{ textAlign: "center" }}>
+
+                <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
                   <div>AUTORIZO</div>
                   <div className="firm">
                     <input
                       type=""
                       name=""
-                      value={authorizedBy}
-                      onChange={(e) => setAuthorizedBy(e.target.value)}
+                      defaultValue={authorizedBy}
                       className="firm-input"
                     />
                   </div>
@@ -855,4 +954,4 @@ const Create = () => {
   );
 };
 
-export default Create;
+export default View;

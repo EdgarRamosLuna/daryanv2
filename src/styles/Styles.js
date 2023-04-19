@@ -51,7 +51,12 @@ export const Table = styled.div`
     color: #fff;
     position: sticky;
     top: 0px;
-    z-index: 10;
+    z-index: 3;
+  }
+  .react-datepicker {
+  }
+  .react-datepicker-popper {
+    z-index: 999;
   }
   .no-sticky {
     position: unset;
@@ -171,6 +176,144 @@ export const Table = styled.div`
     display: flex;
     gap: 5px;
     color: #570000;
+    flex-wrap: wrap;
+  }
+  li {
+    list-style: none;
+  }
+  .filter-items {
+    display: grid;
+    grid-template-columns: repeat(3, 10%);
+    justify-items: start;
+  }
+
+  .filter-item-in {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 30px;
+    input {
+      margin-top: 5px;
+      margin-bottom: 0;
+    }
+  }
+  .item-list {
+    width: 100%;
+    display: flex;
+
+    overflow-y: hidden;
+    min-height: 30px;
+    min-width: 150px;
+    color: #447b91;
+
+    ul {
+      opacity: 0.5; /* Empieza con una opacidad de 0.5 */
+
+      animation: fadein 0.1s ease-in-out forwards;
+      border: 1px solid /*rgb(122, 89, 89)*/;
+      border-radius: 5px;
+      height: auto;
+      text-align: center;
+      display: flex;
+      -webkit-box-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      justify-content: center;
+      cursor: pointer;
+      background-color: rgb(255, 255, 255);
+      max-width: 600px;
+      flex-direction: column;
+      transition: height 1s ease 0s;
+      justify-content: center;
+      align-items: end;
+      min-width: 150px;
+      li {
+        width: auto;
+        text-align: left;
+        padding: 3px 15px;
+        opacity: 0.5;
+        animation: 0.1s ease-in-out 0s 1 normal forwards running fadeinBottom;
+        display: flex;
+        gap: 10px;
+        margin: 0px 5px;
+        box-sizing: border-box;
+        cursor: default;
+        i {
+          color: rgb(122, 89, 89);
+        }
+      }
+    }
+  }
+  .loaderContainer {
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    animation: hideLoader 0.1s ease-in-out forwards;
+    transition: all 0.3s;
+  }
+  .rloaderContainer {
+    animation: rhideLoader 0.2s ease-in-out forwards;
+    
+    opacity: 0;
+    transition: all 0.3s;
+    
+    tr, td{
+      border-color:transparent;
+        
+
+      }
+  }
+  .tr-hd{
+    animation: hideLoader 0.2s ease-in-out forwards;
+    
+    opacity: 0;
+    transition: all 0.3s;
+    
+    tr, td{
+      border-color:transparent;
+        
+
+      }
+  }
+  @keyframes rhideLoader {
+    from {
+      opacity: 0;
+      border-color:transparent;
+    }
+    to {
+      opacity: 1;
+
+    }
+  }
+  @keyframes hideLoader {
+    to {
+      opacity: 0;
+      tr, td *{
+        border-color:inherit;
+
+      }
+    }
+  }
+  @keyframes fadeinBottom {
+    from {
+      opacity: 0.5; /* Empieza con una opacidad de 0.5 */
+      transform: translateY(50px); /* Empieza desde 50px abajo */
+    }
+    to {
+      opacity: 1; /* Termina con una opacidad de 1 */
+      transform: translateY(0); /* Termina en su posición original */
+    }
+  }
+  @keyframes fadein {
+    /* from {
+      opacity: 0.5; /* Empieza con una opacidad de 0.5 
+      transform: translateX(50px); /* Empieza desde 50px abajo 
+    }*/
+    to {
+      opacity: 1; /* Termina con una opacidad de 1 */
+      transform: translateX(0); /* Termina en su posición original */
+    }
   }
   .filter-item-input {
     display: flex;
@@ -274,6 +417,7 @@ export const Table = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
+    gap: 20px;
   }
 
   .table-data tr {

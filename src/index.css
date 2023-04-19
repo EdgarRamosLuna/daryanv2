@@ -1,23 +1,21 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+ /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -moz-osx-font-smoothing: grayscale;*/
 }
-code {
+/*code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
-}
-
+}*/
 .login {
   width: 100%;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-
   color: #fff;
 }
 .login_cont {
@@ -324,6 +322,7 @@ fieldset {
   overflow: auto;
   height: 50%;
   padding: 0 20px;
+  
 }
 .c3 {
   
@@ -406,6 +405,8 @@ input[type="checkbox"] {
   transform: translateY(-100px);
   z-index: 100;
   background: #f2f2f2;
+  overflow-x: scroll;
+  scrollbar-position: start;
 }
 
 .container-checkbox {
@@ -418,4 +419,39 @@ input[type="checkbox"] {
   justify-content: start;
   gap: 7px;
   width: 100%;
+}
+.pagination i{
+  
+  margin-bottom: -4px;
+
+}
+.filter-item-input input::-webkit-calendar-picker-indicator {
+  display: none !important;
+}
+/*
+table.table-totals tr:hover {
+  background: unset !important;
+}
+*/
+
+.tr-h:hover{
+  background-color: rgb(224, 224, 224) !important;
+}
+
+
+.td-nh{
+  background: #020221;
+  color: #fff;
+}
+.mb-5{
+  margin-bottom: 50px;
+}
+.tr-hidden *{
+  border-color: transparent !important;
+  transition: all 1s;
+}
+.tr-hd{
+  opacity: 0;
+  border-color:transparent;
+  transition: all 1s;
 }
