@@ -9,7 +9,9 @@ const Clients = () => {
   //console.log(dataT);
   const [dataClients, setDataClients] = useState([]);
   useEffect(() => {
-    fetch("http://phpstack-921351-3198370.cloudwaysapps.com/server/api/get_sales")
+    fetch("/daryan-server/api/get_clients", {
+      cache: "no-cache",
+    })
     .then(response => {
       if (!response.ok) {
         throw new Error('Request failed.');

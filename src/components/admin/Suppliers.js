@@ -16,9 +16,11 @@ import StatusBtn from "../StatusBtn";
 registerLocale("es", es);
 function SuppliersTable({ data }) {
 
-  const {hanldeDel, setShowModalS, updateId, setUpdateId} = useContext(MainContext);
+  console.log(data);
+
+  const {hanldeDel, setShowModalU, updateId, setUpdateId} = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
-  const [lastnameFilter, setLastnameFilter] = useState("");
+  
   const today = new Date();
   const sixDaysLater = new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000);
   const sixDaysBefore = new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000);
@@ -95,7 +97,7 @@ function SuppliersTable({ data }) {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     return filteredData.slice(startIndex, endIndex);
-  }, [filteredData, currentPage, rowsPerPage]);
+  }, [filteredData]);
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
   const handlePageChange = useCallback(
@@ -175,7 +177,7 @@ function SuppliersTable({ data }) {
 
   const updateUser = (id_user) =>{
     setUpdateId(id_user);
-    setShowModalS(true);
+    setShowModalU(true);
   }
   return (
     <>
@@ -217,9 +219,9 @@ function SuppliersTable({ data }) {
                 ) : (
                   getPaginatedData().map((item, index) => (
                     <tr key={index}>
-                      <td className="table-center">Usuario {item.id}</td>
-                      <td className="table-center">correo@email.com</td>
-                      <td className="table-center"><StatusBtn status={1} id={item.id} /></td>
+                      <td className="table-center">{item.username}</td>
+                      <td className="table-center">{item.email}</td>
+                      <td className="table-center"><StatusBtn status={Number(item.status)} id={item.id} /></td>
                       <td className="table-center">
                         <div className="actions">
                           <i

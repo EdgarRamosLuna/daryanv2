@@ -217,9 +217,9 @@ function ClientsTable({ data }) {
                 ) : (
                   getPaginatedData().map((item, index) => (
                     <tr key={index}>
-                      <td className="table-center">Usuario {item.id}</td>
-                      <td className="table-center">correo@email.com</td>
-                      <td className="table-center"><StatusBtn status={1} id={item.id} /></td>
+                      <td className="table-center">{item.username}</td>
+                      <td className="table-center">{item.email}</td>
+                      <td className="table-center"><StatusBtn status={Number(item.status)} id={item.id} /></td>
                       <td className="table-center">
                         <div className="actions">
                           <i

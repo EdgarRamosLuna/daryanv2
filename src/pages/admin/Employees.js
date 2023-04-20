@@ -6,9 +6,9 @@ import { MainContext } from "../../context/MainContext";
 const Employees = () => {
   const {dataEmployees, setDataEmployees} = useContext(MainContext);
   useEffect(() => {
-    fetch(
-      "http://phpstack-921351-3198370.cloudwaysapps.com/server/api/products_pizza"
-    )
+    fetch("/daryan-server/api/get_employees", {
+      cache: "no-cache",
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Request failed.");
