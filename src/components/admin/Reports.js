@@ -196,7 +196,7 @@ function ReportsTable({ data }) {
         return true;
       });
     },
-    [nameFilter, dateStart, dateEnd]
+    [nameFilter, dateStart, dateEnd, data]
   );
   const filterData2 = useCallback(
     (data) => {
@@ -223,7 +223,7 @@ function ReportsTable({ data }) {
         return true;
       });
     },
-    [nameFilter, dateStart, dateEnd]
+    [nameFilter, dateStart, dateEnd, data]
   );
   const [totalFiltered, setTotalFiltered] = useState([]);
   const [dataToTable, setDataToTable] = useState([]);

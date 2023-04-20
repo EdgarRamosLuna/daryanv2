@@ -10,8 +10,8 @@ export default function SecondTableCreate({ dataC }) {
     setNumFilas,
     numColumnas,
     setNumColumnas,
-    setTitulosColumnas,
-    titulosColumnas,
+    setTitulosColumnas2,
+    titulosColumnas2,
     agregarColumna,
     agregarColumna2,
     agregarFila,
@@ -193,9 +193,9 @@ export default function SecondTableCreate({ dataC }) {
   useEffect(() => {
     for (let p = 0; p < clauses; p++) {
       if (p === 2) {
-        //const updatedState = [...titulosColumnas];
+        //const updatedState = [...titulosColumnas2];
         //updatedState[14] = 'E';
-        //setTitulosColumnas(updatedState);
+        //setTitulosColumnas2(updatedState);
       }
       if (p === 3) {
         setIsEClause(true);
@@ -215,21 +215,19 @@ export default function SecondTableCreate({ dataC }) {
       <table>
         <thead>
           <tr>
-            {titulosColumnas.map((titulo, i) =>
+            {titulosColumnas2.map((titulo, i) =>
               i === 0 ? (
                 <th>
                   <i
-                    
                     className="fa-solid fa-circle-plus"
                     style={{ opacity: 0 }}
                   ></i>
                 </th>
-              ) : titulosColumnas.length > 15 && i === 14 ? (
+              ) : titulosColumnas2.length > 15 && i === 14 ? (
                 <th>E</th>
-              ) : i === titulosColumnas.length - 1 ? (
+              ) : i === titulosColumnas2.length - 1 ? (
                 <th key={i}>
                   <i
-                    
                     className="fa-solid fa-circle-plus"
                     style={{ opacity: 0 }}
                   ></i>
@@ -278,20 +276,7 @@ export default function SecondTableCreate({ dataC }) {
                   </td>
                 ) : (
                   <td key={i}>
-                    {i === 2 ? (
-                      <DatePickerInput
-                        id={fila.id}
-                        name=""
-                        index={i}
-                        defaultValue={valor}
-                        setDate={handleDate}
-                      />
-                    ) : (
-                      <input
-                        defaultValue={valor}
-                        
-                      />
-                    )}
+                    <input defaultValue={valor} />
                   </td>
                 )
               )}

@@ -195,7 +195,7 @@ function ReportsTable({ data }) {
         return true;
       });
     },
-    [nameFilter, dateStart, dateEnd]
+    [nameFilter, dateStart, dateEnd, data]
   );
   const filterData2 = useCallback(
     (data) => {
@@ -222,7 +222,7 @@ function ReportsTable({ data }) {
         return true;
       });
     },
-    [nameFilter, dateStart, dateEnd]
+    [nameFilter, dateStart, dateEnd, data]
   );
   const [totalFiltered, setTotalFiltered] = useState([]);
   const [dataToTable, setDataToTable] = useState([]);
@@ -556,7 +556,7 @@ function ReportsTable({ data }) {
   //console.log(checkList);
   const navigate = useNavigate();
   const singleView = (id) => {
-    window.location.href = `/admin/reports/${id}`;
+    window.location.href = `/user/reports/${id}`;
     //navigate(`/user/reports/${id}`);
   };
   const singleView2 = (id) => {

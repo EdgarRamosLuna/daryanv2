@@ -94,6 +94,10 @@ export default function SubHeader() {
     let idCreate = pathname.slice(-1);
     navigate(`/user/reports/create/${idCreate}/table2`);
   };
+  const singleView = (url) => {
+    window.location.href = url;
+    //navigate(`/user/reports/${id}`);
+  };
   return (
     <>
       {showModalClient === true && (
@@ -161,16 +165,16 @@ export default function SubHeader() {
 
         {pathname === "/user/reports" && (
           <>
-            <Link to="/user/reports/create/1">
+            <button onClick={() => singleView('/user/reports/create/1')}>
               <center>
-                <i class="fa-solid fa-plus"></i>Reporte de inspeccion
+                <i className="fa-solid fa-plus"></i>Reporte de inspeccion
               </center>
-            </Link>
-            <Link to="/user/reports/create/2">
+            </button>
+            <button onClick={() => singleView('/user/reports/create/2')}>
               <center>
-                <i class="fa-solid fa-plus"></i>Reporte por horas
+                <i className="fa-solid fa-plus"></i>Reporte por horas
               </center>
-            </Link>
+            </button>
           </>
         )}
         {pathname === "/user/reports/create/1" && (

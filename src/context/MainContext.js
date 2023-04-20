@@ -244,7 +244,7 @@ export const MainContextProvider = ({ children }) => {
 
   const agregarColumna2 = (e) => {
     setNumColumnas((prev) => prev + 1);
-    setTitulosColumnas((prevTitulos) => {
+    setTitulosColumnas2((prevTitulos) => {
       const nextLetter = getNextLetter(prevTitulos);
       setDbColumns((prev) => [...prev, nextLetter]);
       //   console.log(nextLetter);
@@ -366,10 +366,32 @@ export const MainContextProvider = ({ children }) => {
         );
         return prev;
       });
+      setTitulosColumnas2((prev) => {
+        prev[titulosColumnas2.length - 1] = (
+          <>
+            <i
+              className="fa-solid fa-trash"
+              onClick={() => eliminarColumna(penultimate)}
+            ></i>
+          </>
+        );
+        return prev;
+      });
     } else {
       if (penultimate === "D") {
         setTitulosColumnas((prev) => {
           prev[titulosColumnas.length - 1] = (
+            <>
+              <i
+                className="fa-solid fa-circle-plus"
+                onClick={agregarColumna}
+              ></i>
+            </>
+          );
+          return prev;
+        });
+        setTitulosColumnas2((prev) => {
+          prev[titulosColumnas2.length - 1] = (
             <>
               <i
                 className="fa-solid fa-circle-plus"

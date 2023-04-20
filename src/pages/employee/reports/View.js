@@ -57,7 +57,8 @@ const View = () => {
     setTitulosColumnas,
     setDbColumns,
     getNextLetter,
-    agregarColumna2,
+    agregarColumna2
+
   } = useContext(MainContext);
   //setData(dataTS)
 
@@ -69,8 +70,8 @@ const View = () => {
           (data) => Number(data.id) === Number(idReport)
         )[0]
       : data.filter((data) => Number(data.id) === Number(idReport))[0];
-  const [dataC, setDataC] = useState(eData);
-  const [producedBy, setProducedBy] = useState("");
+      const [dataC, setDataC] = useState(eData);
+      const [producedBy, setProducedBy] = useState("");
   const [checkedBy, setCheckedBy] = useState("");
   const [authorizedBy, setAuthorizedBy] = useState("");
   console.log(eData);
@@ -100,7 +101,7 @@ const View = () => {
 
   //     return arrayCopy;
   //   });
-
+ 
   // };
   useEffect(() => {
     if (Object.keys(dataC).length > 0) {
@@ -109,15 +110,17 @@ const View = () => {
       const clauses = Number(dataC.report_in.length);
       const newLength = 11 + clauses;
       setNumColumnas(newLength);
+      
     }
   }, []);
   useEffect(() => {
-    console.log(numColumnas);
+    
+    console.log(numColumnas)
   }, [numColumnas]);
   useEffect(() => {
     //console.log(dataC);
-    //    agregarColumna2();
-
+//    agregarColumna2();
+    
     setDivs(() => {
       const filas = [];
       for (let i = 1; i <= numFilas; i++) {
@@ -126,7 +129,7 @@ const View = () => {
           values: Array.from({ length: numColumnas }, () => ""),
         });
       }
-
+      
       for (let j = 0; j < filas.length; j++) {
         const fil = filas[j];
         const values = fil.values;
@@ -139,7 +142,7 @@ const View = () => {
                 values[k] = dataC.reports_cc[j][keys[k]];
                 break;
               case 1:
-                values[k] = dataC.reports_cc[j][keys[k + 1]];
+                values[k] = dataC.reports_cc[j][keys[k+1]];
                 break;
               case 2:
                 const date = dataC.reports_cc[j][keys[k + 1]];
@@ -393,8 +396,14 @@ const View = () => {
               name="plant"
               placeholder=""
               required
-              defaultValue={dataC.plant}
-              readOnly
+              value={dataC.plant}
+              defaultValue=""
+              onChange={(e) =>
+                setDataC({
+                  ...dataC,
+                  [e.target.dataset.name || e.target.name]: e.target.value,
+                })
+              }
             />
           </div>
           <div className="form-container">
@@ -405,20 +414,24 @@ const View = () => {
               name="supplier"
               placeholder=""
               required
-              defaultValue={dataC.supplier}
-              readOnly
+              defaultValue=""
+              value={dataC.supplier}
+              onChange={(e) =>
+                setDataC({
+                  ...dataC,
+                  [e.target.dataset.name || e.target.name]: e.target.value,
+                })
+              }
             />
           </div>
           <div className="form-container">
             <label htmlFor="data3">Fecha:</label>
-            <input
-              type="text"
-              id="data2"
-              name="supplier"
-              placeholder=""
-              required
-              defaultValue={dataC.date}
-              readOnly
+            <DatePickerInput
+              id="data3"
+              name="date"
+              style={{ textAlign: "left", padding: "12px 20px" }}
+              value={dataC.date}
+              setDate={handleDate}
             />
           </div>
           <div className="form-container">
@@ -429,8 +442,14 @@ const View = () => {
               name="report_number"
               placeholder=""
               required
-              defaultValue={dataC.report_number}
-              readOnly
+              defaultValue=""
+              value={dataC.report_number}
+              onChange={(e) =>
+                setDataC({
+                  ...dataC,
+                  [e.target.dataset.name || e.target.name]: e.target.value,
+                })
+              }
             />
           </div>
           <div className="form-container">
@@ -441,8 +460,14 @@ const View = () => {
               name="part_name"
               placeholder=""
               required
-              defaultValue={dataC.part_name}
-              readOnly
+              defaultValue=""
+              value={dataC.part_name}
+              onChange={(e) =>
+                setDataC({
+                  ...dataC,
+                  [e.target.dataset.name || e.target.name]: e.target.value,
+                })
+              }
             />
           </div>
           <div className="form-container">
@@ -453,8 +478,14 @@ const View = () => {
               name="worked_hours"
               placeholder=""
               required
-              defaultValue={dataC.worked_h}
-              readOnly
+              defaultValue=""
+              value={dataC.worked_h}
+              onChange={(e) =>
+                setDataC({
+                  ...dataC,
+                  [e.target.dataset.name || e.target.name]: e.target.value,
+                })
+              }
             />
           </div>
           <div className="form-container">
@@ -465,13 +496,31 @@ const View = () => {
               name="rate"
               placeholder=""
               required
-              defaultValue={dataC.rate}
-              readOnly
+              defaultValue=""
+              value={dataC.rate}
+              onChange={(e) =>
+                setDataC({
+                  ...dataC,
+                  [e.target.dataset.name || e.target.name]: e.target.value,
+                })
+              }
             />
           </div>
           <div className="form-container">
             <label htmlFor="data8">Turno:</label>
-            <select id="data8" name="shift" required defaultValue={dataC.shift}>
+            <select
+              id="data8"
+              name="shift"
+              required
+              defaultValue="0"
+              value={dataC.shift}
+              onChange={(e) =>
+                setDataC({
+                  ...dataC,
+                  [e.target.dataset.name || e.target.name]: e.target.value,
+                })
+              }
+            >
               <option value="0">Selecciona una opcion</option>
               <option value="1">1</option>
               <option value="2">2</option>
@@ -486,7 +535,14 @@ const View = () => {
               name="part_number"
               placeholder=""
               required
-              defaultValue={dataC.part_number}
+              defaultValue=""
+              value={dataC.part_number}
+              onChange={(e) =>
+                setDataC({
+                  ...dataC,
+                  [e.target.dataset.name || e.target.name]: e.target.value,
+                })
+              }
             />
           </div>
           <div className="form-container">
@@ -498,7 +554,13 @@ const View = () => {
                   type="checkbox"
                   name="st1"
                   checked={serviceType.st1}
-                  readOnly
+                  onChange={(e) =>
+                    setServiceType({
+                      ...serviceType,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
+                    })
+                  }
                 />
                 Selección
               </label>
@@ -508,7 +570,13 @@ const View = () => {
                   type="checkbox"
                   name="st2"
                   checked={serviceType.st2}
-                  readOnly
+                  onChange={(e) =>
+                    setServiceType({
+                      ...serviceType,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
+                    })
+                  }
                 />
                 Retrabajo
               </label>
@@ -521,7 +589,12 @@ const View = () => {
                   type="text"
                   name="st3"
                   value={serviceType.st3}
-                  readOnly
+                  onChange={(e) =>
+                    setServiceType({
+                      ...serviceType,
+                      [e.target.dataset.name || e.target.name]: e.target.value,
+                    })
+                  }
                 />
               </div>
             </div>
@@ -672,7 +745,12 @@ const View = () => {
                             </td>
                           ) : (
                             <td key={i} className="table-center">
-                              <input type="" name="" defaultValue={dumpValue} />
+                              <input
+                                type=""
+                                name=""
+                                value={dumpValue}
+                                onChange={() => setDumpValue("")}
+                              />
                             </td>
                           )}
                         </>
@@ -705,38 +783,88 @@ const View = () => {
                             </>
                           ) : (
                             <td key={i} className="table-center">
-                              {i === 2 && <input defaultValue={total1} />}
-                              {i === 3 && <input defaultValue={total2} />}
-                              {i === 4 && <input defaultValue={total3} />}
-                              {i === 5 && <input defaultValue={total4} />}
-                              {i === 6 && <input defaultValue={total5} />}
-                              {i === 7 && <input defaultValue={total6} />}
-                              {i === 8 && <input defaultValue={total7} />}
-                              {i === 9 && <input defaultValue={total8} />}
-                              {i === 10 && <input defaultValue={total9} />}
+                              {i === 2 && (
+                                <input
+                                  value={total1}
+                                  onChange={(e) => setTotal1(e.target.value)}
+                                />
+                              )}
+                              {i === 3 && (
+                                <input
+                                  value={total2}
+                                  onChange={(e) => setTotal2(e.target.value)}
+                                />
+                              )}
+                              {i === 4 && (
+                                <input
+                                  value={total3}
+                                  onChange={(e) => setTotal3(e.target.value)}
+                                />
+                              )}
+                              {i === 5 && (
+                                <input
+                                  value={total4}
+                                  onChange={(e) => setTotal4(e.target.value)}
+                                />
+                              )}
+                              {i === 6 && (
+                                <input
+                                  value={total5}
+                                  onChange={(e) => setTotal5(e.target.value)}
+                                />
+                              )}
+                              {i === 7 && (
+                                <input
+                                  value={total6}
+                                  onChange={(e) => setTotal6(e.target.value)}
+                                />
+                              )}
+                              {i === 8 && (
+                                <input
+                                  value={total7}
+                                  onChange={(e) => setTotal7(e.target.value)}
+                                />
+                              )}
+                              {i === 9 && (
+                                <input
+                                  value={total8}
+                                  onChange={(e) => setTotal8(e.target.value)}
+                                />
+                              )}
+                              {i === 10 && (
+                                <input
+                                  value={total9}
+                                  onChange={(e) => setTotal9(e.target.value)}
+                                />
+                              )}
                               {i === 11 && (
                                 <input
-                                  defaultValue={isNaN(total10) ? 0 : total10}
+                                  value={isNaN(total10) ? 0 : total10}
+                                  onChange={(e) => setTotal10(e.target.value)}
                                 />
                               )}
                               {i === 12 && (
                                 <input
-                                  defaultValue={isNaN(total11) ? 0 : total11}
+                                  value={isNaN(total11) ? 0 :total11}
+                                  onChange={(e) => setTotal11(e.target.value)}
                                 />
                               )}
                               {i === 13 && (
                                 <input
-                                  defaultValue={isNaN(total12) ? 0 : total12}
+                                  value={isNaN(total12) ? 0 :total12}
+                                  onChange={(e) => setTotal12(e.target.value)}
                                 />
                               )}
                               {i === 14 && (
                                 <input
-                                  defaultValue={isNaN(total13) ? 0 : total13}
+                                  value={isNaN(total13) ? 0 :total13}
+                                  onChange={(e) => setTotal13(e.target.value)}
                                 />
                               )}
                               {i === 15 && (
                                 <input
-                                  defaultValue={isNaN(total14) ? 0 : total14}
+                                  value={isNaN(total14) ? 0 :total14}
+                                  onChange={(e) => setTotal14(e.target.value)}
                                 />
                               )}
                             </td>
@@ -754,7 +882,14 @@ const View = () => {
                       i < reportFooter.length - 1 &&
                       fila.values.map((valor, i) => (
                         <>
-                          <input defaultValue={valor} key={i} /> <br />
+                          <input
+                            value={valor}
+                            onChange={(e) =>
+                              handleUpdate(1, fila.id, i, e.target.value)
+                            }
+                            key={i}
+                          />{" "}
+                          <br />
                         </>
                       ))
                   )}
@@ -766,7 +901,14 @@ const View = () => {
                       j < reportFooter2.length - 1 &&
                       fila.values.map((valor, i) => (
                         <>
-                          <input defaultValue={valor} key={i} /> <br />
+                          <input
+                            value={valor}
+                            onChange={(e) =>
+                              handleUpdate(2, fila.id, i, e.target.value)
+                            }
+                            key={i}
+                          />{" "}
+                          <br />
                         </>
                       ))
                   )}
@@ -787,7 +929,8 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -799,7 +942,8 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -811,7 +955,8 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -823,7 +968,8 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -835,7 +981,8 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -847,7 +994,8 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -859,7 +1007,8 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -871,7 +1020,8 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -883,7 +1033,8 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
+                                    value={dumpValue}
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -903,7 +1054,14 @@ const View = () => {
                       i < reportFooter3.length - 1 &&
                       fila.values.map((valor, i) => (
                         <>
-                          <input defaultValue={valor} key={i} /> <br />
+                          <input
+                            value={valor}
+                            onChange={(e) =>
+                              handleUpdate(3, fila.id, i, e.target.value)
+                            }
+                            key={i}
+                          />{" "}
+                          <br />
                         </>
                       ))
                   )}
@@ -916,7 +1074,8 @@ const View = () => {
                     <input
                       type=""
                       name=""
-                      defaultValue={producedBy}
+                      value={producedBy}
+                      onChange={(e) => setProducedBy(e.target.value)}
                       className="firm-input"
                     />
                   </div>
@@ -928,7 +1087,8 @@ const View = () => {
                     <input
                       type=""
                       name=""
-                      defaultValue={checkedBy}
+                      value={checkedBy}
+                      onChange={(e) => setCheckedBy(e.target.value)}
                       className="firm-input"
                     />
                   </div>
@@ -940,7 +1100,8 @@ const View = () => {
                     <input
                       type=""
                       name=""
-                      defaultValue={authorizedBy}
+                      value={authorizedBy}
+                      onChange={(e) => setAuthorizedBy(e.target.value)}
                       className="firm-input"
                     />
                   </div>
