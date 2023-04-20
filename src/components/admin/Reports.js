@@ -72,7 +72,7 @@ function ReportsTable({ data }) {
   const [filtersSerial, setFiltersSerial] = useState([]);
   const [filtersLot, setFiltersLot] = useState([]);
   const [filtersPartNumber, setFiltersPartNumber] = useState([]);
-  const [loader, setLoader] = useState(false)
+  const [loader, setLoader] = useState(false);
   const handleNameFilterChange = (event) => {
     setNameFilter(event.target.value);
   };
@@ -300,7 +300,7 @@ function ReportsTable({ data }) {
 
         const min = 1000000;
         const max = 9000000;
-      
+
         const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
 
         // temp[i] = {
@@ -322,7 +322,7 @@ function ReportsTable({ data }) {
         //   total_A: total_A,
         // };
 
-      /*  if (dateString in temp2) {
+        /*  if (dateString in temp2) {
           temp2[dateString].part_number = partNumber;
           temp2[dateString].total_inspected += total_inspected;
           temp2[dateString].total_ng_pieces += total_ng_pieces;
@@ -344,15 +344,15 @@ function ReportsTable({ data }) {
           };
         }*/
         temp2[i] = {
-            part_number: partNumber,
-            total_inspected: total_inspected,
-            total_ng_pieces: total_ng_pieces,
-            total_ok_pieces: total_ok_pieces,
-            total_re_work_parts: total_re_work_parts,
-            total_scrap: total_scrap,
-            total_A: total_A,
-            date: dateString
-        }
+          part_number: partNumber,
+          total_inspected: total_inspected,
+          total_ng_pieces: total_ng_pieces,
+          total_ok_pieces: total_ok_pieces,
+          total_re_work_parts: total_re_work_parts,
+          total_scrap: total_scrap,
+          total_A: total_A,
+          date: dateString,
+        };
         if (partNumber in temp) {
           temp[partNumber].part_number = partNumber;
           temp[partNumber].total_inspected += total_inspected;
@@ -362,7 +362,6 @@ function ReportsTable({ data }) {
           temp[partNumber].total_scrap += total_scrap;
           temp[partNumber].total_A += total_A;
           temp[partNumber].date += dateString;
-
         } else {
           //  console.log(partNumber);
           temp[partNumber] = {
@@ -373,12 +372,12 @@ function ReportsTable({ data }) {
             total_re_work_parts: total_re_work_parts,
             total_scrap: total_scrap,
             total_A: total_A,
-            date: dateString
+            date: dateString,
           };
         }
       }
 
-     /* const groupedData = {};
+      /* const groupedData = {};
 
       for (const date in temp) {
         const item = temp[date];
@@ -413,7 +412,7 @@ function ReportsTable({ data }) {
         }
         return acc;
       }, {});
-      
+
       const summedData = {};
       Object.entries(groupedData).forEach(([part_number, dates]) => {
         summedData[part_number] = [];
@@ -421,10 +420,8 @@ function ReportsTable({ data }) {
           summedData[part_number].push(values);
         });
       });
-      
-      
-      
-     // console.log(JSON.stringify(groupedData));
+
+      // console.log(JSON.stringify(groupedData));
       // const groupedData = Object.values(temp2).reduce((acc, curr) => {
       //   const {part_number, date, ...rest} = curr;
       //   if(!acc[date]) {
@@ -441,7 +438,7 @@ function ReportsTable({ data }) {
       //   }
       //   return acc;
       // }, {});
-      
+
       // const groupedData = Object.values(temp2).reduce((acc, curr) => {
       //   const {part_number, ...rest} = curr;
       //   if(!acc[part_number]) {
@@ -455,12 +452,11 @@ function ReportsTable({ data }) {
       //   acc[part_number][date].push(rest);
       //   return acc;
       // }, {});
-      
-     // console.log(JSON.stringify(groupedData));
-      
-      
+
+      // console.log(JSON.stringify(groupedData));
+
       setDataToTable(summedData);
-        console.log(temp2);   
+      console.log(temp2);
     }
   }, [data, filtersPartNumber, dateStart, dateEnd, filtersLot, filtersSerial]);
   const filteredData = filterData(data);
@@ -918,13 +914,29 @@ function ReportsTable({ data }) {
 
                       <datalist id="parts_number">
                         {uniquePart_number.map((part_number, indx) => {
-                          return (
-                            <>
-                              <option value={part_number}># Parte</option>
-                            </>
+                          // Verificar si el navegador es Firefox, Safari o Edge
+                          const isFirefox =
+                            navigator.userAgent.indexOf("Firefox") !== -1;
+                          const isSafari =
+                            navigator.userAgent.indexOf("Safari") !== -1 ||
+                            navigator.userAgent.indexOf("AppleWebKit") !== -1;
+                          const isEdge =
+                            navigator.userAgent.indexOf("Edge") !== -1;
+
+                          // Crear etiqueta de opción
+                          const option = (
+                            <option value={part_number}>
+                              {isFirefox 
+                                ? `Parte #${part_number}`
+                                : "# Parte"}
+                            </option>
                           );
+
+                          // Devolver opción
+                          return option;
                         })}
                       </datalist>
+
                       {/*<input
                      type="text"
                      id="name-filter"
@@ -950,13 +962,29 @@ function ReportsTable({ data }) {
 
                       <datalist id="lots">
                         {uniqueLots.map((lot, indx) => {
-                          return (
-                            <>
-                              <option value={lot}># Lote</option>
-                            </>
+                          // Verificar si el navegador es Firefox, Safari o Edge
+                          const isFirefox =
+                            navigator.userAgent.indexOf("Firefox") !== -1;
+                          const isSafari =
+                            navigator.userAgent.indexOf("Safari") !== -1 ||
+                            navigator.userAgent.indexOf("AppleWebKit") !== -1;
+                          const isEdge =
+                            navigator.userAgent.indexOf("Edge") !== -1;
+
+                          // Crear etiqueta de opción
+                          const option = (
+                            <option value={lot}>
+                              {isFirefox 
+                                ? `Lote #${lot}`
+                                : "# Lote"}
+                            </option>
                           );
+
+                          // Devolver opción
+                          return option;
                         })}
                       </datalist>
+
                       {/*<input
                      type="text"
                      id="name-filter"
@@ -982,13 +1010,29 @@ function ReportsTable({ data }) {
 
                       <datalist id="serials">
                         {uniqueSerial.map((serial, indx) => {
-                          return (
-                            <>
-                              <option value={serial}># Serial</option>
-                            </>
+                          // Verificar si el navegador es Firefox, Safari o Edge
+                          const isFirefox =
+                            navigator.userAgent.indexOf("Firefox") !== -1;
+                          const isSafari =
+                            navigator.userAgent.indexOf("Safari") !== -1 ||
+                            navigator.userAgent.indexOf("AppleWebKit") !== -1;
+                          const isEdge =
+                            navigator.userAgent.indexOf("Edge") !== -1;
+
+                          // Crear etiqueta de opción
+                          const option = (
+                            <option value={serial}>
+                              {isFirefox 
+                                ? `Serial #${serial}`
+                                : "# Serial"}
+                            </option>
                           );
+
+                          // Devolver opción
+                          return option;
                         })}
                       </datalist>
+
                       {/*<input
                      type="text"
                      id="name-filter"
@@ -1299,8 +1343,8 @@ function ReportsTable({ data }) {
         {activeTab === 3 && (
           <div className="table-body table-reports">
             {/* <TableTotals data={totalFiltered} /> */}
-            <TableComponent groupedData={dataToTable} loader={loader}/>
-             {/* <table>
+            <TableComponent groupedData={dataToTable} loader={loader} />
+            {/* <table>
               <thead>
                 <tr>
                   
@@ -1348,7 +1392,7 @@ function ReportsTable({ data }) {
                   });
                 })} */}
 
-                {/*getPaginatedData2().length === 0 ? (
+            {/*getPaginatedData2().length === 0 ? (
                   <Loader>
                     <img src="/assets/img/loading2.svg" alt="" />
                   </Loader>
