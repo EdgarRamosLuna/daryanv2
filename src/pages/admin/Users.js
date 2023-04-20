@@ -6,7 +6,7 @@ import { MainContext } from "../../context/MainContext";
 const Users = () => {
   const {dataUsers, setDataUsers} = useContext(MainContext);
   useEffect(() => {
-    fetch("/daryan-server/api/get_employees", {
+    fetch("http://3.142.97.58/daryan-server/api/get_employees", {
       cache: "no-cache",
     })
       .then((response) => {

@@ -7,7 +7,7 @@ import { MainContext } from "../../context/MainContext";
 const Suppliers = () => {
   const {dataSuppliers, setDataSuppliers} = useContext(MainContext);
   useEffect(() => {
-    fetch("/daryan-server/api/get_suppliers", {
+    fetch("http://3.142.97.58/daryan-server/api/get_suppliers", {
       cache: "no-cache",
     })
       .then((response) => {

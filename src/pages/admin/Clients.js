@@ -9,7 +9,7 @@ const Clients = () => {
   //console.log(dataT);
   const [dataClients, setDataClients] = useState([]);
   useEffect(() => {
-    fetch("/daryan-server/api/get_clients", {
+    fetch("http://3.142.97.58/daryan-server/api/get_clients", {
       cache: "no-cache",
     })
     .then(response => {

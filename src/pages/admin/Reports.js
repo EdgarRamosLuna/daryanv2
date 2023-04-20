@@ -18,7 +18,7 @@ const Reports = () => {
 
   
   useEffect(() => {
-    fetch("/daryan-server/api/get", {
+    fetch("http://3.142.97.58/daryan-server/api/get", {
       cache: "no-cache",
     })
       .then((response) => {
