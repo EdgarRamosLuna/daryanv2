@@ -18,12 +18,12 @@ const linksUser = [
     ico: faFileLines,
     fun: () => {},
   },
-  {
-    label: "Mi Cuenta",
-    route: "/user/my-account",
-    ico: faGear,
-    fun: () => {},
-  },
+  // {
+  //   label: "Mi Cuenta",
+  //   route: "/user/my-account",
+  //   ico: faGear,
+  //   fun: () => {},
+  // },
   {
     label: "Salir",
     route: "/user/login",

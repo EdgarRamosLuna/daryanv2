@@ -21,6 +21,7 @@ export const MainContextProvider = ({ children }) => {
   //JSON.parse(dataTS)
 
   const [idDelete, setIdDelete] = useState("");
+  const [tableName, setTableName] = useState("");
   const [data, setData] = useState([]);
   const [dataUsers, setDataUsers] = useState([]);
   const [dataEmployees, setDataEmployees] = useState([]);
@@ -32,6 +33,15 @@ export const MainContextProvider = ({ children }) => {
     dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
   );
   const [dataToSave, setDataToSave] = useState([]);
+  const aproveReport = (e) => {
+    //  console.log(dataToSave);
+    axios
+      .post("http://localhost/daryan-server/api/aprove", dataToSave)
+      .then((res) => {})
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const saveReport = (e) => {
     //  console.log(dataToSave);
     axios
@@ -78,9 +88,10 @@ export const MainContextProvider = ({ children }) => {
     dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
   );
   const [confirm, setConfirm] = useState(false);
-  const hanldeDel = (id) => {
+  const hanldeDel = (id, tableName) => {
     //console.log(data, id);
     setIdDelete(id);
+    setTableName(tableName);
     setConfirm(true);
   };
   const handleConfirm = (callback) => {
@@ -269,12 +280,15 @@ export const MainContextProvider = ({ children }) => {
     });
   };
 
-  const agregarFila = (numColumnas) => {
+  const agregarFila = (numColumnas, date) => {
     setDivs((prevDatos) => [
       ...prevDatos,
       {
         id: prevDatos.length + 1,
-        values: Array.from({ length: numColumnas }, () => ""),
+        values: date
+          ? Array.from({ length: numColumnas }, (v, i) => (i === 2 ? date : ""))
+          : Array.from({ length: numColumnas }, () => ""),
+        // values: Array.from({ length: numColumnas }, () => ""),
       },
     ]);
     setNumFilas((prev) => prev + 1);
@@ -422,17 +436,23 @@ export const MainContextProvider = ({ children }) => {
   const [total14, setTotal14] = useState(0);
   const [sort, setSort] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
   const formattedDate = (value) => {
-    const date = new Date(value); // Supongamos que la fecha que quieres formatear es la fecha actual
+    const date = new Date(value);
+    const year = date.getFullYear();
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const day = ("0" + date.getDate()).slice(-2);
+    const formattedDateTime = `${year}-${month}-${day}`;
+    // const date = new Date(value); // Supongamos que la fecha que quieres formatear es la fecha actual
 
-    const year = date.getFullYear(); // Obtiene el año de la fecha
-    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Obtiene el mes de la fecha y lo convierte a una cadena con dos dígitos, y se agrega un cero inicial si el mes es menor a 10
-    const day = date.getDate().toString().padStart(2, "0"); // Obtiene el día del mes de la fecha y lo convierte a una cadena con dos dígitos, y se agrega un cero inicial si el día es menor a 10
+    // const year = date.getFullYear(); // Obtiene el año de la fecha
+    // const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Obtiene el mes de la fecha y lo convierte a una cadena con dos dígitos, y se agrega un cero inicial si el mes es menor a 10
+    // const day = date.getDate().toString().padStart(2, "0"); // Obtiene el día del mes de la fecha y lo convierte a una cadena con dos dígitos, y se agrega un cero inicial si el día es menor a 10
 
-    const result = `${year}-${month}-${day}`; // Combina los valores del año, mes y día en una cadena con el formato deseado
-    return result;
+    // const result = `${year}-${month}-${day}`; // Combina los valores del año, mes y día en una cadena con el formato deseado
+    return formattedDateTime;
   };
+  const [dataCDb, setDataCDb] = useState([]);
   return (
     <MainContext.Provider
       value={{
@@ -441,6 +461,7 @@ export const MainContextProvider = ({ children }) => {
         data,
         setData,
         saveReport,
+        aproveReport,
         dataToSave,
         setDataToSave,
         dataTS,
@@ -527,6 +548,11 @@ export const MainContextProvider = ({ children }) => {
         setDataClients,
         dataSuppliers,
         setDataSuppliers,
+        serverUrl,
+        tableName,
+        setTableName,
+        dataCDb,
+        setDataCDb,
       }}
     >
       <Toaster richColors position="top-center" closeButton />

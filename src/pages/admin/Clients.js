@@ -5,11 +5,12 @@ import ClientsTable from "../../components/admin/Clients";
 
 
 const Clients = () => {
-  const { dataSes, dataT, dataTS, reportData } = useContext(MainContext);
+  const { dataSes, dataT, dataTS, reportData, serverUrl } = useContext(MainContext);
   //console.log(dataT);
   const [dataClients, setDataClients] = useState([]);
   useEffect(() => {
-    fetch("http://3.142.97.58/daryan-server/api/get_clients", {
+    fetch(`${serverUrl}/api/get_clients`, {
+      
       cache: "no-cache",
     })
     .then(response => {

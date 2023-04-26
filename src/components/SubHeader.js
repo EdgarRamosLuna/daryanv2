@@ -12,6 +12,7 @@ import CreateClient from "../pages/admin/clients/Create";
 import UpdateClient from "../pages/admin/clients/Update";
 import CreateSupplier from "../pages/admin/suppliers/Create";
 import UpdateSupplier from "../pages/admin/suppliers/Update";
+import axios from "axios";
 
 let val;
 if (typeof window !== "undefined") {
@@ -25,6 +26,7 @@ export default function SubHeader() {
   const {
     dataSes,
     saveReport,
+    aproveReport,
     confirm,
     setConfirm,
     setData,
@@ -40,6 +42,8 @@ export default function SubHeader() {
     setUpdateId,
     showModalS,
     setShowModalS,
+    tableName,
+    serverUrl,
   } = useContext(MainContext);
   //console.log(useParams());
 
@@ -50,7 +54,6 @@ export default function SubHeader() {
   const [showModalEmployee, setShowModalEmployee] = useState(false);
   const [showModalUser, setShowModalUser] = useState(false);
   const [showModalSupplier, setShowModalSupplier] = useState(false);
-  const [tableName, setTableName] = useState("");
 
   const handleClickModal = () => {
     setShowModalUser(true);
@@ -79,12 +82,27 @@ export default function SubHeader() {
 
   const callbackConfirm = (id) => {
     setData((data) => data.filter((data) => data.id !== `${id}`));
+    if (tableName === "reports") {
+      axios.post(`${serverUrl}/api/del_report`, {
+        id:id
+      }, {
+        headers: {
+          Authorization: `Bearer 125465`,
+        }
+      })
+        .then((res) => {
+       //   console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
     setConfirm(false);
   };
   const p = useParams().id;
   const [params, setParams] = useState(p);
   if (typeof p !== "undefined") {
-    console.log(dataSes);
+    //console.log(dataSes);
   }
   //console.log(useLocation())
   const navigate = useNavigate();
@@ -152,7 +170,7 @@ export default function SubHeader() {
                 Cancelar
               </button>
               <button
-                onClick={() => callbackConfirm(idDelete, tableName)}
+                onClick={() => callbackConfirm(idDelete)}
                 className="btn btn-success"
               >
                 Confirmar
@@ -161,83 +179,77 @@ export default function SubHeader() {
           </div>
         </Modal>
       )}
-      <div className={style.subHeader}>  <div className="btns-header">
-
-        {pathname === "/user/reports" && (
-          <>
-            <button onClick={() => singleView('/user/reports/create/1')}>
-              <center>
-                <i className="fa-solid fa-plus"></i>Reporte de inspeccion
-              </center>
-            </button>
-            <button onClick={() => singleView('/user/reports/create/2')}>
-              <center>
-                <i className="fa-solid fa-plus"></i>Reporte por horas
-              </center>
-            </button>
-          </>
-        )}
-        {pathname === "/user/reports/create/1" && (
-          <button onClick={(e) => saveReport(e)}>Enviar Reporte</button>
-        )}
-        {pathname === "/user/reports/create/2" && (
-          <>
+      <div className={style.subHeader}>
+        {" "}
+        <div className="btns-header">
+          {pathname === "/user/reports" && (
+            <>
+              <button onClick={() => singleView("/user/reports/create/1")}>
+                <center>
+                  <i className="fa-solid fa-plus"></i>Reporte de inspeccion
+                </center>
+              </button>
+              <button onClick={() => singleView("/user/reports/create/2")}>
+                <center>
+                  <i className="fa-solid fa-plus"></i>Reporte por horas
+                </center>
+              </button>
+            </>
+          )}
+          {pathname === "/user/reports/create/1" && (
             <button onClick={(e) => saveReport(e)}>Enviar Reporte</button>
-            <button onClick={(e) => handleLink(e)}>Tabla de muestreo</button>
-          </>
-        )}
-        {pathname === "/admin/users/create" && (
-          <button onClick={(e) => saveReport(e)}>Guardar</button>
-        )}
-        {dataSes === "admin" &&
-          pathname.includes("admin") &&
-          pathname.includes("reports") &&
-          typeof p !== "undefined" && (
-            <button onClick={(e) => saveReport(e)}>
-              Aprobar Reporte
-            </button>
           )}
-        {pathname.includes("table2") && (
-          <>
-            <button onClick={(e) => navigate(-1)}>
-              Regresar
-            </button>
-            <button onClick={(e) => saveReport(e)}>
-              Guardar
-            </button>
-          
-          </>
+          {pathname === "/user/reports/create/2" && (
+            <>
+              <button onClick={(e) => saveReport(e)}>Enviar Reporte</button>
+              <button onClick={(e) => handleLink(e)}>Tabla de muestreo</button>
+            </>
           )}
-        
-        {pathname === "/admin/users" && (
-          <>
-            <button onClick={handleClickModal}>
-              <center>Crear usuario</center>
-            </button>
-          </>
-        )}
-        {pathname === "/admin/employees" && (
-          <>
-            <button onClick={handleClickModal2}>
-              <center>Crear empleado</center>
-            </button>
-          </>
-        )}
-        {pathname === "/admin/clients" && (
-          <>
-            <button onClick={handleClickModal3}>
-              <center>Crear cliente</center>
-            </button>
-          </>
-        )}
-        {pathname === "/admin/suppliers" && (
-          <>
-            <button onClick={handleClickModal4}>
-              <center>Crear proveedor</center>
-            </button>
-          </>
-        )}
-         </div>
+          {pathname === "/admin/users/create" && (
+            <button onClick={(e) => saveReport(e)}>Guardar</button>
+          )}
+          {dataSes === "admin" &&
+            pathname.includes("admin") &&
+            pathname.includes("reports") &&
+            typeof p !== "undefined" && (
+              <button onClick={(e) => aproveReport(e)}>Aprobar Reporte</button>
+            )}
+          {pathname.includes("table2") && (
+            <>
+              <button onClick={(e) => navigate(-1)}>Regresar</button>
+              <button onClick={(e) => saveReport(e)}>Guardar</button>
+            </>
+          )}
+
+          {pathname === "/admin/users" && (
+            <>
+              <button onClick={handleClickModal}>
+                <center>Crear usuario</center>
+              </button>
+            </>
+          )}
+          {pathname === "/admin/employees" && (
+            <>
+              <button onClick={handleClickModal2}>
+                <center>Crear empleado</center>
+              </button>
+            </>
+          )}
+          {pathname === "/admin/clients" && (
+            <>
+              <button onClick={handleClickModal3}>
+                <center>Crear cliente</center>
+              </button>
+            </>
+          )}
+          {pathname === "/admin/suppliers" && (
+            <>
+              <button onClick={handleClickModal4}>
+                <center>Crear proveedor</center>
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </>
   );

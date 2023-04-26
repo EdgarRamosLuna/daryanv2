@@ -319,7 +319,7 @@ fieldset {
   gap: 15px;
   box-sizing: border-box;
   flex-wrap: nowrap;
-  overflow: auto;
+  overflow: scroll;
   height: 50%;
   padding: 0 20px;
   

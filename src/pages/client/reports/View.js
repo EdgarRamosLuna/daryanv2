@@ -73,8 +73,6 @@ const View = () => {
   const [producedBy, setProducedBy] = useState(eData.made_by);
   const [checkedBy, setCheckedBy] = useState(eData.checked_by);
   const [authorizedBy, setAuthorizedBy] = useState(eData.authorized_by);
-  console.log(eData);
-
   // const agregarColumnas = (e) => {
   //   console.log('sdsd');
   //   setTitulosColumnas((prevTitulos) => {
@@ -111,9 +109,9 @@ const View = () => {
       setNumColumnas(newLength);
     }
   }, []);
-  useEffect(() => {
-    console.log(numColumnas);
-  }, [numColumnas]);
+  // useEffect(() => {
+  //   console.log(numColumnas);
+  // }, [numColumnas]);
   useEffect(() => {
     //console.log(dataC);
     //    agregarColumna2();
@@ -543,12 +541,12 @@ const View = () => {
 
     return () => {};
   }, [numColumnas]);
-
+  //console.log(data);
   useEffect(() => {
     //console.log()
     const newArray = [
       {
-        data: dataC,
+        data: data,
         serviceType: serviceType,
         customerControl: customerControl,
         customerControlTable: divs,
@@ -562,7 +560,7 @@ const View = () => {
     ];
     setDataToSave(newArray);
   }, [
-    dataC,
+    data,
     serviceType,
     customerControl,
     divs,
@@ -580,8 +578,8 @@ const View = () => {
   //console.log(dataToSave)
   const [dumpValue, setDumpValue] = useState("");
   const handleDate = (name, date) => {
-    setDataC({
-      ...dataC,
+    setData({
+      ...data,
       [name]: date,
     });
   };
@@ -603,11 +601,11 @@ const View = () => {
               name="plant"
               placeholder=""
               required
-              value={dataC.plant}
+              value={data.plant}
               defaultValue=""
               onChange={(e) =>
-                setDataC({
-                  ...dataC,
+                setData({
+                  ...data,
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
@@ -622,10 +620,10 @@ const View = () => {
               placeholder=""
               required
               defaultValue=""
-              value={dataC.supplier}
+              value={data.supplier}
               onChange={(e) =>
-                setDataC({
-                  ...dataC,
+                setData({
+                  ...data,
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
@@ -635,9 +633,9 @@ const View = () => {
             <label htmlFor="data3">Fecha:</label>
             <DatePickerInput
               id="data3"
-              name="date"
+              name="datess"
               style={{ textAlign: "left", padding: "12px 20px" }}
-              value={dataC.date}
+              value={data.date}
               setDate={handleDate}
             />
           </div>
@@ -650,10 +648,10 @@ const View = () => {
               placeholder=""
               required
               defaultValue=""
-              value={dataC.report_number}
+              value={data.report_number}
               onChange={(e) =>
-                setDataC({
-                  ...dataC,
+                setData({
+                  ...data,
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
@@ -668,10 +666,10 @@ const View = () => {
               placeholder=""
               required
               defaultValue=""
-              value={dataC.part_name}
+              value={data.part_name}
               onChange={(e) =>
-                setDataC({
-                  ...dataC,
+                setData({
+                  ...data,
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
@@ -686,10 +684,10 @@ const View = () => {
               placeholder=""
               required
               defaultValue=""
-              value={dataC.worked_h}
+              value={data.worked_h}
               onChange={(e) =>
-                setDataC({
-                  ...dataC,
+                setData({
+                  ...data,
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
@@ -704,10 +702,10 @@ const View = () => {
               placeholder=""
               required
               defaultValue=""
-              value={dataC.rate}
+              value={data.rate}
               onChange={(e) =>
-                setDataC({
-                  ...dataC,
+                setData({
+                  ...data,
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
@@ -720,10 +718,10 @@ const View = () => {
               name="shift"
               required
               defaultValue="0"
-              value={dataC.shift}
+              value={data.shift}
               onChange={(e) =>
-                setDataC({
-                  ...dataC,
+                setData({
+                  ...data,
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
@@ -743,10 +741,10 @@ const View = () => {
               placeholder=""
               required
               defaultValue=""
-              value={dataC.part_number}
+              value={data.part_number}
               onChange={(e) =>
-                setDataC({
-                  ...dataC,
+                setData({
+                  ...data,
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }

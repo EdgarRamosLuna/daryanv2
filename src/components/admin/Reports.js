@@ -1241,7 +1241,7 @@ function ReportsTable({ data }) {
                       <td className="table-center">{item.date}</td>
                       <td className="table-center">
                         {Number(item.status) === 1 && "Sin aprobar"}{" "}
-                        {Number(item.status) === 2 && "Aprobado"}
+                        {Number(item.status) === 3 && "Aprobado"}
                       </td>
                       <td
                         className="table-center"
@@ -1251,7 +1251,7 @@ function ReportsTable({ data }) {
                         <div className="actions">
                           <i
                             className="fa-solid fa-trash"
-                            onClick={() => hanldeDel(item.id)}
+                            onClick={() => hanldeDel(item.id, 'reports')}
                           ></i>
                           <Link
                             to={`/admin/reports/${item.id}`}

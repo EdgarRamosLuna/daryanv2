@@ -13,12 +13,13 @@ const Reports = () => {
     numColumnas,
     titulosColumnas,
     setTitulosColumnas,
-    agregarColumna
+    agregarColumna,
+    serverUrl,
   } = useContext(MainContext);
 
-  
   useEffect(() => {
-    fetch("http://3.142.97.58/daryan-server/api/get", {
+    // fetch("http://3.142.97.58/daryan-server/api/get", {
+    fetch(`${serverUrl}/api/get`, {
       cache: "no-cache",
     })
       .then((response) => {

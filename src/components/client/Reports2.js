@@ -14,6 +14,8 @@ import Checkbox from "../Checkbox";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import { Link, useNavigate } from "react-router-dom";
+import FilterSearch from "./FilterSearch";
+import TableTotals from "./TableTotals";
 import TableComponent from "./TableComponent";
 registerLocale("es", es);
 function ReportsTable({ data }) {
@@ -551,7 +553,7 @@ function ReportsTable({ data }) {
   //console.log(checkList);
   const navigate = useNavigate();
   const singleView = (id) => {
-    window.location.href = `/user/reports/${id}`;
+    window.location.href = `/admin/reports/${id}`;
     //navigate(`/user/reports/${id}`);
   };
   const singleView2 = (id) => {

@@ -1,9 +1,8 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { MainContext } from "../../../context/MainContext";
 import { Table } from "../../../styles/Styles";
-
+import DatePickerInput from "../../../components/DateInput";
 import { useRef } from "react";
-import DatePickerInputU from "../../../components/DateInputUpdate";
 
 export default function SecondTableCreate({ dataC }) {
   const {
@@ -11,8 +10,8 @@ export default function SecondTableCreate({ dataC }) {
     setNumFilas,
     numColumnas,
     setNumColumnas,
-    setTitulosColumnas,
-    titulosColumnas,
+    setTitulosColumnas2,
+    titulosColumnas2,
     agregarColumna,
     agregarColumna2,
     agregarFila,
@@ -194,9 +193,9 @@ export default function SecondTableCreate({ dataC }) {
   useEffect(() => {
     for (let p = 0; p < clauses; p++) {
       if (p === 2) {
-        //const updatedState = [...titulosColumnas];
+        //const updatedState = [...titulosColumnas2];
         //updatedState[14] = 'E';
-        //setTitulosColumnas(updatedState);
+        //setTitulosColumnas2(updatedState);
       }
       if (p === 3) {
         setIsEClause(true);
@@ -204,60 +203,35 @@ export default function SecondTableCreate({ dataC }) {
       if (p > 3) {
         //agregarColumna2();
         if (numColumnas < 20) {
-          setNumColumnas((prev) => prev + 1);
-          setTitulosColumnas((prevTitulos) => {
-            const nextLetter = getNextLetter(prevTitulos);
-            setDbColumns((prev) => [...prev, nextLetter]);
-            //   console.log(nextLetter);
-            const newArr = [...prevTitulos, nextLetter];
-            const arrayCopy = newArr.slice();
-            const penultimate = arrayCopy.slice(-2, -1)[0];
-            arrayCopy.splice(-2, 1);
-            arrayCopy.push(penultimate);
-            // const tableWrapper = document.querySelectorAll(".scrollX");
-
-            // tableWrapper.forEach((element) => {
-            //   const scrollWidth = element.scrollWidth;
-            //   const clientWidth = element.clientWidth;
-            //   if (scrollWidth >= clientWidth) {
-            //     setTimeout(() => {
-            //       element.scrollLeft = scrollWidth;
-            //     }, 200);
-            //   }
-            // });
-
-            return arrayCopy;
-          });
+          agregarColumna2();
         }
       }
     }
   }, []);
 
   //console.log(divs);
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = ("0" + (date.getMonth() + 1)).slice(-2);
-  const day = ("0" + date.getDate()).slice(-2);
-  const hours = ("0" + date.getHours()).slice(-2);
-  const minutes = ("0" + date.getMinutes()).slice(-2);
-  const seconds = ("0" + date.getSeconds()).slice(-2);
-  const formattedDateTime = `${year}-${month}-${day}`;
   return (
     <Table>
       <table>
         <thead>
           <tr>
-            {titulosColumnas.map((titulo, i) =>
+            {titulosColumnas2.map((titulo, i) =>
               i === 0 ? (
-                <th key={i}>
+                <th>
                   <i
-                    ref={btnRef}
                     className="fa-solid fa-circle-plus"
-                    onClick={() => agregarFila(numColumnas, formattedDateTime)}
+                    style={{ opacity: 0 }}
                   ></i>
                 </th>
-              ) : titulosColumnas.length > 15 && i === 14 ? (
-                <th key={i}>E</th>
+              ) : titulosColumnas2.length > 15 && i === 14 ? (
+                <th>E</th>
+              ) : i === titulosColumnas2.length - 1 ? (
+                <th key={i}>
+                  <i
+                    className="fa-solid fa-circle-plus"
+                    style={{ opacity: 0 }}
+                  ></i>
+                </th>
               ) : (
                 <th key={i}>{titulo}</th>
               )
@@ -292,7 +266,7 @@ export default function SecondTableCreate({ dataC }) {
                     {i === 0 && fila.id !== 1 && (
                       <i
                         className="fa-solid fa-trash"
-                        onClick={() => eliminarFila(fila.id)}
+                        style={{ opacity: 0 }}
                       ></i>
                     )}
                   </td>
@@ -302,26 +276,7 @@ export default function SecondTableCreate({ dataC }) {
                   </td>
                 ) : (
                   <td key={i}>
-                    {i === 2 ? (
-                      valor !== "" ? (
-                        <DatePickerInputU
-                          id={fila.id}
-                          name="date_item"
-                          index={i}
-                          value={valor}
-                          setDate={handleDate}
-                        />
-                      ) : (
-                        ""
-                      )
-                    ) : (
-                      <input
-                        value={valor}
-                        onChange={(e) =>
-                          handleInputChange(fila.id, i, e.target.value)
-                        }
-                      />
-                    )}
+                    <input defaultValue={valor} />
                   </td>
                 )
               )}
@@ -335,61 +290,61 @@ export default function SecondTableCreate({ dataC }) {
 
               <td>
                 <input
-                  value={div.values[1]}
+                  defaultValue={div.values[1]}
                   onChange={(e) => handleInputChange(div.id, 1, e.target.value)}
                 />
               </td>
               <td>
                 <input
-                  value={div.values[2]}
+                  defaultValue={div.values[2]}
                   onChange={(e) => handleInputChange(div.id, 2, e.target.value)}
                 />
               </td>
               <td>
                 <input
-                  value={div.values[3]}
+                  defaultValue={div.values[3]}
                   onChange={(e) => handleInputChange(div.id, 3, e.target.value)}
                 />
               </td>
               <td>
                 <input
-                  value={div.values[4]}
+                  defaultValue={div.values[4]}
                   onChange={(e) => handleInputChange(div.id, 4, e.target.value)}
                 />
               </td>
               <td>
                 <input
-                  value={div.values[5]}
+                  defaultValue={div.values[5]}
                   onChange={(e) => handleInputChange(div.id, 5, e.target.value)}
                 />
               </td>
               <td>
                 <input
-                  value={div.values[6]}
+                  defaultValue={div.values[6]}
                   onChange={(e) => handleInputChange(div.id, 6, e.target.value)}
                 />
               </td>
               <td>
                 <input
-                  value={div.values[7]}
+                  defaultValue={div.values[7]}
                   onChange={(e) => handleInputChange(div.id, 7, e.target.value)}
                 />
               </td>
               <td>
                 <input
-                  value={div.values[8]}
+                  defaultValue={div.values[8]}
                   onChange={(e) => handleInputChange(div.id, 8, e.target.value)}
                 />
               </td>
               <td>
                 <input
-                  value={div.values[9]}
+                  defaultValue={div.values[9]}
                   onChange={(e) => handleInputChange(div.id, 9, e.target.value)}
                 />
               </td>
               <td>
                 <input
-                  value={div.values[10]}
+                  defaultValue={div.values[10]}
                   onChange={(e) =>
                     handleInputChange(div.id, 10, e.target.value)
                   }
@@ -397,7 +352,7 @@ export default function SecondTableCreate({ dataC }) {
               </td>
               <td>
                 <input
-                  value={div.values[11]}
+                  defaultValue={div.values[11]}
                   onChange={(e) =>
                     handleInputChange(div.id, 11, e.target.value)
                   }
@@ -405,7 +360,7 @@ export default function SecondTableCreate({ dataC }) {
               </td>
               <td>
                 <input
-                  value={div.values[12]}
+                  defaultValue={div.values[12]}
                   onChange={(e) =>
                     handleInputChange(div.id, 12, e.target.value)
                   }
@@ -413,7 +368,7 @@ export default function SecondTableCreate({ dataC }) {
               </td>
               <td>
                 <input
-                  value={div.values[13]}
+                  defaultValue={div.values[13]}
                   onChange={(e) =>
                     handleInputChange(div.id, 12, e.target.value)
                   }

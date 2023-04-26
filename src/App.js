@@ -19,6 +19,8 @@ import View from "./pages/admin/reports/View";
 import View2 from "./pages/employee/reports/View";
 import View3 from "./pages/employee/reports/View2";
 import View4 from "./pages/admin/reports/View2";
+import View5 from "./pages/client/reports/View";
+import View6 from "./pages/client/reports/View2";
 import Suppliers from "./pages/admin/Suppliers";
 import Create3 from "./pages/employee/Create3";
 function App() {
@@ -44,6 +46,7 @@ function App() {
           <Route exact path="/admin/suppliers" element={<Suppliers/>} />
           <Route exact path="/admin/my-account" element={<Settings />} />
           <Route exact path="/client/reports" element={<Reports2 />} />
+          <Route exact path="/client/reports/:id" element={<View5 />} />
           <Route exact path="/client/my-account" element={<Settings />} />
         </Route>
         <Route exact path="/user/login" element={<Login />} />
