@@ -183,7 +183,7 @@ export const Table = styled.div`
   }
   .filter-items {
     display: grid;
-    grid-template-columns: repeat(3, 10%);
+    grid-template-columns: repeat(3, 15%);
     justify-items: start;
   }
 
@@ -254,44 +254,41 @@ export const Table = styled.div`
   }
   .rloaderContainer {
     animation: rhideLoader 0.2s ease-in-out forwards;
-    
+
     opacity: 0;
     transition: all 0.3s;
-    
-    tr, td{
-      border-color:transparent;
-        
 
-      }
+    tr,
+    td {
+      border-color: transparent;
+    }
   }
-  .tr-hd{
+  .tr-hd {
     animation: hideLoader 0.2s ease-in-out forwards;
-    
+
     opacity: 0;
     transition: all 0.3s;
-    
-    tr, td{
-      border-color:transparent;
-        
 
-      }
+    tr,
+    td {
+      border-color: transparent;
+    }
   }
   @keyframes rhideLoader {
     from {
       opacity: 0;
-      border-color:transparent;
+      border-color: transparent;
     }
     to {
       opacity: 1;
-
     }
   }
   @keyframes hideLoader {
     to {
       opacity: 0;
-      tr, td *{
-        border-color:inherit;
-
+      tr,
+      td * {
+        border-color: inherit;
       }
     }
   }
@@ -442,6 +439,26 @@ export const CreateForm = styled.div`
     flex-direction: column;
     width: 100%;
   }
+  .checkbox-contain {
+    display: flex;
+    justify-content: start;
+    gap: 10px;
+  }
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    input {
+      margin-top: 4px !important;
+      height: 20px;
+      width: 20px;
+    }
+    label {
+      margin: 0;
+      padding: 0;
+    }
+  }
   h2 {
     margin-bottom: 20px;
     text-align: center;
@@ -471,6 +488,10 @@ export const CreateForm = styled.div`
     text-transform: uppercase;
     letter-spacing: 1px;
     max-width: 100%;
+    height: 37px;
+    img {
+      height: 100%;
+    }
   }
   p {
     text-align: center;
@@ -483,6 +504,16 @@ export const CreateForm = styled.div`
   }
   .item-from-container {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    input {
+      margin: 0;
+    }
+    .error {
+      //      color: red;
+      color: #4f0003;
+    }
   }
 `;
 

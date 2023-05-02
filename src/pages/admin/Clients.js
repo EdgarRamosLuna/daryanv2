@@ -5,12 +5,13 @@ import ClientsTable from "../../components/admin/Clients";
 
 
 const Clients = () => {
-  const { dataSes, dataT, dataTS, reportData, serverUrl } = useContext(MainContext);
+  const { dataSes, data, dataTS, reportData, serverUrl, dbChanges, dataClients, setDataClients } = useContext(MainContext);
   //console.log(dataT);
-  const [dataClients, setDataClients] = useState([]);
+
+ // console.log(dbChanges);
+  
   useEffect(() => {
     fetch(`${serverUrl}/api/get_clients`, {
-      
       cache: "no-cache",
     })
     .then(response => {
@@ -21,12 +22,26 @@ const Clients = () => {
     })
     .then(dataClients => {
      console.log(dataClients);
+      dataClients.sort((a, b) => b.id - a.id);
       setDataClients(dataClients);
     })
     .catch(error => {
       console.log(error);
     });
   }, []);
+  useEffect(() =>{
+  //  console.log(dbChanges);
+    if(dbChanges.length > 0){
+      console.log(dbChanges[0]);
+      const datan = [dbChanges[0], ...dataClients]
+
+      //console.log(datan)
+      setDataClients(prev => [dbChanges[0], ...dataClients]);
+    }
+  }, [dbChanges])
+
+
+  
   /*
   const [dataClientsTa, setDataClientsTa] = useState([]);
   useEffect(() => {

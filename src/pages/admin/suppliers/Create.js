@@ -1,28 +1,138 @@
-import React from "react";
-import { CreateForm } from "../../../styles/Styles";
 
+import React, { useContext, useEffect } from "react";
+import { CreateForm } from "../../../styles/Styles";
+import axios from "axios";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { createSupplier } from "../../../api/daryan.api";
+import { useNavigate, useParams } from "react-router-dom";
+import { MainContext } from "../../../context/MainContext";
 const CreateSupplier = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm();
+  const {btnCloseRef, toast} = useContext(MainContext)
+  const [saving, setSaving] = useState(false);
+  const [dataToSave, setDataToSave] = useState([]);
+  const navigate = useNavigate();
+  const params = useParams();
+  useEffect(() => {
+    async function loadTask() {
+      if (params.id) {
+        const res = await createSupplier(params.id);
+        const { title, description } = res.data;
+        // console.log(title, description);
+        setValue("title", title);
+        setValue("description", description);
+        //setTask(res.data);
+        //console.log(res.data);
+        //console.log(res.data.title);
+        //console.log(res.data.description);
+      }
+    }
+    loadTask();
+  }, []);
+  const onSubmmit = handleSubmit(async (data) => {
+    setSaving(true);
+    await createSupplier(data).then((res) => {
+      const data = res.data;
+      if (data.error) {
+        toast.error(data.message, {
+          duration: 5000,
+        });
+      }else{
+        toast.success(data.message, {
+          duration: 4000,
+        }
+        );
+      }
+    })
+    .catch((err) => {
+      //console.log(err);
+      toast.error(err, {
+        duration: 5000,
+      });
+    });
+    setSaving(false);
+    btnCloseRef.current.click();
+  });
+
   return (
     <CreateForm>
       <p>Crear Proveedor</p>
-      <form autoComplete="off">
+      <form autoComplete="off" onSubmit={onSubmmit}>
         <div className="item-from-container">
-          <label htmlFor="name">Proveedor</label>
-          <input type="text" id="name" required />
+          <label htmlFor="name">Nombre del proveedor</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            {...register("name", { required: true })}
+
+            //   required
+            //   onFocus={(e) => e.target.select()}
+            // //  value={dataToSave.name}
+          />
+          {errors.name && <span className="error">Informacion requerida</span>}
         </div>
         <div className="item-from-container">
-          <label htmlFor="name">Usuario</label>
-          <input type="text" id="name" required />
+          <label htmlFor="user">Usuario</label>
+          <input
+            type="text"
+            id="user"
+            name="user"
+            {...register("user", { required: true })}
+            // required
+            // onFocus={(e) => e.target.select()}
+            // value={dataToSave.user}
+            // onChange={(e) =>
+            //   setDataToSave({
+            //     ...dataToSave,
+            //     [e.target.dataset.name || e.target.name]: e.target.value,
+            //   })
+            // }
+          />
+          {errors.user && <span className="error">Informacion requerida</span>}
         </div>
         <div className="item-from-container">
           <label htmlFor="email">Correo</label>
-          <input type="email" id="email" required />
+          <input
+            type="text"
+            id="email"
+            name="email"
+            {...register("email", { required: true })}
+            //required
+            // onFocus={(e) => e.target.select()}
+            // value={dataToSave.email}
+            // onChange={(e) =>
+            //   setDataToSave({
+            //     ...dataToSave,
+            //     [e.target.dataset.name || e.target.name]: e.target.value,
+            //   })
+            // }
+          />
+          {errors.email && <span className="error">Informacion requerida</span>}
         </div>
         <div className="item-from-container">
           <label htmlFor="password">Contraseña</label>
-          <input type="password" id="password" required />
+          <input
+            type="password"
+            id="password"
+            name="password"
+            {...register("password", { required: true })}
+            // required
+            // onFocus={(e) => e.target.select()}
+            // value={dataToSave.password}
+          />
+          {errors.password && (
+            <span className="error">Informacion requeridaa</span>
+          )}
+          <br />
+          <button type="submit">Guardar</button>
         </div>
-        <button type="submit">Guardar</button>
       </form>
       {/*  <button type="submit">Create Account</button>
 

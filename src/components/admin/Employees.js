@@ -13,10 +13,20 @@ import Loader from "../Loader";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import StatusBtn from "../StatusBtn";
-registerLocale("es", es);
-function EmployeesTable({ data }) {
+import TaLoader from "./TaLoader";
 
-  const {hanldeDel, setShowModalE, updateId, setUpdateId} = useContext(MainContext);
+
+registerLocale("es", es);
+function ClientsTable({ data }) {
+  // console.log(data);
+  const {
+    handleDel,
+    setShowModalE,
+    updateId,
+    setUpdateId,
+    isLoading,
+    setIsLoading,
+  } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const [lastnameFilter, setLastnameFilter] = useState("");
   const today = new Date();
@@ -28,6 +38,12 @@ function EmployeesTable({ data }) {
   const [rowsPerPage, setRowsPerPage] = useState(20);
   const [formatedDateStart, setFormatedDateStart] = useState("");
   const [formatedDateEnd, setFormatedDateEnd] = useState("");
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  }, [data]);
   useEffect(() => {
     if (dateStart !== "") {
       const date = new Date(dateStart);
@@ -51,8 +67,8 @@ function EmployeesTable({ data }) {
       const formattedDateTime = `${year}-${month}-${day}`;
       setFormatedDateEnd(formattedDateTime);
     }
-    return () => {};
   }, [dateStart, dateEnd]);
+
   const handleFirstPageClick = () => {
     setCurrentPage(1);
   };
@@ -65,9 +81,11 @@ function EmployeesTable({ data }) {
 
   const filterData = useCallback(() => {
     return data.filter((item) => {
-      const name = item.id.toLowerCase();
+      const name = item.fullname.toLowerCase();
+      const user = item.username.toLowerCase();
+      const email = item.email.toLowerCase();
       const id = item.id.toLowerCase();
-      const fullName = `${name} ${id}`; // combinamos name y id en una sola variable
+      const fullName = `${name} ${user} ${email}`; // combinamos name y id en una sola variable
       const date = new Date(item.date).getTime();
 
       if (nameFilter && fullName.indexOf(nameFilter.toLowerCase()) === -1) {
@@ -75,12 +93,12 @@ function EmployeesTable({ data }) {
         return false;
       }
 
-      if (
-        (dateStart && date < new Date(dateStart).getTime() && dateEnd) ||
-        date > new Date(dateEnd).getTime()
-      ) {
-        return false;
-      }
+      // if (
+      //   (dateStart && date < new Date(dateStart).getTime() && dateEnd) ||
+      //   date > new Date(dateEnd).getTime()
+      // ) {
+      //   return false;
+      // }
       /*
       if () {
         return false;
@@ -179,7 +197,6 @@ function EmployeesTable({ data }) {
   }
   return (
     <>
-     
       <Table>
         <div className="table-container">
           <div className="header-container">
@@ -210,25 +227,46 @@ function EmployeesTable({ data }) {
                 </tr>
               </thead>
               <tbody>
-                {getPaginatedData().length === 0 ? (
+                {isLoading ? (
+                  <>
+                    <TaLoader/>
+                  </>
+                ) : getPaginatedData().length === 0 ? (
                   <Loader>
-                    <img src="/assets/img/loading2.svg" alt="" />
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "5px",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <h1>No hay informacion en la base de datos</h1>
+                    </div>
                   </Loader>
                 ) : (
                   getPaginatedData().map((item, index) => (
                     <tr key={index}>
                       <td className="table-center">{item.username}</td>
                       <td className="table-center">{item.email}</td>
-                      <td className="table-center"><StatusBtn status={Number(item.status)} id={item.id} /></td>
+                      <td className="table-center">
+                        <StatusBtn
+                          status={Number(item.status)}
+                          id={item.id}
+                          table="clients"
+                        />
+                      </td>
                       <td className="table-center">
                         <div className="actions">
                           <i
                             className="fa-solid fa-trash"
-                            onClick={() =>
-                              hanldeDel(item.id)
-                            }
+                            onClick={() => handleDel(item.id, "clients")}
                           ></i>
-                          <i className="fa-solid fa-pen-to-square" onClick={() => updateUser(item.id)}></i>
+                          <i
+                            className="fa-solid fa-pen-to-square"
+                            onClick={() => updateUser(item.id)}
+                          ></i>
                         </div>
                       </td>
                     </tr>
@@ -281,4 +319,4 @@ function EmployeesTable({ data }) {
   );
 }
 
-export default EmployeesTable;
+export default ClientsTable;

@@ -608,7 +608,7 @@ function ReportsTable({ data }) {
           item.reports_cc.forEach((report) => {
             if (filtersLot.length > 0) {
               if (filtersLot.includes(report.lot)) {
-                if (!seen[report.serial]) {
+                if (!seen2[report.serial]) {
                   seen2[report.serial] = true;
                   res2.push(report.serial);
                   //  setFiltersSerial(prev => prev.filter(f => f.serial === report.serial))
@@ -658,6 +658,11 @@ function ReportsTable({ data }) {
     //setFiltersSerial(prev => prev.filter(f => f.serial === report.serial))
   }, [uniqueLots]);*/
   useEffect(() => {
+
+    const cleanFilters = () => {
+      setFiltersLot([]);
+      setFiltersPartNumber([]);
+    }
     if (filterOption === "2" && filtersPartNumber.length === 0) {
       toast.error(
         "Debes seleccionar almenos 1 numero de parte para obtener los numeros de lote disponibles",
@@ -666,6 +671,7 @@ function ReportsTable({ data }) {
         }
       );
       setFilterOption(1);
+      cleanFilters();
     } else {
       const inputsWithDataList = document.querySelectorAll("input[list]");
       inputsWithDataList.forEach((input) => {
@@ -685,6 +691,7 @@ function ReportsTable({ data }) {
           duration: 5000,
         }
       );
+      cleanFilters();
       setFilterOption(1);
     } else {
       const inputsWithDataList = document.querySelectorAll("input[list]");
@@ -700,6 +707,8 @@ function ReportsTable({ data }) {
       });
     }
   }, [filterOption, filtersPartNumber]);
+
+
   return (
     <Table>
       <div className="table-container mb-5">

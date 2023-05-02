@@ -13,10 +13,19 @@ import Loader from "../Loader";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import StatusBtn from "../StatusBtn";
+import TaLoader from "./TaLoader";
+
 registerLocale("es", es);
 function ClientsTable({ data }) {
-  console.log(data);
-  const {hanldeDel, setShowModalC, updateId, setUpdateId} = useContext(MainContext);
+  // console.log(data);
+  const {
+    handleDel,
+    setShowModalC,
+    updateId,
+    setUpdateId,
+    isLoading,
+    setIsLoading,
+  } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const [lastnameFilter, setLastnameFilter] = useState("");
   const today = new Date();
@@ -28,6 +37,12 @@ function ClientsTable({ data }) {
   const [rowsPerPage, setRowsPerPage] = useState(20);
   const [formatedDateStart, setFormatedDateStart] = useState("");
   const [formatedDateEnd, setFormatedDateEnd] = useState("");
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  }, [data]);
   useEffect(() => {
     if (dateStart !== "") {
       const date = new Date(dateStart);
@@ -51,8 +66,8 @@ function ClientsTable({ data }) {
       const formattedDateTime = `${year}-${month}-${day}`;
       setFormatedDateEnd(formattedDateTime);
     }
-    return () => {};
   }, [dateStart, dateEnd]);
+
   const handleFirstPageClick = () => {
     setCurrentPage(1);
   };
@@ -65,9 +80,11 @@ function ClientsTable({ data }) {
 
   const filterData = useCallback(() => {
     return data.filter((item) => {
-      const name = item.id.toLowerCase();
+      const name = item.fullname.toLowerCase();
+      const user = item.username.toLowerCase();
+      const email = item.email.toLowerCase();
       const id = item.id.toLowerCase();
-      const fullName = `${name} ${id}`; // combinamos name y id en una sola variable
+      const fullName = `${name} ${user} ${email}`; // combinamos name y id en una sola variable
       const date = new Date(item.date).getTime();
 
       if (nameFilter && fullName.indexOf(nameFilter.toLowerCase()) === -1) {
@@ -173,13 +190,12 @@ function ClientsTable({ data }) {
   };
   //console.log(checkList);
 
-  const updateUser = (id_user) =>{
+  const updateUser = (id_user) => {
     setUpdateId(id_user);
     setShowModalC(true);
-  }
+  };
   return (
     <>
-     
       <Table>
         <div className="table-container">
           <div className="header-container">
@@ -210,25 +226,44 @@ function ClientsTable({ data }) {
                 </tr>
               </thead>
               <tbody>
-                {getPaginatedData().length === 0 ? (
+                <div className={isLoading === false ? "loaderContainer" : ""}>
                   <Loader>
                     <img src="/assets/img/loading2.svg" alt="" />
                   </Loader>
+                </div>
+                {getPaginatedData().length === 0 ? (
+                  <tr>
+                    <td colSpan="4" className="table-center" style={{opacity:`${isLoading ? 0 : 1}`}}>
+                      <h1>No hay informacion en la base de datos</h1>
+                    </td>
+                  </tr>
                 ) : (
                   getPaginatedData().map((item, index) => (
-                    <tr key={index}>
+                    <tr
+                      key={index}
+                      className={
+                        isLoading === false ? "tr-h rloaderContainer" : "tr-hd"
+                      }
+                    >
                       <td className="table-center">{item.username}</td>
                       <td className="table-center">{item.email}</td>
-                      <td className="table-center"><StatusBtn status={Number(item.status)} id={item.id} /></td>
+                      <td className="table-center" style={{width:120, padding:'0 25px'}}>
+                        <StatusBtn x
+                          status={Number(item.status)}
+                          id={item.id}
+                          table="clients"
+                        />
+                      </td>
                       <td className="table-center">
                         <div className="actions">
                           <i
                             className="fa-solid fa-trash"
-                            onClick={() =>
-                              hanldeDel(item.id)
-                            }
+                            onClick={() => handleDel(item.id, "clients")}
                           ></i>
-                          <i className="fa-solid fa-pen-to-square" onClick={() => updateUser(item.id)}></i>
+                          <i
+                            className="fa-solid fa-pen-to-square"
+                            onClick={() => updateUser(item.id)}
+                          ></i>
                         </div>
                       </td>
                     </tr>

@@ -13,6 +13,7 @@ import UpdateClient from "../pages/admin/clients/Update";
 import CreateSupplier from "../pages/admin/suppliers/Create";
 import UpdateSupplier from "../pages/admin/suppliers/Update";
 import axios from "axios";
+import { deleteClient } from "../api/daryan.api";
 
 let val;
 if (typeof window !== "undefined") {
@@ -30,6 +31,7 @@ export default function SubHeader() {
     confirm,
     setConfirm,
     setData,
+    setDataClients,
     idDelete,
     handleConfirm,
     showModalU,
@@ -44,6 +46,7 @@ export default function SubHeader() {
     setShowModalS,
     tableName,
     serverUrl,
+    toast
   } = useContext(MainContext);
   //console.log(useParams());
 
@@ -80,23 +83,104 @@ export default function SubHeader() {
     //    showModalE, setShowModalE
   };
 
-  const callbackConfirm = (id) => {
-    setData((data) => data.filter((data) => data.id !== `${id}`));
+  const callbackConfirm = async(id) => {
     if (tableName === "reports") {
-      axios.post(`${serverUrl}/api/del_report`, {
-        id:id
-      }, {
-        headers: {
-          Authorization: `Bearer 125465`,
-        }
-      })
+      await axios
+        .post(
+          `${serverUrl}/api/del_report`,
+          {
+            id: id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer 125465`,
+            },
+          }
+        )
         .then((res) => {
-       //   console.log(res.data);
+          //   console.log(res.data);
+          setData((data) => data.filter((data) => data.id !== `${id}`));
         })
         .catch((err) => {
           console.log(err);
         });
     }
+    if (tableName === "suppliers") {
+      // axios
+      //   .post(
+      //     `${serverUrl}/api/delete_supplier`,
+      //     {
+      //       id: id,
+      //     },
+      //     {
+      //       headers: {
+      //         Authorization: `Bearer 125465`,
+      //       },
+      //     }
+      //   )
+      //   .then((res) => {
+      //     //   console.log(res.data);
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
+    }
+    if (tableName === "clients") {
+      await deleteClient({id: id}).then((res) => {
+        const datares = res.data;
+        if (datares.error) {
+          toast.error(datares.message, {
+            duration: 5000,
+          });
+        } else {
+          toast.success(datares.message, {
+            duration: 4000,
+          });
+          setDataClients((data) => data.filter((data) => data.id !== `${id}`));
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
+    if (tableName === "employees") {
+      await deleteClient({id: id}).then((res) => {
+        const datares = res.data;
+        if (datares.error) {
+          toast.error(datares.message, {
+            duration: 5000,
+          });
+        } else {
+          toast.success(datares.message, {
+            duration: 4000,
+          });
+          setDataClients((data) => data.filter((data) => data.id !== `${id}`));
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
+    if (tableName === "users") {
+      await deleteClient({id: id}).then((res) => {
+        const datares = res.data;
+        if (datares.error) {
+          toast.error(datares.message, {
+            duration: 5000,
+          });
+        } else {
+          toast.success(datares.message, {
+            duration: 4000,
+          });
+          setDataClients((data) => data.filter((data) => data.id !== `${id}`));
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
+
+    
     setConfirm(false);
   };
   const p = useParams().id;

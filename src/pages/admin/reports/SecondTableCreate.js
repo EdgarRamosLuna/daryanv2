@@ -212,8 +212,8 @@ export default function SecondTableCreate({ dataC }) {
             const newArr = [...prevTitulos, nextLetter];
             const arrayCopy = newArr.slice();
             const penultimate = arrayCopy.slice(-2, -1)[0];
-            arrayCopy.splice(-2, 1);
-            arrayCopy.push(penultimate);
+            // arrayCopy.splice(-2, 1);
+            // arrayCopy.push(penultimate);
             // const tableWrapper = document.querySelectorAll(".scrollX");
 
             // tableWrapper.forEach((element) => {
@@ -247,7 +247,40 @@ export default function SecondTableCreate({ dataC }) {
       <table>
         <thead>
           <tr>
-            {titulosColumnas.map((titulo, i) =>
+            {titulosColumnas.map((titulo, i) => (
+              i === 0 ? <th key={i}>
+              <i
+                ref={btnRef}
+                className="fa-solid fa-circle-plus"
+                onClick={() => agregarFila(numColumnas, formattedDateTime)}
+              ></i>
+            </th>: <th>{titulo}</th>
+            ))}
+            {titulosColumnas.at(-1) !== "I" ? (
+              <th>
+                <i
+                  className="fa-solid fa-circle-plus"
+                  onClick={agregarColumna}
+                ></i>
+              </th>
+            ) : (
+              <th>
+                
+              </th>
+            )}
+            {/* {titulosColumnas.map((titulo, i) => (
+              <th>{titulo}</th>
+            ))}
+            {titulosColumnas.at(-1) !== "I" && (
+              <th>
+                <i
+                  ref={btnRef}
+                  className="fa-solid fa-circle-plus"
+                  onClick={agregarColumna}
+                ></i>
+              </th>
+            )} */}
+            {/* {titulosColumnas.map((titulo, i) =>
               i === 0 ? (
                 <th key={i}>
                   <i
@@ -261,7 +294,7 @@ export default function SecondTableCreate({ dataC }) {
               ) : (
                 <th key={i}>{titulo}</th>
               )
-            )}
+            )} */}
             {/*<th>
               <i className="fa-solid fa-circle-plus" onClick={handleAddDiv}></i>
             </th>
@@ -295,6 +328,13 @@ export default function SecondTableCreate({ dataC }) {
                         onClick={() => eliminarFila(fila.id)}
                       ></i>
                     )}
+                    {i === fila.values.length - 1 &&
+                      fila.values.length > 15 && (
+                        <i
+                          className="fa-solid fa-trash"
+                          onClick={eliminarColumna}
+                        ></i>
+                      )}
                   </td>
                 ) : i === 1 ? (
                   <td key={i} className="table-center">

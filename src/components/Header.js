@@ -11,6 +11,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import SubHeader from "./SubHeader";
+import { MainContext } from "../context/MainContext";
+import { useContext } from "react";
 const linksUser = [
   {
     label: "Mis Reportes",
@@ -111,6 +113,7 @@ if (typeof window !== "undefined") {
 }
 export default function Header() {
   const [mapData, setMapData] = useState([]);
+  const {btnCloseRef} = useContext(MainContext)
   useEffect(() => {
     if (val === "user") {
       setMapData(linksUser);
@@ -124,6 +127,9 @@ export default function Header() {
   }, []);
   const pathname = useLocation().pathname;
 
+  useEffect(() => {
+    btnCloseRef.current &&  btnCloseRef.current.click();
+  }, [pathname]);
   //console.log(pathname.includes("reports"));
   return (
     <>

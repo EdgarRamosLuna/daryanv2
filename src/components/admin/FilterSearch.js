@@ -159,7 +159,6 @@ const FilterSearch = ({ data }) => {
 
     return () => {};
   }, []);
-  console.log(uniqueSerial);
   const [filterOption, setFilterOption] = useState(1);
   return (
     <div className="header-container">

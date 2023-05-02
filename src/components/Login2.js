@@ -60,7 +60,7 @@ export default function Login2() {
             <div className={style.forget_container}>
                 <div className="">
                     <span>
-                      Olvidtaste tu contraseña?
+                    Olvidaste tu contraseña?
                     </span>
                 </div>
             </div>

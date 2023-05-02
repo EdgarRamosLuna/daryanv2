@@ -62,7 +62,7 @@ export default function LoginAdmin() {
             <div className={style.forget_container}>
                 <div className="">
                     <span>
-                      Olvidtaste tu contraseña?
+                      Olvidaste tu contraseña?
                     </span>
                 </div>
             </div>

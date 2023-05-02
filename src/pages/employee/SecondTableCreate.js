@@ -32,7 +32,18 @@ export default function SecondTableCreate() {
     setTotal13,
     setTotal14,
   } = useContext(MainContext);
-
+  useEffect(() => {
+    setDivs(() => {
+      const filas = [];
+      for (let i = 1; i <= numFilas; i++) {
+        filas.push({
+          id: i,
+          values: Array.from({ length: numColumnas }, () => ""),
+        });
+      }
+      return filas;
+    });
+  }, [numFilas, numColumnas]);
   //console.log(numColumnas);
 
   //console.log(numColumnas);
@@ -196,6 +207,28 @@ export default function SecondTableCreate() {
           <tr>
             {titulosColumnas.map((titulo, i) =>
               i === 0 ? (
+                <th key={i}>
+                  <i
+                    className="fa-solid fa-circle-plus"
+                    onClick={() => agregarFila(numColumnas)}
+                  ></i>
+                </th>
+              ) : (
+                <th>{titulo}</th>
+              )
+            )}
+            {titulosColumnas.at(-1) !== "I" ? (
+              <th>
+                <i
+                  className="fa-solid fa-circle-plus"
+                  onClick={agregarColumna}
+                ></i>
+              </th>
+            ) : (
+              <th></th>
+            )}
+            {/* {titulosColumnas.map((titulo, i) =>
+              i === 0 ? (
                 <th>
                   <i
                     className="fa-solid fa-circle-plus"
@@ -205,7 +238,7 @@ export default function SecondTableCreate() {
               ) : (
                 <th key={i}>{titulo}</th>
               )
-            )}
+            )} */}
             {/*<th>
               <i className="fa-solid fa-circle-plus" onClick={handleAddDiv}></i>
             </th>
@@ -239,6 +272,13 @@ export default function SecondTableCreate() {
                         onClick={() => eliminarFila(fila.id)}
                       ></i>
                     )}
+                    {i === fila.values.length - 1 &&
+                      fila.values.length > 15 && (
+                        <i
+                          className="fa-solid fa-trash"
+                          onClick={() => eliminarColumna(fila.id)}
+                        ></i>
+                      )}
                   </td>
                 ) : i === 1 ? (
                   <td key={i} className="table-center">
@@ -258,7 +298,6 @@ export default function SecondTableCreate() {
                       <>
                         {i >= 3 && i <= 4 ? (
                           <input
-                            
                             value={valor}
                             onChange={(e) =>
                               handleInputChange(fila.id, i, e.target.value)

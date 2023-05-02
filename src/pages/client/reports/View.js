@@ -633,7 +633,7 @@ const View = () => {
             <label htmlFor="data3">Fecha:</label>
             <DatePickerInput
               id="data3"
-              name="datess"
+              name="date"
               style={{ textAlign: "left", padding: "12px 20px" }}
               value={data.date}
               setDate={handleDate}

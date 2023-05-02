@@ -5,9 +5,10 @@ import SuppliersTable from "../../components/admin/Suppliers";
 import { MainContext } from "../../context/MainContext";
 
 const Suppliers = () => {
-  const {dataSuppliers, setDataSuppliers} = useContext(MainContext);
+  const {dataSuppliers, setDataSuppliers, serverUrl} = useContext(MainContext);
+  
   useEffect(() => {
-    fetch("http://3.142.97.58/daryan-server/api/get_suppliers", {
+    fetch(`${serverUrl}/api/get_suppliers`, {
       cache: "no-cache",
     })
       .then((response) => {

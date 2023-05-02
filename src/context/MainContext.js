@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useRef } from "react";
 import { Toaster, toast } from "sonner";
+import { statusClient } from "../api/daryan.api";
 export const MainContext = createContext();
 export const MainContextProvider = ({ children }) => {
   const dataSes = localStorage.getItem("sesType");
@@ -88,11 +89,41 @@ export const MainContextProvider = ({ children }) => {
     dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
   );
   const [confirm, setConfirm] = useState(false);
-  const hanldeDel = (id, tableName) => {
+  const handleDel = (id, tableName) => {
     //console.log(data, id);
     setIdDelete(id);
     setTableName(tableName);
     setConfirm(true);
+  };
+  const handleStatus = async(id, status, tableName) => {
+    
+    if (tableName === "clients") {
+      await statusClient({id, status}).then((res) => {
+        const datares = res.data;
+        if (datares.error) {
+          toast.error(datares.message, {
+            duration: 5000,
+          });
+        } else {
+          toast.success(datares.message, {
+            duration: 4000,
+          });
+          //setDataClients((data) => data.filter((data) => data.id !== `${id}`));
+          //Update status from dataClient by id
+          const newData = dataClients.map((item) => {
+            if (item.id === id) {
+              item.status = status === 1 ? 0 : 1;
+            }
+            return item;
+          });
+          setDataClients(newData);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
+    //setConfirm(true);
   };
   const handleConfirm = (callback) => {
     setConfirm(false);
@@ -196,7 +227,7 @@ export const MainContextProvider = ({ children }) => {
     //console.log(penultimate);
     setTitulosColumnas((prev) => {
       const newArray = prev.slice();
-      newArray.splice(-2, 1);
+      newArray.splice(-1, 1);
       return newArray;
     });
 
@@ -212,7 +243,7 @@ export const MainContextProvider = ({ children }) => {
   //console.log(divs);
   const container1Ref = useRef(null);
   const container2Ref = useRef(null);
-
+  const btnCloseRef = useRef(null);
   const handleScroll1 = () => {
     container2Ref.current.scrollLeft = container1Ref.current.scrollLeft;
   };
@@ -228,9 +259,9 @@ export const MainContextProvider = ({ children }) => {
       //   console.log(nextLetter);
       const newArr = [...prevTitulos, nextLetter];
       const arrayCopy = newArr.slice();
-      const penultimate = arrayCopy.slice(-2, -1)[0];
-      arrayCopy.splice(-2, 1);
-      arrayCopy.push(penultimate);
+      // const penultimate = arrayCopy.slice(-2, -1)[0];
+      // arrayCopy.splice(-2, 1);
+      // arrayCopy.push(penultimate);
       const tableWrapper = document.querySelectorAll(".scrollX");
 
       tableWrapper.forEach((element) => {
@@ -245,12 +276,6 @@ export const MainContextProvider = ({ children }) => {
 
       return arrayCopy;
     });
-    setDivs((prevDatos) =>
-      prevDatos.map((fila) => ({
-        ...fila,
-        values: [...fila.values, ""],
-      }))
-    );
   };
 
   const agregarColumna2 = (e) => {
@@ -302,6 +327,7 @@ export const MainContextProvider = ({ children }) => {
       }, 100);
     }
   };
+  //console.log(numColumnas)
   const [titulosColumnas, setTitulosColumnas] = useState([
     "",
     "Items",
@@ -317,9 +343,6 @@ export const MainContextProvider = ({ children }) => {
     "B",
     "C",
     "D",
-    <>
-      <i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i>
-    </>,
   ]);
   const [titulosColumnas2, setTitulosColumnas2] = useState([
     "",
@@ -369,55 +392,22 @@ export const MainContextProvider = ({ children }) => {
   useEffect(() => {
     const penultimate = titulosColumnas.slice(-2, -1)[0];
     if (penultimate === "I") {
-      setTitulosColumnas((prev) => {
-        prev[titulosColumnas.length - 1] = (
-          <>
-            <i
-              className="fa-solid fa-trash"
-              onClick={() => eliminarColumna(penultimate)}
-            ></i>
-          </>
-        );
-        return prev;
-      });
-      setTitulosColumnas2((prev) => {
-        prev[titulosColumnas2.length - 1] = (
-          <>
-            <i
-              className="fa-solid fa-trash"
-              onClick={() => eliminarColumna(penultimate)}
-            ></i>
-          </>
-        );
-        return prev;
-      });
+      // setTitulosColumnas((prev) => {
+      //   prev[titulosColumnas.length - 1] = <></>;
+      //   return prev;
+      // });
     } else {
-      if (penultimate === "D") {
-        setTitulosColumnas((prev) => {
-          prev[titulosColumnas.length - 1] = (
-            <>
-              <i
-                className="fa-solid fa-circle-plus"
-                onClick={agregarColumna}
-              ></i>
-            </>
-          );
-          return prev;
-        });
-        setTitulosColumnas2((prev) => {
-          prev[titulosColumnas2.length - 1] = (
-            <>
-              <i
-                className="fa-solid fa-circle-plus"
-                onClick={agregarColumna}
-              ></i>
-            </>
-          );
-          return prev;
-        });
-      }
+      // if(penultimate === 'D'){
+      //   setTitulosColumnas((prev) => {
+      //     prev[titulosColumnas.length - 1] = (
+      //       <>
+      //         <i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i>
+      //       </>
+      //     );
+      //     return prev;
+      //   });
+      // }
     }
-    //  console.log(penultimate);
   }, [numColumnas]);
   //console.log(titulosColumnas);
   const [total1, setTotal1] = useState(0);
@@ -453,6 +443,8 @@ export const MainContextProvider = ({ children }) => {
     return formattedDateTime;
   };
   const [dataCDb, setDataCDb] = useState([]);
+  const [dbChanges, setDbChanges] = useState([]);
+  //const [dataClients, setDataClients] = useState([]);
   return (
     <MainContext.Provider
       value={{
@@ -468,7 +460,8 @@ export const MainContextProvider = ({ children }) => {
         reportData,
         confirm,
         setConfirm,
-        hanldeDel,
+        handleDel,
+        handleStatus,
         idDelete,
         setIdDelete,
         handleConfirm,
@@ -553,6 +546,9 @@ export const MainContextProvider = ({ children }) => {
         setTableName,
         dataCDb,
         setDataCDb,
+        btnCloseRef,
+        dbChanges,
+        setDbChanges,
       }}
     >
       <Toaster richColors position="top-center" closeButton />

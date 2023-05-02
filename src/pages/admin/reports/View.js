@@ -8,6 +8,11 @@ import DatePickerInputU from "../../../components/DateInputUpdate";
 const View = () => {
   const {
     titulosColumnas,
+    titulosColumnas2,
+    eliminarColumna,
+    agregarColumna,
+    setTitulosColumnas2,
+    agregarFila,
     total1,
     divs,
     setDivs,
@@ -57,6 +62,7 @@ const View = () => {
     dataCDb,
     setDataCDb,
     numColumnas,
+    setNumColumnas,
     numFilas,
   } = useContext(MainContext);
   //setData(dataTS)
@@ -133,14 +139,14 @@ const View = () => {
         filas.push({
           id: i,
           values: Array.from({ length: numColumnas2 }, () => ""),
-         // test:'aaaa'
+          // test:'aaaa'
         });
       }
       for (let j = 0; j < filas.length; j++) {
         const fil = filas[j];
         const values = fil.values;
-        
-      //  console.log(dataC);
+
+        //  console.log(dataC);
         //const keys = Object.keys(dataC.reports_cc[j])
         if (dataC.reports_cc && dataC.reports_cc[j]) {
           const keys = Object.keys(dataC.reports_cc[j]);
@@ -246,8 +252,8 @@ const View = () => {
         ) {
           const realized_by = dataInfo[i2]["realized_by"];
           const id = dataInfo[i2]["id"];
-          rby.push({realized_by, id});
-        //  console.log(dataInfo[i2])
+          rby.push({ realized_by, id });
+          //  console.log(dataInfo[i2])
           //console.log(rbyervations);
         } else {
           // console.log(
@@ -261,7 +267,7 @@ const View = () => {
         if (i > 7) {
           if (i !== numColumnas2 - 3) {
             //console.log(numColumnas2 - 3);
-             console.log(rby[i - 8]);
+            console.log(rby[i - 8]);
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
@@ -281,97 +287,97 @@ const View = () => {
   //console.log(reportFooter);
   const [reportFooter2, setReportFooter2] = useState(() => {
     const filas = [];
-      const dataInfo = eData.report_ob;
-      let i2 = 0;
-      const obs = [];
-      // console.log(dataInfo);
-      if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
-        const keys = Object(dataInfo[i2]);
-        //console.log(keys);
-        for (let z = 0; z < dataInfo.length; z++) {
-          //  console.log(keys[z]);
-          if (
-            dataInfo[i2] &&
-            typeof dataInfo[i2] === "object" &&
-            dataInfo[i2].hasOwnProperty("id")
-          ) {
-            const observations = dataInfo[i2]["observations"];
-            const id = dataInfo[i2]["id"];
-            obs.push({observations, id});
-          } else {
-            // console.log(
-            //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
-            // );
-          }
-          i2++;
-          //console.log(dataInfo[i2][keys[z]]);
+    const dataInfo = eData.report_ob;
+    let i2 = 0;
+    const obs = [];
+    // console.log(dataInfo);
+    if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
+      const keys = Object(dataInfo[i2]);
+      //console.log(keys);
+      for (let z = 0; z < dataInfo.length; z++) {
+        //  console.log(keys[z]);
+        if (
+          dataInfo[i2] &&
+          typeof dataInfo[i2] === "object" &&
+          dataInfo[i2].hasOwnProperty("id")
+        ) {
+          const observations = dataInfo[i2]["observations"];
+          const id = dataInfo[i2]["id"];
+          obs.push({ observations, id });
+        } else {
+          // console.log(
+          //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
+          // );
         }
-        for (let i = 1; i <= numColumnas2 - 3; i++) {
-          if (i > 7) {
-            if (i !== numColumnas2 - 3) {
-              //console.log(numColumnas2 - 3);
-              // console.log(obs[i - 8]);
-              // ... código para aplicar la condición solamente en el último índice ...
-              filas.push({
-                id: i,
-                values: Array.from({ length: 1 }, () => obs[i - 8].observations),
-                id_db: Number(obs[i - 8].id),
-              });
-            }
-            //      console.log(dataInfo[i2])
-          }
-        }
-      } else {
-        // console.log("dataInfo[i2] no es un objeto válido");
+        i2++;
+        //console.log(dataInfo[i2][keys[z]]);
       }
+      for (let i = 1; i <= numColumnas2 - 3; i++) {
+        if (i > 7) {
+          if (i !== numColumnas2 - 3) {
+            //console.log(numColumnas2 - 3);
+            // console.log(obs[i - 8]);
+            // ... código para aplicar la condición solamente en el último índice ...
+            filas.push({
+              id: i,
+              values: Array.from({ length: 1 }, () => obs[i - 8].observations),
+              id_db: Number(obs[i - 8].id),
+            });
+          }
+          //      console.log(dataInfo[i2])
+        }
+      }
+    } else {
+      // console.log("dataInfo[i2] no es un objeto válido");
+    }
 
-      return filas;
+    return filas;
   });
 
   const [reportFooter3, setReportFooter3] = useState(() => {
     const filas = [];
-      const dataInfo = eData.report_in;
-      let i2 = 0;
-      const inc = [];
+    const dataInfo = eData.report_in;
+    let i2 = 0;
+    const inc = [];
 
-      if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
-        const keys = Object.keys(dataInfo[i2]);
-        for (let z = 0; z < dataInfo.length; z++) {
-          //  console.log(keys[z]);
-          if (
-            dataInfo[i2] &&
-            typeof dataInfo[i2] === "object" &&
-            dataInfo[i2].hasOwnProperty("id")
-          ) {
-            const incidents = dataInfo[i2]["incident"];
-            const id = dataInfo[i2]["id"];
-            inc.push({incidents, id});
-          } else {
-            // console.log(
-            //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
-            // );
-          }
-          i2++;
+    if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
+      const keys = Object.keys(dataInfo[i2]);
+      for (let z = 0; z < dataInfo.length; z++) {
+        //  console.log(keys[z]);
+        if (
+          dataInfo[i2] &&
+          typeof dataInfo[i2] === "object" &&
+          dataInfo[i2].hasOwnProperty("id")
+        ) {
+          const incidents = dataInfo[i2]["incident"];
+          const id = dataInfo[i2]["id"];
+          inc.push({ incidents, id });
+        } else {
+          // console.log(
+          //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
+          // );
         }
-        for (let i = 1; i <= numColumnas2 - 3; i++) {
-          if (i > 7) {
-            if (i !== numColumnas2 - 3) {
-              // console.log(inc[i - 8]);
-              // ... código para aplicar la condición solamente en el último índice ...
-              filas.push({
-                id: i,
-                values: Array.from({ length: 1 }, () => inc[i - 8].incidents),
-                id_db: Number(inc[i - 8].id),
-              });
-            }
-            //      console.log(dataInfo[i2])
-          }
-        }
-      } else {
-        // console.log("dataInfo[i2] no es un objeto válido");
+        i2++;
       }
+      for (let i = 1; i <= numColumnas2 - 3; i++) {
+        if (i > 7) {
+          if (i !== numColumnas2 - 3) {
+            // console.log(inc[i - 8]);
+            // ... código para aplicar la condición solamente en el último índice ...
+            filas.push({
+              id: i,
+              values: Array.from({ length: 1 }, () => inc[i - 8].incidents),
+              id_db: Number(inc[i - 8].id),
+            });
+          }
+          //      console.log(dataInfo[i2])
+        }
+      }
+    } else {
+      // console.log("dataInfo[i2] no es un objeto válido");
+    }
 
-      return filas;
+    return filas;
   });
   /*console.log(reportFooter);
   console.log(reportFooter2);
@@ -436,7 +442,7 @@ const View = () => {
       return filas;
     });
     // console.log(divs2)
-    
+
     setReportFooter((prev) => {
       const filas = [];
       const dataInfo = eData.report_rby;
@@ -454,7 +460,7 @@ const View = () => {
           ) {
             const realized_by = dataInfo[i2]["realized_by"];
             const id = dataInfo[i2]["id"];
-            rby.push({realized_by, id});
+            rby.push({ realized_by, id });
             //console.log(dataInfo[i2])
             //console.log(rbyervations);
           } else {
@@ -469,11 +475,13 @@ const View = () => {
           if (i > 7) {
             if (i !== numColumnas2 - 3) {
               //console.log(numColumnas2 - 3);
-             //  console.log(rby[i - 8]);
+              //  console.log(rby[i - 8]);
               // ... código para aplicar la condición solamente en el último índice ...
               filas.push({
                 id: i,
-                values: Array.from({ length: 1 }, () => rby[i - 8] !== undefined ? rby[i - 8].realized_by : ""),
+                values: Array.from({ length: 1 }, () =>
+                  rby[i - 8] !== undefined ? rby[i - 8].realized_by : ""
+                ),
                 id_db: rby[i - 8] ? Number(rby[i - 8].id) : "",
               });
             }
@@ -504,7 +512,7 @@ const View = () => {
           ) {
             const observations = dataInfo[i2]["observations"];
             const id = dataInfo[i2]["id"];
-            obs.push({observations, id});
+            obs.push({ observations, id });
           } else {
             // console.log(
             //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
@@ -521,7 +529,9 @@ const View = () => {
               // ... código para aplicar la condición solamente en el último índice ...
               filas.push({
                 id: i,
-                values: Array.from({ length: 1 }, () => obs[i - 8] ? obs[i - 8].observations : ""),
+                values: Array.from({ length: 1 }, () =>
+                  obs[i - 8] ? obs[i - 8].observations : ""
+                ),
                 id_db: obs[i - 8] ? Number(obs[i - 8].id) : "",
               });
             }
@@ -551,7 +561,7 @@ const View = () => {
           ) {
             const incidents = dataInfo[i2]["incident"];
             const id = dataInfo[i2]["id"];
-            inc.push({incidents, id});
+            inc.push({ incidents, id });
           } else {
             // console.log(
             //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
@@ -566,7 +576,9 @@ const View = () => {
               // ... código para aplicar la condición solamente en el último índice ...
               filas.push({
                 id: i,
-                values: Array.from({ length: 1 }, () => inc[i - 8] ? inc[i - 8].incidents : ""),
+                values: Array.from({ length: 1 }, () =>
+                  inc[i - 8] ? inc[i - 8].incidents : ""
+                ),
                 id_db: inc[i - 8] ? Number(inc[i - 8].id) : "",
               });
             }
@@ -678,8 +690,64 @@ const View = () => {
   //   checkedBy,
   //   authorizedBy,
   // ]);
+  const [keysTh, setKeysTh] = useState([]);
+  useEffect(() => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const day = ("0" + date.getDate()).slice(-2);
+    const hours = ("0" + date.getHours()).slice(-2);
+    const minutes = ("0" + date.getMinutes()).slice(-2);
+    const seconds = ("0" + date.getSeconds()).slice(-2);
+    const formattedDateTime = `${year}-${month}-${day}`;
+    const keys = Object.keys(dataC.reports_cc[0]);
+    //console.log(keys);
+    const numCol = keys.length - 1;
+    keys.splice(1, 1); // Elimina el elemento en la posición 1 (id_report)
+    keys.splice(10, 1);
+    keys[0] = ""
+    keys[2] = "fecha";
+    keys[3] = "lote";
+    keys[4] = "serial";
+    keys[5] = "cantidad inspeccionada";
+    keys[6] = "piezas ng";
+    keys[7] = "piezas ok";
+    keys[8] = "piezas trabajadas";
+    keys[9] = "scrap";
+    const kLenght = keys.length + 1;
+    setNumColumnas(kLenght);
+    // if (lastKey !== "I") {
+    //   keys.push(
+    //     <>
+    //        <i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i>
+    //     </>
+    //   );
 
-  console.log(dataToSave);
+    // } else {
+    //   keys.push(
+    //     <>
+    //       <i
+    //         className="fa-solid fa-trash"
+    //         onClick={() => eliminarColumna()}
+    //       ></i>
+    //     </>
+    //   );
+    // }
+    setTitulosColumnas(keys);
+  }, []);
+  useEffect(() => {
+    setDataCDb({
+      plant: dataC.plant,
+      supplier: dataC.supplier,
+      date: dataC.date,
+      report_number: dataC.report_number,
+      part_name: dataC.part_name,
+      worked_hours: dataC.worked_h,
+      rate: dataC.rate,
+      shift: dataC.shift,
+      part_number: dataC.part_number,
+    });
+  }, []);
   /*
   console.log(dataToSave)
   console.log(customerControl);*/

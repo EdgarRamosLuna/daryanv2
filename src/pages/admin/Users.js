@@ -6,7 +6,7 @@ import { MainContext } from "../../context/MainContext";
 const Users = () => {
   const {dataUsers, setDataUsers, serverUrl} = useContext(MainContext);
   useEffect(() => {
-    fetch(`${serverUrl}/api/get_employees`, {
+    fetch(`${serverUrl}/api/get_users`, {
       cache: "no-cache",
     })
       .then((response) => {

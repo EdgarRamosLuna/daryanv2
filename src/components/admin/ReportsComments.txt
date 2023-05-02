@@ -1,0 +1,331 @@
+   /*for (let i = 0; i < data.length; i++) {
+        const date = new Date(data[i].date);
+        const report_totals = data[i].report_totals;
+        const report_id = data[i].report_id;
+        const ng = parseInt(report_totals.ng) || 0;
+        const ok = parseInt(report_totals.ok) || 0;
+        const rework = parseInt(report_totals.rework) || 0;
+        const reports_cc = data[i].reports_cc;
+        let total_inspected = 0;
+
+        // Calcular el total inspeccionado
+        for (let j = 0; j < reports_cc.length; j++) {
+          const report_cc = reports_cc[j];
+          const isLotMatched =
+            !filterLot.length || filterLot.includes(report_cc.lot);
+          const isSerialMatched =
+            !filterSerial.length || filterSerial.includes(report_cc.serial);
+
+          if (isLotMatched && isSerialMatched) {
+            total_inspected += parseInt(report_cc.qt_inspected);
+          }
+        }
+
+        // Aplicar filtros para cada objeto en el data
+
+        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+
+        const dateString = date.toISOString().slice(0, 10);
+        if (
+          (filterLot.length &&
+            !reports_cc.some((report) => filterLot.includes(report.lot))) ||
+          (filterSerial.length &&
+            !reports_cc.some((report) =>
+              filterSerial.includes(report.serial)
+            )) ||
+          (filterDate &&
+            (date < new Date(startDate).setHours(0, 0, 0, 0) ||
+              date > new Date(endDate).setHours(23, 59, 59, 999)))
+        ) {
+          continue; // Saltar a la siguiente iteración del loop
+        }
+        // Agregar los datos al objeto temporal
+        if (dateString in temp) {
+          temp[dateString].cant += parseInt(report_totals.cant);
+          temp[dateString].ng += ng;
+          temp[dateString].ok += ok;
+          temp[dateString].rework += rework;
+          temp[dateString].total_inspected += total_inspected;
+        } else {
+          temp[dateString] = {
+            cant: parseInt(report_totals.cant),
+            ng: ng,
+            ok: ok,
+            rework: rework,
+            total_inspected: total_inspected,
+          };
+        }
+      }*/
+      /*for (let i = 0; i < data.length; i++) {
+        const date = new Date(data[i].date);
+        const report_totals = data[i].report_totals;
+        const report_id = data[i].report_id;
+        const ng = parseInt(report_totals.ng) || 0;
+        const ok = parseInt(report_totals.ok) || 0;
+        const rework = parseInt(report_totals.rework) || 0;
+        const reports_cc = data[i].reports_cc;
+
+//          console.log(reports_cc)
+        // Calcular el total inspeccionado
+        let total_inspected = 0; // mover esta línea aquí para evitar errores
+        if (
+          (!filterLot && !report_id && !filterSerial) ||
+          (filterLot &&
+            !report_id &&
+            !filterSerial &&
+            reports_cc.some((report) => report.lot === filterLot)) ||
+          (!filterLot &&
+            !report_id &&
+            filterSerial &&
+            reports_cc.some((report) => report.serial === filterSerial)) ||
+          (filterLot &&
+            !report_id &&
+            filterSerial &&
+            reports_cc.some(
+              (report) =>
+                report.lot === filterLot && report.serial === filterSerial
+            ))
+        ) {
+          for (let j = 0; j < reports_cc.length; j++) {
+            if (
+              (!filterLot || reports_cc[j].lot === filterLot) &&
+              (!report_id || reports_cc[j].report_id === report_id) &&
+              (!filterSerial || reports_cc[j].serial === filterSerial)
+            ) {
+              total_inspected += parseInt(reports_cc[j].qt_inspected);
+            }
+          }
+        }
+
+        // Aplicar filtros para cada objeto en el data
+        if (
+          filterLot &&
+          !reports_cc.some((report) => report.lot === filterLot)
+        ) {
+          continue; // Saltar a la siguiente iteración del loop
+        }
+        if (
+          filterSerial &&
+          !reports_cc.some((report) => report.serial === filterSerial)
+        ) {
+          continue; // Saltar a la siguiente iteración del loop
+        }
+        if (filterDate && (date < startDate || date > endDate)) {
+          continue; // Saltar a la siguiente iteración del loop
+        }
+
+        // Agregar los datos al objeto temporal
+        const dateString = date.toISOString().slice(0, 10);
+        if (dateString in temp) {
+          temp[dateString].cant += parseInt(report_totals.cant);
+          temp[dateString].ng += ng;
+          temp[dateString].ok += ok;
+          temp[dateString].rework += rework;
+          temp[dateString].total_inspected += total_inspected;
+        } else {
+          temp[dateString] = {
+            cant: parseInt(report_totals.cant),
+            ng: ng,
+            ok: ok,
+            rework: rework,
+            total_inspected: total_inspected,
+          };
+        }
+      }*/
+      /*for (let i = 0; i < data.length; i++) {
+        const date = new Date(data[i].date);
+        const report_totals = data[i].report_totals;
+        const report_id = data[i].report_id;
+        const ng = parseInt(report_totals.ng) || 0;
+        const ok = parseInt(report_totals.ok) || 0;
+        const rework = parseInt(report_totals.rework) || 0;
+        const reports_cc = data[i].reports_cc;
+
+        // Calcular el total inspeccionado
+        if (!filterLot && !report_id) {
+          for (let j = 0; j < reports_cc.length; j++) {
+            total_inspected += parseInt(reports_cc[j].qt_inspected);
+          }
+        } else {
+          for (let j = 0; j < reports_cc.length; j++) {
+            if ((!filterLot || reports_cc[j].lot === filterLot) && (!report_id || reports_cc[j].report_id === report_id)) {
+              total_inspected += parseInt(reports_cc[j].qt_inspected);
+            }
+          }
+        }
+        // Aplicar filtros para cada objeto en el data
+        if (
+          filterLot &&
+          !reports_cc.some((report) => report.lot === filterLot)
+        ) {
+          continue; // Saltar a la siguiente iteración del loop
+        }
+        if (filterDate && (date < startDate || date > endDate)) {
+          continue; // Saltar a la siguiente iteración del loop
+        }
+        // Agregar los datos al objeto temporal
+        const dateString = date.toISOString().slice(0, 10);
+        if (dateString in temp) {
+          temp[dateString].cant += parseInt(report_totals.cant);
+          temp[dateString].ng += ng;
+          temp[dateString].ok += ok;
+          temp[dateString].rework += rework;
+          temp[dateString].total_inspected += total_inspected;
+        } else {
+          temp[dateString] = {
+            cant: parseInt(report_totals.cant),
+            ng: ng,
+            ok: ok,
+            rework: rework,
+            total_inspected: total_inspected,
+          };
+        }
+        total_inspected = 0;
+      }*/
+
+
+      /*function filterTemp(temp, date, lot, serial) {
+        return Object.entries(temp)
+          .filter(([dateStr, data]) => {
+            const filterDate = new Date(date);
+            const objDate = new Date(dateStr);
+      
+            const passesDateFilter = objDate.getTime() === filterDate.getTime();
+            const passesLotFilter = !lot || data.some(({ lot: tempLot }) => tempLot === lot);
+            const passesSerialFilter = !serial || data.some(({ serial: tempSerial }) => tempSerial === serial);
+      
+            return passesDateFilter && passesLotFilter && passesSerialFilter;
+          })
+          .reduce((acc, [date, data]) => {
+            acc[date] = data;
+            return acc;
+          }, {});
+      }
+      
+     /* const filteredTemp = Object.entries(temp)
+        .filter(([date, data]) => {
+          // Especificar la fecha que deseas filtrar
+          const filterDate = new Date("2023-04-13");
+          // Obtener la fecha del objeto
+          const objDate = new Date(date);
+          // Comprobar si la fecha del objeto coincide con la fecha filtrada
+          return objDate.getTime() === filterDate.getTime();
+        })
+        .reduce((acc, [date, data]) => {
+          // Agregar los datos filtrados al nuevo objeto
+          acc[date] = data;
+          return acc;
+        }, {});*/
+      /*  const filteredTemp = temp.filter((item) => {
+        // Comprueba si la fecha es igual a '2023-04-13' y el lote es igual a '3791502'
+        const isDateMatch = item.date === '2023-04-13';
+        const isLotMatch = item.reports_cc.some((report) => report.lot === '3791502');
+        return isDateMatch && isLotMatch;
+      });
+      console.log(filteredTemp); */
+      /* // Filtrar por fecha
+      const filteredTemp = Object.entries(temp)
+        .filter(([date, data]) => {
+          // Especificar la fecha que deseas filtrar
+          const filterDate = new Date("2023-04-13");
+          // Obtener la fecha del objeto
+          const objDate = new Date(date);
+          // Comprobar si la fecha del objeto coincide con la fecha filtrada
+          return objDate.getTime() === filterDate.getTime();
+        })
+        .reduce((acc, [date, data]) => {
+          // Agregar los datos filtrados al nuevo objeto
+          acc[date] = data;
+          return acc;
+        }, {});
+
+      console.log(filteredTemp);  */
+
+      /*for (let i = 0; i < data.length; i++) {
+        const date = data[i].date;
+        const cant = parseInt(data[i].report_totals.cant);
+        if (date in temp) {
+          temp[date] += cant;
+        } else {
+          temp[date] = cant;
+        }
+      }*/
+      //   setTotals(temp); // Muestra el objeto temporal con la suma total de 'cant' para cada fecha
+
+
+       /*if (filterOption === 3) {
+              if (filtersSerial.includes(report.serial)) {
+                if (!seen[report.lot]) {
+                  seen[report.lot] = true;
+                  res1.push(report.lot);
+                }
+              }
+            } else {
+              if (!seen[report.lot]) {
+                seen[report.lot] = true;
+                res1.push(report.lot);
+              }
+            }*/
+
+
+            /*data.forEach((item) => {
+        item.reports_cc.forEach((report) => {
+          if (report.report_number === report_number && !seen[report.lot]) {
+            seen[report.lot] = true;
+            res1.push(report.lot);
+          }
+        });
+      });*/
+      /* data.forEach((item) => {
+        item.reports_cc.forEach((report) => {
+          if (!seen[report.lot]) {
+            seen[report.lot] = true;
+            res1.push(report.lot);
+          }
+        });
+      });*/
+        // Crear un objeto para almacenar la suma de "cant" de cada valor de "clause"
+        // Crear un objeto para almacenar la suma de "cant" e "id_item" de cada valor de "clause"
+        /*  const clauseSums = {};
+
+        // Recorrer el array "reports_in" y sumar los valores correspondientes
+        for (let i = 0; i < reports_in.length; i++) {
+          const report_in = reports_in[i];
+          const id_item = report_in.id_item;
+          const id_report = report_in.id_report;
+          const clause = report_in.clause;
+          const cant = parseInt(report_in.cant);
+
+          // Comprobar si el valor de "id_item" se encuentra en el array "reports_cc"
+          const hasItem = reports_cc.some(
+            (report_cc) => report_cc.item === id_item
+          );
+
+          // Si el valor de "id_item" se encuentra en el array "reports_cc", guardar un objeto con las propiedades "cant" e "id_item" correspondiente a "clause"
+          if (hasItem) {
+            if (!clauseSums[clause]) {
+              clauseSums[clause] = [];
+            }
+            clauseSums[clause].push({
+              cant: cant,
+              id_item: id_item,
+              id_report: id_report,
+            });
+          }
+        }*/
+
+        // Mostrar la suma de "cant" e "id_item" de cada valor de "clause"
+        //    console.log(clauseSums);
+        // for (let i = 0; i < reports_cc.length; i++) {
+        //   const report_cc = reports_cc[i];
+        //   let sum_cant = 0;
+        //   for (let j = 0; j < reports_in.length; j++) {
+        //     const report_in = reports_in[j];
+        //     if (report_in.id_item === report_cc.item) {
+        //       sum_cant += parseInt(report_in.cant);
+        //     }
+        //   }
+        //   report_cc.sum_cant = sum_cant;
+        //   console.log(report_cc);
+        // }
+        //console.log(report_cc);
