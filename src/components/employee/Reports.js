@@ -17,7 +17,7 @@ import { Link, useNavigate } from "react-router-dom";
 import TableComponent from "./TableComponent";
 registerLocale("es", es);
 function ReportsTable({ data }) {
-  const { hanldeDel, setSort, toast } = useContext(MainContext);
+  const { handleDel, setSort, toast } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const [nameFilter2, setNameFilter2] = useState("");
   const [lastnameFilter, setLastnameFilter] = useState("");
@@ -606,7 +606,7 @@ function ReportsTable({ data }) {
           item.reports_cc.forEach((report) => {
             if (filtersLot.length > 0) {
               if (filtersLot.includes(report.lot)) {
-                if (!seen[report.serial]) {
+                if (!seen2[report.serial]) {
                   seen2[report.serial] = true;
                   res2.push(report.serial);
                   //  setFiltersSerial(prev => prev.filter(f => f.serial === report.serial))
@@ -656,6 +656,10 @@ function ReportsTable({ data }) {
     //setFiltersSerial(prev => prev.filter(f => f.serial === report.serial))
   }, [uniqueLots]);*/
   useEffect(() => {
+    const cleanFilters = () => {
+      setFiltersLot([]);
+      setFiltersPartNumber([]);
+    };
     if (filterOption === "2" && filtersPartNumber.length === 0) {
       toast.error(
         "Debes seleccionar almenos 1 numero de parte para obtener los numeros de lote disponibles",
@@ -664,6 +668,7 @@ function ReportsTable({ data }) {
         }
       );
       setFilterOption(1);
+      cleanFilters();
     } else {
       const inputsWithDataList = document.querySelectorAll("input[list]");
       inputsWithDataList.forEach((input) => {
@@ -683,6 +688,7 @@ function ReportsTable({ data }) {
           duration: 5000,
         }
       );
+      cleanFilters();
       setFilterOption(1);
     } else {
       const inputsWithDataList = document.querySelectorAll("input[list]");
@@ -698,6 +704,7 @@ function ReportsTable({ data }) {
       });
     }
   }, [filterOption, filtersPartNumber]);
+
   return (
     <Table>
       <div className="table-container mb-5">
@@ -924,9 +931,7 @@ function ReportsTable({ data }) {
                           // Crear etiqueta de opción
                           const option = (
                             <option value={part_number}>
-                              {isFirefox 
-                                ? `Parte #${part_number}`
-                                : "# Parte"}
+                              {isFirefox ? `Parte #${part_number}` : "# Parte"}
                             </option>
                           );
 
@@ -972,9 +977,7 @@ function ReportsTable({ data }) {
                           // Crear etiqueta de opción
                           const option = (
                             <option value={lot}>
-                              {isFirefox 
-                                ? `Lote #${lot}`
-                                : "# Lote"}
+                              {isFirefox ? `Lote #${lot}` : "# Lote"}
                             </option>
                           );
 
@@ -1020,9 +1023,7 @@ function ReportsTable({ data }) {
                           // Crear etiqueta de opción
                           const option = (
                             <option value={serial}>
-                              {isFirefox 
-                                ? `Serial #${serial}`
-                                : "# Serial"}
+                              {isFirefox ? `Serial #${serial}` : "# Serial"}
                             </option>
                           );
 
@@ -1201,9 +1202,6 @@ function ReportsTable({ data }) {
             <table>
               <thead>
                 <tr>
-                  <th>
-                    <Checkbox type="all" id={0} callback={handleCheckBox} />
-                  </th>
                   <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th>
                   <th># Parte</th>
                   <th>Planta</th>
@@ -1221,17 +1219,6 @@ function ReportsTable({ data }) {
                 ) : (
                   getPaginatedData().map((item, index) => (
                     <tr key={index} onClick={(e) => singleView(item.id)}>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                        colSpan={1}
-                      >
-                        <Checkbox
-                          type="single"
-                          id={item.id}
-                          callback={handleCheckBox}
-                        />
-                      </td>
                       <td className="table-center">{item.id}</td>
                       <td className="table-center">{item.part_number}</td>
                       <td className="table-center">{item.plant}</td>
@@ -1239,7 +1226,7 @@ function ReportsTable({ data }) {
                       <td className="table-center">{item.date}</td>
                       <td className="table-center">
                         {Number(item.status) === 1 && "Sin aprobar"}{" "}
-                        {Number(item.status) === 2 && "Aprobado"}
+                        {Number(item.status) === 3 && "Aprobado"}
                       </td>
                       <td
                         className="table-center"
@@ -1247,10 +1234,6 @@ function ReportsTable({ data }) {
                         colSpan={1}
                       >
                         <div className="actions">
-                          <i
-                            className="fa-solid fa-trash"
-                            onClick={() => hanldeDel(item.id)}
-                          ></i>
                           <Link
                             to={`/admin/reports/${item.id}`}
                             style={{ color: "green" }}
@@ -1320,7 +1303,7 @@ function ReportsTable({ data }) {
                         <div className="actions">
                           <i
                             className="fa-solid fa-trash"
-                            onClick={() => hanldeDel(item.id)}
+                            onClick={() => handleDel(item.id)}
                           ></i>
                           <Link
                             to={`/admin/reports/${item.id}`}
@@ -1425,7 +1408,7 @@ function ReportsTable({ data }) {
                         <div className="actions">
                           <i
                             className="fa-solid fa-trash"
-                            onClick={() => hanldeDel(item.id)}
+                            onClick={() => handleDel(item.id)}
                           ></i>
                           <Link
                             to={`/admin/reports/${item.id}`}

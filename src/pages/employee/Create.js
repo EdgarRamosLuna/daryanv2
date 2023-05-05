@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { MainContext } from "../../context/MainContext";
 import { StyledForm, Table } from "../../styles/Styles";
 import DatePickerInput from "../../components/DateInput";
@@ -13,7 +13,6 @@ const Create = () => {
     titulosColumnas,
     total1,
     divs,
-    setDivs,
     setTotal1,
     total2,
     setTotal2,
@@ -41,16 +40,15 @@ const Create = () => {
     setTotal13,
     total14,
     setTotal14,
-    dataToSave,
     setDataToSave,
+    dataToSave,
     container1Ref,
     container2Ref,
     handleScroll1,
     handleScroll2,
-    setNumFilas,
-    setNumColumnas
+    suppliers,
   } = useContext(MainContext);
-  //console.log(data);
+  //console.log(suppliers);
   const [producedBy, setProducedBy] = useState("");
   const [checkedBy, setCheckedBy] = useState("");
   const [authorizedBy, setAuthorizedBy] = useState("");
@@ -229,7 +227,7 @@ const Create = () => {
         },
       },
     ];
-  //  console.log(newArray[0]['total']);
+    //  console.log(newArray[0]['total']);
     setDataToSave(newArray);
   }, [
     data,
@@ -257,7 +255,7 @@ const Create = () => {
     total13,
     total14,
   ]);
-  
+
   /*console.log(data);
   console.log(dataToSave)
   console.log(customerControl);*/
@@ -269,7 +267,34 @@ const Create = () => {
       [name]: date,
     });
   };
-  
+  const inputRef = useRef();
+  const dataListRef = useRef();
+  const getSelectedOptionLocation = () => {
+    for (let i = 0; i < dataListRef.current.options.length; i++) {
+      if (dataListRef.current.options[i].value === inputRef.current.value) {
+        return dataListRef.current.options[i];
+      }
+    }
+  };
+
+  const handleChange = useCallback((e) => {
+    const selectedOption = getSelectedOptionLocation();
+    if (selectedOption == undefined) {
+      setData({
+        ...data,
+        [e.target.dataset.name || e.target.name]: e.target.value,
+      });
+     // console.log("option not included in the datalist");
+    } else {
+      const id_supplier = selectedOption.getAttribute("data-id");
+      setData({
+        ...data,
+        id_supplier,
+      });
+    }
+    
+  }, [data]);
+  //console.log(dataToSave);
   return (
     <>
       <div className="container">
@@ -300,6 +325,34 @@ const Create = () => {
           <div className="form-container">
             <label htmlFor="data2">Proveedor:</label>
             <input
+              name="supplier"
+              value={data.supplier}
+              list="supplier"
+              onChange={handleChange}
+              ref={inputRef}
+              autoComplete="off"
+            />
+            <datalist id="supplier" ref={dataListRef}>
+              {suppliers.map((item, indx) => {
+                // Verificar si el navegador es Firefox, Safari o Edge
+                const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
+                const isSafari =
+                  navigator.userAgent.indexOf("Safari") !== -1 ||
+                  navigator.userAgent.indexOf("AppleWebKit") !== -1;
+                const isEdge = navigator.userAgent.indexOf("Edge") !== -1;
+
+                // Crear etiqueta de opción
+                const option = (
+                  <option value={item.fullname} data-id={item.id}>
+                    {isFirefox ? `${item.fullname}` : ""}
+                  </option>
+                );
+
+                // Devolver opción
+                return option;
+              })}
+            </datalist>
+            {/* <input
               type="text"
               id="data2"
               name="supplier"
@@ -313,7 +366,7 @@ const Create = () => {
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
-            />
+            /> */}
           </div>
           <div className="form-container">
             <label htmlFor="data3">Fecha:</label>

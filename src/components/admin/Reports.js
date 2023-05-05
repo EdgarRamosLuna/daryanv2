@@ -19,7 +19,7 @@ import TableTotals from "./TableTotals";
 import TableComponent from "./TableComponent";
 registerLocale("es", es);
 function ReportsTable({ data }) {
-  const { hanldeDel, setSort, toast } = useContext(MainContext);
+  const { handleDel, setSort, toast } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const [nameFilter2, setNameFilter2] = useState("");
   const [lastnameFilter, setLastnameFilter] = useState("");
@@ -1246,7 +1246,7 @@ function ReportsTable({ data }) {
                       <td className="table-center">{item.id}</td>
                       <td className="table-center">{item.part_number}</td>
                       <td className="table-center">{item.plant}</td>
-                      <td className="table-center">Proveedor</td>
+                      <td className="table-center">{item.supplier}</td>
                       <td className="table-center">{item.date}</td>
                       <td className="table-center">
                         {Number(item.status) === 1 && "Sin aprobar"}{" "}
@@ -1260,14 +1260,14 @@ function ReportsTable({ data }) {
                         <div className="actions">
                           <i
                             className="fa-solid fa-trash"
-                            onClick={() => hanldeDel(item.id, 'reports')}
+                            onClick={() => handleDel(item.id, 'reports')}
                           ></i>
-                          <Link
+                          {/* <Link
                             to={`/admin/reports/${item.id}`}
                             style={{ color: "green" }}
                           >
                             <i className="fa-solid fa-eye"></i>
-                          </Link>
+                          </Link> */}
                           <i className="fa-solid fa-file-pdf"></i>
                         </div>
                       </td>
@@ -1317,7 +1317,7 @@ function ReportsTable({ data }) {
                       <td className="table-center">{item.id}</td>
                       <td className="table-center">{item.part_number}</td>
                       <td className="table-center">{item.plant}</td>
-                      <td className="table-center">Proveedor</td>
+                      <td className="table-center">{item.supplier}</td>
                       <td className="table-center">{item.date}</td>
                       <td className="table-center">
                         {Number(item.status) === 1 && "Sin aprobar"}{" "}
@@ -1331,14 +1331,14 @@ function ReportsTable({ data }) {
                         <div className="actions">
                           <i
                             className="fa-solid fa-trash"
-                            onClick={() => hanldeDel(item.id)}
+                            onClick={() => handleDel(item.id)}
                           ></i>
-                          <Link
+                          {/* <Link
                             to={`/admin/reports/${item.id}`}
                             style={{ color: "green" }}
                           >
                             <i className="fa-solid fa-eye"></i>
-                          </Link>
+                          </Link> */}
                           <i className="fa-solid fa-file-pdf"></i>
                         </div>
                       </td>
@@ -1436,7 +1436,7 @@ function ReportsTable({ data }) {
                         <div className="actions">
                           <i
                             className="fa-solid fa-trash"
-                            onClick={() => hanldeDel(item.id)}
+                            onClick={() => handleDel(item.id)}
                           ></i>
                           <Link
                             to={`/admin/reports/${item.id}`}

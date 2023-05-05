@@ -13,14 +13,21 @@ import Loader from "../Loader";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import StatusBtn from "../StatusBtn";
+import TaLoader from "./TaLoader";
+
 registerLocale("es", es);
 function UsersTable({ data }) {
-
-  console.log(data);
-
-  const {hanldeDel, setShowModalU, updateId, setUpdateId} = useContext(MainContext);
+  // console.log(data);
+  const {
+    handleDel,
+    setShowModalU,
+    updateId,
+    setUpdateId,
+    isLoading,
+    setIsLoading,
+  } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
-  
+  const [lastnameFilter, setLastnameFilter] = useState("");
   const today = new Date();
   const sixDaysLater = new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000);
   const sixDaysBefore = new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000);
@@ -30,6 +37,12 @@ function UsersTable({ data }) {
   const [rowsPerPage, setRowsPerPage] = useState(20);
   const [formatedDateStart, setFormatedDateStart] = useState("");
   const [formatedDateEnd, setFormatedDateEnd] = useState("");
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  }, [data]);
   useEffect(() => {
     if (dateStart !== "") {
       const date = new Date(dateStart);
@@ -53,8 +66,8 @@ function UsersTable({ data }) {
       const formattedDateTime = `${year}-${month}-${day}`;
       setFormatedDateEnd(formattedDateTime);
     }
-    return () => {};
   }, [dateStart, dateEnd]);
+
   const handleFirstPageClick = () => {
     setCurrentPage(1);
   };
@@ -65,11 +78,13 @@ function UsersTable({ data }) {
     setNameFilter(event.target.value);
   };
 
-  const filterData = useCallback((data) => {
+  const filterData = useCallback(() => {
     return data.filter((item) => {
-      const name = item.id.toLowerCase();
+      const name = item.fullname.toLowerCase();
+      const user = item.username.toLowerCase();
+      const email = item.email.toLowerCase();
       const id = item.id.toLowerCase();
-      const fullName = `${name} ${id}`; // combinamos name y id en una sola variable
+      const fullName = `${name} ${user} ${email}`; // combinamos name y id en una sola variable
       const date = new Date(item.date).getTime();
 
       if (nameFilter && fullName.indexOf(nameFilter.toLowerCase()) === -1) {
@@ -90,9 +105,9 @@ function UsersTable({ data }) {
 
       return true;
     });
-  }, [nameFilter]);
+  }, [nameFilter, dateStart, dateEnd, data]);
 
-  const filteredData = filterData(data);
+  const filteredData = filterData();
   const getPaginatedData = useCallback(() => {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
@@ -181,7 +196,6 @@ function UsersTable({ data }) {
   }
   return (
     <>
-     
       <Table>
         <div className="table-container">
           <div className="header-container">
@@ -212,25 +226,44 @@ function UsersTable({ data }) {
                 </tr>
               </thead>
               <tbody>
-                {getPaginatedData().length === 0 ? (
+                <div className={isLoading === false ? "loaderContainer" : ""}>
                   <Loader>
                     <img src="/assets/img/loading2.svg" alt="" />
                   </Loader>
+                </div>
+                {getPaginatedData().length === 0 ? (
+                  <tr>
+                    <td colSpan="4" className="table-center" style={{opacity:`${isLoading ? 0 : 1}`}}>
+                      <h1>No hay informacion en la base de datos</h1>
+                    </td>
+                  </tr>
                 ) : (
                   getPaginatedData().map((item, index) => (
-                    <tr key={index}>
+                    <tr
+                      key={index}
+                      className={
+                        isLoading === false ? "tr-h rloaderContainer" : "tr-hd"
+                      }
+                    >
                       <td className="table-center">{item.username}</td>
                       <td className="table-center">{item.email}</td>
-                      <td className="table-center"><StatusBtn status={Number(item.status)} id={item.id} /></td>
+                      <td className="table-center" style={{width:120, padding:'0 25px'}}>
+                        <StatusBtn x
+                          status={Number(item.status)}
+                          id={item.id}
+                          table="users"
+                        />
+                      </td>
                       <td className="table-center">
                         <div className="actions">
                           <i
                             className="fa-solid fa-trash"
-                            onClick={() =>
-                              hanldeDel(item.id)
-                            }
+                            onClick={() => handleDel(item.id, "users")}
                           ></i>
-                          <i className="fa-solid fa-pen-to-square" onClick={() => updateUser(item.id)}></i>
+                          <i
+                            className="fa-solid fa-pen-to-square"
+                            onClick={() => updateUser(item.id)}
+                          ></i>
                         </div>
                       </td>
                     </tr>

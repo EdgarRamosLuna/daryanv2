@@ -21,7 +21,7 @@ const Clients = () => {
       return response.json();
     })
     .then(dataClients => {
-     console.log(dataClients);
+   //  console.log(dataClients);
       dataClients.sort((a, b) => b.id - a.id);
       setDataClients(dataClients);
     })
@@ -29,16 +29,16 @@ const Clients = () => {
       console.log(error);
     });
   }, []);
-  useEffect(() =>{
-  //  console.log(dbChanges);
-    if(dbChanges.length > 0){
-      console.log(dbChanges[0]);
-      const datan = [dbChanges[0], ...dataClients]
+  // useEffect(() =>{
+  // //  console.log(dbChanges);
+  //   if(dbChanges.length > 0){
+  //     console.log(dbChanges[0]);
+  //     const datan = [dbChanges[0], ...dataClients]
 
-      //console.log(datan)
-      setDataClients(prev => [dbChanges[0], ...dataClients]);
-    }
-  }, [dbChanges])
+  //     //console.log(datan)
+  //     setDataClients(prev => [dbChanges[0], ...dataClients]);
+  //   }
+  // }, [dbChanges])
 
 
   

@@ -13,26 +13,11 @@ const CreateClient = () => {
     formState: { errors },
     setValue,
   } = useForm();
-  const { btnCloseRef, toast, dataClients, setDataClients } =
+  const { btnCloseRef, toast, dataClients, setDataClients, updateId, suppliers, setSuppliers } =
     useContext(MainContext);
   const [saving, setSaving] = useState(false);
-  const [dataSupplier, setDataSupplier] = useState([]);
-  const navigate = useNavigate();
-  const params = useParams();
-  useEffect(() => {
-    async function loadTask() {
-      const res2 = await getSuppliers();
-      setDataSupplier(res2.data);
-      if (params.id) {
-        const res = await getUser(params.id);
-        const { title, description } = res.data;
-        // console.log(title, description);
-        setValue("title", title);
-        setValue("description", description);
-      }
-    }
-    loadTask();
-  }, []);
+
+  
   //console.log(dataSupplier);
   const onSubmmit = handleSubmit(async (data) => {
     setSaving(true);
@@ -47,16 +32,17 @@ const CreateClient = () => {
           toast.success(datares.message, {
             duration: 4000,
           });
-          const { email, name, user, id_supplier } = data;
+          const { email, name, user, id_supplier, hour } = data;
           const { last_id } = datares;
           setDataClients((prev) => [
             {
               id: `${last_id}`,
-              id_supplier: `${last_id}`,
+              id_supplier: `${id_supplier}`,
               fullname: name,
               username: user,
               email,
               status: "1",
+              hour: Number(hour) === 1 ? true : false,
             },
             ...prev,
           ]);
@@ -89,7 +75,7 @@ const CreateClient = () => {
             })}
           >
             <option value="0">Selecciona un proveedor</option>
-            {dataSupplier.map((supplier, indx) => (
+            {suppliers.map((supplier, indx) => (
               <option value={supplier.id}>{supplier.fullname}</option>
             ))}
           </select>

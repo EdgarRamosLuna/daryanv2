@@ -16,7 +16,7 @@ const Users = () => {
         return response.json();
       })
       .then((dataUsers) => {
-        console.log(dataUsers);
+        dataUsers.sort((a, b) => b.id - a.id);
         setDataUsers(dataUsers);
       })
       .catch((error) => {

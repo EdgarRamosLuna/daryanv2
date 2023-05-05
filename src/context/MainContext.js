@@ -3,7 +3,13 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { useRef } from "react";
 import { Toaster, toast } from "sonner";
-import { statusClient } from "../api/daryan.api";
+import {
+  getSuppliers,
+  statusClient,
+  statusEmployee,
+  statusSupplier,
+  statusUser,
+} from "../api/daryan.api";
 export const MainContext = createContext();
 export const MainContextProvider = ({ children }) => {
   const dataSes = localStorage.getItem("sesType");
@@ -95,33 +101,108 @@ export const MainContextProvider = ({ children }) => {
     setTableName(tableName);
     setConfirm(true);
   };
-  const handleStatus = async(id, status, tableName) => {
-    
+  const handleStatus = async (id, status, tableName) => {
     if (tableName === "clients") {
-      await statusClient({id, status}).then((res) => {
-        const datares = res.data;
-        if (datares.error) {
-          toast.error(datares.message, {
-            duration: 5000,
-          });
-        } else {
-          toast.success(datares.message, {
-            duration: 4000,
-          });
-          //setDataClients((data) => data.filter((data) => data.id !== `${id}`));
-          //Update status from dataClient by id
-          const newData = dataClients.map((item) => {
-            if (item.id === id) {
-              item.status = status === 1 ? 0 : 1;
-            }
-            return item;
-          });
-          setDataClients(newData);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      await statusClient({ id, status })
+        .then((res) => {
+          const datares = res.data;
+          if (datares.error) {
+            toast.error(datares.message, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(datares.message, {
+              duration: 4000,
+            });
+            //setDataClients((data) => data.filter((data) => data.id !== `${id}`));
+            //Update status from dataClient by id
+            const newData = dataClients.map((item) => {
+              if (item.id === id) {
+                item.status = status === 1 ? 0 : 1;
+              }
+              return item;
+            });
+            setDataClients(newData);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    if (tableName === "employees") {
+      await statusEmployee({ id, status })
+        .then((res) => {
+          const datares = res.data;
+          if (datares.error) {
+            toast.error(datares.message, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(datares.message, {
+              duration: 4000,
+            });
+            const newData = dataEmployees.map((item) => {
+              if (item.id === id) {
+                item.status = status === 1 ? 0 : 1;
+              }
+              return item;
+            });
+            setDataEmployees(newData);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    if (tableName === "suppliers") {
+      await statusSupplier({ id, status })
+        .then((res) => {
+          const datares = res.data;
+          if (datares.error) {
+            toast.error(datares.message, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(datares.message, {
+              duration: 4000,
+            });
+            const newData = dataSuppliers.map((item) => {
+              if (item.id === id) {
+                item.status = status === 1 ? 0 : 1;
+              }
+              return item;
+            });
+            setDataSuppliers(newData);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    if (tableName === "users") {
+      await statusUser({ id, status })
+        .then((res) => {
+          const datares = res.data;
+          if (datares.error) {
+            toast.error(datares.message, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(datares.message, {
+              duration: 4000,
+            });
+            const newData = dataUsers.map((item) => {
+              if (item.id === id) {
+                item.status = status === 1 ? 0 : 1;
+              }
+              return item;
+            });
+            setDataUsers(newData);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
     //setConfirm(true);
   };
@@ -223,22 +304,53 @@ export const MainContextProvider = ({ children }) => {
     setDivs((prevDatos) => prevDatos.filter((item) => item.id !== itemId));
     setNumFilas(numFilas - 1);
   };
-  const eliminarColumna = (penultimate) => {
-    //console.log(penultimate);
+  const eliminarColumna = (id) => {
+    setDivs((prevDatos) => {
+      const newData = prevDatos.slice(); //copy array
+      newData.map((fila) => {
+        const newArra = fila.values;
+        newArra.splice(-2, 1); // remove last item
+        return newArra; // Return the updated array
+      });
+      return newData;
+    });
     setTitulosColumnas((prev) => {
       const newArray = prev.slice();
-      newArray.splice(-1, 1);
+      newArray.splice(-1, 1); // remove last item
       return newArray;
     });
-
-    setDivs((prevDatos) => {
-      const newD = prevDatos.map((fila) => {
-        const newArra = fila.values;
-        newArra.pop();
-      });
-      return prevDatos;
-    });
     setNumColumnas((prev) => prev - 1);
+  };
+
+  const eliminarColumna2 = (id) => {
+    //console.log(penultimate);
+    const confirmMessage =
+      "¿Estás seguro(a) que deseas borrar este inciso? Esta acción no podrá deshacerse.";
+    const confirmResult = window.confirm(confirmMessage);
+
+    if (confirmResult) {
+      // The user clicked OK.
+      // Do something.
+      // setDivs((prevDatos) => {
+      //   const newData = prevDatos.slice(); //copy array
+      //   newData.map((fila) => {
+      //     const newArra = fila.values;
+      //     newArra.splice(-2, 1); // remove last item
+      //     return newArra; // Return the updated array
+      //   });
+      //   return newData;
+      // });
+      setTitulosColumnas((prev) => {
+        const newArray = prev.slice();
+        newArray.splice(-1, 1); // remove last item
+        return newArray;
+      });
+      setNumColumnas((prev) => prev - 1);
+    } else {
+      // The user clicked Cancel.
+      // Do something else.
+      return false;
+    }
   };
   //console.log(divs);
   const container1Ref = useRef(null);
@@ -444,6 +556,20 @@ export const MainContextProvider = ({ children }) => {
   };
   const [dataCDb, setDataCDb] = useState([]);
   const [dbChanges, setDbChanges] = useState([]);
+  const [showModalClient, setShowModalClient] = useState(false);
+  const [showModalEmployee, setShowModalEmployee] = useState(false);
+  const [showModalUser, setShowModalUser] = useState(false);
+  const [showModalSupplier, setShowModalSupplier] = useState(false);
+  const [suppliers, setSuppliers] = useState([]);
+  useEffect(() => {
+    async function loadTask() {
+      const res2 = await getSuppliers();
+      setSuppliers(res2.data);
+    }
+    loadTask();
+  }, []);
+
+  const [deletingInc, setDeletingInc] = useState(0);
   //const [dataClients, setDataClients] = useState([]);
   return (
     <MainContext.Provider
@@ -549,6 +675,19 @@ export const MainContextProvider = ({ children }) => {
         btnCloseRef,
         dbChanges,
         setDbChanges,
+        showModalClient,
+        setShowModalClient,
+        showModalEmployee,
+        setShowModalEmployee,
+        showModalUser,
+        setShowModalUser,
+        showModalSupplier,
+        setShowModalSupplier,
+        suppliers,
+        setSuppliers,
+        eliminarColumna2,
+        deletingInc,
+        setDeletingInc,
       }}
     >
       <Toaster richColors position="top-center" closeButton />

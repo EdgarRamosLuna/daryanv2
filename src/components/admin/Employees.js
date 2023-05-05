@@ -15,9 +15,8 @@ import { MainContext } from "../../context/MainContext";
 import StatusBtn from "../StatusBtn";
 import TaLoader from "./TaLoader";
 
-
 registerLocale("es", es);
-function ClientsTable({ data }) {
+function EmployeesTable({ data }) {
   // console.log(data);
   const {
     handleDel,
@@ -227,41 +226,39 @@ function ClientsTable({ data }) {
                 </tr>
               </thead>
               <tbody>
-                {isLoading ? (
-                  <>
-                    <TaLoader/>
-                  </>
-                ) : getPaginatedData().length === 0 ? (
+                <div className={isLoading === false ? "loaderContainer" : ""}>
                   <Loader>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "5px",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <h1>No hay informacion en la base de datos</h1>
-                    </div>
+                    <img src="/assets/img/loading2.svg" alt="" />
                   </Loader>
+                </div>
+                {getPaginatedData().length === 0 ? (
+                  <tr>
+                    <td colSpan="4" className="table-center" style={{opacity:`${isLoading ? 0 : 1}`}}>
+                      <h1>No hay informacion en la base de datos</h1>
+                    </td>
+                  </tr>
                 ) : (
                   getPaginatedData().map((item, index) => (
-                    <tr key={index}>
+                    <tr
+                      key={index}
+                      className={
+                        isLoading === false ? "tr-h rloaderContainer" : "tr-hd"
+                      }
+                    >
                       <td className="table-center">{item.username}</td>
                       <td className="table-center">{item.email}</td>
-                      <td className="table-center">
-                        <StatusBtn
+                      <td className="table-center" style={{width:120, padding:'0 25px'}}>
+                        <StatusBtn x
                           status={Number(item.status)}
                           id={item.id}
-                          table="clients"
+                          table="employees"
                         />
                       </td>
                       <td className="table-center">
                         <div className="actions">
                           <i
                             className="fa-solid fa-trash"
-                            onClick={() => handleDel(item.id, "clients")}
+                            onClick={() => handleDel(item.id, "employees")}
                           ></i>
                           <i
                             className="fa-solid fa-pen-to-square"
@@ -319,4 +316,4 @@ function ClientsTable({ data }) {
   );
 }
 
-export default ClientsTable;
+export default EmployeesTable;

@@ -18,7 +18,7 @@ const Suppliers = () => {
         return response.json();
       })
       .then((dataSuppliers) => {
-        console.log(dataSuppliers);
+        dataSuppliers.sort((a, b) => b.id - a.id);
         setDataSuppliers(dataSuppliers);
       })
       .catch((error) => {

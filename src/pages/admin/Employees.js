@@ -4,7 +4,7 @@ import EmployeesTable from "../../components/admin/Employees";
 import { MainContext } from "../../context/MainContext";
 
 const Employees = () => {
-  const {dataEmployees, setDataEmployees, serverUrl} = useContext(MainContext);
+  const {dataEmployees, setDataEmployees, serverUrl, } = useContext(MainContext);
   useEffect(() => {
       fetch(`${serverUrl}/api/get_employees`, {
       cache: "no-cache",
@@ -16,7 +16,8 @@ const Employees = () => {
         return response.json();
       })
       .then((dataEmployees) => {
-        console.log(dataEmployees);
+   //     console.log(dataEmployees);
+        dataEmployees.sort((a, b) => b.id - a.id);
         setDataEmployees(dataEmployees);
       })
       .catch((error) => {

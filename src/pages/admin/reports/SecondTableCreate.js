@@ -4,8 +4,16 @@ import { Table } from "../../../styles/Styles";
 
 import { useRef } from "react";
 import DatePickerInputU from "../../../components/DateInputUpdate";
+import useThClick from "./useThClick";
 
-export default function SecondTableCreate({ dataC }) {
+export default function SecondTableCreate({
+  dataC,
+  eliminarColumna2,
+  agregarColumna,
+  divs,
+  setDivs,
+  agregarFila,
+}) {
   const {
     numFilas,
     setNumFilas,
@@ -13,13 +21,7 @@ export default function SecondTableCreate({ dataC }) {
     setNumColumnas,
     setTitulosColumnas,
     titulosColumnas,
-    agregarColumna,
-    agregarColumna2,
-    agregarFila,
-    eliminarColumna,
     eliminarFila,
-    divs,
-    setDivs,
     setTotal1,
     setTotal2,
     setTotal3,
@@ -56,7 +58,7 @@ export default function SecondTableCreate({ dataC }) {
       }, 100);
     }
   }*/
-  const handleInputChange = useCallback((divId, inputIndex, newValue) => {
+  const handleInputChange = (divId, inputIndex, newValue) => {
     setDivs((prevDivs) => {
       const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
       const updatedDiv = { ...prevDivs[divToUpdateIndex] };
@@ -65,10 +67,10 @@ export default function SecondTableCreate({ dataC }) {
       updatedDivs[divToUpdateIndex] = updatedDiv;
       return updatedDivs;
     });
-  }, []);
+  };
 
   useEffect(() => {
-    console.log(divs);
+    //console.log(divs);
     let newValue1 = 0;
     let newValue2 = 0;
     let newValue3 = 0;
@@ -182,7 +184,7 @@ export default function SecondTableCreate({ dataC }) {
       });
     });
   }, [divs]);
-  //console.log(total1);
+  //console.log(divs);
   //const [first, setfirst] = useState(second)
   const [data, setData] = useState([]);
   const [isEClause, setIsEClause] = useState(false);
@@ -191,47 +193,48 @@ export default function SecondTableCreate({ dataC }) {
   };
   const btnRef = useRef(null);
   const clauses = Number(dataC.report_in.length);
-  useEffect(() => {
-    for (let p = 0; p < clauses; p++) {
-      if (p === 2) {
-        //const updatedState = [...titulosColumnas];
-        //updatedState[14] = 'E';
-        //setTitulosColumnas(updatedState);
-      }
-      if (p === 3) {
-        setIsEClause(true);
-      }
-      if (p > 3) {
-        //agregarColumna2();
-        if (numColumnas < 20) {
-          setNumColumnas((prev) => prev + 1);
-          setTitulosColumnas((prevTitulos) => {
-            const nextLetter = getNextLetter(prevTitulos);
-            setDbColumns((prev) => [...prev, nextLetter]);
-            //   console.log(nextLetter);
-            const newArr = [...prevTitulos, nextLetter];
-            const arrayCopy = newArr.slice();
-            const penultimate = arrayCopy.slice(-2, -1)[0];
-            // arrayCopy.splice(-2, 1);
-            // arrayCopy.push(penultimate);
-            // const tableWrapper = document.querySelectorAll(".scrollX");
+  // useEffect(() => {
+  //   for (let p = 0; p < clauses; p++) {
+  //     if (p === 2) {
+  //       //const updatedState = [...titulosColumnas];
+  //       //updatedState[14] = 'E';
+  //       //setTitulosColumnas(updatedState);
+  //     }
+  //     if (p === 3) {
+  //       setIsEClause(true);
+  //     }
+  //     if (p > 3) {
+  //       //agregarColumna2();
+  //       if (numColumnas < 20) {
+  //         agregarColumna2()
+  //         // setNumColumnas((prev) => prev + 1);
+  //         // setTitulosColumnas((prevTitulos) => {
+  //         //   const nextLetter = getNextLetter(prevTitulos);
+  //         //   setDbColumns((prev) => [...prev, nextLetter]);
+  //         //   //   console.log(nextLetter);
+  //         //   const newArr = [...prevTitulos, nextLetter];
+  //         //   const arrayCopy = newArr.slice();
+  //         //   const penultimate = arrayCopy.slice(-2, -1)[0];
+  //         //   // arrayCopy.splice(-2, 1);
+  //         //   // arrayCopy.push(penultimate);
+  //         //   // const tableWrapper = document.querySelectorAll(".scrollX");
 
-            // tableWrapper.forEach((element) => {
-            //   const scrollWidth = element.scrollWidth;
-            //   const clientWidth = element.clientWidth;
-            //   if (scrollWidth >= clientWidth) {
-            //     setTimeout(() => {
-            //       element.scrollLeft = scrollWidth;
-            //     }, 200);
-            //   }
-            // });
+  //         //   // tableWrapper.forEach((element) => {
+  //         //   //   const scrollWidth = element.scrollWidth;
+  //         //   //   const clientWidth = element.clientWidth;
+  //         //   //   if (scrollWidth >= clientWidth) {
+  //         //   //     setTimeout(() => {
+  //         //   //       element.scrollLeft = scrollWidth;
+  //         //   //     }, 200);
+  //         //   //   }
+  //         //   // });
 
-            return arrayCopy;
-          });
-        }
-      }
-    }
-  }, []);
+  //         //   return arrayCopy;
+  //         // });
+  //       }
+  //     }
+  //   }
+  // }, []);
 
   //console.log(divs);
   const date = new Date();
@@ -242,20 +245,28 @@ export default function SecondTableCreate({ dataC }) {
   const minutes = ("0" + date.getMinutes()).slice(-2);
   const seconds = ("0" + date.getSeconds()).slice(-2);
   const formattedDateTime = `${year}-${month}-${day}`;
+  const btnDelIncRef = useRef(null);
+  const [currentThText, previousThText, handleClick] = useThClick(eliminarColumna2);
+
+  //console.log(previousThText);
   return (
     <Table>
-      <table>
+      <table onClick={handleClick}>
         <thead>
           <tr>
-            {titulosColumnas.map((titulo, i) => (
-              i === 0 ? <th key={i}>
-              <i
-                ref={btnRef}
-                className="fa-solid fa-circle-plus"
-                onClick={() => agregarFila(numColumnas, formattedDateTime)}
-              ></i>
-            </th>: <th>{titulo}</th>
-            ))}
+            {titulosColumnas.map((titulo, i) =>
+              i === 0 ? (
+                <th key={i}>
+                  <i
+                    ref={btnRef}
+                    className="fa-solid fa-circle-plus"
+                    onClick={() => agregarFila(numColumnas, formattedDateTime)}
+                  ></i>
+                </th>
+              ) : (
+                <th>{titulo}</th>
+              )
+            )}
             {titulosColumnas.at(-1) !== "I" ? (
               <th>
                 <i
@@ -264,9 +275,7 @@ export default function SecondTableCreate({ dataC }) {
                 ></i>
               </th>
             ) : (
-              <th>
-                
-              </th>
+              <th></th>
             )}
             {/* {titulosColumnas.map((titulo, i) => (
               <th>{titulo}</th>
@@ -321,21 +330,23 @@ export default function SecondTableCreate({ dataC }) {
             <tr key={fila.id}>
               {fila.values.map((valor, i) =>
                 i === 0 || i === fila.values.length - 1 ? (
-                  <td>
-                    {i === 0 && fila.id !== 1 && (
-                      <i
-                        className="fa-solid fa-trash"
-                        onClick={() => eliminarFila(fila.id)}
-                      ></i>
-                    )}
-                    {i === fila.values.length - 1 &&
-                      fila.values.length > 15 && (
+                  <>
+                    {i === 0 && fila.id !== 1 ? (
+                      <td>
                         <i
                           className="fa-solid fa-trash"
-                          onClick={eliminarColumna}
+                          onClick={() => eliminarFila(fila.id)}
                         ></i>
+                      </td>
+                    ) : (
+                      i === 0 && fila.id === 1 && <td></td>
+                    )}
+
+                    {i === fila.values.length - 1 &&
+                      fila.values.length > 15 && (
+                        <td className="fa-solid fa-trash" style={{display:'table-cell', verticalAlign:'middle'}} />
                       )}
-                  </td>
+                  </>
                 ) : i === 1 ? (
                   <td key={i} className="table-center">
                     {fila.id}

@@ -1,21 +1,21 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { MainContext } from "../../../context/MainContext";
 import { useParams } from "react-router-dom";
 import { StyledForm, Table } from "../../../styles/Styles";
 import SecondTableCreate from "./SecondTableCreate";
 import DatePickerInputU from "../../../components/DateInputUpdate";
+import { deleteReportIn } from "../../../api/daryan.api";
 
 const View = () => {
   const {
     titulosColumnas,
-    titulosColumnas2,
-    eliminarColumna,
-    agregarColumna,
-    setTitulosColumnas2,
-    agregarFila,
     total1,
-    divs,
-    setDivs,
     setTotal1,
     total2,
     setTotal2,
@@ -50,27 +50,22 @@ const View = () => {
     handleScroll1,
     handleScroll2,
     data,
-    setData,
     dataTS,
-    isLoading,
-    setIsLoading,
     formattedDate,
     setTitulosColumnas,
     setDbColumns,
     getNextLetter,
-    agregarColumna2,
     dataCDb,
     setDataCDb,
     numColumnas,
     setNumColumnas,
-    numFilas,
+    suppliers,
+    toast
   } = useContext(MainContext);
-  //setData(dataTS)
-
-  //setData(dataTS)
 
   const params = useParams();
   const idReport = params.id;
+  //const [numFilas, setNumFilas] = useState(0);
   const eData =
     data.length === 0
       ? JSON.parse(dataTS).filter(
@@ -79,6 +74,83 @@ const View = () => {
       : data.filter((data) => Number(data.id) === Number(idReport))[0];
   const [dataC, setDataC] = useState(eData);
 
+  const updateData = useCallback((data) => {
+    setDataC(data);
+  }, []);
+  useEffect(() => {
+    //console.log(numColumnas2);
+
+    setNumColumnas2(numColumnas);
+    // setNumFilas2(numFilas);
+  }, [numColumnas]);
+  
+  const agregarFila = (numColumnas, date) => {
+    setDivs((prevDatos) => [
+      ...prevDatos,
+      {
+        id: prevDatos.length + 1,
+        values: date
+          ? Array.from({ length: numColumnas }, (v, i) => (i === 2 ? date : ""))
+          : Array.from({ length: numColumnas }, () => ""),
+        // values: Array.from({ length: numColumnas }, () => ""),
+      },
+    ]);
+    setNumFilas2((prev) => prev + 1);
+    const tableWrapper = document.querySelector(".c2");
+    const scrollHeight = tableWrapper.scrollHeight;
+    const clientHeight = tableWrapper.clientHeight;
+    if (scrollHeight > clientHeight) {
+      //tableWrapper.scrollTop = scrollHeight - clientHeight;
+      setTimeout(() => {
+        tableWrapper.scrollTo({ top: scrollHeight, behavior: "smooth" });
+      }, 100);
+    }
+  };
+  const eliminarColumna2 = async(inc) => {
+    const confirmMessage =
+      "¿Estás seguro(a) que deseas borrar este inciso? Esta acción no podrá deshacerse.";
+    const confirmResult = window.confirm(confirmMessage);
+  
+
+    if (confirmResult) {
+      await deleteReportIn({inc:inc, id_report: idReport})
+      .then((res) => {
+        const datares = res.data;
+        if (datares.error) {
+          toast.error(datares.message, {
+            duration: 5000,
+          });
+        } else {
+          toast.success(datares.message, {
+            duration: 4000,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      setDivs((prevDatos) => {
+        const newData = prevDatos.slice(); //copy array
+        newData.map((fila) => {
+          const newArra = fila.values;
+          newArra.splice(-2, 1); // remove last item
+          return newArra; // Return the updated array
+        });
+        return newData;
+      });
+      setTitulosColumnas((prev) => {
+        const newArray = prev.slice();
+        newArray.splice(-1, 1); // remove last item
+        return newArray;
+      });
+      setNumColumnas((prev) => prev - 1);
+    } else {
+      // The user clicked Cancel.
+      // Do something else.
+      return false;
+    }
+  };
+
   const [producedBy, setProducedBy] = useState(eData.made_by);
   const [checkedBy, setCheckedBy] = useState(eData.checked_by);
   const [authorizedBy, setAuthorizedBy] = useState(eData.authorized_by);
@@ -86,12 +158,91 @@ const View = () => {
   const newLength = 11 + clauses;
   const [numFilas2, setNumFilas2] = useState(Number(dataC.reports_cc.length));
   const [numColumnas2, setNumColumnas2] = useState(newLength);
-  useEffect(() => {
-    console.log(numColumnas2);
+  const [divs, setDivs] = useState(() => {
+    const filas = [];
+    for (let i = 1; i <= numFilas2; i++) {
+      //filas
+      filas.push({
+        //llenar las filas
+        id: i, //id de la fila
+        values: Array.from({ length: numColumnas2 }, () => ""), //llenar con valores vacios
+      });
+    }
 
+    for (let j = 0; j < filas.length; j++) {
+      //filas
+      const fil = filas[j]; //fila
+      const values = fil.values; //valores de la fila
+      if (dataC.reports_cc && dataC.reports_cc[j]) {
+        //si hay datos en el reporte
+        const keys = Object.keys(dataC.reports_cc[j]); //obtener las llaves de cada objeto
+        for (let k = 0; k < values.length; k++) {
+          //valores
+          switch (
+            k //switch para llenar los valores
+          ) {
+            case 0: //si es el indice k valor
+              values[k] = dataC.reports_cc[j][keys[k]]; //llenar con el valor del objeto
+              break;
+            case 1:
+              values[k] = dataC.reports_cc[j][keys[k + 1]];
+              break;
+            case 2:
+              const date = dataC.reports_cc[j][keys[k + 1]];
+              const fdate = formattedDate(date);
+              values[k] = fdate;
+              break;
+            case 10:
+              values[k] = dataC.reports_cc[j]["A"];
+              break;
+            case 11:
+              values[k] = dataC.reports_cc[j]["B"];
+              break;
+            case 12:
+              values[k] = dataC.reports_cc[j]["C"];
+              break;
+            case 13:
+              values[k] = dataC.reports_cc[j]["D"];
+              break;
+            case 14:
+              values[k] = dataC.reports_cc[j]["E"]
+                ? dataC.reports_cc[j]["E"]
+                : "";
+              break;
+            case 15:
+              values[k] = dataC.reports_cc[j]["F"]
+                ? dataC.reports_cc[j]["F"]
+                : "";
+              break;
+            case 16:
+              values[k] = dataC.reports_cc[j]["G"]
+                ? dataC.reports_cc[j]["G"]
+                : "";
+              break;
+            case 17:
+              values[k] = dataC.reports_cc[j]["H"]
+                ? dataC.reports_cc[j]["H"]
+                : "";
+              break;
+            case 18:
+              values[k] = dataC.reports_cc[j]["I"]
+                ? dataC.reports_cc[j]["I"]
+                : "";
+              break;
+            default:
+              values[k] = dataC.reports_cc[j][keys[k + 1]];
+              break;
+          }
+        }
+      }
+    }
+    return filas;
+  });
+  console.log(divs);
+  useEffect(() => {
     setNumColumnas2(numColumnas);
-    // setNumFilas2(numFilas);
   }, [numColumnas]);
+
   // const agregarColumnas = (e) => {
   //   console.log('sdsd');
   //   setTitulosColumnas((prevTitulos) => {
@@ -129,16 +280,47 @@ const View = () => {
   //   }
   // }, []);
 
-  useEffect(() => {
-    //console.log(dataC);
-    //    agregarColumna2();
+  const [divs2, setDivs2] = useState(() => {
+    const filas = [];
+    for (let i = 1; i <= numFilas2; i++) {
+      filas.push({
+        id: i,
+        values: Array.from({ length: numColumnas2 - 3 }, () => ""),
+      });
+    }
+    return filas;
+  });
 
-    setDivs(() => {
+  const agregarColumna = (e) => {
+    setNumColumnas((prev) => prev + 1);
+    setTitulosColumnas((prevTitulos) => {
+      const nextLetter = getNextLetter(prevTitulos);
+      setDbColumns((prev) => [...prev, nextLetter]);
+      //   console.log(nextLetter);
+      const newArr = [...prevTitulos, nextLetter];
+      const arrayCopy = newArr.slice();
+      // const penultimate = arrayCopy.slice(-2, -1)[0];
+      // arrayCopy.splice(-2, 1);
+      // arrayCopy.push(penultimate);
+      const tableWrapper = document.querySelectorAll(".scrollX");
+      tableWrapper.forEach((element) => {
+        const scrollWidth = element.scrollWidth;
+        const clientWidth = element.clientWidth;
+        if (scrollWidth >= clientWidth) {
+          setTimeout(() => {
+            element.scrollLeft = scrollWidth;
+          }, 200);
+        }
+      });
+
+      return arrayCopy;
+    });
+    setDivs((prev) => {
       const filas = [];
       for (let i = 1; i <= numFilas2; i++) {
         filas.push({
           id: i,
-          values: Array.from({ length: numColumnas2 }, () => ""),
+          values: Array.from({ length: numColumnas2 + 1 }, () => ""),
           // test:'aaaa'
         });
       }
@@ -217,30 +399,13 @@ const View = () => {
       //console.log(filas[0].values[0]);
       return filas;
     });
-  }, [numFilas2, numColumnas2]);
-  /* const handleSelect = (e, type) => {
-    setDataCDb({
-      ...dataCDb,
-      [e.target.dataset.name || e.target.name]: e.target.value,
-    });
-  };*/
-  const [divs2, setDivs2] = useState(() => {
-    const filas = [];
-    for (let i = 1; i <= numFilas2; i++) {
-      filas.push({
-        id: i,
-        values: Array.from({ length: numColumnas2 - 3 }, () => ""),
-      });
-    }
-    return filas;
-  });
-
+  };
   const [reportFooter, setReportFooter] = useState(() => {
     const filas = [];
     const dataInfo = eData.report_rby;
     let i2 = 0;
     const rby = [];
-    console.log(dataInfo);
+    //console.log(dataInfo);
     if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
       const keys = Object.keys(dataInfo[i2]);
       for (let z = 0; z < dataInfo.length; z++) {
@@ -267,7 +432,7 @@ const View = () => {
         if (i > 7) {
           if (i !== numColumnas2 - 3) {
             //console.log(numColumnas2 - 3);
-            console.log(rby[i - 8]);
+            //    console.log(rby[i - 8]);
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
@@ -339,7 +504,7 @@ const View = () => {
     const dataInfo = eData.report_in;
     let i2 = 0;
     const inc = [];
-
+    console.log(dataInfo);
     if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
       const keys = Object.keys(dataInfo[i2]);
       for (let z = 0; z < dataInfo.length; z++) {
@@ -702,10 +867,9 @@ const View = () => {
     const formattedDateTime = `${year}-${month}-${day}`;
     const keys = Object.keys(dataC.reports_cc[0]);
     //console.log(keys);
-    const numCol = keys.length - 1;
+    const numCol = keys.length;
     keys.splice(1, 1); // Elimina el elemento en la posición 1 (id_report)
-    keys.splice(10, 1);
-    keys[0] = ""
+    keys[0] = "";
     keys[2] = "fecha";
     keys[3] = "lote";
     keys[4] = "serial";
@@ -714,6 +878,9 @@ const View = () => {
     keys[7] = "piezas ok";
     keys[8] = "piezas trabajadas";
     keys[9] = "scrap";
+    keys.splice(10, 2);
+
+    //console.log(keys);
     const kLenght = keys.length + 1;
     setNumColumnas(kLenght);
     // if (lastKey !== "I") {
@@ -746,6 +913,7 @@ const View = () => {
       rate: dataC.rate,
       shift: dataC.shift,
       part_number: dataC.part_number,
+      id_supplier: dataC.id_supplier,
     });
   }, []);
   /*
@@ -753,7 +921,36 @@ const View = () => {
   console.log(customerControl);*/
   //console.log(dataToSave)
   const [dumpValue, setDumpValue] = useState("");
+  const inputRef = useRef();
+  const dataListRef = useRef();
+  const getSelectedOptionLocation = () => {
+    for (let i = 0; i < dataListRef.current.options.length; i++) {
+      if (dataListRef.current.options[i].value === inputRef.current.value) {
+        return dataListRef.current.options[i];
+      }
+    }
+  };
 
+  const handleChange = (e) => {
+    const selectedOption = getSelectedOptionLocation();
+    setDataC({
+      ...dataC,
+      [e.target.dataset.name || e.target.name]: e.target.value,
+    });
+    if (selectedOption == undefined) {
+      setDataCDb({
+        ...dataCDb,
+        [e.target.dataset.name || e.target.name]: e.target.value,
+      });
+      // console.log("option not included in the datalist");
+    } else {
+      const id_supplier = selectedOption.getAttribute("data-id");
+      setDataCDb({
+        ...dataCDb,
+        id_supplier,
+      });
+    }
+  };
   return (
     <>
       <div className="container">
@@ -783,19 +980,48 @@ const View = () => {
           <div className="form-container">
             <label htmlFor="data2">Proveedor:</label>
             <input
+              name="supplier"
+              value={dataC.supplier}
+              list="supplier"
+              onChange={handleChange}
+              ref={inputRef}
+              autoComplete="off"
+            />
+            <datalist id="supplier" ref={dataListRef}>
+              {suppliers.map((item, indx) => {
+                // Verificar si el navegador es Firefox, Safari o Edge
+                const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
+                const isSafari =
+                  navigator.userAgent.indexOf("Safari") !== -1 ||
+                  navigator.userAgent.indexOf("AppleWebKit") !== -1;
+                const isEdge = navigator.userAgent.indexOf("Edge") !== -1;
+
+                // Crear etiqueta de opción
+                const option = (
+                  <option value={item.fullname} data-id={item.id}>
+                    {isFirefox ? `${item.fullname}` : ""}
+                  </option>
+                );
+
+                // Devolver opción
+                return option;
+              })}
+            </datalist>
+            {/* <input
               type="text"
               id="data2"
               name="supplier"
               placeholder=""
               required
-              defaultValue={dataC.supplier}
+              defaultValue=""
+              value={data.supplier}
               onChange={(e) =>
-                setDataCDb({
-                  ...dataCDb,
+                setData({
+                  ...data,
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
-            />
+            /> */}
           </div>
           <div className="form-container">
             <label htmlFor="data3">Fecha:</label>
@@ -1072,7 +1298,14 @@ const View = () => {
         ref={container1Ref}
         onScroll={handleScroll1}
       >
-        <SecondTableCreate dataC={dataC} />
+        <SecondTableCreate
+          dataC={dataC}
+          eliminarColumna2={eliminarColumna2}
+          agregarColumna={agregarColumna}
+          divs={divs}
+          setDivs={setDivs}
+          agregarFila={agregarFila}
+        />
       </div>
 
       <div

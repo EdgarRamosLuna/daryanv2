@@ -1,56 +1,60 @@
-
-import React, { useContext, useEffect } from "react";
+import React, { useContext} from "react";
 import { CreateForm } from "../../../styles/Styles";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { createEmployee, getEmployee } from "../../../api/daryan.api";
-import { useNavigate, useParams } from "react-router-dom";
+import { createEmployee,} from "../../../api/daryan.api";
 import { MainContext } from "../../../context/MainContext";
 const CreateEmployee = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
   } = useForm();
-  const {btnCloseRef, toast} = useContext(MainContext)
+  const { btnCloseRef, toast, setDataEmployees } =
+    useContext(MainContext);
   const [saving, setSaving] = useState(false);
-  const navigate = useNavigate();
-  const params = useParams();
-  useEffect(() => {
-    async function loadTask() {
-      if (params.id) {
-        const res = await getEmployee(params.id);
-        const { title, description } = res.data;
-        setValue("title", title);
-        setValue("description", description);
-      }
-    }
-    loadTask();
-  }, []);
+
+  
+  //console.log(dataSupplier);
   const onSubmmit = handleSubmit(async (data) => {
     setSaving(true);
-    await createEmployee(data).then((res) => {
-      const data = res.data;
-      if (data.error) {
-        toast.error(data.message, {
+    await createEmployee(data)
+      .then((res) => {
+        const datares = res.data;
+        if (datares.error) {
+          toast.error(datares.message, {
+            duration: 5000,
+          });
+        } else {
+          toast.success(datares.message, {
+            duration: 4000,
+          });
+          const { email, name, user } = data;
+          const { last_id } = datares;
+          setDataEmployees((prev) => [
+            {
+              id: `${last_id}`,
+              fullname: name,
+              username: user,
+              email,
+              status: "1",
+            },
+            ...prev,
+          ]);
+
+          btnCloseRef.current.click();
+        }
+      })
+      .catch((err) => {
+        //console.log(err);
+        toast.error(err, {
           duration: 5000,
         });
-      }else{
-        toast.success(data.message, {
-          duration: 4000,
-        }
-        );
-      }
-    })
-    .catch((err) => {
-      //console.log(err);
-      toast.error(err, {
-        duration: 5000,
       });
-    });
+
+    //console.log(res);
+
     setSaving(false);
-    btnCloseRef.current.click();
   });
 
   return (
@@ -58,7 +62,7 @@ const CreateEmployee = () => {
       <p>Crear Empleado</p>
       <form autoComplete="off" onSubmit={onSubmmit}>
         <div className="item-from-container">
-          <label htmlFor="name">Nombre completo</label>
+          <label htmlFor="name">Nombre</label>
           <input
             type="text"
             id="name"
@@ -93,22 +97,23 @@ const CreateEmployee = () => {
         <div className="item-from-container">
           <label htmlFor="email">Correo</label>
           <input
-            type="text"
-            id="email"
-            name="email"
-            {...register("email", { required: true })}
-            //required
-            // onFocus={(e) => e.target.select()}
-            // value={dataToSave.email}
-            // onChange={(e) =>
-            //   setDataToSave({
-            //     ...dataToSave,
-            //     [e.target.dataset.name || e.target.name]: e.target.value,
-            //   })
-            // }
+            {...register("email", {
+              required: "Informacion requerida",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Ingresa un correo valido",
+              },
+              // minLength: {
+              //   value: 11,
+              //   message: "This input must exceed 10 characters",
+              // },
+            })}
           />
-          {errors.email && <span className="error">Informacion requerida</span>}
+          {errors.email && (
+            <span className="error">{errors.email.message}</span>
+          )}
         </div>
+        {/* {errors.insp && errors.hour && <span className="error">Debes seleccionar una opción para continuar</span>} */}
         <div className="item-from-container">
           <label htmlFor="password">Contraseña</label>
           <input
@@ -121,10 +126,12 @@ const CreateEmployee = () => {
             // value={dataToSave.password}
           />
           {errors.password && (
-            <span className="error">Informacion requeridaa</span>
+            <span className="error">Informacion requerida</span>
           )}
           <br />
-          <button type="submit" disabled={saving === true ? true : false}>{saving ? <img src="/assets/img/loading.svg" alt="" />:'Guardar'}</button>
+          <button type="submit" disabled={saving === true ? true : false}>
+            {saving ? <img src="/assets/img/loading.svg" alt="" /> : "Guardar"}
+          </button>
         </div>
       </form>
       {/*  <button type="submit">Create Account</button>

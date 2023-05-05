@@ -13,7 +13,7 @@ import UpdateClient from "../pages/admin/clients/Update";
 import CreateSupplier from "../pages/admin/suppliers/Create";
 import UpdateSupplier from "../pages/admin/suppliers/Update";
 import axios from "axios";
-import { deleteClient } from "../api/daryan.api";
+import { deleteClient, deleteEmployee, deleteSupplier, deleteUser } from "../api/daryan.api";
 
 let val;
 if (typeof window !== "undefined") {
@@ -32,6 +32,9 @@ export default function SubHeader() {
     setConfirm,
     setData,
     setDataClients,
+    setDataSuppliers,
+    setDataEmployees,
+    setDataUsers,
     idDelete,
     handleConfirm,
     showModalU,
@@ -46,17 +49,21 @@ export default function SubHeader() {
     setShowModalS,
     tableName,
     serverUrl,
-    toast
+    toast,
+    showModalClient,
+    setShowModalClient,
+    showModalEmployee,
+    setShowModalEmployee,
+    showModalUser,
+    setShowModalUser,
+    showModalSupplier,
+    setShowModalSupplier,
   } = useContext(MainContext);
   //console.log(useParams());
 
   //   const path = pathname.replaceAll('/', '');
   //   const name = path.replace('user', '');
   //console.log(path.replace('user', ''));
-  const [showModalClient, setShowModalClient] = useState(false);
-  const [showModalEmployee, setShowModalEmployee] = useState(false);
-  const [showModalUser, setShowModalUser] = useState(false);
-  const [showModalSupplier, setShowModalSupplier] = useState(false);
 
   const handleClickModal = () => {
     setShowModalUser(true);
@@ -83,7 +90,7 @@ export default function SubHeader() {
     //    showModalE, setShowModalE
   };
 
-  const callbackConfirm = async(id) => {
+  const callbackConfirm = async (id) => {
     if (tableName === "reports") {
       await axios
         .post(
@@ -106,6 +113,25 @@ export default function SubHeader() {
         });
     }
     if (tableName === "suppliers") {
+      await deleteSupplier({ id: id })
+        .then((res) => {
+          const datares = res.data;
+          if (datares.error) {
+            toast.error(datares.message, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(datares.message, {
+              duration: 4000,
+            });
+            setDataSuppliers((data) =>
+              data.filter((data) => data.id !== `${id}`)
+            );
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       // axios
       //   .post(
       //     `${serverUrl}/api/delete_supplier`,
@@ -126,61 +152,69 @@ export default function SubHeader() {
       //   });
     }
     if (tableName === "clients") {
-      await deleteClient({id: id}).then((res) => {
-        const datares = res.data;
-        if (datares.error) {
-          toast.error(datares.message, {
-            duration: 5000,
-          });
-        } else {
-          toast.success(datares.message, {
-            duration: 4000,
-          });
-          setDataClients((data) => data.filter((data) => data.id !== `${id}`));
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      await deleteClient({ id: id })
+        .then((res) => {
+          const datares = res.data;
+          if (datares.error) {
+            toast.error(datares.message, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(datares.message, {
+              duration: 4000,
+            });
+            setDataClients((data) =>
+              data.filter((data) => data.id !== `${id}`)
+            );
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
     if (tableName === "employees") {
-      await deleteClient({id: id}).then((res) => {
-        const datares = res.data;
-        if (datares.error) {
-          toast.error(datares.message, {
-            duration: 5000,
-          });
-        } else {
-          toast.success(datares.message, {
-            duration: 4000,
-          });
-          setDataClients((data) => data.filter((data) => data.id !== `${id}`));
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      await deleteEmployee({ id: id })
+        .then((res) => {
+          const datares = res.data;
+          if (datares.error) {
+            toast.error(datares.message, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(datares.message, {
+              duration: 4000,
+            });
+            setDataEmployees((data) =>
+              data.filter((data) => data.id !== `${id}`)
+            );
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
     if (tableName === "users") {
-      await deleteClient({id: id}).then((res) => {
-        const datares = res.data;
-        if (datares.error) {
-          toast.error(datares.message, {
-            duration: 5000,
-          });
-        } else {
-          toast.success(datares.message, {
-            duration: 4000,
-          });
-          setDataClients((data) => data.filter((data) => data.id !== `${id}`));
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      await deleteUser({ id: id })
+        .then((res) => {
+          const datares = res.data;
+          if (datares.error) {
+            toast.error(datares.message, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(datares.message, {
+              duration: 4000,
+            });
+            setDataUsers((data) =>
+              data.filter((data) => data.id !== `${id}`)
+            );
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
 
-    
     setConfirm(false);
   };
   const p = useParams().id;
