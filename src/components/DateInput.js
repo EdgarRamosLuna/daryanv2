@@ -53,7 +53,13 @@ const DatePickerInput = ({ value, setDate, name, id, index, style }) => {
           dateFormat="yyyy-MM-dd h:mm aa"*/
           customInput={
             <CustomInputD>
-              <InputDate type="" name="" value={value} style={style} />
+              <InputDate
+                type=""
+                name=""
+                defaultValue={value !== "" ?  value :(value === '' ? '' : formatedDateStart )}
+                style={style}
+                onChange={() => {}}
+              />
             </CustomInputD>
           }
         />

@@ -11,9 +11,10 @@ export default function useThClick(eliminarColumna2) {
       const columnIndex = td.cellIndex;
       const ths = td.closest('table').querySelectorAll('thead th');
       const th = ths[columnIndex];
-      if(th === undefined) return false;
+      if(th === undefined || th === '') return false;
+      console.log(th);
+  
       const thText = th.textContent;
-      //console.log(thText);
 
       setCurrentThText(thText);
       const previousTh = th.previousElementSibling;

@@ -17,6 +17,8 @@ import { Link, useNavigate } from "react-router-dom";
 import FilterSearch from "./FilterSearch";
 import TableTotals from "./TableTotals";
 import TableComponent from "./TableComponent";
+import Chart1 from "../Chart1";
+import Chart2 from "../Chart2";
 registerLocale("es", es);
 function ReportsTable({ data }) {
   const { handleDel, setSort, toast } = useContext(MainContext);
@@ -36,8 +38,9 @@ function ReportsTable({ data }) {
   const [activeTab, setActiveTab] = useState(1);
   const [uniqueLots, setUniqueLots] = useState([]);
   const [uniqueSerial, setUniqueSerial] = useState([]);
+  const [uniqueSuppliers, setUniqueSuppliers] = useState([]);
   const [uniquePart_number, setUniquePart_number] = useState([]);
-  const [filterOption, setFilterOption] = useState(1);
+  const [filterOption, setFilterOption] = useState(0);
   useEffect(() => {
     if (dateStart !== "") {
       const date = new Date(dateStart);
@@ -72,6 +75,7 @@ function ReportsTable({ data }) {
   const [filtersSerial, setFiltersSerial] = useState([]);
   const [filtersLot, setFiltersLot] = useState([]);
   const [filtersPartNumber, setFiltersPartNumber] = useState([]);
+  const [filtersSupplier, setFiltersSupplier] = useState([]);
   const [loader, setLoader] = useState(false);
   const handleNameFilterChange = (event) => {
     setNameFilter(event.target.value);
@@ -171,14 +175,41 @@ function ReportsTable({ data }) {
       }, 1000);
     }
   };
+  const handleNameFilterChange5 = (event) => {
+    setNameFilter2(event.target.value);
+    const value = event.target.value.trim(); // Elimina espacios en blanco del valor
+    if (value !== "") {
+      // Verifica que el valor no esté vacío y existe en uniquePart_number
+      setLoader(true);
+      setTimeout(() => {
+        setFiltersSupplier((prev) => {
+          if (prev.includes(value)) {
+            return prev.map((filter) => {
+              if (filter === value) {
+                return value;
+              }
+              return filter;
+            });
+          } else {
+            return [...prev, value];
+          }
+        });
+        setLoader(false);
+      }, 1000);
+    }
+  };
   const filterData = useCallback(
     (data) => {
       return data.filter((item, index) => {
         const part_number = item.part_number;
         const id = item.id.toLowerCase();
+        const suppliers = item.supplier.toLowerCase();
+        const planta = item.plant.toLowerCase();
         const fullName = `${part_number} ${id} ${item.reports_cc
           .map((cc) => cc.lot)
-          .join(", ")} ${item.reports_cc.map((cc) => cc.serial).join(", ")}`; // combinamos name, id y lot en una sola variable
+          .join(", ")} ${item.reports_cc
+          .map((cc) => cc.serial)
+          .join(", ")} ${suppliers} ${planta} `; // combinamos name, id y lot en una sola variable
         const date = new Date(item.date);
         date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
         if (
@@ -227,6 +258,7 @@ function ReportsTable({ data }) {
   );
   const [totalFiltered, setTotalFiltered] = useState([]);
   const [dataToTable, setDataToTable] = useState([]);
+  const [totalGeneral, setTotalGeneral] = useState([]);
   useEffect(() => {
     if (data.length > 0) {
       const filterDate = new Date("2023-04-13");
@@ -234,6 +266,7 @@ function ReportsTable({ data }) {
       const filterLot = filtersLot;
       const filterSerial = filtersSerial;
       const filterPartNumber = filtersPartNumber;
+      const filterSupplier = filtersSupplier;
       const temp = {};
       const temp2 = {};
       //console.log(filterLot);
@@ -258,6 +291,8 @@ function ReportsTable({ data }) {
         let total_scrap = 0;
         let total_A = 0;
         let partNumber = data[i].part_number; // Nuevo filtro de búsqueda
+        let worked_h = Number(data[i].worked_h);
+        let supplier = data[i].supplier;
         // Calcular el total inspeccionado
 
         for (let j = 0; j < reports_cc.length; j++) {
@@ -266,7 +301,8 @@ function ReportsTable({ data }) {
             !filterLot.length || filterLot.includes(report_cc.lot);
           const isSerialMatched =
             !filterSerial.length || filterSerial.includes(report_cc.serial);
-
+          const isSupplierMatched =
+            !filterSupplier.length || filterSupplier.includes(supplier);
           if (isLotMatched && isSerialMatched) {
             total_inspected += parseInt(report_cc.qt_inspected);
             total_ng_pieces += parseInt(report_cc.ng_pieces);
@@ -289,6 +325,7 @@ function ReportsTable({ data }) {
               filterSerial.includes(report.serial)
             )) ||
           (filterPartNumber.length && !filterPartNumber.includes(partNumber)) || // Nueva condición para el filtro de búsqueda de part_number
+          (filterSupplier.length && !filterSupplier.includes(supplier)) ||
           (filterDate &&
             (date < new Date(startDate).setHours(0, 0, 0, 0) ||
               date > new Date(endDate).setHours(23, 59, 59, 999)))
@@ -350,8 +387,9 @@ function ReportsTable({ data }) {
           total_ok_pieces: total_ok_pieces,
           total_re_work_parts: total_re_work_parts,
           total_scrap: total_scrap,
-          total_A: total_A,
+          // total_A: total_A,
           date: dateString,
+          worked_h: worked_h,
         };
         if (partNumber in temp) {
           temp[partNumber].part_number = partNumber;
@@ -360,8 +398,9 @@ function ReportsTable({ data }) {
           temp[partNumber].total_ok_pieces += total_ok_pieces;
           temp[partNumber].total_re_work_parts += total_re_work_parts;
           temp[partNumber].total_scrap += total_scrap;
-          temp[partNumber].total_A += total_A;
+          //   temp[partNumber].total_A += total_A;
           temp[partNumber].date += dateString;
+          temp[partNumber].worked_h += worked_h;
         } else {
           //  console.log(partNumber);
           temp[partNumber] = {
@@ -371,8 +410,9 @@ function ReportsTable({ data }) {
             total_ok_pieces: total_ok_pieces,
             total_re_work_parts: total_re_work_parts,
             total_scrap: total_scrap,
-            total_A: total_A,
+            //    total_A: total_A,
             date: dateString,
+            worked_h: worked_h,
           };
         }
       }
@@ -456,9 +496,40 @@ function ReportsTable({ data }) {
       // console.log(JSON.stringify(groupedData));
 
       setDataToTable(summedData);
-      console.log(temp2);
+      const totalesArray = [];
+
+      for (const key in summedData) {
+        const elementos = summedData[key];
+        const total = elementos.reduce((acumulador, elemento) => {
+          for (const propiedad in elemento) {
+            if (propiedad !== "date") {
+              acumulador[propiedad] =
+                (acumulador[propiedad] || 0) + elemento[propiedad];
+            }
+          }
+          return acumulador;
+        }, {});
+        totalesArray.push(total);
+      }
+
+      const totalG = totalesArray.reduce((acumulador, elemento) => {
+        for (const propiedad in elemento) {
+          acumulador[propiedad] =
+            (acumulador[propiedad] || 0) + elemento[propiedad];
+        }
+        return acumulador;
+      }, {});
+      setTotalGeneral(totalG);
     }
-  }, [data, filtersPartNumber, dateStart, dateEnd, filtersLot, filtersSerial]);
+  }, [
+    data,
+    filtersPartNumber,
+    dateStart,
+    dateEnd,
+    filtersLot,
+    filtersSerial,
+    filtersSupplier,
+  ]);
   const filteredData = filterData(data);
   const filteredData2 = filterData2(data);
 
@@ -553,8 +624,8 @@ function ReportsTable({ data }) {
   //console.log(checkList);
   const navigate = useNavigate();
   const singleView = (id) => {
-    window.location.href = `/admin/reports/${id}`;
-    //navigate(`/user/reports/${id}`);
+    // window.location.href = `/admin/reports/${id}`;
+    navigate(`/admin/reports/${id}`);
   };
   const singleView2 = (id) => {
     navigate(`/user/reports/2/${id}`);
@@ -566,6 +637,36 @@ function ReportsTable({ data }) {
 
   useEffect(() => {
     if (data.length !== 0) {
+      const res0 = [];
+      const seen0 = {};
+
+      // if (filtersSupplier.length > 0) {
+      //   data.forEach((item) => {
+      //     if (filtersPartNumber.includes(item.part_number)) {
+      //       if (!seen0[item.supplier]) {
+      //         seen0[item.supplier] = true;
+      //         res0.push(item.supplier);
+      //       }
+      //     } else {
+      //       if (!seen0[item.supplier]) {
+      //         seen0[item.supplier] = true;
+      //         res0.push(item.supplier);
+      //       }
+      //     }
+      //   });
+      //   setUniqueSuppliers([...new Set(res0)]);
+      // } else {
+      data.forEach((item) => {
+        if (!seen0[item.supplier]) {
+          seen0[item.supplier] = true;
+          res0.push(item.supplier);
+        }
+      });
+      setUniqueSuppliers([...new Set(res0)]);
+      //}
+      //console.log(res1);
+      //setUniqueLots(res1);
+
       const res1 = [];
       const seen = {};
 
@@ -638,17 +739,38 @@ function ReportsTable({ data }) {
       const seen3 = {};
 
       data.forEach((item) => {
-        if (!seen3[item.part_number]) {
-          seen3[item.part_number] = true;
-          res3.push(item.part_number);
+        if (filtersSupplier.includes(item.supplier)) {
+          if (!seen3[item.part_number]) {
+            seen3[item.part_number] = true;
+            res3.push(item.part_number);
+          }
+        } else {
+          // if (!seen3[item.part_number]) {
+          //   seen3[item.part_number] = true;
+          //   res3.push(item.part_number);
+          // }
         }
       });
+
+      // data.forEach((item) => {
+      //   if (!seen3[item.part_number]) {
+      //     seen3[item.part_number] = true;
+      //     res3.push(item.part_number);
+      //   }
+      // });
       setUniquePart_number(res3);
     }
 
     return () => {};
-  }, [data, filtersPartNumber, filterOption, filtersSerial, filtersLot]);
-
+  }, [
+    data,
+    filtersPartNumber,
+    filterOption,
+    filtersSerial,
+    filtersLot,
+    filtersSupplier,
+  ]);
+  console.log(uniqueSuppliers);
   /*useCallback(() => {
     
     uniqueLots.forEach(element => {
@@ -658,10 +780,30 @@ function ReportsTable({ data }) {
     //setFiltersSerial(prev => prev.filter(f => f.serial === report.serial))
   }, [uniqueLots]);*/
   useEffect(() => {
-
     const cleanFilters = () => {
       setFiltersLot([]);
       setFiltersPartNumber([]);
+    };
+    if (filterOption === "1" && filtersSupplier.length === 0) {
+      toast.error(
+        "Debes seleccionar almenos 1 proveedor para obtener los numeros de parte disponibles",
+        {
+          duration: 5000,
+        }
+      );
+      setFilterOption(0);
+      cleanFilters();
+    } else {
+      const inputsWithDataList = document.querySelectorAll("input[list]");
+      inputsWithDataList.forEach((input) => {
+        if (input !== null) {
+          input.focus();
+          input.select();
+          // Simular presionado de la tecla space
+          //    const event = new KeyboardEvent("keydown", { key: " " });
+          //  input.dispatchEvent(event);
+        }
+      });
     }
     if (filterOption === "2" && filtersPartNumber.length === 0) {
       toast.error(
@@ -708,7 +850,6 @@ function ReportsTable({ data }) {
     }
   }, [filterOption, filtersPartNumber]);
 
-
   return (
     <Table>
       <div className="table-container mb-5">
@@ -717,7 +858,7 @@ function ReportsTable({ data }) {
             <form autoComplete="off">
               <div className="filter-container">
                 <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar por # reporte:</label>
+                  <label htmlFor="name-filter">Buscar:</label>
                   <div className="filter-item-input">
                     <input
                       type="text"
@@ -794,6 +935,43 @@ function ReportsTable({ data }) {
             <form autoComplete="off">
               <div className="filter-options">
                 <div className="filter-items">
+                  <div className="filter-item-checkbox">
+                    <div className="filter-item-in">
+                      <label htmlFor="supplier">Proveedor</label>
+                      <input
+                        type="checkbox"
+                        value={0}
+                        onChange={(e) => setFilterOption(e.target.value)}
+                        checked={Number(filterOption) === 0 ? true : false}
+                        id="supplier"
+                      />
+                    </div>
+                    <div className="item-list">
+                      <ul
+                        style={{
+                          display: `${
+                            filtersSupplier.length > 0 ? "flex" : "none"
+                          }`,
+                        }}
+                      >
+                        {filtersSupplier.map((filterSupplier, ind) => (
+                          <li key={ind}>
+                            <span>{filterSupplier}</span>{" "}
+                            <span>
+                              <i
+                                className="fa-solid fa-times"
+                                onClick={(e) =>
+                                  setFiltersSupplier((prev) =>
+                                    prev.filter((pre) => pre !== filterSupplier)
+                                  )
+                                }
+                              ></i>
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                   <div className="filter-item-checkbox">
                     <div className="filter-item-in">
                       <label htmlFor="part_n">Numero de parte</label>
@@ -935,9 +1113,7 @@ function ReportsTable({ data }) {
                           // Crear etiqueta de opción
                           const option = (
                             <option value={part_number}>
-                              {isFirefox 
-                                ? `Parte #${part_number}`
-                                : "# Parte"}
+                              {isFirefox ? `Parte #${part_number}` : "# Parte"}
                             </option>
                           );
 
@@ -983,9 +1159,7 @@ function ReportsTable({ data }) {
                           // Crear etiqueta de opción
                           const option = (
                             <option value={lot}>
-                              {isFirefox 
-                                ? `Lote #${lot}`
-                                : "# Lote"}
+                              {isFirefox ? `Lote #${lot}` : "# Lote"}
                             </option>
                           );
 
@@ -1031,9 +1205,53 @@ function ReportsTable({ data }) {
                           // Crear etiqueta de opción
                           const option = (
                             <option value={serial}>
-                              {isFirefox 
-                                ? `Serial #${serial}`
-                                : "# Serial"}
+                              {isFirefox ? `Serial #${serial}` : "# Serial"}
+                            </option>
+                          );
+
+                          // Devolver opción
+                          return option;
+                        })}
+                      </datalist>
+
+                      {/*<input
+                     type="text"
+                     id="name-filter"
+                     value={nameFilter}
+                     onChange={handleNameFilterChange}
+                   />*/}
+                    </div>
+                  </div>
+                )}
+                {Number(filterOption) === 0 && (
+                  <div className="filter-item">
+                    <label htmlFor="name-filter">Buscar:</label>
+                    <div className="filter-item-input">
+                      {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
+                      <input
+                        list="suppliers"
+                        id="serial"
+                        name="serial"
+                        value={nameFilter2}
+                        onChange={handleNameFilterChange5}
+                        //disabled={filtersPartNumber.length === 0 ? true : false}
+                      />
+
+                      <datalist id="suppliers">
+                        {uniqueSuppliers.map((serial, indx) => {
+                          // Verificar si el navegador es Firefox, Safari o Edge
+                          const isFirefox =
+                            navigator.userAgent.indexOf("Firefox") !== -1;
+                          const isSafari =
+                            navigator.userAgent.indexOf("Safari") !== -1 ||
+                            navigator.userAgent.indexOf("AppleWebKit") !== -1;
+                          const isEdge =
+                            navigator.userAgent.indexOf("Edge") !== -1;
+
+                          // Crear etiqueta de opción
+                          const option = (
+                            <option value={serial}>
+                              {isFirefox ? `${serial}` : ""}
                             </option>
                           );
 
@@ -1106,6 +1324,10 @@ function ReportsTable({ data }) {
                 </div>
               </div>
             </form>
+            <div className="charts">
+              <Chart1 totalG={totalGeneral} />
+              <Chart2 totalG={totalGeneral} />
+            </div>
           </div>
         )}
         {activeTab === 2 && (
@@ -1113,7 +1335,7 @@ function ReportsTable({ data }) {
             <form autoComplete="off">
               <div className="filter-container">
                 <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar por # reporte:</label>
+                  <label htmlFor="name-filter">Buscar:</label>
                   <div className="filter-item-input">
                     <input
                       type="text"
@@ -1260,7 +1482,7 @@ function ReportsTable({ data }) {
                         <div className="actions">
                           <i
                             className="fa-solid fa-trash"
-                            onClick={() => handleDel(item.id, 'reports')}
+                            onClick={() => handleDel(item.id, "reports")}
                           ></i>
                           {/* <Link
                             to={`/admin/reports/${item.id}`}

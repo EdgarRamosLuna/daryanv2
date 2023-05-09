@@ -32,18 +32,7 @@ export default function SecondTableCreate() {
     setTotal13,
     setTotal14,
   } = useContext(MainContext);
-  useEffect(() => {
-    setDivs(() => {
-      const filas = [];
-      for (let i = 1; i <= numFilas; i++) {
-        filas.push({
-          id: i,
-          values: Array.from({ length: numColumnas }, () => ""),
-        });
-      }
-      return filas;
-    });
-  }, [numFilas, numColumnas]);
+
   //console.log(numColumnas);
 
   //console.log(numColumnas);
@@ -207,14 +196,14 @@ export default function SecondTableCreate() {
           <tr>
             {titulosColumnas.map((titulo, i) =>
               i === 0 ? (
-                <th key={i}>
+                <th key={i+'stThead'}>
                   <i
                     className="fa-solid fa-circle-plus"
                     onClick={() => agregarFila(numColumnas)}
                   ></i>
                 </th>
               ) : (
-                <th>{titulo}</th>
+                <th key={i+'stThead'}>{titulo}</th>
               )
             )}
             {titulosColumnas.at(-1) !== "I" ? (
@@ -265,7 +254,7 @@ export default function SecondTableCreate() {
             <tr key={fila.id}>
               {fila.values.map((valor, i) =>
                 i === 0 || i === fila.values.length - 1 ? (
-                  <td>
+                  <td key={i+'stTbody'}>
                     {i === 0 && fila.id !== 1 && (
                       <i
                         className="fa-solid fa-trash"
@@ -281,11 +270,11 @@ export default function SecondTableCreate() {
                       )}
                   </td>
                 ) : i === 1 ? (
-                  <td key={i} className="table-center">
+                  <td key={i+'tbody'} className="table-center">
                     {fila.id}
                   </td>
                 ) : (
-                  <td key={i}>
+                  <td key={i+'tbody'}>
                     {i === 2 ? (
                       <DatePickerInput
                         id={fila.id}

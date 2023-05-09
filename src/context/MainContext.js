@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useRef } from "react";
 import { Toaster, toast } from "sonner";
@@ -42,31 +42,122 @@ export const MainContextProvider = ({ children }) => {
   const [dataToSave, setDataToSave] = useState([]);
   const aproveReport = (e) => {
     //  console.log(dataToSave);
+    const dT = dataToSave[0];
+    //console.log(dT.serviceType['st1']);
+
+    if (
+      dT.data.length < 9 ||
+      dT.producedBy === "" ||
+      dT.checkedBy === "" ||
+      dT.authorizedBy === "" ||
+      dT.serviceType.length === 0 ||
+      dT.customerControl.length === 0 ||
+      (dT.serviceType['st1'] === false && dT.serviceType['st2'] === false && dT.serviceType['st3'] === '') ||
+      (dT.customerControl['cc1'] === false && dT.customerControl['cc2'] === false && dT.customerControl['cc3'] === false && dT.customerControl['cc4'] === false && dT.customerControl['cc5'] === '')
+    ) {
+      toast.error("Todos los campos con * con obligatorios", {
+        duration: 5000,
+      });
+
+      return;
+    }
+    for (let i = 0; i < dT.customerControlTable.length; i++) {
+      const element = dT.customerControlTable[i].values;
+
+      for (let j = 0; j < element.length; j++) {
+        const el = element[j];
+        //console.log(el);
+        if (j > 2 && j <= 9) {
+          if (el === "") {
+            toast.error("Todos los campos con * con obligatorios", {
+              duration: 5000,
+            });
+            return;
+          }
+        }
+      }
+    }
     axios
       .post("http://localhost/daryan-server/api/aprove", dataToSave)
-      .then((res) => {})
+      .then((res) => {
+        const datares = res.data;
+        if (datares.error) {
+          toast.error(datares.message, {
+            duration: 5000,
+          });
+        } else {
+          toast.success(datares.message, {
+            duration: 4000,
+          });
+          setTimeout(() => {
+            navigate("/admin/reports");
+          }, 5000);
+        }
+      })
       .catch((err) => {
-        console.log(err);
+        //console.log(err);
+        toast.error(err, {
+          duration: 5000,
+        });
       });
   };
+  const navigate = useNavigate();
   const saveReport = (e) => {
+    const dT = dataToSave[0];
+    //console.log(dataToSave);
+
+    if (
+      dT.data.length < 9 ||
+      dT.producedBy === "" ||
+      dT.checkedBy === "" ||
+      dT.authorizedBy === "" ||
+      dT.serviceType.length === 0 ||
+      dT.customerControl.length === 0
+    ) {
+      toast.error("Todos los campos con * con obligatorios", {
+        duration: 5000,
+      });
+
+      return;
+    }
+    for (let i = 0; i < dT.customerControlTable.length; i++) {
+      const element = dT.customerControlTable[i].values;
+
+      for (let j = 0; j < element.length; j++) {
+        const el = element[j];
+        //console.log(el);
+        if (j > 2 && j <= 9) {
+          if (el === "") {
+            toast.error("Todos los campos con * con obligatorios", {
+              duration: 5000,
+            });
+            return;
+          }
+        }
+      }
+    }
     //  console.log(dataToSave);
     axios
       .post("http://localhost/daryan-server/api/save", dataToSave)
       .then((res) => {
-        /*      const copyToSave = dataToSave.slice();
-
-      copyToSave[0].customerControlTable.forEach((control, i) =>{
-
-
-          console.log(control.values);
-        
-       // const vals = control.values.filter(v => v !== []);
-
-      });*/
+        const datares = res.data;
+        if (datares.error) {
+          toast.error(datares.message, {
+            duration: 5000,
+          });
+        } else {
+          toast.success(datares.message, {
+            duration: 4000,
+          });
+          // setTimeout(() => {
+          //   navigate("/admin/reports");
+          // }, 5000);
+        }
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(err, {
+          duration: 5000,
+        });
       });
 
     //  console.log('toy guardando klk');
@@ -301,6 +392,7 @@ export const MainContextProvider = ({ children }) => {
   });
   const eliminarFila = (itemId) => {
     //console.log(penultimate);
+
     setDivs((prevDatos) => prevDatos.filter((item) => item.id !== itemId));
     setNumFilas(numFilas - 1);
   };
@@ -388,6 +480,15 @@ export const MainContextProvider = ({ children }) => {
 
       return arrayCopy;
     });
+    setDivs((prevDatos) => {
+      const newData = prevDatos.slice(); //copy array
+      newData.map((fila) => {
+        const newArra = fila.values;
+        newArra.push(""); // remove last item
+        return newArra; // Return the updated array
+      });
+      return newData;
+    });
   };
 
   const agregarColumna2 = (e) => {
@@ -442,15 +543,47 @@ export const MainContextProvider = ({ children }) => {
   //console.log(numColumnas)
   const [titulosColumnas, setTitulosColumnas] = useState([
     "",
-    "Items",
-    "Fecha",
-    "Lote",
-    "Serie",
-    "Cantidad Inspeccionada",
-    "Piezas NG:",
-    "Piezas Ok:",
-    "Piezas Retrabajadas:",
-    "Scrap:",
+    "Item",
+    <>
+      <div className="th-title">
+        Fecha <span className="required">*</span>
+      </div>
+    </>,
+    <>
+      <div className="th-title">
+        Lote <span className="required">*</span>
+      </div>
+    </>,
+    <>
+      <div className="th-title">
+        Serial <span className="required">*</span>
+      </div>
+    </>,
+    <>
+      <div className="th-title">
+        Cant Insp <span className="required">*</span>
+      </div>
+    </>,
+    <>
+      <div className="th-title">
+        Pzas NG <span className="required">*</span>
+      </div>
+    </>,
+    <>
+      <div className="th-title">
+        Pzas Ok <span className="required">*</span>
+      </div>
+    </>,
+    <>
+      <div className="th-title">
+        Pzas RT <span className="required">*</span>
+      </div>
+    </>,
+    <>
+      <div className="th-title">
+        Scrap <span className="required">*</span>
+      </div>
+    </>,
     "A",
     "B",
     "C",
@@ -458,15 +591,31 @@ export const MainContextProvider = ({ children }) => {
   ]);
   const [titulosColumnas2, setTitulosColumnas2] = useState([
     "",
-    "Items",
-    "Fecha",
-    "Lote",
-    "Serie",
-    "Cantidad Inspeccionada",
-    "Piezas NG:",
-    "Piezas Ok:",
-    "Piezas Retrabajadas:",
-    "Scrap:",
+    "Item",
+    <>
+      Fecha <span className="required">*</span>
+    </>,
+    <>
+      Lote <span className="required">*</span>
+    </>,
+    <>
+      Serie <span className="required">*</span>
+    </>,
+    <>
+      Cant Insp <span className="required">*</span>
+    </>,
+    <>
+      Pzas NG <span className="required">*</span>
+    </>,
+    <>
+      Pzas Ok <span className="required">*</span>
+    </>,
+    <>
+      Pzas RT <span className="required">*</span>
+    </>,
+    <>
+      Scrap <span className="required">*</span>
+    </>,
     "A",
     "B",
     "C",

@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { MainContext } from "../../context/MainContext";
 import { StyledForm, Table } from "../../styles/Styles";
 import DatePickerInput from "../../components/DateInput";
@@ -277,24 +283,27 @@ const Create = () => {
     }
   };
 
-  const handleChange = useCallback((e) => {
-    const selectedOption = getSelectedOptionLocation();
-    if (selectedOption == undefined) {
-      setData({
-        ...data,
-        [e.target.dataset.name || e.target.name]: e.target.value,
-      });
-     // console.log("option not included in the datalist");
-    } else {
-      const id_supplier = selectedOption.getAttribute("data-id");
-      setData({
-        ...data,
-        id_supplier,
-      });
-    }
-    
-  }, [data]);
-  //console.log(dataToSave);
+  const handleChange = useCallback(
+    (e) => {
+      const selectedOption = getSelectedOptionLocation();      
+      if (selectedOption === undefined) {
+        setData({
+          ...data,
+          [e.target.dataset.name || e.target.name]: e.target.value,
+        });
+        // console.log("option not included in the datalist");
+      } else {
+        const id_supplier = selectedOption.getAttribute("data-id");
+        setData({
+          ...data,
+          id_supplier,
+          [e.target.dataset.name || e.target.name]: e.target.value,
+        });
+      }
+    },
+    [data]
+  );
+  console.log(data);
   return (
     <>
       <div className="container">
@@ -305,7 +314,7 @@ const Create = () => {
 
         <StyledForm>
           <div className="form-container">
-            <label htmlFor="data">Planta:</label>
+            <label htmlFor="data">Planta <span className="required">*</span></label>
             <input
               type="text"
               id="data"
@@ -323,7 +332,7 @@ const Create = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data2">Proveedor:</label>
+            <label htmlFor="data2">Proveedor <span className="required">*</span></label>
             <input
               name="supplier"
               value={data.supplier}
@@ -343,7 +352,11 @@ const Create = () => {
 
                 // Crear etiqueta de opción
                 const option = (
-                  <option value={item.fullname} data-id={item.id}>
+                  <option
+                    value={item.fullname}
+                    data-id={item.id}
+                    key={item.id + "supplier"}
+                  >
                     {isFirefox ? `${item.fullname}` : ""}
                   </option>
                 );
@@ -369,7 +382,7 @@ const Create = () => {
             /> */}
           </div>
           <div className="form-container">
-            <label htmlFor="data3">Fecha:</label>
+            <label htmlFor="data3">Fecha <span className="required">*</span></label>
             <DatePickerInput
               id="data3"
               name="date"
@@ -379,7 +392,7 @@ const Create = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data4">No. de Reporte:</label>
+            <label htmlFor="data4">No. de Reporte <span className="required">*</span></label>
             <input
               type="text"
               id="data4"
@@ -397,7 +410,7 @@ const Create = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data5">Nombre de parte:</label>
+            <label htmlFor="data5">Nombre de parte <span className="required">*</span></label>
             <input
               type="text"
               id="data5"
@@ -415,7 +428,7 @@ const Create = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data6">Horas Trabajadas:</label>
+            <label htmlFor="data6">Horas Trabajadas <span className="required">*</span></label>
             <input
               type="text"
               id="data6"
@@ -433,7 +446,7 @@ const Create = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data7">Rate:</label>
+            <label htmlFor="data7">Rate <span className="required">*</span></label>
             <input
               type="text"
               id="data7"
@@ -451,13 +464,12 @@ const Create = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data8">Turno:</label>
+            <label htmlFor="data8">Turno <span className="required">*</span></label>
             <select
               id="data8"
               name="shift"
               required
-              defaultValue="0"
-              value={data.shift}
+              value={`${data.shift}`}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -472,14 +484,13 @@ const Create = () => {
             </select>
           </div>
           <div className="form-container">
-            <label htmlFor="data10">Numero de parte:</label>
+            <label htmlFor="data10">Numero de parte <span className="required">*</span></label>
             <input
               type="text"
               id="data10"
               name="part_number"
               placeholder=""
               required
-              defaultValue=""
               value={data.part_number}
               onChange={(e) =>
                 setData({
@@ -490,7 +501,7 @@ const Create = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data8">Tipo de servicio:</label>
+            <label htmlFor="data8">Tipo de servicio <span className="required">*</span></label>
 
             <div className="container-checkbox">
               <label>
@@ -545,7 +556,7 @@ const Create = () => {
           </div>
 
           <div className="form-container">
-            <label htmlFor="data8">Control para el cliente:</label>
+            <label htmlFor="data8">Control para el cliente <span className="required">*</span></label>
 
             <div className="container-checkbox">
               <label>
@@ -627,14 +638,14 @@ const Create = () => {
           </div>
 
           {/*
-        <label htmlFor="subject">Subject:</label>
+        <label htmlFor="subject">Subject <span className="required">*</span></label>
         <select id="subject" name="subject">
           <option value="general">General Inquiry</option>
           <option value="support">Technical Support</option>
           <option value="billing">Billing Question</option>
         </select>
 
-        <label htmlFor="message">Message:</label>
+        <label htmlFor="message">Message <span className="required">*</span></label>
         <textarea
           id="message"
           name="message"
@@ -663,14 +674,14 @@ const Create = () => {
               <tr>
                 {titulosColumnas.map((titulo, i) =>
                   i === 0 || i === titulosColumnas.length - 1 ? (
-                    <th key={i}>
+                    <th key={i + "thead"}>
                       <i
                         className="fa-solid fa-circle-plus"
                         style={{ color: "transparent" }}
                       ></i>
                     </th>
                   ) : (
-                    <th key={i}>{titulo}</th>
+                    <th key={i + "thead"}>{titulo}</th>
                   )
                 )}
               </tr>
@@ -681,22 +692,17 @@ const Create = () => {
                   i === 0 && (
                     <tr key={fila.id} className="hidden">
                       {fila.values.map((valor, i) => (
-                        <>
+                        <td key={i + "tbody"} className="table-center">
                           {i <= 1 || i === fila.values.length - 1 ? (
-                            <td key={i} className="table-center">
-                               
-                            </td>
+                            <>
+                              <i className="fa-solid fa-circle-plus" style={{visibility: 'hidden'}}></i>
+                            </>
                           ) : (
-                            <td key={i} className="table-center">
-                              <input
-                                type=""
-                                name=""
-                                value={dumpValue}
-                                onChange={() => setDumpValue("")}
-                              />
-                            </td>
+                            <>
+                              <input type="" name="" defaultValue={dumpValue} />
+                            </>
                           )}
-                        </>
+                        </td>
                       ))}
                     </tr>
                   )
@@ -706,114 +712,141 @@ const Create = () => {
               {divs2.map(
                 (fila, i) =>
                   i === 0 && (
-                    <tr key={fila.id}>
-                      {fila.values.map((valor, i) => (
-                        <>
-                          {i === 0 ||
-                          i === 1 ||
-                          i === fila.values.length - 1 ? (
-                            <>
-                              {i === 1 && (
-                                <td
-                                  key={i}
-                                  className="table-center"
-                                  colSpan={5}
-                                >
-                                  Totales
-                                </td>
-                              )}
-                              {i === 0 && <></>}
-                            </>
-                          ) : (
-                            <td key={i} className="table-center">
-                              {i === 2 && (
-                                <input
-                                  value={total1}
-                                  onChange={(e) => setTotal1(e.target.value)}
-                                />
-                              )}
-                              {i === 3 && (
-                                <input
-                                  value={total2}
-                                  onChange={(e) => setTotal2(e.target.value)}
-                                />
-                              )}
-                              {i === 4 && (
-                                <input
-                                  value={total3}
-                                  onChange={(e) => setTotal3(e.target.value)}
-                                />
-                              )}
-                              {i === 5 && (
-                                <input
-                                  value={total4}
-                                  onChange={(e) => setTotal4(e.target.value)}
-                                />
-                              )}
-                              {i === 6 && (
-                                <input
-                                  value={total5}
-                                  onChange={(e) => setTotal5(e.target.value)}
-                                />
-                              )}
-                              {i === 7 && (
-                                <input
-                                  value={total6}
-                                  onChange={(e) => setTotal6(e.target.value)}
-                                />
-                              )}
-                              {i === 8 && (
-                                <input
-                                  value={total7}
-                                  onChange={(e) => setTotal7(e.target.value)}
-                                />
-                              )}
-                              {i === 9 && (
-                                <input
-                                  value={total8}
-                                  onChange={(e) => setTotal8(e.target.value)}
-                                />
-                              )}
-                              {i === 10 && (
-                                <input
-                                  value={total9}
-                                  onChange={(e) => setTotal9(e.target.value)}
-                                />
-                              )}
-                              {i === 11 && (
-                                <input
-                                  value={total10}
-                                  onChange={(e) => setTotal10(e.target.value)}
-                                />
-                              )}
-                              {i === 12 && (
-                                <input
-                                  value={total11}
-                                  onChange={(e) => setTotal11(e.target.value)}
-                                />
-                              )}
-                              {i === 13 && (
-                                <input
-                                  value={total12}
-                                  onChange={(e) => setTotal12(e.target.value)}
-                                />
-                              )}
-                              {i === 14 && (
-                                <input
-                                  value={total13}
-                                  onChange={(e) => setTotal13(e.target.value)}
-                                />
-                              )}
-                              {i === 15 && (
-                                <input
-                                  value={total14}
-                                  onChange={(e) => setTotal14(e.target.value)}
-                                />
+                    <tr key={fila.id + "tfoot"}>
+                      {fila.values.map(
+                        (valor, i) =>
+                          i > 0 && (
+                            <td
+                              colSpan={i === 1 ? "5" : ""}
+                              key={i + "tfoot1"}
+                              className={i === 1 ? "table-center" : ""}
+                            >
+                              {i === 0 ||
+                              i === 1 ||
+                              i === fila.values.length - 1 ? (
+                                <>
+                                  {i === 1 && <>Totales</>}
+                                  {i === 0 && <></>}
+                                </>
+                              ) : (
+                                <>
+                                  {i === 2 && (
+                                    <input
+                                      value={total1}
+                                      onChange={(e) =>
+                                        setTotal1(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 3 && (
+                                    <input
+                                      value={total2}
+                                      onChange={(e) =>
+                                        setTotal2(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 4 && (
+                                    <input
+                                      value={total3}
+                                      onChange={(e) =>
+                                        setTotal3(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 5 && (
+                                    <input
+                                      value={total4}
+                                      onChange={(e) =>
+                                        setTotal4(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 6 && (
+                                    <input
+                                      value={total5}
+                                      onChange={(e) =>
+                                        setTotal5(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 7 && (
+                                    <input
+                                      value={total6}
+                                      onChange={(e) =>
+                                        setTotal6(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 8 && (
+                                    <input
+                                      value={total7}
+                                      onChange={(e) =>
+                                        setTotal7(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 9 && (
+                                    <input
+                                      value={total8}
+                                      onChange={(e) =>
+                                        setTotal8(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 10 && (
+                                    <input
+                                      value={total9}
+                                      onChange={(e) =>
+                                        setTotal9(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 11 && (
+                                    <input
+                                      value={total10}
+                                      onChange={(e) =>
+                                        setTotal10(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 12 && (
+                                    <input
+                                      value={total11}
+                                      onChange={(e) =>
+                                        setTotal11(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 13 && (
+                                    <input
+                                      value={total12}
+                                      onChange={(e) =>
+                                        setTotal12(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 14 && (
+                                    <input
+                                      value={total13}
+                                      onChange={(e) =>
+                                        setTotal13(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 15 && (
+                                    <input
+                                      value={total14}
+                                      onChange={(e) =>
+                                        setTotal14(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                </>
                               )}
                             </td>
-                          )}
-                        </>
-                      ))}
+                          )
+                      )}
                     </tr>
                   )
               )}
@@ -822,168 +855,157 @@ const Create = () => {
                   <div>REALIZO</div>
                   {reportFooter.map(
                     (fila, i) =>
-                      i < reportFooter.length - 1 &&
-                      fila.values.map((valor, i) => (
-                        <>
-                          <input
-                            value={valor}
-                            onChange={(e) =>
-                              handleUpdate(1, fila.id, i, e.target.value)
-                            }
-                            key={i}
-                          />{" "}
-                          <br />
-                        </>
-                      ))
+                      i < reportFooter.length - 1 && (
+                        <div key={i + "realizos"}>
+                          {fila.values.map((valor, i) => (
+                            <div key={i + "realizo"}>
+                              <input
+                                value={valor}
+                                onChange={(e) =>
+                                  handleUpdate(1, fila.id, i, e.target.value)
+                                }
+                              />
+                              <br />
+                            </div>
+                          ))}
+                        </div>
+                      )
                   )}
                 </td>
                 <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
                   <div>OBSERVACIONES</div>
                   {reportFooter2.map(
                     (fila, j) =>
-                      j < reportFooter2.length - 1 &&
-                      fila.values.map((valor, i) => (
-                        <>
-                          <input
-                            value={valor}
-                            onChange={(e) =>
-                              handleUpdate(2, fila.id, i, e.target.value)
-                            }
-                            key={i}
-                          />{" "}
-                          <br />
-                        </>
-                      ))
+                      j < reportFooter2.length - 1 && (
+                        <div key={j + "observaciones"}>
+                          {fila.values.map((valor, i) => (
+                            <div key={i + "observacion"}>
+                              <input
+                                value={valor}
+                                onChange={(e) =>
+                                  handleUpdate(2, fila.id, i, e.target.value)
+                                }
+                              />
+                              <br />
+                            </div>
+                          ))}
+                        </div>
+                      )
                   )}
                 </td>
                 <td colSpan={1} style={{ textAlign: "center" }}>
                   <div> </div>
                   {divs2.map(
                     (fila, i) =>
-                      i === 0 &&
-                      fila.values.map(
-                        (valor, i) =>
-                          i > 6 && (
-                            <>
-                              {i === 8 && (
-                                <>
-                                  <input
-                                    placeholder="A"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 9 && (
-                                <>
-                                  <input
-                                    placeholder="B"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 10 && (
-                                <>
-                                  <input
-                                    placeholder="C"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 11 && (
-                                <>
-                                  <input
-                                    placeholder="D"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 12 && (
-                                <>
-                                  <input
-                                    placeholder="E"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 13 && (
-                                <>
-                                  <input
-                                    placeholder="F"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 14 && (
-                                <>
-                                  <input
-                                    placeholder="G"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 15 && (
-                                <>
-                                  <input
-                                    placeholder="H"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 16 && (
-                                <>
-                                  <input
-                                    placeholder="I"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                            </>
-                          )
+                      i === 0 && (
+                        <div key={i + "clauses"}>
+                          {fila.values.map(
+                            (valor, i) =>
+                              i > 6 && (
+                                <div key={i + "clause"}>
+                                  {i === 8 && (
+                                    <>
+                                      <input
+                                        placeholder="A"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        defaultValue={dumpValue}
+                                      />
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 9 && (
+                                    <>
+                                      <input
+                                        placeholder="B"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        defaultValue={dumpValue}
+                                      />
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 10 && (
+                                    <>
+                                      <input
+                                        placeholder="C"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        defaultValue={dumpValue}
+                                      />
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 11 && (
+                                    <>
+                                      <input
+                                        placeholder="D"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        defaultValue={dumpValue}
+                                      />
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 12 && (
+                                    <>
+                                      <input
+                                        placeholder="E"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        defaultValue={dumpValue}
+                                      />
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 13 && (
+                                    <>
+                                      <input
+                                        placeholder="F"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        defaultValue={dumpValue}
+                                      />
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 14 && (
+                                    <>
+                                      <input
+                                        placeholder="G"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        defaultValue={dumpValue}
+                                      />
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 15 && (
+                                    <>
+                                      <input
+                                        placeholder="H"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        defaultValue={dumpValue}
+                                      />
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 16 && (
+                                    <>
+                                      <input
+                                        placeholder="I"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        defaultValue={dumpValue}
+                                      />
+                                      <br />
+                                    </>
+                                  )}
+                                </div>
+                              )
+                          )}
+                        </div>
                       )
                   )}
                 </td>
@@ -991,28 +1013,30 @@ const Create = () => {
                   colSpan={numColumnas > 15 ? numColumnas / 3 : 3}
                   style={{ textAlign: "center" }}
                 >
-                  <div>INCIDENTES</div>
+                  <div>INCIDENTES <span className="required">*</span></div>
                   {reportFooter3.map(
                     (fila, i) =>
-                      i < reportFooter3.length - 1 &&
-                      fila.values.map((valor, i) => (
-                        <>
-                          <input
-                            value={valor}
-                            onChange={(e) =>
-                              handleUpdate(3, fila.id, i, e.target.value)
-                            }
-                            key={i}
-                          />{" "}
-                          <br />
-                        </>
-                      ))
+                      i < reportFooter3.length - 1 && (
+                        <div key={i + "incidentes"}>
+                          {fila.values.map((valor, i) => (
+                            <div key={i + "incidente"}>
+                              <input
+                                value={valor}
+                                onChange={(e) =>
+                                  handleUpdate(3, fila.id, i, e.target.value)
+                                }
+                              />
+                              <br />
+                            </div>
+                          ))}
+                        </div>
+                      )
                   )}
                 </td>
               </tr>
               <tr>
                 <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
-                  <div>ELABORO</div>
+                  <div>ELABORO <span className="required">*</span></div>
                   <div className="firm">
                     <input
                       type=""
@@ -1025,7 +1049,7 @@ const Create = () => {
                 </td>
 
                 <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
-                  <div>REVISO</div>
+                  <div>REVISO <span className="required">*</span></div>
                   <div className="firm">
                     <input
                       type=""
@@ -1038,7 +1062,7 @@ const Create = () => {
                 </td>
 
                 <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
-                  <div>AUTORIZO</div>
+                  <div>AUTORIZO <span className="required">*</span></div>
                   <div className="firm">
                     <input
                       type=""

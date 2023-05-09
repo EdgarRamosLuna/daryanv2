@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 import { StyledForm, Table } from "../../../styles/Styles";
 import SecondTableCreate from "./SecondTableCreate";
 import DatePickerInputU from "../../../components/DateInputUpdate";
-import { deleteReportIn } from "../../../api/daryan.api";
+import { deleteReportIn, deleteReportItem } from "../../../api/daryan.api";
 
 const View = () => {
   const {
@@ -60,9 +60,8 @@ const View = () => {
     numColumnas,
     setNumColumnas,
     suppliers,
-    toast
+    toast,
   } = useContext(MainContext);
-
   const params = useParams();
   const idReport = params.id;
   //const [numFilas, setNumFilas] = useState(0);
@@ -73,84 +72,6 @@ const View = () => {
         )[0]
       : data.filter((data) => Number(data.id) === Number(idReport))[0];
   const [dataC, setDataC] = useState(eData);
-
-  const updateData = useCallback((data) => {
-    setDataC(data);
-  }, []);
-  useEffect(() => {
-    //console.log(numColumnas2);
-
-    setNumColumnas2(numColumnas);
-    // setNumFilas2(numFilas);
-  }, [numColumnas]);
-  
-  const agregarFila = (numColumnas, date) => {
-    setDivs((prevDatos) => [
-      ...prevDatos,
-      {
-        id: prevDatos.length + 1,
-        values: date
-          ? Array.from({ length: numColumnas }, (v, i) => (i === 2 ? date : ""))
-          : Array.from({ length: numColumnas }, () => ""),
-        // values: Array.from({ length: numColumnas }, () => ""),
-      },
-    ]);
-    setNumFilas2((prev) => prev + 1);
-    const tableWrapper = document.querySelector(".c2");
-    const scrollHeight = tableWrapper.scrollHeight;
-    const clientHeight = tableWrapper.clientHeight;
-    if (scrollHeight > clientHeight) {
-      //tableWrapper.scrollTop = scrollHeight - clientHeight;
-      setTimeout(() => {
-        tableWrapper.scrollTo({ top: scrollHeight, behavior: "smooth" });
-      }, 100);
-    }
-  };
-  const eliminarColumna2 = async(inc) => {
-    const confirmMessage =
-      "¿Estás seguro(a) que deseas borrar este inciso? Esta acción no podrá deshacerse.";
-    const confirmResult = window.confirm(confirmMessage);
-  
-
-    if (confirmResult) {
-      await deleteReportIn({inc:inc, id_report: idReport})
-      .then((res) => {
-        const datares = res.data;
-        if (datares.error) {
-          toast.error(datares.message, {
-            duration: 5000,
-          });
-        } else {
-          toast.success(datares.message, {
-            duration: 4000,
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-      setDivs((prevDatos) => {
-        const newData = prevDatos.slice(); //copy array
-        newData.map((fila) => {
-          const newArra = fila.values;
-          newArra.splice(-2, 1); // remove last item
-          return newArra; // Return the updated array
-        });
-        return newData;
-      });
-      setTitulosColumnas((prev) => {
-        const newArray = prev.slice();
-        newArray.splice(-1, 1); // remove last item
-        return newArray;
-      });
-      setNumColumnas((prev) => prev - 1);
-    } else {
-      // The user clicked Cancel.
-      // Do something else.
-      return false;
-    }
-  };
-
   const [producedBy, setProducedBy] = useState(eData.made_by);
   const [checkedBy, setCheckedBy] = useState(eData.checked_by);
   const [authorizedBy, setAuthorizedBy] = useState(eData.authorized_by);
@@ -238,6 +159,113 @@ const View = () => {
     }
     return filas;
   });
+
+  const updateData = useCallback((data) => {
+    setDataC(data);
+  }, []);
+  useEffect(() => {
+    //console.log(numColumnas2);
+
+    setNumColumnas2(numColumnas);
+    // setNumFilas2(numFilas);
+  }, [numColumnas]);
+
+  const eliminarFila = async(itemId, idDb) => {
+    const confirmMessage =
+      "¿Estás seguro(a) que deseas borrar este elemento? Esta acción no podrá deshacerse.";
+    const confirmResult = window.confirm(confirmMessage);
+
+    if (confirmResult) {
+      if (idDb !== "") {
+        await deleteReportItem({ id_rcc: idDb })
+          .then((res) => {
+            const datares = res.data;
+            if (datares.error) {
+              toast.error(datares.message, {
+                duration: 5000,
+              });
+            } else {
+              toast.success(datares.message, {
+                duration: 4000,
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        //handleDel()
+        // console.log(idDb);
+      }
+      setDivs((prevDatos) => prevDatos.filter((item) => item.id !== itemId));
+      setNumFilas2(numFilas2 - 1);
+    }
+  };
+  const agregarFila = (numColumnas, date) => {
+    setDivs((prevDatos) => [
+      ...prevDatos,
+      {
+        id: prevDatos.length + 1,
+        values: date
+          ? Array.from({ length: numColumnas }, (v, i) => (i === 2 ? date : ""))
+          : Array.from({ length: numColumnas }, () => ""),
+        // values: Array.from({ length: numColumnas }, () => ""),
+      },
+    ]);
+    setNumFilas2((prev) => prev + 1);
+    const tableWrapper = document.querySelector(".c2");
+    const scrollHeight = tableWrapper.scrollHeight;
+    const clientHeight = tableWrapper.clientHeight;
+    if (scrollHeight > clientHeight) {
+      //tableWrapper.scrollTop = scrollHeight - clientHeight;
+      setTimeout(() => {
+        tableWrapper.scrollTo({ top: scrollHeight, behavior: "smooth" });
+      }, 100);
+    }
+  };
+  const eliminarColumna2 = async (inc) => {
+    const confirmMessage =
+      "¿Estás seguro(a) que deseas borrar este inciso? Esta acción no podrá deshacerse.";
+    const confirmResult = window.confirm(confirmMessage);
+
+    if (confirmResult) {
+      await deleteReportIn({ inc: inc, id_report: idReport })
+        .then((res) => {
+          const datares = res.data;
+          if (datares.error) {
+            toast.error(datares.message, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(datares.message, {
+              duration: 4000,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      setDivs((prevDatos) => {
+        const newData = prevDatos.slice(); //copy array
+        newData.map((fila) => {
+          const newArra = fila.values;
+          newArra.splice(-2, 1); // remove last item
+          return newArra; // Return the updated array
+        });
+        return newData;
+      });
+      setTitulosColumnas((prev) => {
+        const newArray = prev.slice();
+        newArray.splice(-1, 1); // remove last item
+        return newArray;
+      });
+      setNumColumnas((prev) => prev - 1);
+    } else {
+      // The user clicked Cancel.
+      // Do something else.
+      return false;
+    }
+  };
+
   console.log(divs);
   useEffect(() => {
     setNumColumnas2(numColumnas);
@@ -870,14 +898,14 @@ const View = () => {
     const numCol = keys.length;
     keys.splice(1, 1); // Elimina el elemento en la posición 1 (id_report)
     keys[0] = "";
-    keys[2] = "fecha";
-    keys[3] = "lote";
-    keys[4] = "serial";
-    keys[5] = "cantidad inspeccionada";
-    keys[6] = "piezas ng";
-    keys[7] = "piezas ok";
-    keys[8] = "piezas trabajadas";
-    keys[9] = "scrap";
+    keys[2] = <><div className="th-title">fecha <span className="required">*</span></div></>;
+    keys[3] = <><div className="th-title">lote <span className="required">*</span></div></>;
+    keys[4] = <><div className="th-title">serial <span className="required">*</span></div></>;
+    keys[5] = <><div className="th-title">cant insp <span className="required">*</span></div></>;
+    keys[6] = <><div className="th-title">pzas ng <span className="required">*</span></div></>;
+    keys[7] = <><div className="th-title">pzas ok <span className="required">*</span></div></>;
+    keys[8] = <><div className="th-title">pzas rt <span className="required">*</span></div></>;
+    keys[9] = <><div className="th-title">scrap <span className="required">*</span></div></>;
     keys.splice(10, 2);
 
     //console.log(keys);
@@ -961,7 +989,7 @@ const View = () => {
 
         <StyledForm>
           <div className="form-container">
-            <label htmlFor="data">Planta:</label>
+            <label htmlFor="data">Planta <span className="required">*</span></label>
             <input
               type="text"
               id="data"
@@ -978,7 +1006,7 @@ const View = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data2">Proveedor:</label>
+            <label htmlFor="data2">Proveedor <span className="required">*</span></label>
             <input
               name="supplier"
               value={dataC.supplier}
@@ -1024,7 +1052,7 @@ const View = () => {
             /> */}
           </div>
           <div className="form-container">
-            <label htmlFor="data3">Fecha:</label>
+            <label htmlFor="data3">Fecha <span className="required">*</span></label>
             <DatePickerInputU
               id="data3"
               name="date"
@@ -1034,7 +1062,7 @@ const View = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data4">No. de Reporte:</label>
+            <label htmlFor="data4">No. de Reporte <span className="required">*</span></label>
             <input
               type="text"
               id="data4"
@@ -1051,7 +1079,7 @@ const View = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data5">Nombre de parte:</label>
+            <label htmlFor="data5">Nombre de parte <span className="required">*</span></label>
             <input
               type="text"
               id="data5"
@@ -1068,7 +1096,7 @@ const View = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data6">Horas Trabajadas:</label>
+            <label htmlFor="data6">Horas Trabajadas <span className="required">*</span></label>
             <input
               type="text"
               id="data6"
@@ -1085,7 +1113,7 @@ const View = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data7">Rate:</label>
+            <label htmlFor="data7">Rate <span className="required">*</span></label>
             <input
               type="text"
               id="data7"
@@ -1102,7 +1130,7 @@ const View = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data8">Turno:</label>
+            <label htmlFor="data8">Turno <span className="required">*</span></label>
             <select
               id="data8"
               name="shift"
@@ -1122,7 +1150,7 @@ const View = () => {
             </select>
           </div>
           <div className="form-container">
-            <label htmlFor="data10">Numero de parte:</label>
+            <label htmlFor="data10">Numero de parte <span className="required">*</span></label>
             <input
               type="text"
               id="data10"
@@ -1139,7 +1167,7 @@ const View = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data8">Tipo de servicio:</label>
+            <label htmlFor="data8">Tipo de servicio <span className="required">*</span></label>
 
             <div className="container-checkbox">
               <label>
@@ -1194,7 +1222,7 @@ const View = () => {
           </div>
 
           <div className="form-container">
-            <label htmlFor="data8">Control para el cliente:</label>
+            <label htmlFor="data8">Control para el cliente <span className="required">*</span></label>
 
             <div className="container-checkbox">
               <label>
@@ -1277,14 +1305,14 @@ const View = () => {
           </div>
 
           {/*
-        <label htmlFor="subject">Subject:</label>
+        <label htmlFor="subject">Subject <span className="required">*</span></label>
         <select id="subject" name="subject">
           <option value="general">General Inquiry</option>
           <option value="support">Technical Support</option>
           <option value="billing">Billing Question</option>
         </select>
 
-        <label htmlFor="message">Message:</label>
+        <label htmlFor="message">Message <span className="required">*</span></label>
         <textarea
           id="message"
           name="message"
@@ -1305,6 +1333,7 @@ const View = () => {
           divs={divs}
           setDivs={setDivs}
           agregarFila={agregarFila}
+          eliminarFila={eliminarFila}
         />
       </div>
 

@@ -83,3 +83,9 @@ export const deleteReportIn = (data) =>
       Authorization: `Bearer 125465`,
     },
   });
+export const deleteReportItem = (data) =>
+  serverApi.post("/del_itm/", data, {
+    headers: {
+      Authorization: `Bearer 125465`,
+    },
+  });

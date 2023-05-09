@@ -13,15 +13,11 @@ export default function SecondTableCreate({
   divs,
   setDivs,
   agregarFila,
+  eliminarFila
 }) {
   const {
-    numFilas,
-    setNumFilas,
     numColumnas,
-    setNumColumnas,
-    setTitulosColumnas,
     titulosColumnas,
-    eliminarFila,
     setTotal1,
     setTotal2,
     setTotal3,
@@ -36,8 +32,6 @@ export default function SecondTableCreate({
     setTotal12,
     setTotal13,
     setTotal14,
-    setDbColumns,
-    getNextLetter,
   } = useContext(MainContext);
 
   //console.log(numColumnas);
@@ -247,11 +241,11 @@ export default function SecondTableCreate({
   const formattedDateTime = `${year}-${month}-${day}`;
   const btnDelIncRef = useRef(null);
   const [currentThText, previousThText, handleClick] = useThClick(eliminarColumna2);
-
+  
   //console.log(previousThText);
   return (
     <Table>
-      <table onClick={handleClick}>
+      <table >
         <thead>
           <tr>
             {titulosColumnas.map((titulo, i) =>
@@ -325,7 +319,7 @@ export default function SecondTableCreate({
             */}
           </tr>
         </thead>
-        <tbody>
+        <tbody onClick={handleClick}>
           {divs.map((fila) => (
             <tr key={fila.id}>
               {fila.values.map((valor, i) =>
@@ -335,7 +329,7 @@ export default function SecondTableCreate({
                       <td>
                         <i
                           className="fa-solid fa-trash"
-                          onClick={() => eliminarFila(fila.id)}
+                          onClick={() => eliminarFila(fila.id, valor)}
                         ></i>
                       </td>
                     ) : (

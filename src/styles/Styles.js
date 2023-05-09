@@ -11,6 +11,12 @@ export const Table = styled.div`
     font-size: 14px;
     line-height: 1.4;
   }
+  .charts {
+    display: flex;
+    justify-content: start;
+    width: 50%;
+    height: 263px;
+  }
   .tab-container {
     width: 100%;
     display: flex;
@@ -183,7 +189,7 @@ export const Table = styled.div`
   }
   .filter-items {
     display: grid;
-    grid-template-columns: repeat(3, 15%);
+    grid-template-columns: repeat(4, auto);
     justify-items: start;
   }
 
@@ -533,6 +539,7 @@ export const StyledModal = styled.div`
   .delete-confirm-label {
     font-size: 1.5em;
     text-align: center;
+    margin: 15px 0;
   }
   .btn {
     min-width: 100px;
@@ -553,7 +560,7 @@ export const StyledModal = styled.div`
     display: flex;
     gap: 10px;
     margin: 10px 0;
-    justify-content: center;
+    justify-content: end;
   }
   .modal-container {
     width: auto;

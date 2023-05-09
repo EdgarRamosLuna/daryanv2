@@ -14,6 +14,7 @@ const TableComponent = ({ groupedData, loader }) => {
           <th>Total OK Pieces</th>
           <th>Total Re-work Parts</th>
           <th>Total Scrap</th>
+          <th>Total Worked H</th>
           {/* <th>Total A</th> */}
         </tr>
       </thead>
@@ -44,6 +45,7 @@ const TableComponent = ({ groupedData, loader }) => {
                 <td className="table-center">{dateData.total_ok_pieces}</td>
                 <td className="table-center">{dateData.total_re_work_parts}</td>
                 <td className="table-center">{dateData.total_scrap}</td>
+                <td className="table-center">{dateData.worked_h}</td>
                 {/* <td className="table-center">{dateData.total_A}</td> */}
               </tr>
             );

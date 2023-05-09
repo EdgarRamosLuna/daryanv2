@@ -13,7 +13,12 @@ import UpdateClient from "../pages/admin/clients/Update";
 import CreateSupplier from "../pages/admin/suppliers/Create";
 import UpdateSupplier from "../pages/admin/suppliers/Update";
 import axios from "axios";
-import { deleteClient, deleteEmployee, deleteSupplier, deleteUser } from "../api/daryan.api";
+import {
+  deleteClient,
+  deleteEmployee,
+  deleteSupplier,
+  deleteUser,
+} from "../api/daryan.api";
 
 let val;
 if (typeof window !== "undefined") {
@@ -205,9 +210,7 @@ export default function SubHeader() {
             toast.success(datares.message, {
               duration: 4000,
             });
-            setDataUsers((data) =>
-              data.filter((data) => data.id !== `${id}`)
-            );
+            setDataUsers((data) => data.filter((data) => data.id !== `${id}`));
           }
         })
         .catch((err) => {
@@ -281,7 +284,14 @@ export default function SubHeader() {
         <Modal callback={handleClose}>
           <div className="delete-confirm">
             <div className="delete-confirm-label">
-              Estas seguro que deseas borrar?
+              ¿Estás seguro(a) que deseas borrar este
+              {tableName === "users" && " usuario"}
+              {tableName === "employees" && " empleado"}
+              {tableName === "clients" && " cliente"}
+              {tableName === "suppliers" && " proveedor"}
+              {tableName === "reports" && " reporte"}?
+              <br />
+              Esta acción no podrá deshacerse.
             </div>
             <div className="delete-confirm-btns">
               <button onClick={handleClose} className="btn btn-danger">
