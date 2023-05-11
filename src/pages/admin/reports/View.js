@@ -266,7 +266,7 @@ const View = () => {
     }
   };
 
-  console.log(divs);
+  //console.log(divs);
   useEffect(() => {
     setNumColumnas2(numColumnas);
   }, [numColumnas]);
@@ -532,7 +532,7 @@ const View = () => {
     const dataInfo = eData.report_in;
     let i2 = 0;
     const inc = [];
-    console.log(dataInfo);
+   // console.log(dataInfo);
     if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
       const keys = Object.keys(dataInfo[i2]);
       for (let z = 0; z < dataInfo.length; z++) {

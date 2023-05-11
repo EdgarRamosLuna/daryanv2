@@ -30,7 +30,7 @@ const Reports = () => {
       })
       .then((data) => {
         const reportes = Object.values(data);
-        console.log(reportes);
+       // console.log(reportes);
         localStorage.setItem("dataTable", JSON.stringify(reportes));
         setData(reportes);
       })
@@ -81,7 +81,7 @@ const Reports = () => {
   console.log(dataTa.sort((a, b) => b.id - a.id));*/
   return (
     <div className="report-cointainer">
-      <ReportsTable data={data.sort((a, b) => a - b).reverse()} />
+      <ReportsTable data={data} />
     </div>
   );
 };

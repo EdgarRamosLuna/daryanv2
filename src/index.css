@@ -374,17 +374,7 @@ tfoot td {
   bottom: 0;
   width: auto;*/
 }
-.btns-header {
-  width: 100%;
-  display: flex;
-  gap: 10px;
-}
-.btns-header center {
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  align-items: center;
-}
+
 i {
   cursor: pointer;
 }

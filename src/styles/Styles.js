@@ -15,7 +15,7 @@ export const Table = styled.div`
     display: flex;
     justify-content: start;
     width: 50%;
-    height: 263px;
+    //height: 263px;
   }
   .tab-container {
     width: 100%;
@@ -171,18 +171,31 @@ export const Table = styled.div`
     width: 100%;
     display: flex;
     margin: 10px 0;
-    min-height: 57px;
+    min-height: 88px;
     align-items: center;
+    gap: 30px;
+  }
+  .header-container2 {
+    width: 100%;
+    display: flex;
+    margin: 10px 0;
+    min-height: 88px;
+    align-items: center;
+    gap: 30px;
+  }
+  .select-container {
+    align-self: center;
   }
   .filter-container {
     display: flex;
     gap: 10px;
+    justify-content: space-between;
   }
   .filter-item {
     display: flex;
     gap: 5px;
     color: #570000;
-    flex-wrap: wrap;
+    flex-direction: column;
   }
   li {
     list-style: none;
@@ -207,10 +220,11 @@ export const Table = styled.div`
     width: 100%;
     display: flex;
 
-    overflow-y: hidden;
+    //overflow-y: hidden;
     min-height: 30px;
     min-width: 150px;
     color: #447b91;
+    position: relative;
 
     ul {
       opacity: 0.5; /* Empieza con una opacidad de 0.5 */
@@ -221,18 +235,20 @@ export const Table = styled.div`
       height: auto;
       text-align: center;
       display: flex;
-      -webkit-box-align: center;
-      align-items: center;
-      -webkit-box-pack: center;
-      justify-content: center;
       cursor: pointer;
       background-color: rgb(255, 255, 255);
       max-width: 600px;
       flex-direction: column;
       transition: height 1s ease 0s;
-      justify-content: center;
+      justify-content: start;
       align-items: end;
       min-width: 150px;
+      overflow-y: scroll;
+      bottom: -43px;
+      position: absolute;
+      //z-index: 99999;
+      top: 0px;
+      height: 115px !important;
       li {
         width: auto;
         text-align: left;
@@ -323,20 +339,28 @@ export const Table = styled.div`
     gap: 10px;
     position: relative;
     z-index: 15;
+    width: 280px;
+    justify-content: space-between;
+    input {
+      outline: none;
+      border: 1px solid #570000;
+      box-sizing: border-box;
+      padding: 9px;
+      height: 45px;
+      margin: 0px;
+      width: 100%;
+    }
   }
-  .filter-item-input input {
-    outline: none;
-    border: 1px solid #570000;
-    box-sizing: border-box;
-    padding: 5px;
-    height: 20px;
-    margin: 0;
+  .input-date {
+    width: 100%;
+  }
+  .label-center {
+    margin: 0 auto;
   }
   .range {
     width: auto;
     min-width: 207.25px;
     display: flex;
-    flex-direction: column;
     justify-content: center;
   }
   .react-datepicker-wrapper {
@@ -355,8 +379,12 @@ export const Table = styled.div`
   .custom-input p {
     display: flex;
     width: 100%;
+    -webkit-box-pack: center;
     justify-content: center;
     gap: 5px;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 5px;
   }
   .input-date::before {
     content: "─";
@@ -419,10 +447,13 @@ export const Table = styled.div`
   form {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    //width: 100%;
     gap: 20px;
+    width: 55%;
   }
-
+  .filter-options {
+    height: 145px;
+  }
   .table-data tr {
     input {
       padding-left: 0;
@@ -614,4 +645,10 @@ export const InputDate = styled.input`
   padding-right: 0;
   text-align: center;
   min-width: 80px;
+`;
+export const AuthUsersContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 `;

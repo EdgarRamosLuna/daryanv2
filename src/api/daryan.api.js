@@ -41,6 +41,8 @@ export const statusEmployee = (data) =>
 
 // Client API
 export const getClients = () => serverApi.get("/get_clients/");
+export const getAuthClients = (id) => serverApi.post("/get_auth_clients/", id);
+export const getClientsInfo = () => serverApi.get("/get_client/");
 export const createClient = (data) => serverApi.post("/create_client/", data);
 export const updateClient = (data) => serverApi.post("/update_client/", data);
 export const deleteClient = (id) =>
@@ -51,6 +53,20 @@ export const deleteClient = (id) =>
   });
 export const statusClient = (data) =>
   serverApi.post("/status_client/", data, {
+    headers: {
+      Authorization: `Bearer 125465`,
+    },
+  });
+
+  export const authClients = (data) =>
+  serverApi.post("/report_clients/", data, {
+    headers: {
+      Authorization: `Bearer 125465`,
+    },
+  });
+
+  export const authClients2 = (data) =>
+  serverApi.post("/report_clients2/", data, {
     headers: {
       Authorization: `Bearer 125465`,
     },
@@ -87,5 +103,12 @@ export const deleteReportItem = (data) =>
   serverApi.post("/del_itm/", data, {
     headers: {
       Authorization: `Bearer 125465`,
+    },
+  });
+
+  export const delReport = (id) =>
+  serverApi.post('/del_report/', id, {
+    headers: {
+      Authorization: `Bearer 123456`
     },
   });

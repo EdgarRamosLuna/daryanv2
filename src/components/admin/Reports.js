@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
+import { debounce } from "lodash";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import Loader from "../Loader";
@@ -19,28 +20,91 @@ import TableTotals from "./TableTotals";
 import TableComponent from "./TableComponent";
 import Chart1 from "../Chart1";
 import Chart2 from "../Chart2";
+import { getAuthClients, getClientsInfo } from "../../api/daryan.api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCalendarDays,
+  faFilePdf,
+  faTimes,
+  faTrash,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
 registerLocale("es", es);
 function ReportsTable({ data }) {
-  const { handleDel, setSort, toast } = useContext(MainContext);
+  const {
+    handleDel,
+    setSort,
+    toast,
+    activeTab,
+    setActiveTab,
+    checkList,
+    setCheckList,
+    uniqueClients,
+    setUniqueClients,
+    clientsToReport,
+    setClientsToReport,
+    showModalAuth,
+    setShowModalAuth,
+    authClientsT,
+    setAuthClientsT,
+  } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const [nameFilter2, setNameFilter2] = useState("");
   const [lastnameFilter, setLastnameFilter] = useState("");
+  const [idSupplier, setIdSupplier] = useState(0);
   const today = new Date();
   const sixDaysLater = new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000);
   const sixDaysBefore = new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000);
-  const [dateStart, setDateStart] = useState(sixDaysBefore);
+  const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1);
+
+  const [dateStart, setDateStart] = useState(firstDayOfYear);
   const [dateEnd, setDateEnd] = useState(today);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(20);
   const [formatedDateStart, setFormatedDateStart] = useState("");
   const [formatedDateEnd, setFormatedDateEnd] = useState("");
-  const [checkList, setCheckList] = useState([]);
-  const [activeTab, setActiveTab] = useState(1);
+
   const [uniqueLots, setUniqueLots] = useState([]);
   const [uniqueSerial, setUniqueSerial] = useState([]);
   const [uniqueSuppliers, setUniqueSuppliers] = useState([]);
   const [uniquePart_number, setUniquePart_number] = useState([]);
   const [filterOption, setFilterOption] = useState(0);
+  const [clients, setClients] = useState([]);
+  const authClientsC = async (id) => {
+    //getAuthClients
+    await getAuthClients({ id })
+      .then((res) => {
+        const datares = res.data;
+        if (datares.error) {
+          toast.error(datares.message, {
+            duration: 5000,
+          });
+        } else {
+          setAuthClientsT(res.data);
+          setShowModalAuth(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  useEffect(() => {
+    const clients = async () => {
+      await getClientsInfo()
+        .then((res) => {
+          if (res.data) {
+            setClients(res.data);
+            //setUniqueSuppliers(res.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    clients();
+  }, []);
+
+  //console.log(clients);
   useEffect(() => {
     if (dateStart !== "") {
       const date = new Date(dateStart);
@@ -64,7 +128,6 @@ function ReportsTable({ data }) {
       const formattedDateTime = `${year}-${month}-${day}`;
       setFormatedDateEnd(formattedDateTime);
     }
-    return () => {};
   }, [dateStart, dateEnd]);
   const handleFirstPageClick = () => {
     setCurrentPage(1);
@@ -77,9 +140,16 @@ function ReportsTable({ data }) {
   const [filtersPartNumber, setFiltersPartNumber] = useState([]);
   const [filtersSupplier, setFiltersSupplier] = useState([]);
   const [loader, setLoader] = useState(false);
+  const [selectedClient, setSelectedClient] = useState("0");
   const handleNameFilterChange = (event) => {
-    setNameFilter(event.target.value);
+    const value = event.target.value;
+    setNameFilter(value);
+    //debounceSetNameFilter(value);
   };
+
+  const debounceSetNameFilter = debounce((value) => {
+    setNameFilter(value);
+  }, 300); // 300 milliseconds debounce delay
 
   const handleNameFilterChange2 = (event) => {
     setNameFilter2(event.target.value);
@@ -178,7 +248,8 @@ function ReportsTable({ data }) {
   const handleNameFilterChange5 = (event) => {
     setNameFilter2(event.target.value);
     const value = event.target.value.trim(); // Elimina espacios en blanco del valor
-    if (value !== "") {
+
+    if (value !== "" && uniqueSuppliers.includes(value)) {
       // Verifica que el valor no esté vacío y existe en uniquePart_number
       setLoader(true);
       setTimeout(() => {
@@ -198,14 +269,17 @@ function ReportsTable({ data }) {
       }, 1000);
     }
   };
+
   const filterData = useCallback(
     (data) => {
+      let dataId = 0;
       return data.filter((item, index) => {
         const part_number = item.part_number;
         const id = item.id.toLowerCase();
+        const id_supplier = item.id_supplier;
         const suppliers = item.supplier.toLowerCase();
         const planta = item.plant.toLowerCase();
-        const fullName = `${part_number} ${id} ${item.reports_cc
+        const fullName = `${id}${id_supplier} ${part_number}${item.reports_cc
           .map((cc) => cc.lot)
           .join(", ")} ${item.reports_cc
           .map((cc) => cc.serial)
@@ -216,6 +290,7 @@ function ReportsTable({ data }) {
           nameFilter &&
           fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
         ) {
+          //console.log(fullName.slice(3, 4));
           return false;
         }
         if (dateStart && date < new Date(dateStart).setHours(0, 0, 0, 0)) {
@@ -224,11 +299,48 @@ function ReportsTable({ data }) {
         if (dateEnd && date > new Date(dateEnd).setHours(23, 59, 59, 999)) {
           return false;
         }
+        if (nameFilter.length > 3) {
+          dataId = id_supplier;
+          //setIdSupplier(id_supplier)
+        }
         return true;
       });
     },
-    [nameFilter, dateStart, dateEnd, data]
+    [nameFilter, dateStart, dateEnd]
   );
+  //const [idSupplier, setIdSupplier] = useState(0);
+
+  useEffect(() => {
+    const data = getPaginatedData();
+
+    if (data.length > 0) {
+      const uniqueValues = Array.from(
+        new Set(data.map((item) => item.id_supplier))
+      );
+      const options = uniqueValues.map((value) => ({ id_supplier: value }));
+      if (options.length === 1) {
+        const id_supplier = options[0].id_supplier;
+        const newD = clients.filter((client) => {
+          if (Number(client.id_supplier) === Number(id_supplier)) {
+            return client;
+          } else {
+            setClientsToReport([]);
+            setSelectedClient("0");
+            return false;
+          }
+        });
+
+        setUniqueClients(newD);
+      }
+      if (nameFilter === "") {
+        setUniqueClients([]);
+        setClientsToReport([]);
+      }
+    }
+  }, [nameFilter, clients]);
+
+  //console.log(uniqueClients);
+
   const filterData2 = useCallback(
     (data) => {
       return data.filter((item, index) => {
@@ -310,7 +422,7 @@ function ReportsTable({ data }) {
             total_re_work_parts += parseInt(report_cc.re_work_parts);
             total_scrap += parseInt(report_cc.scrap);
             total_A += parseInt(report_cc["A"]);
-            console.log(parseInt(report_cc["A"]));
+            //   console.log(parseInt(report_cc["A"]));
           }
         }
         // Aplicar filtros para cada objeto en el data
@@ -563,17 +675,32 @@ function ReportsTable({ data }) {
   const CustomInputD = forwardRef(({ onClick, children }, ref) => (
     <div className="custom-input" onClick={onClick} ref={ref}>
       {children}
-      <i className="fa-solid fa-calendar-days"></i>
+      <FontAwesomeIcon icon={faCalendarDays} />
+      {/* <i className="fa-solid fa-calendar-days"></i> */}
     </div>
   ));
   CustomInputD.displayName = "CustomInputD";
 
   const handleCheckBox = (e, type, id) => {
-    console.log(type, id);
+    //   console.log(type, id);
     const allCheckBox = document.querySelectorAll('input[type="checkbox"]');
     const idM = getPaginatedData().map((data) => data.id);
     const classCheckbox = e.target.classList;
+
+    //console.log(e.target.checked)
+    //console.log(classCheckbox);
+
     if (type === "all") {
+      if (e.target.checked === false) {
+        setCheckList([]);
+        //classCheckbox.remove("ucSingle");
+        //console.log('entre')
+        allCheckBox.forEach((checkbox) => {
+          checkbox.checked = false;
+          //console.log(checkbox.classList)
+          checkbox.classList.remove("ucSingle");
+        });
+      }
       if (classCheckbox.length > 1) {
         const clsName = e.target.classList[1];
         if (clsName === "ucAll") {
@@ -607,9 +734,12 @@ function ReportsTable({ data }) {
       if (classCheckbox.length > 1) {
         const clsName = e.target.classList[1];
         if (clsName === "ucSingle") {
+          //console.log(clsName);
+
           setCheckList((prev) => prev.filter((data) => data !== id));
 
           classCheckbox.remove("ucSingle");
+          // console.log(classCheckbox);
         } else {
           setCheckList((prev) => [...prev, id]);
           classCheckbox.add("ucSingle");
@@ -632,6 +762,10 @@ function ReportsTable({ data }) {
   };
 
   const tabSwitch = (tab) => {
+    setCheckList([]);
+    setNameFilter("");
+    setClientsToReport([]);
+    setSelectedClient("0");
     setActiveTab(tab);
   };
 
@@ -673,17 +807,19 @@ function ReportsTable({ data }) {
       data.forEach((item) => {
         if (filtersPartNumber.includes(item.part_number)) {
           item.reports_cc.forEach((report) => {
-            if (filtersSerial.length > 0) {
-              if (filtersSerial.includes(report.serial)) {
+            if (filtersSupplier.includes(item.supplier)) {
+              if (filtersSerial.length > 0) {
+                if (filtersSerial.includes(report.serial)) {
+                  if (!seen[report.lot]) {
+                    seen[report.lot] = true;
+                    res1.push(report.lot);
+                  }
+                }
+              } else {
                 if (!seen[report.lot]) {
                   seen[report.lot] = true;
                   res1.push(report.lot);
                 }
-              }
-            } else {
-              if (!seen[report.lot]) {
-                seen[report.lot] = true;
-                res1.push(report.lot);
               }
             }
           });
@@ -707,19 +843,21 @@ function ReportsTable({ data }) {
         // }
         if (filtersPartNumber.includes(item.part_number)) {
           item.reports_cc.forEach((report) => {
-            if (filtersLot.length > 0) {
-              if (filtersLot.includes(report.lot)) {
+            if (filtersSupplier.includes(item.supplier)) {
+              if (filtersLot.length > 0) {
+                if (filtersLot.includes(report.lot)) {
+                  if (!seen2[report.serial]) {
+                    seen2[report.serial] = true;
+                    res2.push(report.serial);
+                    //  setFiltersSerial(prev => prev.filter(f => f.serial === report.serial))
+                    // console.log(report.serial);
+                  }
+                }
+              } else {
                 if (!seen2[report.serial]) {
                   seen2[report.serial] = true;
                   res2.push(report.serial);
-                  //  setFiltersSerial(prev => prev.filter(f => f.serial === report.serial))
-                  // console.log(report.serial);
                 }
-              }
-            } else {
-              if (!seen2[report.serial]) {
-                seen2[report.serial] = true;
-                res2.push(report.serial);
               }
             }
           });
@@ -770,7 +908,7 @@ function ReportsTable({ data }) {
     filtersLot,
     filtersSupplier,
   ]);
-  console.log(uniqueSuppliers);
+  //console.log(uniqueSuppliers);
   /*useCallback(() => {
     
     uniqueLots.forEach(element => {
@@ -850,6 +988,23 @@ function ReportsTable({ data }) {
     }
   }, [filterOption, filtersPartNumber]);
 
+  const addClientToList = (e) => {
+    const id = e.target.value;
+    setSelectedClient(id);
+    const clientName = e.target.selectedOptions[0].text;
+    setClientsToReport((prev) => {
+      if (!prev.some((client) => client.id === id) && id !== "0") {
+        return [...prev, { id, clientName }];
+      }
+      return prev;
+    });
+  };
+
+  console.log(clientsToReport);
+  const removeClient = (id) => {
+    setClientsToReport((prev) => prev.filter((client) => client.id !== id));
+  };
+
   return (
     <Table>
       <div className="table-container mb-5">
@@ -858,18 +1013,9 @@ function ReportsTable({ data }) {
             <form autoComplete="off">
               <div className="filter-container">
                 <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar:</label>
-                  <div className="filter-item-input">
-                    <input
-                      type="text"
-                      id="name-filter"
-                      value={nameFilter}
-                      onChange={handleNameFilterChange}
-                    />
-                  </div>
-                </div>
-                <div className="filter-item">
-                  <label htmlFor="date-filter">Buscar por Fecha:</label>
+                  <label htmlFor="date-filter" className="label-center">
+                    Buscar por Fecha:
+                  </label>
 
                   <div className="filter-item-input input-date">
                     <div className="range">
@@ -926,12 +1072,90 @@ function ReportsTable({ data }) {
                     </div>
                   </div>
                 </div>
+                <div className="filter-item">
+                  <label htmlFor="name-filter" className="label-center">
+                    Buscar:
+                  </label>
+                  <div className="filter-item-input">
+                    <input
+                      type="text"
+                      id="name-filter"
+                      value={nameFilter}
+                      onChange={(e) => handleNameFilterChange(e)}
+                      placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
+                    />
+                  </div>
+                  {/* <select onChange={(e) => setIdSupplier(e.target.value)}>
+                    {getPaginatedData()
+                      .reduce((uniqueOptions, item) => {
+                        if (
+                          !uniqueOptions.find(
+                            (option) => option.value === item.id_supplier
+                          )
+                        ) {
+                          uniqueOptions.push({
+                            value: item.id_supplier,
+                            label: item.id_supplier,
+                          });
+                        }
+                        return uniqueOptions;
+                      }, [])
+                      .map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                  </select> */}
+                </div>
               </div>
             </form>
+            <div
+              className="clients-container"
+              style={{
+                visibility: uniqueClients.length > 0 ? "visible" : "hidden",
+              }}
+            >
+              <div className="select-container">
+                <select value={selectedClient} onChange={addClientToList}>
+                  <option value="0" selected>
+                    Selecciona un cliente
+                  </option>
+                  {uniqueClients.map((option) => (
+                    <option key={option} value={option.id}>
+                      {option.fullname}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="list-container">
+                <div className="item-list">
+                  <ul
+                    style={{
+                      display: `${
+                        clientsToReport.length > 0 ? "flex" : "none"
+                      }`,
+                    }}
+                  >
+                    {clientsToReport.map((client, ind) => (
+                      <li key={ind}>
+                        <span>{client.clientName}</span>
+                        <span onClick={() => removeClient(client.id)}>
+                          <FontAwesomeIcon
+                            icon={faTimes}
+                            color="rgb(87, 0, 0)"
+                          />
+                          {/* <i className="fa-solid fa-times"></i> */}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         )}
         {activeTab === 3 && (
-          <div className="header-container">
+          <div className="header-container2">
             <form autoComplete="off">
               <div className="filter-options">
                 <div className="filter-items">
@@ -957,15 +1181,16 @@ function ReportsTable({ data }) {
                         {filtersSupplier.map((filterSupplier, ind) => (
                           <li key={ind}>
                             <span>{filterSupplier}</span>{" "}
-                            <span>
-                              <i
-                                className="fa-solid fa-times"
+                            <span>                              
+                              <FontAwesomeIcon
+                                icon={faTimes}
+                                color="rgb(87, 0, 0)"
                                 onClick={(e) =>
                                   setFiltersSupplier((prev) =>
                                     prev.filter((pre) => pre !== filterSupplier)
                                   )
                                 }
-                              ></i>
+                              />
                             </span>
                           </li>
                         ))}
@@ -1270,7 +1495,9 @@ function ReportsTable({ data }) {
                   </div>
                 )}
                 <div className="filter-item">
-                  <label htmlFor="date-filter">Buscar por Fecha:</label>
+                  <label htmlFor="date-filter" className="label-center">
+                    Buscar por Fecha:
+                  </label>
 
                   <div className="filter-item-input input-date">
                     <div className="range">
@@ -1332,80 +1559,149 @@ function ReportsTable({ data }) {
         )}
         {activeTab === 2 && (
           <div className="header-container">
-            <form autoComplete="off">
-              <div className="filter-container">
-                <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar:</label>
-                  <div className="filter-item-input">
-                    <input
-                      type="text"
-                      id="name-filter"
-                      value={nameFilter}
-                      onChange={handleNameFilterChange}
+          <form autoComplete="off">
+            <div className="filter-container">
+              <div className="filter-item">
+                <label htmlFor="date-filter" className="label-center">
+                  Buscar por Fecha:
+                </label>
+
+                <div className="filter-item-input input-date">
+                  <div className="range">
+                    <DatePicker
+                      id="fechaInicio"
+                      selected={dateStart}
+                      onChange={(date) => setDateStart(date)}
+                      locale="es"
+                      /*showTimeSelect
+                    timeFormat="h:mm aa"
+                    timeIntervals={60}
+                    timeCaption="Hora"
+                    dateFormat="yyyy-MM-dd h:mm aa"*/
+                      customInput={
+                        <CustomInputD>
+                          <p>
+                            Desde:{" "}
+                            <span
+                              style={{ minWidth: "90px", maxWidth: "100px" }}
+                            >
+                              {formatedDateStart !== ""
+                                ? formatedDateStart
+                                : ""}
+                            </span>
+                          </p>
+                        </CustomInputD>
+                      }
+                    />
+                  </div>
+                  <div className="range">
+                    <DatePicker
+                      id="fechaInicio"
+                      selected={dateEnd}
+                      onChange={(date) => setDateEnd(date)}
+                      locale="es"
+                      /*showTimeSelect
+                    timeFormat="h:mm aa"
+                    timeIntervals={60}
+                    timeCaption="Hora"
+                    dateFormat="yyyy-MM-dd h:mm aa"*/
+                      customInput={
+                        <CustomInputD>
+                          <p>
+                            Hasta:
+                            <span
+                              style={{ minWidth: "90px", maxWidth: "100px" }}
+                            >
+                              {formatedDateEnd !== "" ? formatedDateEnd : ""}
+                            </span>
+                          </p>
+                        </CustomInputD>
+                      }
                     />
                   </div>
                 </div>
-                <div className="filter-item">
-                  <label htmlFor="date-filter">Buscar por Fecha:</label>
-
-                  <div className="filter-item-input input-date">
-                    <div className="range">
-                      <DatePicker
-                        id="fechaInicio"
-                        selected={dateStart}
-                        onChange={(date) => setDateStart(date)}
-                        locale="es"
-                        /*showTimeSelect
-                      timeFormat="h:mm aa"
-                      timeIntervals={60}
-                      timeCaption="Hora"
-                      dateFormat="yyyy-MM-dd h:mm aa"*/
-                        customInput={
-                          <CustomInputD>
-                            <p>
-                              Desde:{" "}
-                              <span
-                                style={{ minWidth: "90px", maxWidth: "100px" }}
-                              >
-                                {formatedDateStart !== ""
-                                  ? formatedDateStart
-                                  : ""}
-                              </span>
-                            </p>
-                          </CustomInputD>
-                        }
-                      />
-                    </div>
-                    <div className="range">
-                      <DatePicker
-                        id="fechaInicio"
-                        selected={dateEnd}
-                        onChange={(date) => setDateEnd(date)}
-                        locale="es"
-                        /*showTimeSelect
-                      timeFormat="h:mm aa"
-                      timeIntervals={60}
-                      timeCaption="Hora"
-                      dateFormat="yyyy-MM-dd h:mm aa"*/
-                        customInput={
-                          <CustomInputD>
-                            <p>
-                              Hasta:
-                              <span
-                                style={{ minWidth: "90px", maxWidth: "100px" }}
-                              >
-                                {formatedDateEnd !== "" ? formatedDateEnd : ""}
-                              </span>
-                            </p>
-                          </CustomInputD>
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
               </div>
-            </form>
+              <div className="filter-item">
+                <label htmlFor="name-filter" className="label-center">
+                  Buscar:
+                </label>
+                <div className="filter-item-input">
+                  <input
+                    type="text"
+                    id="name-filter"
+                    value={nameFilter}
+                    onChange={(e) => handleNameFilterChange(e)}
+                    placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
+                  />
+                </div>
+                {/* <select onChange={(e) => setIdSupplier(e.target.value)}>
+                  {getPaginatedData()
+                    .reduce((uniqueOptions, item) => {
+                      if (
+                        !uniqueOptions.find(
+                          (option) => option.value === item.id_supplier
+                        )
+                      ) {
+                        uniqueOptions.push({
+                          value: item.id_supplier,
+                          label: item.id_supplier,
+                        });
+                      }
+                      return uniqueOptions;
+                    }, [])
+                    .map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                </select> */}
+              </div>
+            </div>
+          </form>
+          <div
+            className="clients-container"
+            style={{
+              visibility: uniqueClients.length > 0 ? "visible" : "hidden",
+            }}
+          >
+            <div className="select-container">
+              <select value={selectedClient} onChange={addClientToList}>
+                <option value="0" selected>
+                  Selecciona un cliente
+                </option>
+                {uniqueClients.map((option) => (
+                  <option key={option} value={option.id}>
+                    {option.fullname}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="list-container">
+              <div className="item-list">
+                <ul
+                  style={{
+                    display: `${
+                      clientsToReport.length > 0 ? "flex" : "none"
+                    }`,
+                  }}
+                >
+                  {clientsToReport.map((client, ind) => (
+                    <li key={ind}>
+                      <span>{client.clientName}</span>
+                      <span onClick={() => removeClient(client.id)}>
+                        <FontAwesomeIcon
+                          icon={faTimes}
+                          color="rgb(87, 0, 0)"
+                        />
+                        {/* <i className="fa-solid fa-times"></i> */}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
+        </div>
         )}
         <div className="tab-container">
           <div className="tab-items">
@@ -1437,7 +1733,7 @@ function ReportsTable({ data }) {
                   <th>
                     <Checkbox type="all" id={0} callback={handleCheckBox} />
                   </th>
-                  <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th>
+                  {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
                   <th># Parte</th>
                   <th>Planta</th>
                   <th>Proveedor</th>
@@ -1465,7 +1761,7 @@ function ReportsTable({ data }) {
                           callback={handleCheckBox}
                         />
                       </td>
-                      <td className="table-center">{item.id}</td>
+                      {/* <td className="table-center">{item.id}</td> */}
                       <td className="table-center">{item.part_number}</td>
                       <td className="table-center">{item.plant}</td>
                       <td className="table-center">{item.supplier}</td>
@@ -1480,17 +1776,27 @@ function ReportsTable({ data }) {
                         colSpan={1}
                       >
                         <div className="actions">
-                          <i
-                            className="fa-solid fa-trash"
+                          <FontAwesomeIcon
+                            icon={faTrash}
                             onClick={() => handleDel(item.id, "reports")}
-                          ></i>
+                          />
                           {/* <Link
                             to={`/admin/reports/${item.id}`}
                             style={{ color: "green" }}
                           >
                             <i className="fa-solid fa-eye"></i>
                           </Link> */}
-                          <i className="fa-solid fa-file-pdf"></i>
+
+                          {!navigator.onLine ? (
+                            <FontAwesomeIcon icon={faFilePdf} />
+                          ) : (
+                            <i className="fa-solid fa-file-pdf"></i>
+                          )}
+                          <FontAwesomeIcon
+                            icon={faUsers}
+                            color="green"
+                            onClick={() => authClientsC(item.id)}
+                          />
                         </div>
                       </td>
                     </tr>
@@ -1508,10 +1814,10 @@ function ReportsTable({ data }) {
                   <th>
                     <Checkbox type="all" id={0} callback={handleCheckBox} />
                   </th>
-                  <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th>
+                  {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
                   <th># Parte</th>
                   <th>Planta</th>
-                  <th>Mesa</th>
+                  <th>Proveedor</th>
                   <th>Fecha</th>
                   <th>Status</th>
                   <th>Acciones</th>
@@ -1524,7 +1830,10 @@ function ReportsTable({ data }) {
                   </Loader>
                 ) : (
                   getPaginatedData().map((item, index) => (
-                    <tr key={index} onClick={(e) => singleView(item.id)}>
+                    <tr
+                      key={index + "tabl2"}
+                      onClick={(e) => singleView(item.id)}
+                    >
                       <td
                         className="table-center"
                         onClick={(e) => e.stopPropagation()}
@@ -1536,14 +1845,14 @@ function ReportsTable({ data }) {
                           callback={handleCheckBox}
                         />
                       </td>
-                      <td className="table-center">{item.id}</td>
+                      {/* <td className="table-center">{item.id}</td> */}
                       <td className="table-center">{item.part_number}</td>
                       <td className="table-center">{item.plant}</td>
                       <td className="table-center">{item.supplier}</td>
                       <td className="table-center">{item.date}</td>
                       <td className="table-center">
                         {Number(item.status) === 1 && "Sin aprobar"}{" "}
-                        {Number(item.status) === 2 && "Aprobado"}
+                        {Number(item.status) === 3 && "Aprobado"}
                       </td>
                       <td
                         className="table-center"
@@ -1551,17 +1860,18 @@ function ReportsTable({ data }) {
                         colSpan={1}
                       >
                         <div className="actions">
-                          <i
-                            className="fa-solid fa-trash"
-                            onClick={() => handleDel(item.id)}
-                          ></i>
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            onClick={() => handleDel(item.id, "reports")}
+                          />
                           {/* <Link
-                            to={`/admin/reports/${item.id}`}
-                            style={{ color: "green" }}
-                          >
-                            <i className="fa-solid fa-eye"></i>
-                          </Link> */}
-                          <i className="fa-solid fa-file-pdf"></i>
+                           to={`/admin/reports/${item.id}`}
+                           style={{ color: "green" }}
+                         >
+                           <i className="fa-solid fa-eye"></i>
+                         </Link> */}
+                          <FontAwesomeIcon icon={faFilePdf} />
+                          {/* <i className="fa-solid fa-file-pdf"></i> */}
                         </div>
                       </td>
                     </tr>

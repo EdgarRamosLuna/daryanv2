@@ -74,19 +74,7 @@
     padding: 0 25px;
     
 }
-.subHeader a, .subHeader button{
-  width: auto;
-  border: 1px solid;
-  box-sizing: border-box;
-  padding: 5px;
-  border-radius: 5px;
-  font-size: 0.8em;
-  background-color: transparent;
-  color:#fff;
-  cursor: pointer;
-  min-width: 150px;
-  
-}
+
 .subHeader button {
   height: 30px;
 }

@@ -6,6 +6,9 @@ import {
   faGear,
   faRightFromBracket,
   faUsers,
+  faUsersGear,
+  faUsersBetweenLines,
+  faUsersViewfinder,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -74,19 +77,19 @@ const linksAdmin = [
   {
     label: "Empleados",
     route: "/admin/employees",
-    ico: faUsers,
+    ico: faUsersGear,
     fun: (e) => {},
   },
   {
     label: "Clientes",
     route: "/admin/clients",
-    ico: faUsers,
+    ico: faUsersBetweenLines,
     fun: (e) => {},
   },
   {
     label: "Proveedores",
     route: "/admin/suppliers",
-    ico: faUsers,
+    ico: faUsersViewfinder,
     fun: (e) => {},
   },
   {

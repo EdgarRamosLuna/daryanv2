@@ -52,8 +52,14 @@ export const MainContextProvider = ({ children }) => {
       dT.authorizedBy === "" ||
       dT.serviceType.length === 0 ||
       dT.customerControl.length === 0 ||
-      (dT.serviceType['st1'] === false && dT.serviceType['st2'] === false && dT.serviceType['st3'] === '') ||
-      (dT.customerControl['cc1'] === false && dT.customerControl['cc2'] === false && dT.customerControl['cc3'] === false && dT.customerControl['cc4'] === false && dT.customerControl['cc5'] === '')
+      (dT.serviceType["st1"] === false &&
+        dT.serviceType["st2"] === false &&
+        dT.serviceType["st3"] === "") ||
+      (dT.customerControl["cc1"] === false &&
+        dT.customerControl["cc2"] === false &&
+        dT.customerControl["cc3"] === false &&
+        dT.customerControl["cc4"] === false &&
+        dT.customerControl["cc5"] === "")
     ) {
       toast.error("Todos los campos con * con obligatorios", {
         duration: 5000,
@@ -327,6 +333,7 @@ export const MainContextProvider = ({ children }) => {
   const [showModalE, setShowModalE] = useState(false);
   const [showModalS, setShowModalS] = useState(false);
   const [showModalC, setShowModalC] = useState(false);
+  const [showModalAuth, setShowModalAuth] = useState(false);
   const [updateId, setUpdateId] = useState(false);
   const [delType, setDelType] = useState(0);
   const [numFilas, setNumFilas] = useState(20);
@@ -720,6 +727,12 @@ export const MainContextProvider = ({ children }) => {
 
   const [deletingInc, setDeletingInc] = useState(0);
   //const [dataClients, setDataClients] = useState([]);
+  const [activeTab, setActiveTab] = useState(1);
+  const [checkList, setCheckList] = useState([]);
+  const [uniqueClients, setUniqueClients] = useState([]);
+  const [clientsToReport, setClientsToReport] = useState([]);
+  const [authClientsT, setAuthClientsT] = useState([]);
+  const [position, setPosition] = useState('top-center');
   return (
     <MainContext.Provider
       value={{
@@ -837,9 +850,22 @@ export const MainContextProvider = ({ children }) => {
         eliminarColumna2,
         deletingInc,
         setDeletingInc,
+        activeTab,
+        setActiveTab,
+        checkList,
+        setCheckList,
+        uniqueClients,
+        setUniqueClients,
+        clientsToReport,
+        setClientsToReport,
+        showModalAuth,
+        setShowModalAuth,
+        authClientsT,
+        setAuthClientsT,
+        setPosition
       }}
     >
-      <Toaster richColors position="top-center" closeButton />
+      <Toaster richColors position={position} closeButton />
       {children}
     </MainContext.Provider>
   );

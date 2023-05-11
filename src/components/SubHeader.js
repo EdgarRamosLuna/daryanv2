@@ -14,11 +14,15 @@ import CreateSupplier from "../pages/admin/suppliers/Create";
 import UpdateSupplier from "../pages/admin/suppliers/Update";
 import axios from "axios";
 import {
+  authClients,
+  authClients2,
+  delReport,
   deleteClient,
   deleteEmployee,
   deleteSupplier,
   deleteUser,
 } from "../api/daryan.api";
+import AuthUsers from "./admin/AuthUsers";
 
 let val;
 if (typeof window !== "undefined") {
@@ -63,6 +67,18 @@ export default function SubHeader() {
     setShowModalUser,
     showModalSupplier,
     setShowModalSupplier,
+    checkList,
+    setCheckList,
+    uniqueClients,
+    setUniqueClients,
+    clientsToReport,
+    setClientsToReport,
+    showModalAuth,
+    setShowModalAuth,
+    authClientsT,
+    setAuthClientsT,
+    setPosition,
+    activeTab,
   } = useContext(MainContext);
   //console.log(useParams());
 
@@ -92,26 +108,26 @@ export default function SubHeader() {
     setShowModalEmployee(false);
     setShowModalSupplier(false);
     setShowModalS(false);
+    setShowModalAuth(false);
+    setAuthClientsT([]);
     //    showModalE, setShowModalE
   };
 
   const callbackConfirm = async (id) => {
     if (tableName === "reports") {
-      await axios
-        .post(
-          `${serverUrl}/api/del_report`,
-          {
-            id: id,
-          },
-          {
-            headers: {
-              Authorization: `Bearer 125465`,
-            },
-          }
-        )
+      await delReport({ id })
         .then((res) => {
-          //   console.log(res.data);
-          setData((data) => data.filter((data) => data.id !== `${id}`));
+          const datares = res.data;
+          if (datares.error) {
+            toast.error(datares.message, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(datares.message, {
+              duration: 4000,
+            });
+            setData((data) => data.filter((data) => data.id !== `${id}`));
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -237,8 +253,59 @@ export default function SubHeader() {
     window.location.href = url;
     //navigate(`/user/reports/${id}`);
   };
+  const addClients = async () => {
+    if (checkList.length > 0 && clientsToReport.length > 0) {
+      if (activeTab === 1) {
+        await authClients({
+          clients: clientsToReport,
+          reports: checkList,
+        }).then((res) => {
+          const datares = res.data;
+          if (datares.error) {
+            toast.error(datares.message, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(datares.message, {
+              duration: 3000,
+            });
+          }
+        });
+      }
+      if (activeTab === 2) {
+        await authClients2({
+          clients: clientsToReport,
+          reports: checkList,
+        }).then((res) => {
+          const datares = res.data;
+          if (datares.error) {
+            toast.error(datares.message, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(datares.message, {
+              duration: 3000,
+            });
+          }
+        });
+      }
+    } else {
+      setPosition("top-right");
+      toast.error(
+        "Debes seleccionar almenos 1 reporte y 1 proveedor para poder asignar un cliente",
+        {
+          duration: 5000,
+        }
+      );
+    }
+  };
   return (
     <>
+      {showModalAuth === true && (
+        <Modal callback={handleClose}>
+          <AuthUsers data={authClientsT} />
+        </Modal>
+      )}
       {showModalClient === true && (
         <Modal callback={handleClose}>
           <CreateClient />
@@ -313,15 +380,20 @@ export default function SubHeader() {
           {pathname === "/user/reports" && (
             <>
               <button onClick={() => singleView("/user/reports/create/1")}>
-                <center>
-                  <i className="fa-solid fa-plus"></i>Reporte de inspeccion
-                </center>
+                <center>Reporte de inspeccion</center>
               </button>
               <button onClick={() => singleView("/user/reports/create/2")}>
-                <center>
-                  <i className="fa-solid fa-plus"></i>Reporte por horas
-                </center>
+                <center>Reporte por horas</center>
               </button>
+            </>
+          )}
+          {pathname === "/admin/reports" && (
+            <>
+              {activeTab >= 1 && activeTab <= 2 && (
+                <button onClick={addClients} className="auth-clientes">
+                  Autorizar Clientes
+                </button>
+              )}
             </>
           )}
           {pathname === "/user/reports/create/1" && (
