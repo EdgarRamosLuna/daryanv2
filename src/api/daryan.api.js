@@ -51,21 +51,33 @@ export const deleteClient = (id) =>
       Authorization: `Bearer 125465`,
     },
   });
+export const deleteAuthClient = (id) =>
+  serverApi.post("/delete_auth_client/", id, {
+    headers: {
+      Authorization: `Bearer 125465`,
+    },
+  });
 export const statusClient = (data) =>
   serverApi.post("/status_client/", data, {
     headers: {
       Authorization: `Bearer 125465`,
     },
   });
+export const statusAuthClient = (data) =>
+  serverApi.post("/status_auth_client/", data, {
+    headers: {
+      Authorization: `Bearer 125465`,
+    },
+  });
 
-  export const authClients = (data) =>
+export const authClients = (data) =>
   serverApi.post("/report_clients/", data, {
     headers: {
       Authorization: `Bearer 125465`,
     },
   });
 
-  export const authClients2 = (data) =>
+export const authClients2 = (data) =>
   serverApi.post("/report_clients2/", data, {
     headers: {
       Authorization: `Bearer 125465`,
@@ -106,9 +118,9 @@ export const deleteReportItem = (data) =>
     },
   });
 
-  export const delReport = (id) =>
-  serverApi.post('/del_report/', id, {
+export const delReport = (id) =>
+  serverApi.post("/del_report/", id, {
     headers: {
-      Authorization: `Bearer 123456`
+      Authorization: `Bearer 123456`,
     },
   });

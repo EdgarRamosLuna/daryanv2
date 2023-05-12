@@ -29,13 +29,12 @@ const CreateEmployee = () => {
           toast.success(datares.message, {
             duration: 4000,
           });
-          const { email, name, user } = data;
+          const { email, name } = data;
           const { last_id } = datares;
           setDataEmployees((prev) => [
             {
               id: `${last_id}`,
-              fullname: name,
-              username: user,
+              fullname: name,              
               email,
               status: "1",
             },
@@ -75,7 +74,7 @@ const CreateEmployee = () => {
           />
           {errors.name && <span className="error">Informacion requerida</span>}
         </div>
-        <div className="item-from-container">
+        {/* <div className="item-from-container">
           <label htmlFor="user">Usuario</label>
           <input
             type="text"
@@ -93,7 +92,7 @@ const CreateEmployee = () => {
             // }
           />
           {errors.user && <span className="error">Informacion requerida</span>}
-        </div>
+        </div> */}
         <div className="item-from-container">
           <label htmlFor="email">Correo</label>
           <input

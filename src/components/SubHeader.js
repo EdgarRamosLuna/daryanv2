@@ -17,12 +17,16 @@ import {
   authClients,
   authClients2,
   delReport,
+  deleteAuthClient,
   deleteClient,
   deleteEmployee,
   deleteSupplier,
   deleteUser,
 } from "../api/daryan.api";
 import AuthUsers from "./admin/AuthUsers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChartSimple, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { faEye } from "@fortawesome/free-regular-svg-icons";
 
 let val;
 if (typeof window !== "undefined") {
@@ -45,7 +49,6 @@ export default function SubHeader() {
     setDataEmployees,
     setDataUsers,
     idDelete,
-    handleConfirm,
     showModalU,
     setShowModalU,
     showModalE,
@@ -53,11 +56,9 @@ export default function SubHeader() {
     showModalC,
     setShowModalC,
     updateId,
-    setUpdateId,
     showModalS,
     setShowModalS,
     tableName,
-    serverUrl,
     toast,
     showModalClient,
     setShowModalClient,
@@ -68,17 +69,15 @@ export default function SubHeader() {
     showModalSupplier,
     setShowModalSupplier,
     checkList,
-    setCheckList,
-    uniqueClients,
-    setUniqueClients,
     clientsToReport,
-    setClientsToReport,
     showModalAuth,
     setShowModalAuth,
     authClientsT,
     setAuthClientsT,
     setPosition,
     activeTab,
+    showCharts,
+    setShowCharts,
   } = useContext(MainContext);
   //console.log(useParams());
 
@@ -299,11 +298,32 @@ export default function SubHeader() {
       );
     }
   };
+
+  const deleteAU = async (id) => {
+    const confirm = window.confirm(
+      "Estas seguro de borrar este usuario de la lista de autorizados?"
+    );
+    if (confirm) {
+      await deleteAuthClient({ id }).then((res) => {
+        const datares = res.data;
+        if (datares.error) {
+          toast.error(datares.message, {
+            duration: 5000,
+          });
+        } else {
+          toast.success(datares.message, {
+            duration: 3000,
+          });
+          setAuthClientsT((data) => data.filter((data) => data.id !== `${id}`));
+        }
+      });
+    }
+  };
   return (
     <>
       {showModalAuth === true && (
         <Modal callback={handleClose}>
-          <AuthUsers data={authClientsT} />
+          <AuthUsers data={authClientsT} deleteAU={deleteAU} />
         </Modal>
       )}
       {showModalClient === true && (
@@ -375,7 +395,6 @@ export default function SubHeader() {
         </Modal>
       )}
       <div className={style.subHeader}>
-        {" "}
         <div className="btns-header">
           {pathname === "/user/reports" && (
             <>
@@ -393,6 +412,14 @@ export default function SubHeader() {
                 <button onClick={addClients} className="auth-clientes">
                   Autorizar Clientes
                 </button>
+              )}
+              {activeTab === 3 && (
+                <div className="btn-charts">
+                  <button className="chart-btn" onClick={() => setShowCharts(prev => !prev)}>
+                    <FontAwesomeIcon icon={showCharts === true ? faEyeSlash : faEye} />
+                    <FontAwesomeIcon icon={faChartSimple} />
+                  </button>
+                </div>
               )}
             </>
           )}

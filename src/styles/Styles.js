@@ -17,6 +17,18 @@ export const Table = styled.div`
     width: 50%;
     //height: 263px;
   }
+  .smoothFadeIn {    
+    position: relative;
+    animation: smoothFadeIn 0.3s;
+    transition: all 0.3s;
+  }
+  .smoothFadeOut {    
+    position: relative;
+    animation: smoothFadeOut 0.3s;
+    animation-delay: 0.3s;
+    transition: all 0.3s;
+  }
+
   .tab-container {
     width: 100%;
     display: flex;
@@ -25,7 +37,7 @@ export const Table = styled.div`
     width: 100%;
     display: flex;
     box-sizing: border-box;
-    border: 1px solid #570000;
+    border: 1px solid #00419b;
     border-top: 0;
     border-bottom: 0;
     border-right: 0;
@@ -34,7 +46,7 @@ export const Table = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #570000;
+    border: 1px solid #00419b;
     box-sizing: border-box;
     padding: 10px 20px;
     border-bottom: 0;
@@ -43,17 +55,17 @@ export const Table = styled.div`
     transition: all 0.3s;
     &:hover {
       transition: all 0.3s;
-      background: #570000;
+      background: #00419b;
       color: #fff;
     }
   }
   .active {
     transition: all 0.3s;
-    background: #570000;
+    background: #00419b;
     color: #fff;
   }
   thead {
-    background-color: #570000;
+    background-color: #00419b;
     color: #fff;
     position: sticky;
     top: 0px;
@@ -92,7 +104,7 @@ export const Table = styled.div`
   tbody > tr {
     cursor: pointer;
     &:hover {
-      background-color: #e0e0e0;
+      background-color: rgb(0 65 155 / 28%) !important
     }
   }
 
@@ -130,7 +142,7 @@ export const Table = styled.div`
   }
 
   .boton-paginacion.activo {
-    background-color: #570000;
+    background-color: #00419b;
     color: white;
   }
   .table-container {
@@ -164,7 +176,7 @@ export const Table = styled.div`
     color: green;
   }
   .fa-file-pdf {
-    color: #570000;
+    color: #00419b;
   }
 
   .header-container {
@@ -182,6 +194,8 @@ export const Table = styled.div`
     min-height: 88px;
     align-items: center;
     gap: 30px;
+    flex-wrap: wrap-reverse;
+    justify-content: center;
   }
   .select-container {
     align-self: center;
@@ -194,7 +208,7 @@ export const Table = styled.div`
   .filter-item {
     display: flex;
     gap: 5px;
-    color: #570000;
+    color: #00419b;
     flex-direction: column;
   }
   li {
@@ -204,6 +218,12 @@ export const Table = styled.div`
     display: grid;
     grid-template-columns: repeat(4, auto);
     justify-items: start;
+  }
+  .filter-items2 {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-items: start;
+    justify-content: space-between;
   }
 
   .filter-item-in {
@@ -314,6 +334,30 @@ export const Table = styled.div`
       }
     }
   }
+  @keyframes smoothFadeIn {
+    from{
+      opacity: 0;
+      //visibility: hidden;
+      bottom:-15px;
+    }
+    to {
+      opacity: 1;
+      //visibility: visible;
+      bottom: 0;
+    }
+  }
+  @keyframes smoothFadeOut {
+    from{
+      opacity: 1;
+      //visibility: visible;
+      bottom: 0;
+    }
+    to {
+      opacity: 0;
+      //visibility: hidden;
+      bottom:-15px;
+    }
+  }
   @keyframes fadeinBottom {
     from {
       opacity: 0.5; /* Empieza con una opacidad de 0.5 */
@@ -343,7 +387,7 @@ export const Table = styled.div`
     justify-content: space-between;
     input {
       outline: none;
-      border: 1px solid #570000;
+      border: 1px solid #00419b;
       box-sizing: border-box;
       padding: 9px;
       height: 45px;
@@ -371,9 +415,9 @@ export const Table = styled.div`
 
     /*
   border-radius: 10px;
-  border: 1px solid #570000;
+  border: 1px solid #00419b;
   color: #fff;
-  background: #570000;
+  background: #00419b;
   box-sizing: border-box;*/
   }
   .custom-input p {
@@ -412,7 +456,7 @@ export const Table = styled.div`
   .pagination button {
     height: 25px;
     width: 25px;
-    color: #570000;
+    color: #00419b;
     border: 0;
     outline: none;
     background: none;
@@ -423,11 +467,12 @@ export const Table = styled.div`
   }
   .pagination select {
     margin-left: 10px;
-    border: 1px solid #570000;
-    color: #570000;
+    border: 1px solid #00419b;
+    color: #00419b;
   }
   .pagination span {
     margin-left: 5px;
+    color: #00419b;
   }
 
   .table-reports tbody {
@@ -558,7 +603,7 @@ export const StyledModal = styled.div`
   position: fixed;
   width: 100%;
   height: 100%;
-  z-index: 69;
+  z-index: 999;
   background: #00000082;
   display: flex;
   align-items: center;
@@ -638,6 +683,8 @@ export const StyledStatusBtn = styled.button`
   background: ${(props) => (props.statusBtn === 1 ? "green" : "red")};
   color: #fff;
   cursor: pointer;
+  width: 110px;
+  outline: none;
 `;
 
 export const InputDate = styled.input`

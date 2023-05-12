@@ -47,6 +47,7 @@ function ReportsTable({ data }) {
     setShowModalAuth,
     authClientsT,
     setAuthClientsT,
+    showCharts,
   } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const [nameFilter2, setNameFilter2] = useState("");
@@ -157,21 +158,21 @@ function ReportsTable({ data }) {
     if (value !== "" && uniquePart_number.includes(value)) {
       // Verifica que el valor no esté vacío y existe en uniquePart_number
       setLoader(true);
-      setTimeout(() => {
-        setFiltersPartNumber((prev) => {
-          if (prev.includes(value)) {
-            return prev.map((filter) => {
-              if (filter === value) {
-                return value;
-              }
-              return filter;
-            });
-          } else {
-            return [...prev, value];
-          }
-        });
-        setLoader(false);
-      }, 1000);
+      // setTimeout(() => {
+      setFiltersPartNumber((prev) => {
+        if (prev.includes(value)) {
+          return prev.map((filter) => {
+            if (filter === value) {
+              return value;
+            }
+            return filter;
+          });
+        } else {
+          return [...prev, value];
+        }
+      });
+      setLoader(false);
+      // }, 1000);
     }
   };
   const handleNameFilterChange3 = (event) => {
@@ -181,21 +182,21 @@ function ReportsTable({ data }) {
       // Verifica que el valor no esté vacío y existe en uniqueLots
       setLoader(true);
 
-      setTimeout(() => {
-        setFiltersLot((prev) => {
-          if (prev.includes(value)) {
-            return prev.map((filter) => {
-              if (filter === value) {
-                return value;
-              }
-              return filter;
-            });
-          } else {
-            return [...prev, value];
-          }
-        });
-        setLoader(false);
-      }, 1000);
+      // setTimeout(() => {
+      setFiltersLot((prev) => {
+        if (prev.includes(value)) {
+          return prev.map((filter) => {
+            if (filter === value) {
+              return value;
+            }
+            return filter;
+          });
+        } else {
+          return [...prev, value];
+        }
+      });
+      setLoader(false);
+      //     }, 1000);
     }
     /*setNameFilter2(event.target.value);
     setFiltersLot(prev => {
@@ -228,21 +229,21 @@ function ReportsTable({ data }) {
     if (value !== "" && uniqueSerial.includes(value)) {
       // Verifica que el valor no esté vacío y existe en uniquePart_number
       setLoader(true);
-      setTimeout(() => {
-        setFiltersSerial((prev) => {
-          if (prev.includes(value)) {
-            return prev.map((filter) => {
-              if (filter === value) {
-                return value;
-              }
-              return filter;
-            });
-          } else {
-            return [...prev, value];
-          }
-        });
-        setLoader(false);
-      }, 1000);
+      //  setTimeout(() => {
+      setFiltersSerial((prev) => {
+        if (prev.includes(value)) {
+          return prev.map((filter) => {
+            if (filter === value) {
+              return value;
+            }
+            return filter;
+          });
+        } else {
+          return [...prev, value];
+        }
+      });
+      setLoader(false);
+      // }, 1000);
     }
   };
   const handleNameFilterChange5 = (event) => {
@@ -252,21 +253,21 @@ function ReportsTable({ data }) {
     if (value !== "" && uniqueSuppliers.includes(value)) {
       // Verifica que el valor no esté vacío y existe en uniquePart_number
       setLoader(true);
-      setTimeout(() => {
-        setFiltersSupplier((prev) => {
-          if (prev.includes(value)) {
-            return prev.map((filter) => {
-              if (filter === value) {
-                return value;
-              }
-              return filter;
-            });
-          } else {
-            return [...prev, value];
-          }
-        });
-        setLoader(false);
-      }, 1000);
+      // setTimeout(() => {
+      setFiltersSupplier((prev) => {
+        if (prev.includes(value)) {
+          return prev.map((filter) => {
+            if (filter === value) {
+              return value;
+            }
+            return filter;
+          });
+        } else {
+          return [...prev, value];
+        }
+      });
+      setLoader(false);
+      //}, 1000);
     }
   };
 
@@ -986,7 +987,7 @@ function ReportsTable({ data }) {
         }
       });
     }
-  }, [filterOption, filtersPartNumber]);
+  }, [filterOption, filtersPartNumber, filtersSupplier, toast]);
 
   const addClientToList = (e) => {
     const id = e.target.value;
@@ -1000,7 +1001,7 @@ function ReportsTable({ data }) {
     });
   };
 
-  console.log(clientsToReport);
+  //console.log(clientsToReport);
   const removeClient = (id) => {
     setClientsToReport((prev) => prev.filter((client) => client.id !== id));
   };
@@ -1181,7 +1182,7 @@ function ReportsTable({ data }) {
                         {filtersSupplier.map((filterSupplier, ind) => (
                           <li key={ind}>
                             <span>{filterSupplier}</span>{" "}
-                            <span>                              
+                            <span>
                               <FontAwesomeIcon
                                 icon={faTimes}
                                 color="rgb(87, 0, 0)"
@@ -1322,6 +1323,7 @@ function ReportsTable({ data }) {
                         name="part_number"
                         value={nameFilter2}
                         onChange={handleNameFilterChange2}
+                        disabled={filtersSupplier.length === 0 ? true : false}
                       />
 
                       <datalist id="parts_number">
@@ -1551,90 +1553,94 @@ function ReportsTable({ data }) {
                 </div>
               </div>
             </form>
-            <div className="charts">
-              <Chart1 totalG={totalGeneral} />
-              <Chart2 totalG={totalGeneral} />
+            <div className={`charts ${showCharts === true && 'smoothFadeIn'}`}>
+              {showCharts === true && (
+                <>
+                  <Chart1 totalG={totalGeneral} colorScale={["tomato", "orange", "gold", "gold", "gold", "gold"]}/>
+                  <Chart2 totalG={totalGeneral} colorScale={["tomato", "orange", "gold", "gold", "gold", "gold"]}  />
+                </>
+              )}
             </div>
           </div>
         )}
         {activeTab === 2 && (
           <div className="header-container">
-          <form autoComplete="off">
-            <div className="filter-container">
-              <div className="filter-item">
-                <label htmlFor="date-filter" className="label-center">
-                  Buscar por Fecha:
-                </label>
+            <form autoComplete="off">
+              <div className="filter-container">
+                <div className="filter-item">
+                  <label htmlFor="date-filter" className="label-center">
+                    Buscar por Fecha:
+                  </label>
 
-                <div className="filter-item-input input-date">
-                  <div className="range">
-                    <DatePicker
-                      id="fechaInicio"
-                      selected={dateStart}
-                      onChange={(date) => setDateStart(date)}
-                      locale="es"
-                      /*showTimeSelect
+                  <div className="filter-item-input input-date">
+                    <div className="range">
+                      <DatePicker
+                        id="fechaInicio"
+                        selected={dateStart}
+                        onChange={(date) => setDateStart(date)}
+                        locale="es"
+                        /*showTimeSelect
                     timeFormat="h:mm aa"
                     timeIntervals={60}
                     timeCaption="Hora"
                     dateFormat="yyyy-MM-dd h:mm aa"*/
-                      customInput={
-                        <CustomInputD>
-                          <p>
-                            Desde:{" "}
-                            <span
-                              style={{ minWidth: "90px", maxWidth: "100px" }}
-                            >
-                              {formatedDateStart !== ""
-                                ? formatedDateStart
-                                : ""}
-                            </span>
-                          </p>
-                        </CustomInputD>
-                      }
-                    />
-                  </div>
-                  <div className="range">
-                    <DatePicker
-                      id="fechaInicio"
-                      selected={dateEnd}
-                      onChange={(date) => setDateEnd(date)}
-                      locale="es"
-                      /*showTimeSelect
+                        customInput={
+                          <CustomInputD>
+                            <p>
+                              Desde:{" "}
+                              <span
+                                style={{ minWidth: "90px", maxWidth: "100px" }}
+                              >
+                                {formatedDateStart !== ""
+                                  ? formatedDateStart
+                                  : ""}
+                              </span>
+                            </p>
+                          </CustomInputD>
+                        }
+                      />
+                    </div>
+                    <div className="range">
+                      <DatePicker
+                        id="fechaInicio"
+                        selected={dateEnd}
+                        onChange={(date) => setDateEnd(date)}
+                        locale="es"
+                        /*showTimeSelect
                     timeFormat="h:mm aa"
                     timeIntervals={60}
                     timeCaption="Hora"
                     dateFormat="yyyy-MM-dd h:mm aa"*/
-                      customInput={
-                        <CustomInputD>
-                          <p>
-                            Hasta:
-                            <span
-                              style={{ minWidth: "90px", maxWidth: "100px" }}
-                            >
-                              {formatedDateEnd !== "" ? formatedDateEnd : ""}
-                            </span>
-                          </p>
-                        </CustomInputD>
-                      }
-                    />
+                        customInput={
+                          <CustomInputD>
+                            <p>
+                              Hasta:
+                              <span
+                                style={{ minWidth: "90px", maxWidth: "100px" }}
+                              >
+                                {formatedDateEnd !== "" ? formatedDateEnd : ""}
+                              </span>
+                            </p>
+                          </CustomInputD>
+                        }
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="filter-item">
-                <label htmlFor="name-filter" className="label-center">
-                  Buscar:
-                </label>
-                <div className="filter-item-input">
-                  <input
-                    type="text"
-                    id="name-filter"
-                    value={nameFilter}
-                    onChange={(e) => handleNameFilterChange(e)}
-                    placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
-                  />
-                </div>
-                {/* <select onChange={(e) => setIdSupplier(e.target.value)}>
+                <div className="filter-item">
+                  <label htmlFor="name-filter" className="label-center">
+                    Buscar:
+                  </label>
+                  <div className="filter-item-input">
+                    <input
+                      type="text"
+                      id="name-filter"
+                      value={nameFilter}
+                      onChange={(e) => handleNameFilterChange(e)}
+                      placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
+                    />
+                  </div>
+                  {/* <select onChange={(e) => setIdSupplier(e.target.value)}>
                   {getPaginatedData()
                     .reduce((uniqueOptions, item) => {
                       if (
@@ -1655,53 +1661,53 @@ function ReportsTable({ data }) {
                       </option>
                     ))}
                 </select> */}
+                </div>
               </div>
-            </div>
-          </form>
-          <div
-            className="clients-container"
-            style={{
-              visibility: uniqueClients.length > 0 ? "visible" : "hidden",
-            }}
-          >
-            <div className="select-container">
-              <select value={selectedClient} onChange={addClientToList}>
-                <option value="0" selected>
-                  Selecciona un cliente
-                </option>
-                {uniqueClients.map((option) => (
-                  <option key={option} value={option.id}>
-                    {option.fullname}
+            </form>
+            <div
+              className="clients-container"
+              style={{
+                visibility: uniqueClients.length > 0 ? "visible" : "hidden",
+              }}
+            >
+              <div className="select-container">
+                <select value={selectedClient} onChange={addClientToList}>
+                  <option value="0" selected>
+                    Selecciona un cliente
                   </option>
-                ))}
-              </select>
-            </div>
-            <div className="list-container">
-              <div className="item-list">
-                <ul
-                  style={{
-                    display: `${
-                      clientsToReport.length > 0 ? "flex" : "none"
-                    }`,
-                  }}
-                >
-                  {clientsToReport.map((client, ind) => (
-                    <li key={ind}>
-                      <span>{client.clientName}</span>
-                      <span onClick={() => removeClient(client.id)}>
-                        <FontAwesomeIcon
-                          icon={faTimes}
-                          color="rgb(87, 0, 0)"
-                        />
-                        {/* <i className="fa-solid fa-times"></i> */}
-                      </span>
-                    </li>
+                  {uniqueClients.map((option) => (
+                    <option key={option} value={option.id}>
+                      {option.fullname}
+                    </option>
                   ))}
-                </ul>
+                </select>
+              </div>
+              <div className="list-container">
+                <div className="item-list">
+                  <ul
+                    style={{
+                      display: `${
+                        clientsToReport.length > 0 ? "flex" : "none"
+                      }`,
+                    }}
+                  >
+                    {clientsToReport.map((client, ind) => (
+                      <li key={ind}>
+                        <span>{client.clientName}</span>
+                        <span onClick={() => removeClient(client.id)}>
+                          <FontAwesomeIcon
+                            icon={faTimes}
+                            color="rgb(87, 0, 0)"
+                          />
+                          {/* <i className="fa-solid fa-times"></i> */}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
-        </div>
         )}
         <div className="tab-container">
           <div className="tab-items">

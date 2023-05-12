@@ -30,9 +30,8 @@ const UpdateEmployee = () => {
     if (updateId !== 0) {
       dataEmployees.map((item) => {
         if (item.id === updateId) {
-          const { fullname, username, email } = item;
+          const { fullname, email } = item;
           setValue("name", fullname);
-          setValue("user", username);
           setValue("email", email);
         }
       });
@@ -58,14 +57,13 @@ const UpdateEmployee = () => {
           toast.success(datares.message, {
             duration: 4000,
           });
-          const { email, name, user } = data;
+          const { email, name } = data;
           setDataEmployees((prev) => {
             const newClients = prev.map((client) => {
               if (client.id === updateId) {
                 return {
                   id: `${updateId}`,
                   fullname: name,
-                  username: user,
                   email,
                   status: "1",
                 };
@@ -109,7 +107,7 @@ const UpdateEmployee = () => {
           />
           {errors.name && <span className="error">Informacion requerida</span>}
         </div>
-        <div className="item-from-container">
+        {/* <div className="item-from-container">
           <label htmlFor="user">Usuario</label>
           <input
             type="text"
@@ -127,7 +125,7 @@ const UpdateEmployee = () => {
             // }
           />
           {errors.user && <span className="error">Informacion requerida</span>}
-        </div>
+        </div> */}
         <div className="item-from-container">
           <label htmlFor="email">Correo</label>
           <input

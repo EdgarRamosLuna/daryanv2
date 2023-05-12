@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { Toaster, toast } from "sonner";
 import {
   getSuppliers,
+  statusAuthClient,
   statusClient,
   statusEmployee,
   statusSupplier,
@@ -220,6 +221,34 @@ export const MainContextProvider = ({ children }) => {
               return item;
             });
             setDataClients(newData);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    if (tableName === "auth_clients") {
+      console.log(id, status, tableName);
+      await statusAuthClient({ id, status })
+        .then((res) => {
+          const datares = res.data;
+          if (datares.error) {
+            toast.error(datares.message, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(datares.message, {
+              duration: 4000,
+            });
+            //setDataClients((data) => data.filter((data) => data.id !== `${id}`));
+            //Update status from dataClient by id
+            const newData = authClientsT.map((item) => {
+              if (Number(item.id) === Number(id)) {
+                item.status = status === 1 ? 0 : 1;
+              }
+              return item;
+            });
+            setAuthClientsT(newData);
           }
         })
         .catch((err) => {
@@ -732,7 +761,8 @@ export const MainContextProvider = ({ children }) => {
   const [uniqueClients, setUniqueClients] = useState([]);
   const [clientsToReport, setClientsToReport] = useState([]);
   const [authClientsT, setAuthClientsT] = useState([]);
-  const [position, setPosition] = useState('top-center');
+  const [position, setPosition] = useState("top-center");
+  const [showCharts, setShowCharts] = useState(false);
   return (
     <MainContext.Provider
       value={{
@@ -862,7 +892,9 @@ export const MainContextProvider = ({ children }) => {
         setShowModalAuth,
         authClientsT,
         setAuthClientsT,
-        setPosition
+        setPosition,
+        showCharts,
+        setShowCharts,
       }}
     >
       <Toaster richColors position={position} closeButton />

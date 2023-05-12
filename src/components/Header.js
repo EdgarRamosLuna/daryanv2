@@ -163,7 +163,7 @@ export default function Header() {
           </nav>
         </div>
       </header>
-      <div className={style.childrenContainer}>
+      <div className={`${style.childrenContainer} container-app`}>
         <SubHeader />
         <div className={style.children}>
           <Outlet />

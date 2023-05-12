@@ -32,14 +32,13 @@ const CreateClient = () => {
           toast.success(datares.message, {
             duration: 4000,
           });
-          const { email, name, user, id_supplier, hour } = data;
+          const { email, name, id_supplier, hour } = data;
           const { last_id } = datares;
           setDataClients((prev) => [
             {
               id: `${last_id}`,
               id_supplier: `${id_supplier}`,
-              fullname: name,
-              username: user,
+              fullname: name,              
               email,
               status: "1",
               hour: Number(hour) === 1 ? true : false,
@@ -128,7 +127,7 @@ const CreateClient = () => {
           />
           {errors.name && <span className="error">Informacion requerida</span>}
         </div>
-        <div className="item-from-container">
+        {/* <div className="item-from-container">
           <label htmlFor="user">Usuario</label>
           <input
             type="text"
@@ -146,7 +145,7 @@ const CreateClient = () => {
             // }
           />
           {errors.user && <span className="error">Informacion requerida</span>}
-        </div>
+        </div> */}
         <div className="item-from-container">
           <label htmlFor="email">Correo</label>
           <input

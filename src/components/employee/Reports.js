@@ -15,6 +15,7 @@ import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import { Link, useNavigate } from "react-router-dom";
 import TableComponent from "./TableComponent";
+import Chart1 from "../Chart1";
 registerLocale("es", es);
 function ReportsTable({ data }) {
   const { handleDel, setSort, toast } = useContext(MainContext);
@@ -171,18 +172,25 @@ function ReportsTable({ data }) {
   };
   const filterData = useCallback(
     (data) => {
+      let dataId = 0;
       return data.filter((item, index) => {
         const part_number = item.part_number;
         const id = item.id.toLowerCase();
-        const fullName = `${part_number} ${id} ${item.reports_cc
+        const id_supplier = item.id_supplier;
+        const suppliers = item.supplier.toLowerCase();
+        const planta = item.plant.toLowerCase();
+        const fullName = `${id}${id_supplier} ${part_number}${item.reports_cc
           .map((cc) => cc.lot)
-          .join(", ")} ${item.reports_cc.map((cc) => cc.serial).join(", ")}`; // combinamos name, id y lot en una sola variable
+          .join(", ")} ${item.reports_cc
+          .map((cc) => cc.serial)
+          .join(", ")} ${suppliers} ${planta} `; // combinamos name, id y lot en una sola variable
         const date = new Date(item.date);
         date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
         if (
           nameFilter &&
           fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
         ) {
+          //console.log(fullName.slice(3, 4));
           return false;
         }
         if (dateStart && date < new Date(dateStart).setHours(0, 0, 0, 0)) {
@@ -191,10 +199,14 @@ function ReportsTable({ data }) {
         if (dateEnd && date > new Date(dateEnd).setHours(23, 59, 59, 999)) {
           return false;
         }
+        if (nameFilter.length > 3) {
+          dataId = id_supplier;
+          //setIdSupplier(id_supplier)
+        }
         return true;
       });
     },
-    [nameFilter, dateStart, dateEnd, data]
+    [nameFilter, dateStart, dateEnd]
   );
   const filterData2 = useCallback(
     (data) => {
@@ -713,18 +725,9 @@ function ReportsTable({ data }) {
             <form autoComplete="off">
               <div className="filter-container">
                 <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar por # reporte:</label>
-                  <div className="filter-item-input">
-                    <input
-                      type="text"
-                      id="name-filter"
-                      value={nameFilter}
-                      onChange={handleNameFilterChange}
-                    />
-                  </div>
-                </div>
-                <div className="filter-item">
-                  <label htmlFor="date-filter">Buscar por Fecha:</label>
+                  <label htmlFor="date-filter" className="label-center">
+                    Buscar por Fecha:
+                  </label>
 
                   <div className="filter-item-input input-date">
                     <div className="range">
@@ -734,10 +737,10 @@ function ReportsTable({ data }) {
                         onChange={(date) => setDateStart(date)}
                         locale="es"
                         /*showTimeSelect
-                      timeFormat="h:mm aa"
-                      timeIntervals={60}
-                      timeCaption="Hora"
-                      dateFormat="yyyy-MM-dd h:mm aa"*/
+                    timeFormat="h:mm aa"
+                    timeIntervals={60}
+                    timeCaption="Hora"
+                    dateFormat="yyyy-MM-dd h:mm aa"*/
                         customInput={
                           <CustomInputD>
                             <p>
@@ -761,10 +764,10 @@ function ReportsTable({ data }) {
                         onChange={(date) => setDateEnd(date)}
                         locale="es"
                         /*showTimeSelect
-                      timeFormat="h:mm aa"
-                      timeIntervals={60}
-                      timeCaption="Hora"
-                      dateFormat="yyyy-MM-dd h:mm aa"*/
+                    timeFormat="h:mm aa"
+                    timeIntervals={60}
+                    timeCaption="Hora"
+                    dateFormat="yyyy-MM-dd h:mm aa"*/
                         customInput={
                           <CustomInputD>
                             <p>
@@ -781,15 +784,50 @@ function ReportsTable({ data }) {
                     </div>
                   </div>
                 </div>
+                <div className="filter-item">
+                  <label htmlFor="name-filter" className="label-center">
+                    Buscar:
+                  </label>
+                  <div className="filter-item-input">
+                    <input
+                      type="text"
+                      id="name-filter"
+                      value={nameFilter}
+                      onChange={(e) => handleNameFilterChange(e)}
+                      placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
+                    />
+                  </div>
+                  {/* <select onChange={(e) => setIdSupplier(e.target.value)}>
+                  {getPaginatedData()
+                    .reduce((uniqueOptions, item) => {
+                      if (
+                        !uniqueOptions.find(
+                          (option) => option.value === item.id_supplier
+                        )
+                      ) {
+                        uniqueOptions.push({
+                          value: item.id_supplier,
+                          label: item.id_supplier,
+                        });
+                      }
+                      return uniqueOptions;
+                    }, [])
+                    .map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                </select> */}
+                </div>
               </div>
             </form>
           </div>
         )}
         {activeTab === 3 && (
-          <div className="header-container">
+          <div className="header-container2">
             <form autoComplete="off">
               <div className="filter-options">
-                <div className="filter-items">
+                <div className="filter-items2">
                   <div className="filter-item-checkbox">
                     <div className="filter-item-in">
                       <label htmlFor="part_n">Numero de parte</label>
@@ -915,6 +953,7 @@ function ReportsTable({ data }) {
                         name="part_number"
                         value={nameFilter2}
                         onChange={handleNameFilterChange2}
+                        //  disabled={filtersSupplier.length === 0 ? true : false}
                       />
 
                       <datalist id="parts_number">
@@ -941,11 +980,11 @@ function ReportsTable({ data }) {
                       </datalist>
 
                       {/*<input
-                     type="text"
-                     id="name-filter"
-                     value={nameFilter}
-                     onChange={handleNameFilterChange}
-                   />*/}
+                   type="text"
+                   id="name-filter"
+                   value={nameFilter}
+                   onChange={handleNameFilterChange}
+                 />*/}
                     </div>
                   </div>
                 )}
@@ -987,11 +1026,11 @@ function ReportsTable({ data }) {
                       </datalist>
 
                       {/*<input
-                     type="text"
-                     id="name-filter"
-                     value={nameFilter}
-                     onChange={handleNameFilterChange}
-                   />*/}
+                   type="text"
+                   id="name-filter"
+                   value={nameFilter}
+                   onChange={handleNameFilterChange}
+                 />*/}
                     </div>
                   </div>
                 )}
@@ -1033,16 +1072,18 @@ function ReportsTable({ data }) {
                       </datalist>
 
                       {/*<input
-                     type="text"
-                     id="name-filter"
-                     value={nameFilter}
-                     onChange={handleNameFilterChange}
-                   />*/}
+                   type="text"
+                   id="name-filter"
+                   value={nameFilter}
+                   onChange={handleNameFilterChange}
+                 />*/}
                     </div>
                   </div>
                 )}
                 <div className="filter-item">
-                  <label htmlFor="date-filter">Buscar por Fecha:</label>
+                  <label htmlFor="date-filter" className="label-center">
+                    Buscar por Fecha:
+                  </label>
 
                   <div className="filter-item-input input-date">
                     <div className="range">
@@ -1074,10 +1115,10 @@ function ReportsTable({ data }) {
                         onChange={(date) => setDateEnd(date)}
                         locale="es"
                         /*showTimeSelect
-                 timeFormat="h:mm aa"
-                 timeIntervals={60}
-                 timeCaption="Hora"
-                 dateFormat="yyyy-MM-dd h:mm aa"*/
+               timeFormat="h:mm aa"
+               timeIntervals={60}
+               timeCaption="Hora"
+               dateFormat="yyyy-MM-dd h:mm aa"*/
                         customInput={
                           <CustomInputD>
                             <p>
@@ -1100,80 +1141,106 @@ function ReportsTable({ data }) {
         )}
         {activeTab === 2 && (
           <div className="header-container">
-            <form autoComplete="off">
-              <div className="filter-container">
-                <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar por # reporte:</label>
-                  <div className="filter-item-input">
-                    <input
-                      type="text"
-                      id="name-filter"
-                      value={nameFilter}
-                      onChange={handleNameFilterChange}
+          <form autoComplete="off">
+            <div className="filter-container">
+              <div className="filter-item">
+                <label htmlFor="date-filter" className="label-center">
+                  Buscar por Fecha:
+                </label>
+
+                <div className="filter-item-input input-date">
+                  <div className="range">
+                    <DatePicker
+                      id="fechaInicio"
+                      selected={dateStart}
+                      onChange={(date) => setDateStart(date)}
+                      locale="es"
+                      /*showTimeSelect
+                  timeFormat="h:mm aa"
+                  timeIntervals={60}
+                  timeCaption="Hora"
+                  dateFormat="yyyy-MM-dd h:mm aa"*/
+                      customInput={
+                        <CustomInputD>
+                          <p>
+                            Desde:{" "}
+                            <span
+                              style={{ minWidth: "90px", maxWidth: "100px" }}
+                            >
+                              {formatedDateStart !== ""
+                                ? formatedDateStart
+                                : ""}
+                            </span>
+                          </p>
+                        </CustomInputD>
+                      }
+                    />
+                  </div>
+                  <div className="range">
+                    <DatePicker
+                      id="fechaInicio"
+                      selected={dateEnd}
+                      onChange={(date) => setDateEnd(date)}
+                      locale="es"
+                      /*showTimeSelect
+                  timeFormat="h:mm aa"
+                  timeIntervals={60}
+                  timeCaption="Hora"
+                  dateFormat="yyyy-MM-dd h:mm aa"*/
+                      customInput={
+                        <CustomInputD>
+                          <p>
+                            Hasta:
+                            <span
+                              style={{ minWidth: "90px", maxWidth: "100px" }}
+                            >
+                              {formatedDateEnd !== "" ? formatedDateEnd : ""}
+                            </span>
+                          </p>
+                        </CustomInputD>
+                      }
                     />
                   </div>
                 </div>
-                <div className="filter-item">
-                  <label htmlFor="date-filter">Buscar por Fecha:</label>
-
-                  <div className="filter-item-input input-date">
-                    <div className="range">
-                      <DatePicker
-                        id="fechaInicio"
-                        selected={dateStart}
-                        onChange={(date) => setDateStart(date)}
-                        locale="es"
-                        /*showTimeSelect
-                      timeFormat="h:mm aa"
-                      timeIntervals={60}
-                      timeCaption="Hora"
-                      dateFormat="yyyy-MM-dd h:mm aa"*/
-                        customInput={
-                          <CustomInputD>
-                            <p>
-                              Desde:{" "}
-                              <span
-                                style={{ minWidth: "90px", maxWidth: "100px" }}
-                              >
-                                {formatedDateStart !== ""
-                                  ? formatedDateStart
-                                  : ""}
-                              </span>
-                            </p>
-                          </CustomInputD>
-                        }
-                      />
-                    </div>
-                    <div className="range">
-                      <DatePicker
-                        id="fechaInicio"
-                        selected={dateEnd}
-                        onChange={(date) => setDateEnd(date)}
-                        locale="es"
-                        /*showTimeSelect
-                      timeFormat="h:mm aa"
-                      timeIntervals={60}
-                      timeCaption="Hora"
-                      dateFormat="yyyy-MM-dd h:mm aa"*/
-                        customInput={
-                          <CustomInputD>
-                            <p>
-                              Hasta:
-                              <span
-                                style={{ minWidth: "90px", maxWidth: "100px" }}
-                              >
-                                {formatedDateEnd !== "" ? formatedDateEnd : ""}
-                              </span>
-                            </p>
-                          </CustomInputD>
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
               </div>
-            </form>
-          </div>
+              <div className="filter-item">
+                <label htmlFor="name-filter" className="label-center">
+                  Buscar:
+                </label>
+                <div className="filter-item-input">
+                  <input
+                    type="text"
+                    id="name-filter"
+                    value={nameFilter}
+                    onChange={(e) => handleNameFilterChange(e)}
+                    placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
+                  />
+                </div>
+                {/* <select onChange={(e) => setIdSupplier(e.target.value)}>
+                {getPaginatedData()
+                  .reduce((uniqueOptions, item) => {
+                    if (
+                      !uniqueOptions.find(
+                        (option) => option.value === item.id_supplier
+                      )
+                    ) {
+                      uniqueOptions.push({
+                        value: item.id_supplier,
+                        label: item.id_supplier,
+                      });
+                    }
+                    return uniqueOptions;
+                  }, [])
+                  .map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+              </select> */}
+              </div>
+            </div>
+          </form>
+        </div>
         )}
         <div className="tab-container">
           <div className="tab-items">
@@ -1222,7 +1289,7 @@ function ReportsTable({ data }) {
                       <td className="table-center">{item.id}</td>
                       <td className="table-center">{item.part_number}</td>
                       <td className="table-center">{item.plant}</td>
-                      <td className="table-center">Proveedor</td>
+                      <td className="table-center">{item.supplier}</td>
                       <td className="table-center">{item.date}</td>
                       <td className="table-center">
                         {Number(item.status) === 1 && "Sin aprobar"}{" "}
@@ -1234,12 +1301,12 @@ function ReportsTable({ data }) {
                         colSpan={1}
                       >
                         <div className="actions">
-                          <Link
+                          {/* <Link
                             to={`/admin/reports/${item.id}`}
                             style={{ color: "green" }}
                           >
                             <i className="fa-solid fa-eye"></i>
-                          </Link>
+                          </Link> */}
                           <i className="fa-solid fa-file-pdf"></i>
                         </div>
                       </td>
@@ -1255,13 +1322,10 @@ function ReportsTable({ data }) {
             <table>
               <thead>
                 <tr>
-                  <th>
-                    <Checkbox type="all" id={0} callback={handleCheckBox} />
-                  </th>
                   <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th>
                   <th># Parte</th>
                   <th>Planta</th>
-                  <th>Mesa</th>
+                  <th>Proveedor</th>
                   <th>Fecha</th>
                   <th>Status</th>
                   <th>Acciones</th>
@@ -1275,25 +1339,14 @@ function ReportsTable({ data }) {
                 ) : (
                   getPaginatedData().map((item, index) => (
                     <tr key={index} onClick={(e) => singleView(item.id)}>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                        colSpan={1}
-                      >
-                        <Checkbox
-                          type="single"
-                          id={item.id}
-                          callback={handleCheckBox}
-                        />
-                      </td>
                       <td className="table-center">{item.id}</td>
                       <td className="table-center">{item.part_number}</td>
                       <td className="table-center">{item.plant}</td>
-                      <td className="table-center">Proveedor</td>
+                      <td className="table-center">{item.supplier}</td>
                       <td className="table-center">{item.date}</td>
                       <td className="table-center">
                         {Number(item.status) === 1 && "Sin aprobar"}{" "}
-                        {Number(item.status) === 2 && "Aprobado"}
+                        {Number(item.status) === 3 && "Aprobado"}
                       </td>
                       <td
                         className="table-center"
@@ -1301,16 +1354,12 @@ function ReportsTable({ data }) {
                         colSpan={1}
                       >
                         <div className="actions">
-                          <i
-                            className="fa-solid fa-trash"
-                            onClick={() => handleDel(item.id)}
-                          ></i>
-                          <Link
+                          {/* <Link
                             to={`/admin/reports/${item.id}`}
                             style={{ color: "green" }}
                           >
                             <i className="fa-solid fa-eye"></i>
-                          </Link>
+                          </Link> */}
                           <i className="fa-solid fa-file-pdf"></i>
                         </div>
                       </td>
@@ -1321,6 +1370,7 @@ function ReportsTable({ data }) {
             </table>
           </div>
         )}
+       
         {activeTab === 3 && (
           <div className="table-body table-reports">
             {/* <TableTotals data={totalFiltered} /> */}
@@ -1394,7 +1444,7 @@ function ReportsTable({ data }) {
                       <td className="table-center">{item.id}</td>
                       <td className="table-center">{item.part_number}</td>
                       <td className="table-center">{item.plant}</td>
-                      <td className="table-center">Proveedor</td>
+                      <td className="table-center">{item.supplier}</td>
                       <td className="table-center">{item.date}</td>
                       <td className="table-center">
                         {Number(item.status) === 1 && "Sin aprobar"}{" "}
@@ -1410,12 +1460,12 @@ function ReportsTable({ data }) {
                             className="fa-solid fa-trash"
                             onClick={() => handleDel(item.id)}
                           ></i>
-                          <Link
-                            to={`/admin/reports/${item.id}`}
-                            style={{ color: "green" }}
-                          >
-                            <i className="fa-solid fa-eye"></i>
-                          </Link>
+                          // <Link
+                          //   to={`/admin/reports/${item.id}`}
+                          //   style={{ color: "green" }}
+                          // >
+                          //   <i className="fa-solid fa-eye"></i>
+                          // </Link>
                           <i className="fa-solid fa-file-pdf"></i>
                         </div>
                       </td>

@@ -1,8 +1,8 @@
-import React, { useContext} from "react";
+import React, { useContext } from "react";
 import { CreateForm } from "../../../styles/Styles";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { createUser,} from "../../../api/daryan.api";
+import { createUser } from "../../../api/daryan.api";
 import { MainContext } from "../../../context/MainContext";
 const CreateSupplier = () => {
   const {
@@ -10,11 +10,9 @@ const CreateSupplier = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { btnCloseRef, toast, setDataUsers } =
-    useContext(MainContext);
+  const { btnCloseRef, toast, setDataUsers } = useContext(MainContext);
   const [saving, setSaving] = useState(false);
 
-  
   //console.log(dataSupplier);
   const onSubmmit = handleSubmit(async (data) => {
     setSaving(true);
@@ -29,13 +27,12 @@ const CreateSupplier = () => {
           toast.success(datares.message, {
             duration: 4000,
           });
-          const { email, name, user } = data;
+          const { email, name, } = data;
           const { last_id } = datares;
           setDataUsers((prev) => [
             {
               id: `${last_id}`,
-              fullname: name,
-              username: user,
+              fullname: name,              
               email,
               status: "1",
             },
@@ -71,7 +68,7 @@ const CreateSupplier = () => {
           />
           {errors.name && <span className="error">Informacion requerida</span>}
         </div>
-        <div className="item-from-container">
+        {/* <div className="item-from-container">
           <label htmlFor="user">Usuario</label>
           <input
             type="text"
@@ -80,7 +77,7 @@ const CreateSupplier = () => {
             {...register("user", { required: true })}
           />
           {errors.user && <span className="error">Informacion requerida</span>}
-        </div>
+        </div> */}
         <div className="item-from-container">
           <label htmlFor="email">Correo</label>
           <input
@@ -89,13 +86,14 @@ const CreateSupplier = () => {
               pattern: {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                 message: "Ingresa un correo valido",
-              }
+              },
             })}
           />
           {errors.email && (
             <span className="error">{errors.email.message}</span>
           )}
         </div>
+
         <div className="item-from-container">
           <label htmlFor="password">Contraseña</label>
           <input
@@ -107,6 +105,19 @@ const CreateSupplier = () => {
           {errors.password && (
             <span className="error">Informacion requerida</span>
           )}
+        </div>
+        <div className="item-from-container">
+          <>
+            <label htmlFor="admin">
+              Admin:{" "}
+              <input
+                type="checkbox"
+                id="admin"
+                name="admin"
+                {...register("admin", { required: false })}
+              />
+            </label>
+          </>
           <br />
           <button type="submit" disabled={saving === true ? true : false}>
             {saving ? <img src="/assets/img/loading.svg" alt="" /> : "Guardar"}

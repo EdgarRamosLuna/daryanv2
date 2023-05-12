@@ -30,9 +30,8 @@ const UpdateClient = () => {
     if (updateId !== 0) {
       dataClients.map((item) => {
         if (item.id === updateId) {
-          const { fullname, username, email, id_supplier, hour } = item;
+          const { fullname, email, id_supplier, hour } = item;
           setValue("name", fullname);
-          setValue("user", username);
           setValue("email", email);
           setValue("id_supplier", id_supplier);
           setValue("hour", hour === "1" ? true : false);
@@ -60,15 +59,14 @@ const UpdateClient = () => {
           toast.success(datares.message, {
             duration: 4000,
           });
-          const { email, name, user, id_supplier, hour } = data;
+          const { email, name, id_supplier, hour } = data;
           setDataClients((prev) => {
             const newClients = prev.map((client) => {
               if (client.id === updateId) {
                 return {
                   id: `${updateId}`,
                   id_supplier: `${id_supplier}`,
-                  fullname: name,
-                  username: user,
+                  fullname: name,                  
                   email,
                   status: "1",
                   hour: hour === 1 ? true : false,
@@ -161,7 +159,7 @@ const UpdateClient = () => {
           />
           {errors.name && <span className="error">Informacion requerida</span>}
         </div>
-        <div className="item-from-container">
+        {/* <div className="item-from-container">
           <label htmlFor="user">Usuario</label>
           <input
             type="text"
@@ -179,7 +177,7 @@ const UpdateClient = () => {
             // }
           />
           {errors.user && <span className="error">Informacion requerida</span>}
-        </div>
+        </div> */}
         <div className="item-from-container">
           <label htmlFor="email">Correo</label>
           <input

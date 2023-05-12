@@ -43,7 +43,25 @@ const GlobalStyle = createGlobalStyle`
     scrollbar-width: none;
   }
     /* Webkit */
- .list-container ul::-webkit-scrollbar, .item-list ul::-webkit-scrollbar {
+ 
+  ::-webkit-scrollbar, .item-list ul::-webkit-scrollbar {
+    width: 6px;
+    background-color: transparent;
+    height: 10px;
+      
+  }
+  
+ ::-webkit-scrollbar-thumb, .item-list ul::-webkit-scrollbar-thumb {
+    border-radius: 0;
+   // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  //  background-color: rgb(255 255 255);
+    background-color: rgb(68 123 145);
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    padding: 0 4px;
+    border-radius: 7px;
+  }
+  .list-container ul::-webkit-scrollbar, .item-list ul::-webkit-scrollbar {
     width: 3px;
     background-color: transparent;
     height: 10px;
@@ -157,8 +175,8 @@ const GlobalStyle = createGlobalStyle`
   &:hover{
     transition: all 0.3s ease-in-out;
     background-color: #fff;
-    color: #570000;
- //   background: linear-gradient(#570000, #570000);
+    color: #00419b;
+ //   background: linear-gradient(#00419b, #00419b);
   }
 }
 .clients-container{
@@ -173,19 +191,41 @@ const GlobalStyle = createGlobalStyle`
 } 
 .list-container {
   ul{
-    overflow-y: scroll;
-    bottom: -43px;
-    position: absolute;
-    z-index: 99999;
-    height: 115px !important;
-    -webkit-box-pack: start !important;
     justify-content: start !important;
-    top: 0;
   }
 }
 .auth-clientes {
-    margin: 0 auto;
+   // margin: 0 auto;
+}
+.chart-btn{
+  min-width: 80px !important;
+  display: flex;
+  gap: 10px;
+  font-size: 1em !important;
+}
+.btn-charts{
+  margin:0 auto !important;
+
+}
+.container-app{
+  position: relative;
+
+  &:before{
+    content: '';
+    background: url('/assets/img/logo.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 50%;  
+    background-color: #fff;
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    opacity: 0.1;
+    z-index: -1;
+  }
+  
 }
 `;
+
 
 export default GlobalStyle;

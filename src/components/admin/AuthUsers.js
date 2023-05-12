@@ -3,23 +3,13 @@ import { AuthUsersContainer, Table } from "../../styles/Styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { MainContext } from "../../context/MainContext";
+import { deleteAuthClient } from "../../api/daryan.api";
+import StatusBtn from "../StatusBtn";
 
-const AuthUsers = ({ data }) => {
+const AuthUsers = ({ data, deleteAU }) => {
   //console.log(data);
-  const { toast } = useContext(MainContext);
-  const deleteAU = (id) => {
-    const confirm = window.confirm(
-      "Estas seguro de borrar este usuario de la lista de autorizados?"
-    );
-    if (confirm) {
-        toast.success(
-            "Usuario borrado correctamente",
-            {
-              duration: 5000,
-            }
-          );
-    }
-  };
+  //const { toast } = useContext(MainContext);
+
   return (
     <AuthUsersContainer>
       <h3>Usuarios autorizados</h3>
@@ -54,7 +44,13 @@ const AuthUsers = ({ data }) => {
                 return (
                   <tr key={user.id + "client"}>
                     <td>{user.fullname}</td>
-                    <td>{user.status === "1" ? "Activo" : "Inactivo"}</td>
+                    <td>                      
+                      <StatusBtn
+                        status={Number(user.status)}
+                        id={user.id}
+                        table="auth_clients"
+                      />
+                    </td>
                     <td>{user.auth_date}</td>
                     <td>
                       <FontAwesomeIcon

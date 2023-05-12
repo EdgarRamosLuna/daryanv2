@@ -29,13 +29,12 @@ const CreateSupplier = () => {
           toast.success(datares.message, {
             duration: 4000,
           });
-          const { email, name, user } = data;
+          const { email, name } = data;
           const { last_id } = datares;
           setDataSuppliers((prev) => [
             {
               id: `${last_id}`,
               fullname: name,
-              username: user,
               email,
               status: "1",
             },
@@ -71,7 +70,7 @@ const CreateSupplier = () => {
           />
           {errors.name && <span className="error">Informacion requerida</span>}
         </div>
-        <div className="item-from-container">
+        {/* <div className="item-from-container">
           <label htmlFor="user">Usuario</label>
           <input
             type="text"
@@ -80,7 +79,7 @@ const CreateSupplier = () => {
             {...register("user", { required: true })}
           />
           {errors.user && <span className="error">Informacion requerida</span>}
-        </div>
+        </div> */}
         <div className="item-from-container">
           <label htmlFor="email">Correo</label>
           <input

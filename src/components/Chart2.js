@@ -1,45 +1,31 @@
 import React from "react";
 import { Point, VictoryChart, VictoryScatter, VictoryTheme } from "victory";
 
-const data = [
-  {
-    x: 1,
-    y: 10,
-  },
-  {
-    x: 2,
-    y: 20,
-  },
-  {
-    x: 3,
-    y: 30,
-  },
-  {
-    x: 4,
-    y: 40,
-  },
-  {
-    x: 5,
-    y: 50,
-  },
-];
-
-const Chart2 = () => {
+const Chart2 = ({ totalG }) => {
+  //console.log((totalG));
+  const keys = Object.keys(totalG);
+  const data = [
+    { x: "IN", y: totalG["total_inspected"], fill: "yellow" },
+    { x: "NG", y: totalG["total_ng_pieces"], fill: "red" },
+    { x: "OK", y: totalG["total_ok_pieces"], fill: "green" },
+    { x: "RW", y: totalG["total_re_work_parts"], fill: "orange" },
+    { x: "SC", y: totalG["total_scrap"], fill: "gray" },
+    { x: "WH", y: totalG["worked_h"], fill: "yellowgreen" },
+  ];
+  const worked_h = Number(totalG["worked_h"]);
   return (
     <VictoryChart
       theme={VictoryTheme.material}
-      domain={{ x: [0, 5], y: [0, 7] }}
+      domain={{ x: [0, 6], y: [0, worked_h] }}
     >
       <VictoryScatter
-        style={{ data: { fill: "#c43a31" } }}
         size={7}
-        data={[
-          { x: 1, y: 2 },
-          { x: 2, y: 3 },
-          { x: 3, y: 5 },
-          { x: 4, y: 4 },
-          { x: 5, y: 7 },
-        ]}
+        data={data}
+        style={{
+          data: {
+            fill: ({ datum }) => datum.fill,
+          },
+        }}
       />
     </VictoryChart>
   );

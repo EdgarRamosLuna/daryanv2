@@ -80,11 +80,10 @@ function EmployeesTable({ data }) {
 
   const filterData = useCallback(() => {
     return data.filter((item) => {
-      const name = item.fullname.toLowerCase();
-      const user = item.username.toLowerCase();
+      const name = item.fullname.toLowerCase();      
       const email = item.email.toLowerCase();
       const id = item.id.toLowerCase();
-      const fullName = `${name} ${user} ${email}`; // combinamos name y id en una sola variable
+      const fullName = `${name} ${email}`; // combinamos name y id en una sola variable
       const date = new Date(item.date).getTime();
 
       if (nameFilter && fullName.indexOf(nameFilter.toLowerCase()) === -1) {
@@ -245,10 +244,10 @@ function EmployeesTable({ data }) {
                         isLoading === false ? "tr-h rloaderContainer" : "tr-hd"
                       }
                     >
-                      <td className="table-center">{item.username}</td>
+                      <td className="table-center">{item.fullname}</td>
                       <td className="table-center">{item.email}</td>
                       <td className="table-center" style={{width:120, padding:'0 25px'}}>
-                        <StatusBtn x
+                        <StatusBtn 
                           status={Number(item.status)}
                           id={item.id}
                           table="employees"
