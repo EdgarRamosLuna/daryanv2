@@ -29,6 +29,8 @@ import {
   faTrash,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
+import { ModalCard } from "../../styles/ModalCard";
+import FilterTable from "./FilterTable";
 registerLocale("es", es);
 function ReportsTable({ data }) {
   const {
@@ -403,10 +405,23 @@ function ReportsTable({ data }) {
         let total_re_work_parts = 0;
         let total_scrap = 0;
         let total_A = 0;
+        let total_B = 0;
+        let total_C = 0;
+        let total_D = 0;
+        let total_E = 0;
+        let total_F = 0;
+        let total_G = 0;
+        let total_H = 0;
+        let total_I = 0;
         let partNumber = data[i].part_number; // Nuevo filtro de búsqueda
         let worked_h = Number(data[i].worked_h);
         let supplier = data[i].supplier;
         // Calcular el total inspeccionado
+        const keyE = "E";
+        const keyF = "F";
+        const keyG = "G";
+        const keyH = "H";
+        const keyI = "I";
 
         for (let j = 0; j < reports_cc.length; j++) {
           const report_cc = reports_cc[j];
@@ -423,7 +438,24 @@ function ReportsTable({ data }) {
             total_re_work_parts += parseInt(report_cc.re_work_parts);
             total_scrap += parseInt(report_cc.scrap);
             total_A += parseInt(report_cc["A"]);
-            //   console.log(parseInt(report_cc["A"]));
+            total_B += parseInt(report_cc["B"]);
+            total_C += parseInt(report_cc["C"]);
+            total_D += parseInt(report_cc["D"]);
+            if (keyE in report_cc) {
+              total_E += parseInt(report_cc["E"]);
+            }
+            if (keyF in report_cc) {
+              total_F += parseInt(report_cc["F"]);
+            }
+            if (keyG in report_cc) {
+              total_G += parseInt(report_cc["G"]);
+            }
+            if (keyH in report_cc) {
+              total_H += parseInt(report_cc["H"]);
+            }
+            if (keyI in report_cc) {
+              total_I += parseInt(report_cc["I"]);
+            }
           }
         }
         // Aplicar filtros para cada objeto en el data
@@ -500,7 +532,15 @@ function ReportsTable({ data }) {
           total_ok_pieces: total_ok_pieces,
           total_re_work_parts: total_re_work_parts,
           total_scrap: total_scrap,
-          // total_A: total_A,
+          total_A: total_A,
+          total_B: total_B,
+          total_C: total_C,
+          total_D: total_D,
+          total_E: total_E,
+          total_F: total_F,
+          total_G: total_G,
+          total_H: total_H,
+          total_I: total_I,
           date: dateString,
           worked_h: worked_h,
         };
@@ -511,7 +551,15 @@ function ReportsTable({ data }) {
           temp[partNumber].total_ok_pieces += total_ok_pieces;
           temp[partNumber].total_re_work_parts += total_re_work_parts;
           temp[partNumber].total_scrap += total_scrap;
-          //   temp[partNumber].total_A += total_A;
+          temp[partNumber].total_A += total_A;
+          temp[partNumber].total_B += total_B;
+          temp[partNumber].total_C += total_C;
+          temp[partNumber].total_D += total_D;
+          temp[partNumber].total_E += total_E;
+          temp[partNumber].total_F += total_F;
+          temp[partNumber].total_G += total_G;
+          temp[partNumber].total_H += total_H;
+          temp[partNumber].total_I += total_I;
           temp[partNumber].date += dateString;
           temp[partNumber].worked_h += worked_h;
         } else {
@@ -523,7 +571,15 @@ function ReportsTable({ data }) {
             total_ok_pieces: total_ok_pieces,
             total_re_work_parts: total_re_work_parts,
             total_scrap: total_scrap,
-            //    total_A: total_A,
+            total_A: total_A,
+            total_B: total_B,
+            total_C: total_C,
+            total_D: total_D,
+            total_E: total_E,
+            total_F: total_F,
+            total_G: total_G,
+            total_H: total_H,
+            total_I: total_I,
             date: dateString,
             worked_h: worked_h,
           };
@@ -1005,88 +1061,102 @@ function ReportsTable({ data }) {
   const removeClient = (id) => {
     setClientsToReport((prev) => prev.filter((client) => client.id !== id));
   };
+  const [showFIltersT, setShowFiltersT] = useState(false);
+  const showFilterTable = () => {
+    console.log("showFilterTable");
+    setShowFiltersT((prev) => !prev);
+  };
 
   return (
-    <Table>
-      <div className="table-container mb-5">
-        {activeTab === 1 && (
-          <div className="header-container">
-            <form autoComplete="off">
-              <div className="filter-container">
-                <div className="filter-item">
-                  <label htmlFor="date-filter" className="label-center">
-                    Buscar por Fecha:
-                  </label>
+    <>
+      <Table>
+        <div className="table-container mb-5">
+          {activeTab === 1 && (
+            <div className="header-container">
+              <form autoComplete="off">
+                <div className="filter-container">
+                  <div className="filter-item">
+                    <label htmlFor="date-filter" className="label-center">
+                      Buscar por Fecha:
+                    </label>
 
-                  <div className="filter-item-input input-date">
-                    <div className="range">
-                      <DatePicker
-                        id="fechaInicio"
-                        selected={dateStart}
-                        onChange={(date) => setDateStart(date)}
-                        locale="es"
-                        /*showTimeSelect
+                    <div className="filter-item-input input-date">
+                      <div className="range">
+                        <DatePicker
+                          id="fechaInicio"
+                          selected={dateStart}
+                          onChange={(date) => setDateStart(date)}
+                          locale="es"
+                          /*showTimeSelect
                       timeFormat="h:mm aa"
                       timeIntervals={60}
                       timeCaption="Hora"
                       dateFormat="yyyy-MM-dd h:mm aa"*/
-                        customInput={
-                          <CustomInputD>
-                            <p>
-                              Desde:{" "}
-                              <span
-                                style={{ minWidth: "90px", maxWidth: "100px" }}
-                              >
-                                {formatedDateStart !== ""
-                                  ? formatedDateStart
-                                  : ""}
-                              </span>
-                            </p>
-                          </CustomInputD>
-                        }
-                      />
-                    </div>
-                    <div className="range">
-                      <DatePicker
-                        id="fechaInicio"
-                        selected={dateEnd}
-                        onChange={(date) => setDateEnd(date)}
-                        locale="es"
-                        /*showTimeSelect
+                          customInput={
+                            <CustomInputD>
+                              <p>
+                                Desde:{" "}
+                                <span
+                                  style={{
+                                    minWidth: "90px",
+                                    maxWidth: "100px",
+                                  }}
+                                >
+                                  {formatedDateStart !== ""
+                                    ? formatedDateStart
+                                    : ""}
+                                </span>
+                              </p>
+                            </CustomInputD>
+                          }
+                        />
+                      </div>
+                      <div className="range">
+                        <DatePicker
+                          id="fechaInicio"
+                          selected={dateEnd}
+                          onChange={(date) => setDateEnd(date)}
+                          locale="es"
+                          /*showTimeSelect
                       timeFormat="h:mm aa"
                       timeIntervals={60}
                       timeCaption="Hora"
                       dateFormat="yyyy-MM-dd h:mm aa"*/
-                        customInput={
-                          <CustomInputD>
-                            <p>
-                              Hasta:
-                              <span
-                                style={{ minWidth: "90px", maxWidth: "100px" }}
-                              >
-                                {formatedDateEnd !== "" ? formatedDateEnd : ""}
-                              </span>
-                            </p>
-                          </CustomInputD>
-                        }
-                      />
+                          customInput={
+                            <CustomInputD>
+                              <p>
+                                Hasta:
+                                <span
+                                  style={{
+                                    minWidth: "90px",
+                                    maxWidth: "100px",
+                                  }}
+                                >
+                                  {formatedDateEnd !== ""
+                                    ? formatedDateEnd
+                                    : ""}
+                                </span>
+                              </p>
+                            </CustomInputD>
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="filter-item">
-                  <label htmlFor="name-filter" className="label-center">
-                    Buscar:
-                  </label>
-                  <div className="filter-item-input">
-                    <input
-                      type="text"
-                      id="name-filter"
-                      value={nameFilter}
-                      onChange={(e) => handleNameFilterChange(e)}
-                      placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
-                    />
-                  </div>
-                  {/* <select onChange={(e) => setIdSupplier(e.target.value)}>
+                  <div className="filter-item">
+                    <label htmlFor="name-filter" className="label-center">
+                      Buscar:
+                    </label>
+                    <div className="filter-item-input">
+                      <input
+                        type="text"
+                        id="name-filter"
+                        value={nameFilter}
+                        onChange={(e) => handleNameFilterChange(e)}
+                        placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
+                      />
+                    </div>
+                    {/* <select onChange={(e) => setIdSupplier(e.target.value)}>
                     {getPaginatedData()
                       .reduce((uniqueOptions, item) => {
                         if (
@@ -1107,540 +1177,588 @@ function ReportsTable({ data }) {
                         </option>
                       ))}
                   </select> */}
+                  </div>
                 </div>
-              </div>
-            </form>
-            <div
-              className="clients-container"
-              style={{
-                visibility: uniqueClients.length > 0 ? "visible" : "hidden",
-              }}
-            >
-              <div className="select-container">
-                <select value={selectedClient} onChange={addClientToList}>
-                  <option value="0" selected>
-                    Selecciona un cliente
-                  </option>
-                  {uniqueClients.map((option) => (
-                    <option key={option} value={option.id}>
-                      {option.fullname}
+              </form>
+              <div
+                className="clients-container"
+                style={{
+                  visibility: uniqueClients.length > 0 ? "visible" : "hidden",
+                }}
+              >
+                <div className="select-container">
+                  <select value={selectedClient} onChange={addClientToList}>
+                    <option value="0" selected>
+                      Selecciona un cliente
                     </option>
-                  ))}
-                </select>
-              </div>
-              <div className="list-container">
-                <div className="item-list">
-                  <ul
-                    style={{
-                      display: `${
-                        clientsToReport.length > 0 ? "flex" : "none"
-                      }`,
-                    }}
-                  >
-                    {clientsToReport.map((client, ind) => (
-                      <li key={ind}>
-                        <span>{client.clientName}</span>
-                        <span onClick={() => removeClient(client.id)}>
-                          <FontAwesomeIcon
-                            icon={faTimes}
-                            color="rgb(87, 0, 0)"
-                          />
-                          {/* <i className="fa-solid fa-times"></i> */}
-                        </span>
-                      </li>
+                    {uniqueClients.map((option) => (
+                      <option key={option} value={option.id}>
+                        {option.fullname}
+                      </option>
                     ))}
-                  </ul>
+                  </select>
+                </div>
+                <div className="list-container">
+                  <div className="item-list">
+                    <ul
+                      style={{
+                        display: `${
+                          clientsToReport.length > 0 ? "flex" : "none"
+                        }`,
+                      }}
+                    >
+                      {clientsToReport.map((client, ind) => (
+                        <li key={ind}>
+                          <span>{client.clientName}</span>
+                          <span onClick={() => removeClient(client.id)}>
+                            <FontAwesomeIcon
+                              icon={faTimes}
+                              color="rgb(87, 0, 0)"
+                            />
+                            {/* <i className="fa-solid fa-times"></i> */}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
-        {activeTab === 3 && (
-          <div className="header-container2">
-            <form autoComplete="off">
-              <div className="filter-options">
-                <div className="filter-items">
-                  <div className="filter-item-checkbox">
-                    <div className="filter-item-in">
-                      <label htmlFor="supplier">Proveedor</label>
-                      <input
-                        type="checkbox"
-                        value={0}
-                        onChange={(e) => setFilterOption(e.target.value)}
-                        checked={Number(filterOption) === 0 ? true : false}
-                        id="supplier"
-                      />
-                    </div>
-                    <div className="item-list">
-                      <ul
-                        style={{
-                          display: `${
-                            filtersSupplier.length > 0 ? "flex" : "none"
-                          }`,
-                        }}
-                      >
-                        {filtersSupplier.map((filterSupplier, ind) => (
-                          <li key={ind}>
-                            <span>{filterSupplier}</span>{" "}
-                            <span>
-                              <FontAwesomeIcon
-                                icon={faTimes}
-                                color="rgb(87, 0, 0)"
-                                onClick={(e) =>
-                                  setFiltersSupplier((prev) =>
-                                    prev.filter((pre) => pre !== filterSupplier)
-                                  )
-                                }
-                              />
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="filter-item-checkbox">
-                    <div className="filter-item-in">
-                      <label htmlFor="part_n">Numero de parte</label>
-                      <input
-                        type="checkbox"
-                        value={1}
-                        onChange={(e) => setFilterOption(e.target.value)}
-                        checked={Number(filterOption) === 1 ? true : false}
-                        id="part_n"
-                      />
-                    </div>
-                    <div className="item-list">
-                      <ul
-                        style={{
-                          display: `${
-                            filtersPartNumber.length > 0 ? "flex" : "none"
-                          }`,
-                        }}
-                      >
-                        {filtersPartNumber.map((filterPartNumber, ind) => (
-                          <li key={ind}>
-                            <span>{filterPartNumber}</span>{" "}
-                            <span>
-                              <i
-                                className="fa-solid fa-times"
-                                onClick={(e) =>
-                                  setFiltersPartNumber((prev) =>
-                                    prev.filter(
-                                      (pre) => pre !== filterPartNumber
+          )}
+          {activeTab === 3 && (
+            <div className="header-container2">
+              <form autoComplete="off">
+                <div className="filter-options">
+                  <div className="filter-items">
+                    <div className="filter-item-checkbox">
+                      <div className="filter-item-in">
+                        <label htmlFor="supplier">Proveedor</label>
+                        <input
+                          type="checkbox"
+                          value={0}
+                          onChange={(e) => setFilterOption(e.target.value)}
+                          checked={Number(filterOption) === 0 ? true : false}
+                          id="supplier"
+                        />
+                      </div>
+                      <div className="item-list">
+                        <ul
+                          style={{
+                            display: `${
+                              filtersSupplier.length > 0 ? "flex" : "none"
+                            }`,
+                          }}
+                        >
+                          {filtersSupplier.map((filterSupplier, ind) => (
+                            <li key={ind}>
+                              <span>{filterSupplier}</span>{" "}
+                              <span>
+                                <FontAwesomeIcon
+                                  icon={faTimes}
+                                  color="rgb(87, 0, 0)"
+                                  onClick={(e) =>
+                                    setFiltersSupplier((prev) =>
+                                      prev.filter(
+                                        (pre) => pre !== filterSupplier
+                                      )
                                     )
-                                  )
-                                }
-                              ></i>
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
+                                  }
+                                />
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                  </div>
-                  <div className="filter-item-checkbox">
-                    <div className="filter-item-in">
-                      <label htmlFor="lote">Lote</label>
-                      <input
-                        type="checkbox"
-                        value={2}
-                        onChange={(e) => setFilterOption(e.target.value)}
-                        checked={Number(filterOption) === 2 ? true : false}
-                        id="lote"
-                      />
+                    <div className="filter-item-checkbox">
+                      <div className="filter-item-in">
+                        <label htmlFor="part_n">Numero de parte</label>
+                        <input
+                          type="checkbox"
+                          value={1}
+                          onChange={(e) => setFilterOption(e.target.value)}
+                          checked={Number(filterOption) === 1 ? true : false}
+                          id="part_n"
+                        />
+                      </div>
+                      <div className="item-list">
+                        <ul
+                          style={{
+                            display: `${
+                              filtersPartNumber.length > 0 ? "flex" : "none"
+                            }`,
+                          }}
+                        >
+                          {filtersPartNumber.map((filterPartNumber, ind) => (
+                            <li key={ind}>
+                              <span>{filterPartNumber}</span>{" "}
+                              <span>
+                                <i
+                                  className="fa-solid fa-times"
+                                  onClick={(e) =>
+                                    setFiltersPartNumber((prev) =>
+                                      prev.filter(
+                                        (pre) => pre !== filterPartNumber
+                                      )
+                                    )
+                                  }
+                                ></i>
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                    <div className="item-list">
-                      <ul
-                        style={{
-                          display: `${filtersLot.length > 0 ? "flex" : "none"}`,
-                        }}
-                      >
-                        {filtersLot.map((filterLot, ind) => (
-                          <li key={ind}>
-                            <span>{filterLot}</span>{" "}
-                            <span>
-                              <i
-                                className="fa-solid fa-times"
-                                onClick={(e) =>
-                                  setFiltersLot((prev) =>
-                                    prev.filter((pre) => pre !== filterLot)
-                                  )
-                                }
-                              ></i>
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
+                    <div className="filter-item-checkbox">
+                      <div className="filter-item-in">
+                        <label htmlFor="lote">Lote</label>
+                        <input
+                          type="checkbox"
+                          value={2}
+                          onChange={(e) => setFilterOption(e.target.value)}
+                          checked={Number(filterOption) === 2 ? true : false}
+                          id="lote"
+                        />
+                      </div>
+                      <div className="item-list">
+                        <ul
+                          style={{
+                            display: `${
+                              filtersLot.length > 0 ? "flex" : "none"
+                            }`,
+                          }}
+                        >
+                          {filtersLot.map((filterLot, ind) => (
+                            <li key={ind}>
+                              <span>{filterLot}</span>{" "}
+                              <span>
+                                <i
+                                  className="fa-solid fa-times"
+                                  onClick={(e) =>
+                                    setFiltersLot((prev) =>
+                                      prev.filter((pre) => pre !== filterLot)
+                                    )
+                                  }
+                                ></i>
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                  </div>
-                  <div className="filter-item-checkbox">
-                    <div className="filter-item-in">
-                      <label htmlFor="serie">Series</label>
-                      <input
-                        type="checkbox"
-                        value={3}
-                        onChange={(e) => setFilterOption(e.target.value)}
-                        checked={Number(filterOption) === 3 ? true : false}
-                        id="serie"
-                      />
-                    </div>
-                    <div className="item-list">
-                      <ul
-                        style={{
-                          display: `${
-                            filtersSerial.length > 0 ? "flex" : "none"
-                          }`,
-                        }}
-                      >
-                        {filtersSerial.map((filterSerial, ind) => (
-                          <li key={ind}>
-                            <span>{filterSerial}</span>{" "}
-                            <span>
-                              <i
-                                className="fa-solid fa-times"
-                                onClick={(e) =>
-                                  setFiltersSerial((prev) =>
-                                    prev.filter((pre) => pre !== filterSerial)
-                                  )
-                                }
-                              ></i>
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
+                    <div className="filter-item-checkbox">
+                      <div className="filter-item-in">
+                        <label htmlFor="serie">Series</label>
+                        <input
+                          type="checkbox"
+                          value={3}
+                          onChange={(e) => setFilterOption(e.target.value)}
+                          checked={Number(filterOption) === 3 ? true : false}
+                          id="serie"
+                        />
+                      </div>
+                      <div className="item-list">
+                        <ul
+                          style={{
+                            display: `${
+                              filtersSerial.length > 0 ? "flex" : "none"
+                            }`,
+                          }}
+                        >
+                          {filtersSerial.map((filterSerial, ind) => (
+                            <li key={ind}>
+                              <span>{filterSerial}</span>{" "}
+                              <span>
+                                <i
+                                  className="fa-solid fa-times"
+                                  onClick={(e) =>
+                                    setFiltersSerial((prev) =>
+                                      prev.filter((pre) => pre !== filterSerial)
+                                    )
+                                  }
+                                ></i>
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="filter-container">
-                {Number(filterOption) === 1 && (
-                  <div className="filter-item">
-                    <label htmlFor="name-filter">Buscar:</label>
-                    <div className="filter-item-input">
-                      {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
-                      <input
-                        list="parts_number"
-                        id="part_number"
-                        name="part_number"
-                        value={nameFilter2}
-                        onChange={handleNameFilterChange2}
-                        disabled={filtersSupplier.length === 0 ? true : false}
-                      />
+                <div className="filter-container">
+                  {Number(filterOption) === 1 && (
+                    <div className="filter-item">
+                      <label htmlFor="name-filter">Buscar:</label>
+                      <div className="filter-item-input">
+                        {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
+                        <input
+                          list="parts_number"
+                          id="part_number"
+                          name="part_number"
+                          value={nameFilter2}
+                          onChange={handleNameFilterChange2}
+                          disabled={filtersSupplier.length === 0 ? true : false}
+                        />
 
-                      <datalist id="parts_number">
-                        {uniquePart_number.map((part_number, indx) => {
-                          // Verificar si el navegador es Firefox, Safari o Edge
-                          const isFirefox =
-                            navigator.userAgent.indexOf("Firefox") !== -1;
-                          const isSafari =
-                            navigator.userAgent.indexOf("Safari") !== -1 ||
-                            navigator.userAgent.indexOf("AppleWebKit") !== -1;
-                          const isEdge =
-                            navigator.userAgent.indexOf("Edge") !== -1;
+                        <datalist id="parts_number">
+                          {uniquePart_number.map((part_number, indx) => {
+                            // Verificar si el navegador es Firefox, Safari o Edge
+                            const isFirefox =
+                              navigator.userAgent.indexOf("Firefox") !== -1;
+                            const isSafari =
+                              navigator.userAgent.indexOf("Safari") !== -1 ||
+                              navigator.userAgent.indexOf("AppleWebKit") !== -1;
+                            const isEdge =
+                              navigator.userAgent.indexOf("Edge") !== -1;
 
-                          // Crear etiqueta de opción
-                          const option = (
-                            <option value={part_number}>
-                              {isFirefox ? `Parte #${part_number}` : "# Parte"}
-                            </option>
-                          );
+                            // Crear etiqueta de opción
+                            const option = (
+                              <option value={part_number}>
+                                {isFirefox
+                                  ? `Parte #${part_number}`
+                                  : "# Parte"}
+                              </option>
+                            );
 
-                          // Devolver opción
-                          return option;
-                        })}
-                      </datalist>
+                            // Devolver opción
+                            return option;
+                          })}
+                        </datalist>
 
-                      {/*<input
+                        {/*<input
                      type="text"
                      id="name-filter"
                      value={nameFilter}
                      onChange={handleNameFilterChange}
                    />*/}
+                      </div>
                     </div>
-                  </div>
-                )}
-                {Number(filterOption) === 2 && (
-                  <div className="filter-item">
-                    <label htmlFor="name-filter">Buscar:</label>
-                    <div className="filter-item-input">
-                      {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
-                      <input
-                        list="lots"
-                        id="lot"
-                        name="lot"
-                        value={nameFilter2}
-                        onChange={handleNameFilterChange3}
-                        disabled={filtersPartNumber.length === 0 ? true : false}
-                      />
+                  )}
+                  {Number(filterOption) === 2 && (
+                    <div className="filter-item">
+                      <label htmlFor="name-filter">Buscar:</label>
+                      <div className="filter-item-input">
+                        {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
+                        <input
+                          list="lots"
+                          id="lot"
+                          name="lot"
+                          value={nameFilter2}
+                          onChange={handleNameFilterChange3}
+                          disabled={
+                            filtersPartNumber.length === 0 ? true : false
+                          }
+                        />
 
-                      <datalist id="lots">
-                        {uniqueLots.map((lot, indx) => {
-                          // Verificar si el navegador es Firefox, Safari o Edge
-                          const isFirefox =
-                            navigator.userAgent.indexOf("Firefox") !== -1;
-                          const isSafari =
-                            navigator.userAgent.indexOf("Safari") !== -1 ||
-                            navigator.userAgent.indexOf("AppleWebKit") !== -1;
-                          const isEdge =
-                            navigator.userAgent.indexOf("Edge") !== -1;
+                        <datalist id="lots">
+                          {uniqueLots.map((lot, indx) => {
+                            // Verificar si el navegador es Firefox, Safari o Edge
+                            const isFirefox =
+                              navigator.userAgent.indexOf("Firefox") !== -1;
+                            const isSafari =
+                              navigator.userAgent.indexOf("Safari") !== -1 ||
+                              navigator.userAgent.indexOf("AppleWebKit") !== -1;
+                            const isEdge =
+                              navigator.userAgent.indexOf("Edge") !== -1;
 
-                          // Crear etiqueta de opción
-                          const option = (
-                            <option value={lot}>
-                              {isFirefox ? `Lote #${lot}` : "# Lote"}
-                            </option>
-                          );
+                            // Crear etiqueta de opción
+                            const option = (
+                              <option value={lot}>
+                                {isFirefox ? `Lote #${lot}` : "# Lote"}
+                              </option>
+                            );
 
-                          // Devolver opción
-                          return option;
-                        })}
-                      </datalist>
+                            // Devolver opción
+                            return option;
+                          })}
+                        </datalist>
 
-                      {/*<input
+                        {/*<input
                      type="text"
                      id="name-filter"
                      value={nameFilter}
                      onChange={handleNameFilterChange}
                    />*/}
+                      </div>
                     </div>
-                  </div>
-                )}
-                {Number(filterOption) === 3 && (
-                  <div className="filter-item">
-                    <label htmlFor="name-filter">Buscar:</label>
-                    <div className="filter-item-input">
-                      {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
-                      <input
-                        list="serials"
-                        id="serial"
-                        name="serial"
-                        value={nameFilter2}
-                        onChange={handleNameFilterChange4}
-                        disabled={filtersPartNumber.length === 0 ? true : false}
-                      />
+                  )}
+                  {Number(filterOption) === 3 && (
+                    <div className="filter-item">
+                      <label htmlFor="name-filter">Buscar:</label>
+                      <div className="filter-item-input">
+                        {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
+                        <input
+                          list="serials"
+                          id="serial"
+                          name="serial"
+                          value={nameFilter2}
+                          onChange={handleNameFilterChange4}
+                          disabled={
+                            filtersPartNumber.length === 0 ? true : false
+                          }
+                        />
 
-                      <datalist id="serials">
-                        {uniqueSerial.map((serial, indx) => {
-                          // Verificar si el navegador es Firefox, Safari o Edge
-                          const isFirefox =
-                            navigator.userAgent.indexOf("Firefox") !== -1;
-                          const isSafari =
-                            navigator.userAgent.indexOf("Safari") !== -1 ||
-                            navigator.userAgent.indexOf("AppleWebKit") !== -1;
-                          const isEdge =
-                            navigator.userAgent.indexOf("Edge") !== -1;
+                        <datalist id="serials">
+                          {uniqueSerial.map((serial, indx) => {
+                            // Verificar si el navegador es Firefox, Safari o Edge
+                            const isFirefox =
+                              navigator.userAgent.indexOf("Firefox") !== -1;
+                            const isSafari =
+                              navigator.userAgent.indexOf("Safari") !== -1 ||
+                              navigator.userAgent.indexOf("AppleWebKit") !== -1;
+                            const isEdge =
+                              navigator.userAgent.indexOf("Edge") !== -1;
 
-                          // Crear etiqueta de opción
-                          const option = (
-                            <option value={serial}>
-                              {isFirefox ? `Serial #${serial}` : "# Serial"}
-                            </option>
-                          );
+                            // Crear etiqueta de opción
+                            const option = (
+                              <option value={serial}>
+                                {isFirefox ? `Serial #${serial}` : "# Serial"}
+                              </option>
+                            );
 
-                          // Devolver opción
-                          return option;
-                        })}
-                      </datalist>
+                            // Devolver opción
+                            return option;
+                          })}
+                        </datalist>
 
-                      {/*<input
+                        {/*<input
                      type="text"
                      id="name-filter"
                      value={nameFilter}
                      onChange={handleNameFilterChange}
                    />*/}
+                      </div>
                     </div>
-                  </div>
-                )}
-                {Number(filterOption) === 0 && (
-                  <div className="filter-item">
-                    <label htmlFor="name-filter">Buscar:</label>
-                    <div className="filter-item-input">
-                      {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
-                      <input
-                        list="suppliers"
-                        id="serial"
-                        name="serial"
-                        value={nameFilter2}
-                        onChange={handleNameFilterChange5}
-                        //disabled={filtersPartNumber.length === 0 ? true : false}
-                      />
+                  )}
+                  {Number(filterOption) === 0 && (
+                    <div className="filter-item">
+                      <label htmlFor="name-filter">Buscar:</label>
+                      <div className="filter-item-input">
+                        {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
+                        <input
+                          list="suppliers"
+                          id="serial"
+                          name="serial"
+                          value={nameFilter2}
+                          onChange={handleNameFilterChange5}
+                          //disabled={filtersPartNumber.length === 0 ? true : false}
+                        />
 
-                      <datalist id="suppliers">
-                        {uniqueSuppliers.map((serial, indx) => {
-                          // Verificar si el navegador es Firefox, Safari o Edge
-                          const isFirefox =
-                            navigator.userAgent.indexOf("Firefox") !== -1;
-                          const isSafari =
-                            navigator.userAgent.indexOf("Safari") !== -1 ||
-                            navigator.userAgent.indexOf("AppleWebKit") !== -1;
-                          const isEdge =
-                            navigator.userAgent.indexOf("Edge") !== -1;
+                        <datalist id="suppliers">
+                          {uniqueSuppliers.map((serial, indx) => {
+                            // Verificar si el navegador es Firefox, Safari o Edge
+                            const isFirefox =
+                              navigator.userAgent.indexOf("Firefox") !== -1;
+                            const isSafari =
+                              navigator.userAgent.indexOf("Safari") !== -1 ||
+                              navigator.userAgent.indexOf("AppleWebKit") !== -1;
+                            const isEdge =
+                              navigator.userAgent.indexOf("Edge") !== -1;
 
-                          // Crear etiqueta de opción
-                          const option = (
-                            <option value={serial}>
-                              {isFirefox ? `${serial}` : ""}
-                            </option>
-                          );
+                            // Crear etiqueta de opción
+                            const option = (
+                              <option value={serial}>
+                                {isFirefox ? `${serial}` : ""}
+                              </option>
+                            );
 
-                          // Devolver opción
-                          return option;
-                        })}
-                      </datalist>
+                            // Devolver opción
+                            return option;
+                          })}
+                        </datalist>
 
-                      {/*<input
+                        {/*<input
                      type="text"
                      id="name-filter"
                      value={nameFilter}
                      onChange={handleNameFilterChange}
                    />*/}
+                      </div>
                     </div>
-                  </div>
-                )}
-                <div className="filter-item">
-                  <label htmlFor="date-filter" className="label-center">
-                    Buscar por Fecha:
-                  </label>
+                  )}
+                  <div className="filter-item">
+                    <label htmlFor="date-filter" className="label-center">
+                      Buscar por Fecha:
+                    </label>
 
-                  <div className="filter-item-input input-date">
-                    <div className="range">
-                      <DatePicker
-                        id="fechaInicio"
-                        selected={dateStart}
-                        onChange={(date) => setDateStart(date)}
-                        locale="es"
-                        customInput={
-                          <CustomInputD>
-                            <p>
-                              Desde:{" "}
-                              <span
-                                style={{ minWidth: "90px", maxWidth: "100px" }}
-                              >
-                                {formatedDateStart !== ""
-                                  ? formatedDateStart
-                                  : ""}
-                              </span>
-                            </p>
-                          </CustomInputD>
-                        }
-                      />
-                    </div>
-                    <div className="range">
-                      <DatePicker
-                        id="fechaInicio"
-                        selected={dateEnd}
-                        onChange={(date) => setDateEnd(date)}
-                        locale="es"
-                        /*showTimeSelect
+                    <div className="filter-item-input input-date">
+                      <div className="range">
+                        <DatePicker
+                          id="fechaInicio"
+                          selected={dateStart}
+                          onChange={(date) => setDateStart(date)}
+                          locale="es"
+                          customInput={
+                            <CustomInputD>
+                              <p>
+                                Desde:{" "}
+                                <span
+                                  style={{
+                                    minWidth: "90px",
+                                    maxWidth: "100px",
+                                  }}
+                                >
+                                  {formatedDateStart !== ""
+                                    ? formatedDateStart
+                                    : ""}
+                                </span>
+                              </p>
+                            </CustomInputD>
+                          }
+                        />
+                      </div>
+                      <div className="range">
+                        <DatePicker
+                          id="fechaInicio"
+                          selected={dateEnd}
+                          onChange={(date) => setDateEnd(date)}
+                          locale="es"
+                          /*showTimeSelect
                  timeFormat="h:mm aa"
                  timeIntervals={60}
                  timeCaption="Hora"
                  dateFormat="yyyy-MM-dd h:mm aa"*/
-                        customInput={
-                          <CustomInputD>
-                            <p>
-                              Hasta:
-                              <span
-                                style={{ minWidth: "90px", maxWidth: "100px" }}
-                              >
-                                {formatedDateEnd !== "" ? formatedDateEnd : ""}
-                              </span>
-                            </p>
-                          </CustomInputD>
-                        }
-                      />
+                          customInput={
+                            <CustomInputD>
+                              <p>
+                                Hasta:
+                                <span
+                                  style={{
+                                    minWidth: "90px",
+                                    maxWidth: "100px",
+                                  }}
+                                >
+                                  {formatedDateEnd !== ""
+                                    ? formatedDateEnd
+                                    : ""}
+                                </span>
+                              </p>
+                            </CustomInputD>
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </form>
-            <div className={`charts ${showCharts === true && 'smoothFadeIn'}`}>
-              {showCharts === true && (
-                <>
-                  <Chart1 totalG={totalGeneral} colorScale={["tomato", "orange", "gold", "gold", "gold", "gold"]}/>
-                  <Chart2 totalG={totalGeneral} colorScale={["tomato", "orange", "gold", "gold", "gold", "gold"]}  />
-                </>
-              )}
-            </div>
-          </div>
-        )}
-        {activeTab === 2 && (
-          <div className="header-container">
-            <form autoComplete="off">
-              <div className="filter-container">
-                <div className="filter-item">
-                  <label htmlFor="date-filter" className="label-center">
-                    Buscar por Fecha:
-                  </label>
-
-                  <div className="filter-item-input input-date">
-                    <div className="range">
-                      <DatePicker
-                        id="fechaInicio"
-                        selected={dateStart}
-                        onChange={(date) => setDateStart(date)}
-                        locale="es"
-                        /*showTimeSelect
-                    timeFormat="h:mm aa"
-                    timeIntervals={60}
-                    timeCaption="Hora"
-                    dateFormat="yyyy-MM-dd h:mm aa"*/
-                        customInput={
-                          <CustomInputD>
-                            <p>
-                              Desde:{" "}
-                              <span
-                                style={{ minWidth: "90px", maxWidth: "100px" }}
-                              >
-                                {formatedDateStart !== ""
-                                  ? formatedDateStart
-                                  : ""}
-                              </span>
-                            </p>
-                          </CustomInputD>
-                        }
-                      />
-                    </div>
-                    <div className="range">
-                      <DatePicker
-                        id="fechaInicio"
-                        selected={dateEnd}
-                        onChange={(date) => setDateEnd(date)}
-                        locale="es"
-                        /*showTimeSelect
-                    timeFormat="h:mm aa"
-                    timeIntervals={60}
-                    timeCaption="Hora"
-                    dateFormat="yyyy-MM-dd h:mm aa"*/
-                        customInput={
-                          <CustomInputD>
-                            <p>
-                              Hasta:
-                              <span
-                                style={{ minWidth: "90px", maxWidth: "100px" }}
-                              >
-                                {formatedDateEnd !== "" ? formatedDateEnd : ""}
-                              </span>
-                            </p>
-                          </CustomInputD>
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="filter-item">
-                  <label htmlFor="name-filter" className="label-center">
-                    Buscar:
-                  </label>
-                  <div className="filter-item-input">
-                    <input
-                      type="text"
-                      id="name-filter"
-                      value={nameFilter}
-                      onChange={(e) => handleNameFilterChange(e)}
-                      placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
+              </form>
+              <div
+                className={`charts ${showCharts === true && "smoothFadeIn"}`}
+              >
+                {showCharts === true && (
+                  <>
+                    <Chart1
+                      totalG={totalGeneral}
+                      colorScale={[
+                        "tomato",
+                        "orange",
+                        "gold",
+                        "gold",
+                        "gold",
+                        "gold",
+                      ]}
                     />
+                    <Chart2
+                      totalG={totalGeneral}
+                      colorScale={[
+                        "tomato",
+                        "orange",
+                        "gold",
+                        "gold",
+                        "gold",
+                        "gold",
+                      ]}
+                    />
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+          {activeTab === 2 && (
+            <div className="header-container">
+              <form autoComplete="off">
+                <div className="filter-container">
+                  <div className="filter-item">
+                    <label htmlFor="date-filter" className="label-center">
+                      Buscar por Fecha:
+                    </label>
+
+                    <div className="filter-item-input input-date">
+                      <div className="range">
+                        <DatePicker
+                          id="fechaInicio"
+                          selected={dateStart}
+                          onChange={(date) => setDateStart(date)}
+                          locale="es"
+                          /*showTimeSelect
+                    timeFormat="h:mm aa"
+                    timeIntervals={60}
+                    timeCaption="Hora"
+                    dateFormat="yyyy-MM-dd h:mm aa"*/
+                          customInput={
+                            <CustomInputD>
+                              <p>
+                                Desde:{" "}
+                                <span
+                                  style={{
+                                    minWidth: "90px",
+                                    maxWidth: "100px",
+                                  }}
+                                >
+                                  {formatedDateStart !== ""
+                                    ? formatedDateStart
+                                    : ""}
+                                </span>
+                              </p>
+                            </CustomInputD>
+                          }
+                        />
+                      </div>
+                      <div className="range">
+                        <DatePicker
+                          id="fechaInicio"
+                          selected={dateEnd}
+                          onChange={(date) => setDateEnd(date)}
+                          locale="es"
+                          /*showTimeSelect
+                    timeFormat="h:mm aa"
+                    timeIntervals={60}
+                    timeCaption="Hora"
+                    dateFormat="yyyy-MM-dd h:mm aa"*/
+                          customInput={
+                            <CustomInputD>
+                              <p>
+                                Hasta:
+                                <span
+                                  style={{
+                                    minWidth: "90px",
+                                    maxWidth: "100px",
+                                  }}
+                                >
+                                  {formatedDateEnd !== ""
+                                    ? formatedDateEnd
+                                    : ""}
+                                </span>
+                              </p>
+                            </CustomInputD>
+                          }
+                        />
+                      </div>
+                    </div>
                   </div>
-                  {/* <select onChange={(e) => setIdSupplier(e.target.value)}>
+                  <div className="filter-item">
+                    <label htmlFor="name-filter" className="label-center">
+                      Buscar:
+                    </label>
+                    <div className="filter-item-input">
+                      <input
+                        type="text"
+                        id="name-filter"
+                        value={nameFilter}
+                        onChange={(e) => handleNameFilterChange(e)}
+                        placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
+                      />
+                    </div>
+                    {/* <select onChange={(e) => setIdSupplier(e.target.value)}>
                   {getPaginatedData()
                     .reduce((uniqueOptions, item) => {
                       if (
@@ -1661,237 +1779,252 @@ function ReportsTable({ data }) {
                       </option>
                     ))}
                 </select> */}
+                  </div>
                 </div>
-              </div>
-            </form>
-            <div
-              className="clients-container"
-              style={{
-                visibility: uniqueClients.length > 0 ? "visible" : "hidden",
-              }}
-            >
-              <div className="select-container">
-                <select value={selectedClient} onChange={addClientToList}>
-                  <option value="0" selected>
-                    Selecciona un cliente
-                  </option>
-                  {uniqueClients.map((option) => (
-                    <option key={option} value={option.id}>
-                      {option.fullname}
+              </form>
+              <div
+                className="clients-container"
+                style={{
+                  visibility: uniqueClients.length > 0 ? "visible" : "hidden",
+                }}
+              >
+                <div className="select-container">
+                  <select value={selectedClient} onChange={addClientToList}>
+                    <option value="0" selected>
+                      Selecciona un cliente
                     </option>
-                  ))}
-                </select>
-              </div>
-              <div className="list-container">
-                <div className="item-list">
-                  <ul
-                    style={{
-                      display: `${
-                        clientsToReport.length > 0 ? "flex" : "none"
-                      }`,
-                    }}
-                  >
-                    {clientsToReport.map((client, ind) => (
-                      <li key={ind}>
-                        <span>{client.clientName}</span>
-                        <span onClick={() => removeClient(client.id)}>
-                          <FontAwesomeIcon
-                            icon={faTimes}
-                            color="rgb(87, 0, 0)"
-                          />
-                          {/* <i className="fa-solid fa-times"></i> */}
-                        </span>
-                      </li>
+                    {uniqueClients.map((option) => (
+                      <option key={option} value={option.id}>
+                        {option.fullname}
+                      </option>
                     ))}
-                  </ul>
+                  </select>
+                </div>
+                <div className="list-container">
+                  <div className="item-list">
+                    <ul
+                      style={{
+                        display: `${
+                          clientsToReport.length > 0 ? "flex" : "none"
+                        }`,
+                      }}
+                    >
+                      {clientsToReport.map((client, ind) => (
+                        <li key={ind}>
+                          <span>{client.clientName}</span>
+                          <span onClick={() => removeClient(client.id)}>
+                            <FontAwesomeIcon
+                              icon={faTimes}
+                              color="rgb(87, 0, 0)"
+                            />
+                            {/* <i className="fa-solid fa-times"></i> */}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
+          )}
+          {activeTab === 3 && (
+            <div className="table-controlls">
+              {showFIltersT && (
+                <FilterTable />
+              )}
+              <div className="table-controlls-left">
+                <div
+                  className={`table-controlls-left-item ${showFIltersT ? "activeFilters" : ""}`}
+                  onClick={showFilterTable}
+                >
+                  <i className="fa-solid fa-filter"></i>
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="tab-container">
+            <div className="tab-items">
+              <div
+                className={`tab-item ${activeTab === 1 ? "active" : ""}`}
+                onClick={() => tabSwitch(1)}
+              >
+                <p>Reportes de inspeccion</p>
+              </div>
+              <div
+                className={`tab-item ${activeTab === 2 ? "active" : ""}`}
+                onClick={() => tabSwitch(2)}
+              >
+                <p>Reportes por hora</p>
+              </div>
+              <div
+                className={`tab-item ${activeTab === 3 ? "active" : ""}`}
+                onClick={() => tabSwitch(3)}
+              >
+                <p>Totales reportes de inspeccion</p>
+              </div>
+            </div>
           </div>
-        )}
-        <div className="tab-container">
-          <div className="tab-items">
-            <div
-              className={`tab-item ${activeTab === 1 ? "active" : ""}`}
-              onClick={() => tabSwitch(1)}
-            >
-              <p>Reportes de inspeccion</p>
-            </div>
-            <div
-              className={`tab-item ${activeTab === 2 ? "active" : ""}`}
-              onClick={() => tabSwitch(2)}
-            >
-              <p>Reportes por hora</p>
-            </div>
-            <div
-              className={`tab-item ${activeTab === 3 ? "active" : ""}`}
-              onClick={() => tabSwitch(3)}
-            >
-              <p>Totales reportes de inspeccion</p>
-            </div>
-          </div>
-        </div>
-        {activeTab === 1 && (
-          <div className="table-body table-reports">
-            <table>
-              <thead>
-                <tr>
-                  <th>
-                    <Checkbox type="all" id={0} callback={handleCheckBox} />
-                  </th>
-                  {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
-                  <th># Parte</th>
-                  <th>Planta</th>
-                  <th>Proveedor</th>
-                  <th>Fecha</th>
-                  <th>Status</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {getPaginatedData().length === 0 ? (
-                  <Loader>
-                    <img src="/assets/img/loading2.svg" alt="" />
-                  </Loader>
-                ) : (
-                  getPaginatedData().map((item, index) => (
-                    <tr key={index} onClick={(e) => singleView(item.id)}>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                        colSpan={1}
-                      >
-                        <Checkbox
-                          type="single"
-                          id={item.id}
-                          callback={handleCheckBox}
-                        />
-                      </td>
-                      {/* <td className="table-center">{item.id}</td> */}
-                      <td className="table-center">{item.part_number}</td>
-                      <td className="table-center">{item.plant}</td>
-                      <td className="table-center">{item.supplier}</td>
-                      <td className="table-center">{item.date}</td>
-                      <td className="table-center">
-                        {Number(item.status) === 1 && "Sin aprobar"}{" "}
-                        {Number(item.status) === 3 && "Aprobado"}
-                      </td>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                        colSpan={1}
-                      >
-                        <div className="actions">
-                          <FontAwesomeIcon
-                            icon={faTrash}
-                            onClick={() => handleDel(item.id, "reports")}
+          {activeTab === 1 && (
+            <div className="table-body table-reports">
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      <Checkbox type="all" id={0} callback={handleCheckBox} />
+                    </th>
+                    {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
+                    <th># Parte</th>
+                    <th>Planta</th>
+                    <th>Proveedor</th>
+                    <th>Fecha</th>
+                    <th>Status</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getPaginatedData().length === 0 ? (
+                    <Loader>
+                      <img src="/assets/img/loading2.svg" alt="" />
+                    </Loader>
+                  ) : (
+                    getPaginatedData().map((item, index) => (
+                      <tr key={index} onClick={(e) => singleView(item.id)}>
+                        <td
+                          className="table-center"
+                          onClick={(e) => e.stopPropagation()}
+                          colSpan={1}
+                        >
+                          <Checkbox
+                            type="single"
+                            id={item.id}
+                            callback={handleCheckBox}
                           />
-                          {/* <Link
+                        </td>
+                        {/* <td className="table-center">{item.id}</td> */}
+                        <td className="table-center">{item.part_number}</td>
+                        <td className="table-center">{item.plant}</td>
+                        <td className="table-center">{item.supplier}</td>
+                        <td className="table-center">{item.date}</td>
+                        <td className="table-center">
+                          {Number(item.status) === 1 && "Sin aprobar"}{" "}
+                          {Number(item.status) === 3 && "Aprobado"}
+                        </td>
+                        <td
+                          className="table-center"
+                          onClick={(e) => e.stopPropagation()}
+                          colSpan={1}
+                        >
+                          <div className="actions">
+                            <FontAwesomeIcon
+                              icon={faTrash}
+                              onClick={() => handleDel(item.id, "reports")}
+                            />
+                            {/* <Link
                             to={`/admin/reports/${item.id}`}
                             style={{ color: "green" }}
                           >
                             <i className="fa-solid fa-eye"></i>
                           </Link> */}
 
-                          {!navigator.onLine ? (
-                            <FontAwesomeIcon icon={faFilePdf} />
-                          ) : (
-                            <i className="fa-solid fa-file-pdf"></i>
-                          )}
-                          <FontAwesomeIcon
-                            icon={faUsers}
-                            color="green"
-                            onClick={() => authClientsC(item.id)}
-                          />
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
-        {activeTab === 2 && (
-          <div className="table-body table-reports">
-            <table>
-              <thead>
-                <tr>
-                  <th>
-                    <Checkbox type="all" id={0} callback={handleCheckBox} />
-                  </th>
-                  {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
-                  <th># Parte</th>
-                  <th>Planta</th>
-                  <th>Proveedor</th>
-                  <th>Fecha</th>
-                  <th>Status</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {getPaginatedData().length === 0 ? (
-                  <Loader>
-                    <img src="/assets/img/loading2.svg" alt="" />
-                  </Loader>
-                ) : (
-                  getPaginatedData().map((item, index) => (
-                    <tr
-                      key={index + "tabl2"}
-                      onClick={(e) => singleView(item.id)}
-                    >
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                        colSpan={1}
+                            {!navigator.onLine ? (
+                              <FontAwesomeIcon icon={faFilePdf} />
+                            ) : (
+                              <i className="fa-solid fa-file-pdf"></i>
+                            )}
+                            <FontAwesomeIcon
+                              icon={faUsers}
+                              color="green"
+                              onClick={() => authClientsC(item.id)}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {activeTab === 2 && (
+            <div className="table-body table-reports">
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      <Checkbox type="all" id={0} callback={handleCheckBox} />
+                    </th>
+                    {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
+                    <th># Parte</th>
+                    <th>Planta</th>
+                    <th>Proveedor</th>
+                    <th>Fecha</th>
+                    <th>Status</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getPaginatedData().length === 0 ? (
+                    <Loader>
+                      <img src="/assets/img/loading2.svg" alt="" />
+                    </Loader>
+                  ) : (
+                    getPaginatedData().map((item, index) => (
+                      <tr
+                        key={index + "tabl2"}
+                        onClick={(e) => singleView(item.id)}
                       >
-                        <Checkbox
-                          type="single"
-                          id={item.id}
-                          callback={handleCheckBox}
-                        />
-                      </td>
-                      {/* <td className="table-center">{item.id}</td> */}
-                      <td className="table-center">{item.part_number}</td>
-                      <td className="table-center">{item.plant}</td>
-                      <td className="table-center">{item.supplier}</td>
-                      <td className="table-center">{item.date}</td>
-                      <td className="table-center">
-                        {Number(item.status) === 1 && "Sin aprobar"}{" "}
-                        {Number(item.status) === 3 && "Aprobado"}
-                      </td>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                        colSpan={1}
-                      >
-                        <div className="actions">
-                          <FontAwesomeIcon
-                            icon={faTrash}
-                            onClick={() => handleDel(item.id, "reports")}
+                        <td
+                          className="table-center"
+                          onClick={(e) => e.stopPropagation()}
+                          colSpan={1}
+                        >
+                          <Checkbox
+                            type="single"
+                            id={item.id}
+                            callback={handleCheckBox}
                           />
-                          {/* <Link
+                        </td>
+                        {/* <td className="table-center">{item.id}</td> */}
+                        <td className="table-center">{item.part_number}</td>
+                        <td className="table-center">{item.plant}</td>
+                        <td className="table-center">{item.supplier}</td>
+                        <td className="table-center">{item.date}</td>
+                        <td className="table-center">
+                          {Number(item.status) === 1 && "Sin aprobar"}{" "}
+                          {Number(item.status) === 3 && "Aprobado"}
+                        </td>
+                        <td
+                          className="table-center"
+                          onClick={(e) => e.stopPropagation()}
+                          colSpan={1}
+                        >
+                          <div className="actions">
+                            <FontAwesomeIcon
+                              icon={faTrash}
+                              onClick={() => handleDel(item.id, "reports")}
+                            />
+                            {/* <Link
                            to={`/admin/reports/${item.id}`}
                            style={{ color: "green" }}
                          >
                            <i className="fa-solid fa-eye"></i>
                          </Link> */}
-                          <FontAwesomeIcon icon={faFilePdf} />
-                          {/* <i className="fa-solid fa-file-pdf"></i> */}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
-        {activeTab === 3 && (
-          <div className="table-body table-reports">
-            {/* <TableTotals data={totalFiltered} /> */}
-            <TableComponent groupedData={dataToTable} loader={loader} />
-            {/* <table>
+                            <FontAwesomeIcon icon={faFilePdf} />
+                            {/* <i className="fa-solid fa-file-pdf"></i> */}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {activeTab === 3 && (
+            <div className="table-body table-reports">
+              {/* <TableTotals data={totalFiltered} /> */}
+              <TableComponent groupedData={dataToTable} loader={loader} />
+              {/* <table>
               <thead>
                 <tr>
                   
@@ -1939,7 +2072,7 @@ function ReportsTable({ data }) {
                   });
                 })} */}
 
-            {/*getPaginatedData2().length === 0 ? (
+              {/*getPaginatedData2().length === 0 ? (
                   <Loader>
                     <img src="/assets/img/loading2.svg" alt="" />
                   </Loader>
@@ -1990,48 +2123,49 @@ function ReportsTable({ data }) {
                 )}}
               </tbody>
             </table>  */}
+            </div>
+          )}
+          <div className="pagination">
+            <span>
+              Página {currentPage} de {totalPages}
+            </span>
+
+            <button disabled={currentPage === 1} onClick={handleFirstPageClick}>
+              <i className="fa-solid fa-backward-step"></i>
+            </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
+              <i className="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
+              <i className="fa-solid fa-chevron-right"></i>
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={handleLastPageClick}
+            >
+              <i className="fa-solid fa-forward-step"></i>
+            </button>
+
+            <select
+              value={rowsPerPage}
+              onChange={(event) => setRowsPerPage(parseInt(event.target.value))}
+            >
+              <option value="20">20 filas por página</option>
+              <option value="50">50 filas por página</option>
+              <option value="100">100 filas por página</option>
+              <option value={`${data.length}`}>todas filas</option>
+            </select>
           </div>
-        )}
-        <div className="pagination">
-          <span>
-            Página {currentPage} de {totalPages}
-          </span>
-
-          <button disabled={currentPage === 1} onClick={handleFirstPageClick}>
-            <i className="fa-solid fa-backward-step"></i>
-          </button>
-          <button
-            disabled={currentPage === 1}
-            onClick={() => handlePageChange(currentPage - 1)}
-          >
-            <i className="fa-solid fa-chevron-left"></i>
-          </button>
-
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => handlePageChange(currentPage + 1)}
-          >
-            <i className="fa-solid fa-chevron-right"></i>
-          </button>
-          <button
-            disabled={currentPage === totalPages}
-            onClick={handleLastPageClick}
-          >
-            <i className="fa-solid fa-forward-step"></i>
-          </button>
-
-          <select
-            value={rowsPerPage}
-            onChange={(event) => setRowsPerPage(parseInt(event.target.value))}
-          >
-            <option value="20">20 filas por página</option>
-            <option value="50">50 filas por página</option>
-            <option value="100">100 filas por página</option>
-            <option value={`${data.length}`}>todas filas</option>
-          </select>
         </div>
-      </div>
-    </Table>
+      </Table>
+    </>
   );
 }
 

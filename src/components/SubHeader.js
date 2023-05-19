@@ -27,6 +27,9 @@ import AuthUsers from "./admin/AuthUsers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartSimple, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { faEye } from "@fortawesome/free-regular-svg-icons";
+import { Table } from "../styles/Styles";
+import TotalByPartNumber from "./admin/TotalByPartNumber";
+import ReportDetails from "./admin/ReportDetails";
 
 let val;
 if (typeof window !== "undefined") {
@@ -78,6 +81,9 @@ export default function SubHeader() {
     activeTab,
     showCharts,
     setShowCharts,
+    showDtable,
+    setShowDtable,
+    showDEtable, setShowDEtable
   } = useContext(MainContext);
   //console.log(useParams());
 
@@ -108,6 +114,8 @@ export default function SubHeader() {
     setShowModalSupplier(false);
     setShowModalS(false);
     setShowModalAuth(false);
+    setShowDtable(false);
+    setShowDEtable(false);
     setAuthClientsT([]);
     //    showModalE, setShowModalE
   };
@@ -319,6 +327,7 @@ export default function SubHeader() {
       });
     }
   };
+
   return (
     <>
       {showModalAuth === true && (
@@ -365,6 +374,16 @@ export default function SubHeader() {
       {showModalC === true && (
         <Modal callback={handleClose}>
           <UpdateClient id={updateId} />
+        </Modal>
+      )}
+      {showDtable === true && (
+        <Modal callback={handleClose}>
+          <TotalByPartNumber/>
+        </Modal>
+      )}
+      {showDEtable === true && (
+        <Modal callback={handleClose}>
+          <ReportDetails />
         </Modal>
       )}
       {confirm === true && (
@@ -415,8 +434,13 @@ export default function SubHeader() {
               )}
               {activeTab === 3 && (
                 <div className="btn-charts">
-                  <button className="chart-btn" onClick={() => setShowCharts(prev => !prev)}>
-                    <FontAwesomeIcon icon={showCharts === true ? faEyeSlash : faEye} />
+                  <button
+                    className="chart-btn"
+                    onClick={() => setShowCharts((prev) => !prev)}
+                  >
+                    <FontAwesomeIcon
+                      icon={showCharts === true ? faEyeSlash : faEye}
+                    />
                     <FontAwesomeIcon icon={faChartSimple} />
                   </button>
                 </div>

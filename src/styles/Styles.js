@@ -17,12 +17,41 @@ export const Table = styled.div`
     width: 50%;
     //height: 263px;
   }
-  .smoothFadeIn {    
+  .table-controlls-left {
+    width: 628px;
+  }
+  .table-controlls-left-item {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(0, 35, 83);
+    border-width: 1px 1px 0px;
+    border: 1px solid rgb(0, 35, 83);
+    border-bottom: 0;
+    width: 30px;
+    &:hover {
+      color: #fff;
+      background-color: rgb(0, 65, 155);
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+    }
+  }
+  .activeFilters {
+    color: #fff;
+    background-color: rgb(0, 65, 155);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+  }
+  .table-controlls {
+    position: relative;
+  }
+  .smoothFadeIn {
     position: relative;
     animation: smoothFadeIn 0.3s;
     transition: all 0.3s;
   }
-  .smoothFadeOut {    
+  .smoothFadeOut {
     position: relative;
     animation: smoothFadeOut 0.3s;
     animation-delay: 0.3s;
@@ -37,7 +66,7 @@ export const Table = styled.div`
     width: 100%;
     display: flex;
     box-sizing: border-box;
-    border: 1px solid #00419b;
+    border: 1px solid #002353;
     border-top: 0;
     border-bottom: 0;
     border-right: 0;
@@ -46,7 +75,7 @@ export const Table = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #00419b;
+    border: 1px solid #002353;
     box-sizing: border-box;
     padding: 10px 20px;
     border-bottom: 0;
@@ -55,17 +84,17 @@ export const Table = styled.div`
     transition: all 0.3s;
     &:hover {
       transition: all 0.3s;
-      background: #00419b;
+      background: #002353;
       color: #fff;
     }
   }
   .active {
     transition: all 0.3s;
-    background: #00419b;
+    background: #002353;
     color: #fff;
   }
   thead {
-    background-color: #00419b;
+    background-color: #002353;
     color: #fff;
     position: sticky;
     top: 0px;
@@ -104,7 +133,7 @@ export const Table = styled.div`
   tbody > tr {
     cursor: pointer;
     &:hover {
-      background-color: rgb(0 65 155 / 28%) !important
+      background-color: rgb(0 65 155 / 28%) !important;
     }
   }
 
@@ -142,7 +171,7 @@ export const Table = styled.div`
   }
 
   .boton-paginacion.activo {
-    background-color: #00419b;
+    background-color: #002353;
     color: white;
   }
   .table-container {
@@ -176,7 +205,7 @@ export const Table = styled.div`
     color: green;
   }
   .fa-file-pdf {
-    color: #00419b;
+    color: #002353;
   }
 
   .header-container {
@@ -208,7 +237,7 @@ export const Table = styled.div`
   .filter-item {
     display: flex;
     gap: 5px;
-    color: #00419b;
+    color: #002353;
     flex-direction: column;
   }
   li {
@@ -335,10 +364,10 @@ export const Table = styled.div`
     }
   }
   @keyframes smoothFadeIn {
-    from{
+    from {
       opacity: 0;
       //visibility: hidden;
-      bottom:-15px;
+      bottom: -15px;
     }
     to {
       opacity: 1;
@@ -347,7 +376,7 @@ export const Table = styled.div`
     }
   }
   @keyframes smoothFadeOut {
-    from{
+    from {
       opacity: 1;
       //visibility: visible;
       bottom: 0;
@@ -355,7 +384,7 @@ export const Table = styled.div`
     to {
       opacity: 0;
       //visibility: hidden;
-      bottom:-15px;
+      bottom: -15px;
     }
   }
   @keyframes fadeinBottom {
@@ -387,7 +416,7 @@ export const Table = styled.div`
     justify-content: space-between;
     input {
       outline: none;
-      border: 1px solid #00419b;
+      border: 1px solid #002353;
       box-sizing: border-box;
       padding: 9px;
       height: 45px;
@@ -415,9 +444,9 @@ export const Table = styled.div`
 
     /*
   border-radius: 10px;
-  border: 1px solid #00419b;
+  border: 1px solid #002353;
   color: #fff;
-  background: #00419b;
+  background: #002353;
   box-sizing: border-box;*/
   }
   .custom-input p {
@@ -456,7 +485,7 @@ export const Table = styled.div`
   .pagination button {
     height: 25px;
     width: 25px;
-    color: #00419b;
+    color: #002353;
     border: 0;
     outline: none;
     background: none;
@@ -467,12 +496,12 @@ export const Table = styled.div`
   }
   .pagination select {
     margin-left: 10px;
-    border: 1px solid #00419b;
-    color: #00419b;
+    border: 1px solid #002353;
+    color: #002353;
   }
   .pagination span {
     margin-left: 5px;
-    color: #00419b;
+    color: #002353;
   }
 
   .table-reports tbody {
@@ -644,8 +673,24 @@ export const StyledModal = styled.div`
     height: auto;
     background: #fff;
     padding: 15px 25px;
-    max-width: 600px;
+    max-width: 900px;
     min-width: 350px;
+  }
+  .modal-details-header {
+    margin: 15px 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    h2 {
+      color: rgb(0, 35, 83);
+      text-transform: uppercase;
+    }
+    h3 {
+      color: #9e9e9e;
+    }
+  }
+  .modal-details {
+    margin: 0 25px;
   }
   .modal-close {
     width: 100%;

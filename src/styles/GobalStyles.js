@@ -175,8 +175,8 @@ const GlobalStyle = createGlobalStyle`
   &:hover{
     transition: all 0.3s ease-in-out;
     background-color: #fff;
-    color: #00419b;
- //   background: linear-gradient(#00419b, #00419b);
+    color: #002353;
+ //   background: linear-gradient(#002353, #002353);
   }
 }
 .clients-container{

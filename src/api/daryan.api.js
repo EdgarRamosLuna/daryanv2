@@ -1,5 +1,6 @@
 import axios from "axios";
-const serverUrl = "http://localhost/daryan-server";
+const serverUrl = process.env.REACT_APP_SERVER_URL;
+
 const serverApi = axios.create({
   baseURL: `${serverUrl}/api/`,
 });

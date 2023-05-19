@@ -201,7 +201,7 @@ function EmployeesTable({ data }) {
             <form autoComplete="off">
               <div className="filter-container">
                 <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar usuario:</label>
+                  <label htmlFor="name-filter">Buscar empleado:</label>
                   <div className="filter-item-input">
                     <input
                       type="text"

@@ -202,7 +202,7 @@ function ClientsTable({ data }) {
             <form autoComplete="off">
               <div className="filter-container">
                 <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar usuario:</label>
+                  <label htmlFor="name-filter">Buscar cliente:</label>
                   <div className="filter-item-input">
                     <input
                       type="text"

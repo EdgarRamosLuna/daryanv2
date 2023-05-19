@@ -85,7 +85,7 @@ export const MainContextProvider = ({ children }) => {
       }
     }
     axios
-      .post("http://localhost/daryan-server/api/aprove", dataToSave)
+      .post(`${serverUrl}/api/aprove`, dataToSave)
       .then((res) => {
         const datares = res.data;
         if (datares.error) {
@@ -145,7 +145,7 @@ export const MainContextProvider = ({ children }) => {
     }
     //  console.log(dataToSave);
     axios
-      .post("http://localhost/daryan-server/api/save", dataToSave)
+      .post(`${serverUrl}/api/save`, dataToSave)
       .then((res) => {
         const datares = res.data;
         if (datares.error) {
@@ -763,6 +763,18 @@ export const MainContextProvider = ({ children }) => {
   const [authClientsT, setAuthClientsT] = useState([]);
   const [position, setPosition] = useState("top-center");
   const [showCharts, setShowCharts] = useState(false);
+  const [showDtable, setShowDtable] = useState(false);
+  const [showDEtable, setShowDEtable] = useState(false);
+  const [rDetailsData, setRDetailsData] = useState([]);
+  const [partNumber, setPartNumber] = useState("");
+  const [tableFilters, setTableFilters] = useState([{
+    total_in: true, 
+    total_ng: true,
+    total_ok: true,
+    total_rw: true,
+    total_sc: true,
+    total_wh: true,
+  }]);
   return (
     <MainContext.Provider
       value={{
@@ -895,6 +907,16 @@ export const MainContextProvider = ({ children }) => {
         setPosition,
         showCharts,
         setShowCharts,
+        showDtable,
+        setShowDtable,
+        rDetailsData,
+        setRDetailsData,
+        partNumber,
+        setPartNumber,
+        showDEtable,
+        setShowDEtable,
+        tableFilters,
+        setTableFilters,
       }}
     >
       <Toaster richColors position={position} closeButton />

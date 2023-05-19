@@ -5,6 +5,7 @@
   justify-content: center;
   align-items: center;
   background: linear-gradient(#570000, #020221);
+  background: linear-gradient(#002353, #00060e);
   
 }
 .login_cont {
@@ -33,14 +34,14 @@
   
 }
 .input_container label{
-  color: #570000 !important;
+  color: #002353 !important;
 }
 .input_container input {
   height: 35px;
   min-width: 300px;
-  border: 1px solid #570000;
+  border: 1px solid #002353;
   background: transparent;
-  color: #570000;
+  color: #002353;
   padding: 0 10px;
   box-sizing: border-box;
   outline: none;
@@ -53,9 +54,9 @@
 .button_container button {
   min-width: 300px;
   height: 30px;
-  border: 1px solid #570000;
+  border: 1px solid #002353;
   background: #fff;
-  color: #570000;
+  color: #002353;
   margin-top: 15px;
   cursor: pointer;
   transition: all 0.3s;
@@ -64,7 +65,7 @@
 .button_container button:hover {
   transition: all 0.3s;
   border: 1px solid #fff;
-  background: #570000;
+  background: #002353;
   color: #fff;
 }
 .logo{
@@ -80,5 +81,5 @@
   display: flex;
   justify-content: end;
   font-size: 0.9em;
-  color: #520001;
+  color: #002353;
 }
