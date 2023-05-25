@@ -6,7 +6,7 @@ import { useEffect } from "react";
 const TotalByPartNumber = () => {
   const { rDetailsData, partNumber } = useContext(MainContext);
 
-  console.log(rDetailsData);
+  ///console.log(rDetailsData);
   const [total_inspected, setTotalInspected] = useState([]);
   useEffect(() => {
     // Sum the values of the object array

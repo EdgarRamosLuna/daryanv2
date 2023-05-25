@@ -145,7 +145,7 @@ const GlobalStyle = createGlobalStyle`
   width: 100%;
   display: flex;
   gap: 10px;
-  
+  margin: 0 25px;
   /* button {
       display: flex;
       align-items: center;

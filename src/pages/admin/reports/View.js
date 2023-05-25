@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { MainContext } from "../../../context/MainContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { StyledForm, Table } from "../../../styles/Styles";
 import SecondTableCreate from "./SecondTableCreate";
 import DatePickerInputU from "../../../components/DateInputUpdate";
@@ -61,6 +61,7 @@ const View = () => {
     setNumColumnas,
     suppliers,
     toast,
+    isAdmin
   } = useContext(MainContext);
   const params = useParams();
   const idReport = params.id;
@@ -979,6 +980,13 @@ const View = () => {
       });
     }
   };
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isAdmin) {
+      navigate(`/client/reports/${idReport}`, { replace: true })
+    }
+  }, [isAdmin]);
+  
   return (
     <>
       <div className="container">

@@ -15,8 +15,6 @@ import Checkbox from "../Checkbox";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import { Link, useNavigate } from "react-router-dom";
-import FilterSearch from "./FilterSearch";
-import TableTotals from "./TableTotals";
 import TableComponent from "./TableComponent";
 import Chart1 from "../Chart1";
 import Chart2 from "../Chart2";
@@ -33,6 +31,7 @@ import { ModalCard } from "../../styles/ModalCard";
 import FilterTable from "./FilterTable";
 registerLocale("es", es);
 function ReportsTable({ data }) {
+  console.log(data);
   const {
     handleDel,
     setSort,
@@ -51,8 +50,15 @@ function ReportsTable({ data }) {
     setAuthClientsT,
     showCharts,
     firstDayOfYear,
-    isAdmin
+    isLoading,
+    setIsLoading,
   } = useContext(MainContext);
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  }, [data, activeTab]);
   const [nameFilter, setNameFilter] = useState("");
   const [nameFilter2, setNameFilter2] = useState("");
   const [lastnameFilter, setLastnameFilter] = useState("");
@@ -60,7 +66,6 @@ function ReportsTable({ data }) {
   const today = new Date();
   const sixDaysLater = new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000);
   const sixDaysBefore = new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000);
-  
 
   const [dateStart, setDateStart] = useState(firstDayOfYear);
   const [dateEnd, setDateEnd] = useState(today);
@@ -73,7 +78,7 @@ function ReportsTable({ data }) {
   const [uniqueSerial, setUniqueSerial] = useState([]);
   const [uniqueSuppliers, setUniqueSuppliers] = useState([]);
   const [uniquePart_number, setUniquePart_number] = useState([]);
-  const [filterOption, setFilterOption] = useState(0);
+  const [filterOption, setFilterOption] = useState(1);
   const [clients, setClients] = useState([]);
   const authClientsC = async (id) => {
     //getAuthClients
@@ -383,7 +388,6 @@ function ReportsTable({ data }) {
       const filterLot = filtersLot;
       const filterSerial = filtersSerial;
       const filterPartNumber = filtersPartNumber;
-      const filterSupplier = filtersSupplier;
       const temp = {};
       const temp2 = {};
       //console.log(filterLot);
@@ -407,23 +411,8 @@ function ReportsTable({ data }) {
         let total_re_work_parts = 0;
         let total_scrap = 0;
         let total_A = 0;
-        let total_B = 0;
-        let total_C = 0;
-        let total_D = 0;
-        let total_E = 0;
-        let total_F = 0;
-        let total_G = 0;
-        let total_H = 0;
-        let total_I = 0;
         let partNumber = data[i].part_number; // Nuevo filtro de búsqueda
-        let worked_h = Number(data[i].worked_h);
-        let supplier = data[i].supplier;
         // Calcular el total inspeccionado
-        const keyE = "E";
-        const keyF = "F";
-        const keyG = "G";
-        const keyH = "H";
-        const keyI = "I";
 
         for (let j = 0; j < reports_cc.length; j++) {
           const report_cc = reports_cc[j];
@@ -431,8 +420,7 @@ function ReportsTable({ data }) {
             !filterLot.length || filterLot.includes(report_cc.lot);
           const isSerialMatched =
             !filterSerial.length || filterSerial.includes(report_cc.serial);
-          const isSupplierMatched =
-            !filterSupplier.length || filterSupplier.includes(supplier);
+
           if (isLotMatched && isSerialMatched) {
             total_inspected += parseInt(report_cc.qt_inspected);
             total_ng_pieces += parseInt(report_cc.ng_pieces);
@@ -440,24 +428,7 @@ function ReportsTable({ data }) {
             total_re_work_parts += parseInt(report_cc.re_work_parts);
             total_scrap += parseInt(report_cc.scrap);
             total_A += parseInt(report_cc["A"]);
-            total_B += parseInt(report_cc["B"]);
-            total_C += parseInt(report_cc["C"]);
-            total_D += parseInt(report_cc["D"]);
-            if (keyE in report_cc) {
-              total_E += parseInt(report_cc["E"]);
-            }
-            if (keyF in report_cc) {
-              total_F += parseInt(report_cc["F"]);
-            }
-            if (keyG in report_cc) {
-              total_G += parseInt(report_cc["G"]);
-            }
-            if (keyH in report_cc) {
-              total_H += parseInt(report_cc["H"]);
-            }
-            if (keyI in report_cc) {
-              total_I += parseInt(report_cc["I"]);
-            }
+            console.log(parseInt(report_cc["A"]));
           }
         }
         // Aplicar filtros para cada objeto en el data
@@ -472,7 +443,6 @@ function ReportsTable({ data }) {
               filterSerial.includes(report.serial)
             )) ||
           (filterPartNumber.length && !filterPartNumber.includes(partNumber)) || // Nueva condición para el filtro de búsqueda de part_number
-          (filterSupplier.length && !filterSupplier.includes(supplier)) ||
           (filterDate &&
             (date < new Date(startDate).setHours(0, 0, 0, 0) ||
               date > new Date(endDate).setHours(23, 59, 59, 999)))
@@ -535,16 +505,7 @@ function ReportsTable({ data }) {
           total_re_work_parts: total_re_work_parts,
           total_scrap: total_scrap,
           total_A: total_A,
-          total_B: total_B,
-          total_C: total_C,
-          total_D: total_D,
-          total_E: total_E,
-          total_F: total_F,
-          total_G: total_G,
-          total_H: total_H,
-          total_I: total_I,
           date: dateString,
-          worked_h: worked_h,
         };
         if (partNumber in temp) {
           temp[partNumber].part_number = partNumber;
@@ -554,16 +515,7 @@ function ReportsTable({ data }) {
           temp[partNumber].total_re_work_parts += total_re_work_parts;
           temp[partNumber].total_scrap += total_scrap;
           temp[partNumber].total_A += total_A;
-          temp[partNumber].total_B += total_B;
-          temp[partNumber].total_C += total_C;
-          temp[partNumber].total_D += total_D;
-          temp[partNumber].total_E += total_E;
-          temp[partNumber].total_F += total_F;
-          temp[partNumber].total_G += total_G;
-          temp[partNumber].total_H += total_H;
-          temp[partNumber].total_I += total_I;
           temp[partNumber].date += dateString;
-          temp[partNumber].worked_h += worked_h;
         } else {
           //  console.log(partNumber);
           temp[partNumber] = {
@@ -574,16 +526,7 @@ function ReportsTable({ data }) {
             total_re_work_parts: total_re_work_parts,
             total_scrap: total_scrap,
             total_A: total_A,
-            total_B: total_B,
-            total_C: total_C,
-            total_D: total_D,
-            total_E: total_E,
-            total_F: total_F,
-            total_G: total_G,
-            total_H: total_H,
-            total_I: total_I,
             date: dateString,
-            worked_h: worked_h,
           };
         }
       }
@@ -667,40 +610,9 @@ function ReportsTable({ data }) {
       // console.log(JSON.stringify(groupedData));
 
       setDataToTable(summedData);
-      const totalesArray = [];
-
-      for (const key in summedData) {
-        const elementos = summedData[key];
-        const total = elementos.reduce((acumulador, elemento) => {
-          for (const propiedad in elemento) {
-            if (propiedad !== "date") {
-              acumulador[propiedad] =
-                (acumulador[propiedad] || 0) + elemento[propiedad];
-            }
-          }
-          return acumulador;
-        }, {});
-        totalesArray.push(total);
-      }
-
-      const totalG = totalesArray.reduce((acumulador, elemento) => {
-        for (const propiedad in elemento) {
-          acumulador[propiedad] =
-            (acumulador[propiedad] || 0) + elemento[propiedad];
-        }
-        return acumulador;
-      }, {});
-      setTotalGeneral(totalG);
+      console.log(temp2);
     }
-  }, [
-    data,
-    filtersPartNumber,
-    dateStart,
-    dateEnd,
-    filtersLot,
-    filtersSerial,
-    filtersSupplier,
-  ]);
+  }, [data, filtersPartNumber, dateStart, dateEnd, filtersLot, filtersSerial]);
   const filteredData = filterData(data);
   const filteredData2 = filterData2(data);
 
@@ -814,7 +726,7 @@ function ReportsTable({ data }) {
   const navigate = useNavigate();
   const singleView = (id) => {
     // window.location.href = `/admin/reports/${id}`;
-    navigate(`/admin/reports/${id}`);
+    navigate(`/client/reports/${id}`);
   };
   const singleView2 = (id) => {
     navigate(`/user/reports/2/${id}`);
@@ -830,55 +742,23 @@ function ReportsTable({ data }) {
 
   useEffect(() => {
     if (data.length !== 0) {
-      const res0 = [];
-      const seen0 = {};
-
-      // if (filtersSupplier.length > 0) {
-      //   data.forEach((item) => {
-      //     if (filtersPartNumber.includes(item.part_number)) {
-      //       if (!seen0[item.supplier]) {
-      //         seen0[item.supplier] = true;
-      //         res0.push(item.supplier);
-      //       }
-      //     } else {
-      //       if (!seen0[item.supplier]) {
-      //         seen0[item.supplier] = true;
-      //         res0.push(item.supplier);
-      //       }
-      //     }
-      //   });
-      //   setUniqueSuppliers([...new Set(res0)]);
-      // } else {
-      data.forEach((item) => {
-        if (!seen0[item.supplier]) {
-          seen0[item.supplier] = true;
-          res0.push(item.supplier);
-        }
-      });
-      setUniqueSuppliers([...new Set(res0)]);
-      //}
-      //console.log(res1);
-      //setUniqueLots(res1);
-
       const res1 = [];
       const seen = {};
 
       data.forEach((item) => {
         if (filtersPartNumber.includes(item.part_number)) {
           item.reports_cc.forEach((report) => {
-            if (filtersSupplier.includes(item.supplier)) {
-              if (filtersSerial.length > 0) {
-                if (filtersSerial.includes(report.serial)) {
-                  if (!seen[report.lot]) {
-                    seen[report.lot] = true;
-                    res1.push(report.lot);
-                  }
-                }
-              } else {
+            if (filtersSerial.length > 0) {
+              if (filtersSerial.includes(report.serial)) {
                 if (!seen[report.lot]) {
                   seen[report.lot] = true;
                   res1.push(report.lot);
                 }
+              }
+            } else {
+              if (!seen[report.lot]) {
+                seen[report.lot] = true;
+                res1.push(report.lot);
               }
             }
           });
@@ -902,21 +782,19 @@ function ReportsTable({ data }) {
         // }
         if (filtersPartNumber.includes(item.part_number)) {
           item.reports_cc.forEach((report) => {
-            if (filtersSupplier.includes(item.supplier)) {
-              if (filtersLot.length > 0) {
-                if (filtersLot.includes(report.lot)) {
-                  if (!seen2[report.serial]) {
-                    seen2[report.serial] = true;
-                    res2.push(report.serial);
-                    //  setFiltersSerial(prev => prev.filter(f => f.serial === report.serial))
-                    // console.log(report.serial);
-                  }
-                }
-              } else {
+            if (filtersLot.length > 0) {
+              if (filtersLot.includes(report.lot)) {
                 if (!seen2[report.serial]) {
                   seen2[report.serial] = true;
                   res2.push(report.serial);
+                  //  setFiltersSerial(prev => prev.filter(f => f.serial === report.serial))
+                  // console.log(report.serial);
                 }
+              }
+            } else {
+              if (!seen2[report.serial]) {
+                seen2[report.serial] = true;
+                res2.push(report.serial);
               }
             }
           });
@@ -936,37 +814,16 @@ function ReportsTable({ data }) {
       const seen3 = {};
 
       data.forEach((item) => {
-        if (filtersSupplier.includes(item.supplier)) {
-          if (!seen3[item.part_number]) {
-            seen3[item.part_number] = true;
-            res3.push(item.part_number);
-          }
-        } else {
-          // if (!seen3[item.part_number]) {
-          //   seen3[item.part_number] = true;
-          //   res3.push(item.part_number);
-          // }
+        if (!seen3[item.part_number]) {
+          seen3[item.part_number] = true;
+          res3.push(item.part_number);
         }
       });
-
-      // data.forEach((item) => {
-      //   if (!seen3[item.part_number]) {
-      //     seen3[item.part_number] = true;
-      //     res3.push(item.part_number);
-      //   }
-      // });
       setUniquePart_number(res3);
     }
 
     return () => {};
-  }, [
-    data,
-    filtersPartNumber,
-    filterOption,
-    filtersSerial,
-    filtersLot,
-    filtersSupplier,
-  ]);
+  }, [data, filtersPartNumber, filterOption, filtersSerial, filtersLot]);
   //console.log(uniqueSuppliers);
   /*useCallback(() => {
     
@@ -981,27 +838,17 @@ function ReportsTable({ data }) {
       setFiltersLot([]);
       setFiltersPartNumber([]);
     };
-    if (filterOption === "1" && filtersSupplier.length === 0) {
-      toast.error(
-        "Debes seleccionar almenos 1 proveedor para obtener los numeros de parte disponibles",
-        {
-          duration: 5000,
-        }
-      );
-      setFilterOption(0);
-      cleanFilters();
-    } else {
-      const inputsWithDataList = document.querySelectorAll("input[list]");
-      inputsWithDataList.forEach((input) => {
-        if (input !== null) {
-          input.focus();
-          input.select();
-          // Simular presionado de la tecla space
-          //    const event = new KeyboardEvent("keydown", { key: " " });
-          //  input.dispatchEvent(event);
-        }
-      });
-    }
+    // if (filterOption === "1" && filtersSupplier.length === 0) {
+    //   toast.error(
+    //     "Debes seleccionar almenos 1 proveedor para obtener los numeros de parte disponibles",
+    //     {
+    //       duration: 5000,
+    //     }
+    //   );
+    //   setFilterOption(0);
+    //   cleanFilters();
+    // } else {
+
     if (filterOption === "2" && filtersPartNumber.length === 0) {
       toast.error(
         "Debes seleccionar almenos 1 numero de parte para obtener los numeros de lote disponibles",
@@ -1182,49 +1029,6 @@ function ReportsTable({ data }) {
                   </div>
                 </div>
               </form>
-              <div
-                className="clients-container"
-                style={{
-                  visibility: uniqueClients.length > 0 ? "visible" : "hidden",
-                }}
-              >
-                <div className="select-container">
-                  <select value={selectedClient} onChange={addClientToList}>
-                    <option value="0" selected>
-                      Selecciona un cliente
-                    </option>
-                    {uniqueClients.map((option) => (
-                      <option key={option} value={option.id}>
-                        {option.fullname}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="list-container">
-                  <div className="item-list">
-                    <ul
-                      style={{
-                        display: `${
-                          clientsToReport.length > 0 ? "flex" : "none"
-                        }`,
-                      }}
-                    >
-                      {clientsToReport.map((client, ind) => (
-                        <li key={ind}>
-                          <span>{client.clientName}</span>
-                          <span onClick={() => removeClient(client.id)}>
-                            <FontAwesomeIcon
-                              icon={faTimes}
-                              color="rgb(87, 0, 0)"
-                            />
-                            {/* <i className="fa-solid fa-times"></i> */}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
             </div>
           )}
           {activeTab === 3 && (
@@ -1232,7 +1036,7 @@ function ReportsTable({ data }) {
               <form autoComplete="off">
                 <div className="filter-options">
                   <div className="filter-items">
-                    <div className="filter-item-checkbox">
+                    {/* <div className="filter-item-checkbox">
                       <div className="filter-item-in">
                         <label htmlFor="supplier">Proveedor</label>
                         <input
@@ -1271,7 +1075,7 @@ function ReportsTable({ data }) {
                           ))}
                         </ul>
                       </div>
-                    </div>
+                    </div> */}
                     <div className="filter-item-checkbox">
                       <div className="filter-item-in">
                         <label htmlFor="part_n">Numero de parte</label>
@@ -1399,7 +1203,7 @@ function ReportsTable({ data }) {
                           name="part_number"
                           value={nameFilter2}
                           onChange={handleNameFilterChange2}
-                          disabled={filtersSupplier.length === 0 ? true : false}
+                      //    disabled={filtersSupplier.length === 0 ? true : false}
                         />
 
                         <datalist id="parts_number">
@@ -1532,11 +1336,11 @@ function ReportsTable({ data }) {
                       </div>
                     </div>
                   )}
-                  {Number(filterOption) === 0 && (
+                  {/* {Number(filterOption) === 0 && (
                     <div className="filter-item">
                       <label htmlFor="name-filter">Buscar:</label>
                       <div className="filter-item-input">
-                        {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
+                        {/*<label for="ice-cream-choice">Choose a flavor:</label>/}
                         <input
                           list="suppliers"
                           id="serial"
@@ -1574,10 +1378,10 @@ function ReportsTable({ data }) {
                      id="name-filter"
                      value={nameFilter}
                      onChange={handleNameFilterChange}
-                   />*/}
+                   />}
                       </div>
                     </div>
-                  )}
+                  )} */}
                   <div className="filter-item">
                     <label htmlFor="date-filter" className="label-center">
                       Buscar por Fecha:
@@ -1831,12 +1635,12 @@ function ReportsTable({ data }) {
           )}
           {activeTab === 3 && (
             <div className="table-controlls">
-              {showFIltersT && (
-                <FilterTable />
-              )}
+              {showFIltersT && <FilterTable />}
               <div className="table-controlls-left">
                 <div
-                  className={`table-controlls-left-item ${showFIltersT ? "activeFilters" : ""}`}
+                  className={`table-controlls-left-item ${
+                    showFIltersT ? "activeFilters" : ""
+                  }`}
                   onClick={showFilterTable}
                 >
                   <i className="fa-solid fa-filter"></i>
@@ -1871,9 +1675,6 @@ function ReportsTable({ data }) {
               <table>
                 <thead>
                   <tr>
-                    <th>
-                      <Checkbox type="all" id={0} callback={handleCheckBox} />
-                    </th>
                     {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
                     <th># Parte</th>
                     <th>Planta</th>
@@ -1884,24 +1685,26 @@ function ReportsTable({ data }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {getPaginatedData().length === 0 ? (
+                  <div className={isLoading === false ? "loaderContainer" : ""}>
                     <Loader>
                       <img src="/assets/img/loading2.svg" alt="" />
                     </Loader>
+                  </div>
+                  {getPaginatedData().length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="100%"
+                        className="table-center"
+                        style={{ opacity: `${isLoading ? 0 : 1}` }}
+                      >
+                        <h1>No hay informacion en la base de datos</h1>
+                      </td>
+                    </tr>
                   ) : (
                     getPaginatedData().map((item, index) => (
-                      <tr key={index} onClick={(e) => singleView(item.id)}>
-                        <td
-                          className="table-center"
-                          onClick={(e) => e.stopPropagation()}
-                          colSpan={1}
-                        >
-                          <Checkbox
-                            type="single"
-                            id={item.id}
-                            callback={handleCheckBox}
-                          />
-                        </td>
+                      <tr 
+                      className={isLoading === false ? "tr-h rloaderContainer" : "tr-hd"}
+                      key={index} onClick={(e) => singleView(item.id)}>
                         {/* <td className="table-center">{item.id}</td> */}
                         <td className="table-center">{item.part_number}</td>
                         <td className="table-center">{item.plant}</td>
@@ -1917,10 +1720,6 @@ function ReportsTable({ data }) {
                           colSpan={1}
                         >
                           <div className="actions">
-                            <FontAwesomeIcon
-                              icon={faTrash}
-                              onClick={() => handleDel(item.id, "reports")}
-                            />
                             {/* <Link
                             to={`/admin/reports/${item.id}`}
                             style={{ color: "green" }}
@@ -1952,9 +1751,6 @@ function ReportsTable({ data }) {
               <table>
                 <thead>
                   <tr>
-                    <th>
-                      <Checkbox type="all" id={0} callback={handleCheckBox} />
-                    </th>
                     {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
                     <th># Parte</th>
                     <th>Planta</th>
@@ -1965,27 +1761,28 @@ function ReportsTable({ data }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {getPaginatedData().length === 0 ? (
+                  <div className={isLoading === false ? "loaderContainer" : ""}>
                     <Loader>
                       <img src="/assets/img/loading2.svg" alt="" />
                     </Loader>
+                  </div>
+                  {getPaginatedData().length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="100%"
+                        className="table-center"
+                        style={{ opacity: `${isLoading ? 0 : 1}` }}
+                      >
+                        <h1>No hay informacion en la base de datos</h1>
+                      </td>
+                    </tr>
                   ) : (
                     getPaginatedData().map((item, index) => (
                       <tr
                         key={index + "tabl2"}
+                        className={isLoading === false ? "tr-h rloaderContainer" : "tr-hd"}
                         onClick={(e) => singleView(item.id)}
                       >
-                        <td
-                          className="table-center"
-                          onClick={(e) => e.stopPropagation()}
-                          colSpan={1}
-                        >
-                          <Checkbox
-                            type="single"
-                            id={item.id}
-                            callback={handleCheckBox}
-                          />
-                        </td>
                         {/* <td className="table-center">{item.id}</td> */}
                         <td className="table-center">{item.part_number}</td>
                         <td className="table-center">{item.plant}</td>
@@ -2001,10 +1798,6 @@ function ReportsTable({ data }) {
                           colSpan={1}
                         >
                           <div className="actions">
-                            <FontAwesomeIcon
-                              icon={faTrash}
-                              onClick={() => handleDel(item.id, "reports")}
-                            />
                             {/* <Link
                            to={`/admin/reports/${item.id}`}
                            style={{ color: "green" }}

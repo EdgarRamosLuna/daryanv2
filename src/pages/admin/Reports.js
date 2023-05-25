@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import ReportsTable from "../../components/admin/Reports";
+import ReportsTable2 from "../../components/other_user/Reports";
 import { MainContext } from "../../context/MainContext";
 
 const Reports = () => {
@@ -15,6 +16,7 @@ const Reports = () => {
     setTitulosColumnas,
     agregarColumna,
     serverUrl,
+    isAdmin,
   } = useContext(MainContext);
 
   useEffect(() => {
@@ -30,14 +32,14 @@ const Reports = () => {
       })
       .then((data) => {
         const reportes = Object.values(data);
-       // console.log(reportes);
+        // console.log(reportes);
         localStorage.setItem("dataTable", JSON.stringify(reportes));
         setData(reportes);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [isAdmin]);
   /*
   const [dataTa, setDataTa] = useState([]);
   useEffect(() => {
@@ -81,7 +83,11 @@ const Reports = () => {
   console.log(dataTa.sort((a, b) => b.id - a.id));*/
   return (
     <div className="report-cointainer">
-      <ReportsTable data={data} />
+      {isAdmin === true ? (
+        <ReportsTable data={data} />
+      ) : (
+        <ReportsTable2 data={data} />
+      )}
     </div>
   );
 };

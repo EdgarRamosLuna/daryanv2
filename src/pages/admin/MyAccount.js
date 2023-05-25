@@ -5,7 +5,7 @@ import { MainContext } from "../../context/MainContext";
 import { useState } from "react";
 import { set } from "react-hook-form";
 
-const Settings = () => {
+const MyAccount = () => {
   const { langu, setLangu } = useContext(MainContext);
   const [langI, setLangI] = useState(localStorage.getItem("lang"));
 
@@ -53,4 +53,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default MyAccount;

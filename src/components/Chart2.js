@@ -1,6 +1,6 @@
 import React from "react";
 import { useContext } from "react";
-import { Point, VictoryChart, VictoryScatter, VictoryTheme } from "victory";
+import { Point, VictoryAxis, VictoryChart, VictoryScatter, VictoryTheme } from "victory";
 import { MainContext } from "../context/MainContext";
 
 const Chart2 = ({ totalG }) => {
@@ -45,8 +45,27 @@ const Chart2 = ({ totalG }) => {
   return (
     <VictoryChart
       theme={VictoryTheme.material}
-      domain={{ x: [0, 6], y: [0, maximoY === 0 ? 10 : maximoY ] }}
+      domain={{ y: [0, maximoY === 0 ? 10 : maximoY ] }}
+      domainPadding={{ x: [20, 20] }}
     >
+      <VictoryAxis
+        // tickValues specifies both the number of ticks and where
+        // they are placed on the axis
+        //tickValues={[1, 2, 3, 4, 5, 6]}
+        tickFormat={[
+          "IN",
+          "NG",
+          "OK",
+          "RW",
+          "SC",
+          "WH",
+        ]}
+        //dependentAxis
+        />
+      <VictoryAxis
+        dependentAxis
+        
+      />
       <VictoryScatter
         size={7}
         data={data}
@@ -55,6 +74,7 @@ const Chart2 = ({ totalG }) => {
             fill: ({ datum }) => datum.fill,
           },
         }}
+        labels={({ datum }) => datum.y}
       />
     </VictoryChart>
   );

@@ -1,0 +1,13 @@
+.App{  
+    animation-name: fadeInAnimation;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+  }
+  @keyframes fadeInAnimation {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }

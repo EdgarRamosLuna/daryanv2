@@ -765,16 +765,108 @@ export const MainContextProvider = ({ children }) => {
   const [showCharts, setShowCharts] = useState(false);
   const [showDtable, setShowDtable] = useState(false);
   const [showDEtable, setShowDEtable] = useState(false);
+  const [showConfig, setShowConfig] = useState(false);
   const [rDetailsData, setRDetailsData] = useState([]);
   const [partNumber, setPartNumber] = useState("");
-  const [tableFilters, setTableFilters] = useState([{
-    total_in: true, 
-    total_ng: true,
-    total_ok: true,
-    total_rw: true,
-    total_sc: true,
-    total_wh: true,
-  }]);
+  const [tableFilters, setTableFilters] = useState([
+    {
+      total_in: true,
+      total_ng: true,
+      total_ok: true,
+      total_rw: true,
+      total_sc: true,
+      total_wh: true,
+    },
+  ]);
+  // const LANG = [
+  //   {
+  //     value: "es",
+  //     part_nu: "Numero de parte",
+  //     date: "Fecha",
+  //     total_in: "Total Inspeccionado",
+  //     total_wh: "Total Horas Trabajadas",
+  //     total_ng: "Total NG",
+  //     total_ok: "Total OK",
+  //     total_rw: "Total Re-Trabajadas",
+  //     total_sc: "Total Scrap",
+  //   },
+  //   {
+  //     value: "en",
+  //     part_nu: "Part Number",
+  //     date: "Date",
+  //     total_in: "Total Inspected",
+  //     total_wh: "Total Worked Hours",
+  //     total_ng: "Total NG",
+  //     total_ok: "Total OK",
+  //     total_rw: "Total Re-Work Parts",
+  //     total_sc: "Total Scrap",
+  //   },
+  // ];
+  const LANG = [
+    {
+      lang: "es",
+      part_nu: "Numero de parte",      
+      total_in: "Total Inspeccionado",
+      total_wh: "Total Horas Trabajadas",
+      total_ng: "Total NG",
+      total_ok: "Total OK",
+      total_rw: "Total Re-Trabajadas",
+      total_sc: "Total Scrap",
+      inspection_reports: "Reportes de inspección",
+      hourly_reports: "Reportes por hora",
+      total_inspection_reports: "Totales reportes de inspección",
+      authorize_clients: "Autorizar clientes",
+      part_number: "# Parte",
+      plant: "Planta",
+      supplier: "Proveedor",
+      date: "Fecha",
+      status: "Estado",
+      actions: "Acciones",
+      search_by_date: "Buscar por fecha",
+      from: "Desde",
+      to: "Hasta",
+      search: "Buscar",
+      lot_number: "# Lote",
+      serial_number: "# Serie",
+    },
+    {
+      lang: "en",
+      part_nu: "Part Number",      
+      total_in: "Total Inspected",
+      total_wh: "Total Worked Hours",
+      total_ng: "Total NG",
+      total_ok: "Total OK",
+      total_rw: "Total Re-Work Parts",
+      total_sc: "Total Scrap",
+      inspection_reports: "Inspection reports",
+      hourly_reports: "Hourly reports",
+      total_inspection_reports: "Total inspection reports",
+      authorize_clients: "Authorize clients",
+      part_number: "Part number",
+      plant: "Plant",
+      supplier: "Supplier",
+      date: "Date",
+      status: "Status",
+      actions: "Actions",
+      search_by_date: "Search by date",
+      from: "From",
+      to: "To",
+      search: "Search",
+      lot_number: "Lot number",
+      serial_number: "Serial number",
+    },
+  ];
+
+  const [langu, setLangu] = useState(
+    // if localstorage languaje exist
+    localStorage.getItem("lang") ? localStorage.getItem("lang") : "es"
+  );
+  // languaje set localstorage
+  useEffect(() => {
+    localStorage.setItem("lang", langu);
+  }, [langu]);
+  const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1);
+  const [isAdmin, setIsAdmin] = useState(false);
   return (
     <MainContext.Provider
       value={{
@@ -917,6 +1009,13 @@ export const MainContextProvider = ({ children }) => {
         setShowDEtable,
         tableFilters,
         setTableFilters,
+        LANG,
+        langu,
+        setLangu,
+        showConfig,
+        setShowConfig,
+        firstDayOfYear,
+        isAdmin, setIsAdmin
       }}
     >
       <Toaster richColors position={position} closeButton />

@@ -8,7 +8,7 @@ import StatusBtn from "../StatusBtn";
 
 const AuthUsers = ({ data, deleteAU }) => {
   //console.log(data);
-  //const { toast } = useContext(MainContext);
+  const { isAdmin, lang } = useContext(MainContext);
 
   return (
     <AuthUsersContainer>
@@ -44,19 +44,33 @@ const AuthUsers = ({ data, deleteAU }) => {
                 return (
                   <tr key={user.id + "client"}>
                     <td>{user.fullname}</td>
-                    <td>                      
-                      <StatusBtn
+                    <td>
+                      {isAdmin === true ? <StatusBtn
                         status={Number(user.status)}
                         id={user.id}
                         table="auth_clients"
                       />
+                        : 
+                        user.status === '1' ? <>
+                        {
+                          lang === 'es' ? <button className="active btn">Activo</button> : <button className="active btn">Active</button>
+                        }
+
+                        </> : <>
+                        {
+                          lang === 'es'? <button className="inactive btn">Inactivo</button> : <button className="inactive btn">Inactive</button>
+                        }
+                        </>
+                    }
                     </td>
                     <td>{user.auth_date}</td>
                     <td>
-                      <FontAwesomeIcon
-                        icon={faTrash}
-                        onClick={(e) => deleteAU(user.id)}
-                      />
+                      {isAdmin === true && (
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          onClick={(e) => deleteAU(user.id)}
+                        />
+                      )}
                     </td>
                   </tr>
                 );

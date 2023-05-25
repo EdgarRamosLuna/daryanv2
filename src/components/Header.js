@@ -12,101 +12,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import SubHeader from "./SubHeader";
 import { MainContext } from "../context/MainContext";
 import { useContext } from "react";
-const linksUser = [
-  {
-    label: "Mis Reportes",
-    route: "/user/reports",
-    ico: faFileLines,
-    fun: () => {},
-  },
-  // {
-  //   label: "Mi Cuenta",
-  //   route: "/user/my-account",
-  //   ico: faGear,
-  //   fun: () => {},
-  // },
-  {
-    label: "Salir",
-    route: "/user/login",
-    ico: faRightFromBracket,
-    fun: (e) => {
-      localStorage.removeItem("sesType");
-    },
-  },
-];
-
-const linksClient = [
-  {
-    label: "Mis Reportes",
-    route: "/client/reports",
-    ico: faFileLines,
-    fun: () => {},
-  },
-/*  {
-    label: "Mi Cuenta",
-    route: "/client/my-account",
-    ico: faGear,
-    fun: () => {},
-  },*/
-  {
-    label: "Salir",
-    route: "/client/login",
-    ico: faRightFromBracket,
-    fun: (e) => {
-      localStorage.removeItem("sesType");
-    },
-  },
-];
-const linksAdmin = [
-  {
-    label: "Reportes",
-    route: "/admin/reports",
-    ico: faFileLines,
-    fun: (e) => {},
-  },
-  {
-    label: "Usuarios",
-    route: "/admin/users",
-    ico: faUsers,
-    fun: (e) => {},
-  },
-  {
-    label: "Empleados",
-    route: "/admin/employees",
-    ico: faUsersGear,
-    fun: (e) => {},
-  },
-  {
-    label: "Clientes",
-    route: "/admin/clients",
-    ico: faUsersBetweenLines,
-    fun: (e) => {},
-  },
-  {
-    label: "Proveedores",
-    route: "/admin/suppliers",
-    ico: faUsersViewfinder,
-    fun: (e) => {},
-  },
-  {
-    label: "Mi Cuenta",
-    route: "/admin/my-account",
-    ico: faGear,
-    fun: (e) => {},
-  },
-  {
-    label: "Salir",
-    route: "/admin/login",
-    ico: faRightFromBracket,
-    fun: (e) => {
-      localStorage.removeItem("sesType");
-    },
-  },
-];
+import { checkClient, checkEmployee, checkUser } from "../api/daryan.api";
 
 let val;
 if (typeof window !== "undefined") {
@@ -115,9 +25,468 @@ if (typeof window !== "undefined") {
   val = value;
 }
 export default function Header() {
+  const {
+    toast,
+    btnCloseRef,
+    showConfig,
+    setShowConfig,
+    langu,
+    isAdmin,
+    setIsAdmin,
+  } = useContext(MainContext);
+  const pathname = useLocation().pathname;
+  const navigate = useNavigate();
   const [mapData, setMapData] = useState([]);
-  const {btnCloseRef} = useContext(MainContext)
+
+  const initialForm = [
+    {
+      label: `${langu === "es" ? "Reportes" : "Reports"}`,
+      route: "/user/reports",
+      ico: faFileLines,
+      fun: (e) => {},
+    },
+    {
+      label: `${langu === "es" ? "Configuracion" : "Configuration"}`,
+      route: "/user/my-account",
+      ico: faGear,
+      fun: (e) => {
+        setShowConfig(true);
+      },
+    },
+    {
+      label: `${langu === "es" ? "Salir" : "Logout"}`,
+      route: "/user/login",
+      ico: faRightFromBracket,
+      fun: (e) => {
+        localStorage.removeItem("sesType");
+      },
+    },
+  ];
+  const [linksUser, setLinksUser] = useState(initialForm);
+  //console.log(linksUser)
   useEffect(() => {
+    //language
+    let val;
+    if (typeof window !== "undefined") {
+      // This code will only be executed in the browser
+      const value = localStorage.getItem("sesType");
+      val = value;
+    }
+    //console.log(langu);
+    if (val === "user") {
+      setLinksUser([
+        {
+          label: `${langu === "es" ? "Reportes" : "Reports"}`,
+          route: "/user/reports",
+          ico: faFileLines,
+          fun: (e) => {},
+        },
+        {
+          label: `${langu === "es" ? "Configuracion" : "Configuration"}`,
+          route: "/user/my-account",
+          ico: faGear,
+          fun: (e) => {
+            setShowConfig((prev) => !prev);
+          },
+        },
+        {
+          label: `${langu === "es" ? "Salir" : "Logout"}`,
+          route: "/user/login",
+          ico: faRightFromBracket,
+          fun: (e) => {
+            localStorage.removeItem("sesType");
+          },
+        },
+      ]);
+    }
+    if (val === "client") {
+      //console.log("client")
+      setLinksClient([
+        {
+          label: `${langu === "es" ? "Reportes" : "Reports"}`,
+          route: "/client/reports",
+          ico: faFileLines,
+          fun: (e) => {},
+        },
+        {
+          label: `${langu === "es" ? "Configuracion" : "Configuration"}`,
+          route: "/client/my-account",
+          ico: faGear,
+          fun: (e) => {
+            setShowConfig(true);
+          },
+        },
+        {
+          label: `${langu === "es" ? "Salir" : "Logout"}`,
+          route: "/client/login",
+          ico: faRightFromBracket,
+          fun: (e) => {
+            localStorage.removeItem("sesType");
+          },
+        },
+      ]);
+    }
+    if (val === "admin") {
+      if (isAdmin) {
+        setLinksAdmin([
+          {
+            label: `${langu === "es" ? "Reportes" : "Reports"}`,
+            route: "/admin/reports",
+            ico: faFileLines,
+            fun: (e) => {},
+          },
+          {
+            //label: `${langu === "es" ? "Reportes" : "Reports"}`,
+            label: `${langu === "es" ? "Usuarios" : "Users"}`,
+            route: "/admin/users",
+            ico: faUsers,
+            fun: (e) => {},
+          },
+          {
+            label: `${langu === "es" ? "Empleados" : "Employees"}`,
+            route: "/admin/employees",
+            ico: faUsersGear,
+            fun: (e) => {},
+          },
+          {
+            label: `${langu === "es" ? "Clientes" : "Clients"}`,
+            route: "/admin/clients",
+            ico: faUsersBetweenLines,
+            fun: (e) => {},
+          },
+          {
+            label: `${langu === "es" ? "Proveedores" : "Suppliers"}`,
+            route: "/admin/suppliers",
+            ico: faUsersViewfinder,
+            fun: (e) => {},
+          },
+          {
+            label: `${langu === "es" ? "Configuracion" : "Configuration"}`,
+            route: "/admin/my-account",
+            ico: faGear,
+            fun: (e) => {
+              setShowConfig(true);
+            },
+          },
+          {
+            label: `${langu === "es" ? "Salir" : "Logout"}`,
+
+            route: "/admin/login",
+            ico: faRightFromBracket,
+            fun: (e) => {
+              localStorage.removeItem("sesType");
+            },
+          },
+        ]);
+      } else {
+        setLinksAdmin([
+          {
+            label: `${langu === "es" ? "Reportes" : "Reports"}`,
+            route: "/admin/reports",
+            ico: faFileLines,
+            fun: (e) => {},
+          },
+          {
+            label: `${langu === "es" ? "Configuracion" : "Configuration"}`,
+            route: "/admin/my-account",
+            ico: faGear,
+            fun: (e) => {
+              setShowConfig(true);
+            },
+          },
+          {
+            label: `${langu === "es" ? "Salir" : "Logout"}`,
+
+            route: "/admin/login",
+            ico: faRightFromBracket,
+            fun: (e) => {
+              localStorage.removeItem("sesType");
+            },
+          },
+        ]);
+      }
+    }
+    // setLinksAdmin(initialForm);
+    // setLinksClient(initialForm);
+  }, [langu, isAdmin]);
+
+  const [linksClient, setLinksClient] = useState([
+    {
+      label: `${langu === "es" ? "Reportes" : "Reports"}`,
+      route: "/client/reports",
+      ico: faFileLines,
+      fun: (e) => {},
+    },
+    {
+      label: `${langu === "es" ? "Configuracion" : "Configuration"}`,
+      route: "/client/my-account",
+      ico: faGear,
+      fun: (e) => {
+        setShowConfig((prev) => !prev);
+      },
+    },
+    {
+      label: `${langu === "es" ? "Salir" : "Logout"}`,
+      route: "/client/login",
+      ico: faRightFromBracket,
+      fun: (e) => {
+        localStorage.removeItem("sesType");
+      },
+    },
+  ]);
+
+  const [linksAdmin, setLinksAdmin] = useState([
+    {
+      label: `${langu === "es" ? "Configuracion" : "Configuration"}`,
+      route: "/admin/my-account",
+      ico: faGear,
+      fun: (e) => {
+        setShowConfig(true);
+      },
+    },
+    {
+      label: `${langu === "es" ? "Salir" : "Logout"}`,
+
+      route: "/admin/login",
+      ico: faRightFromBracket,
+      fun: (e) => {
+        localStorage.removeItem("sesType");
+      },
+    },
+  ]);
+  useEffect(() => {
+    //console.log(val);
+    // request to api to valida the token
+    const token = localStorage.getItem("t");
+    const handleStorageChange = (event) => {
+      if (event.key === 'sesType') {
+        console.log('El valor de "sesType" ha cambiado a: ' + event.newValue);
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+     const val = localStorage.getItem("sesType");
+
+    //console.log(val, token);
+    const validateUser = async (token) => {
+      if (val === "admin") {
+        await checkUser(token)
+          .then((res) => {
+            const datares = res.data;
+            if (datares.error) {
+              toast.error(datares.message, {
+                duration: 5000,
+              });
+              localStorage.removeItem("sesType");
+              navigate("/admin/login");
+            } else {
+              //localStorage.setItem("sesType", "user");
+              // get token from local storage
+              
+              if (Number(datares.i) === 1) {
+                setIsAdmin(true);
+                console.log("asadsaasdasd")
+                //localStorage.setItem("l", "1");
+                setLinksAdmin([
+                  {
+                    label: `${langu === "es" ? "Reportes" : "Reports"}`,
+                    route: "/admin/reports",
+                    ico: faFileLines,
+                    fun: (e) => {},
+                  },
+                  {
+                    //label: `${langu === "es" ? "Reportes" : "Reports"}`,
+                    label: `${langu === "es" ? "Usuarios" : "Users"}`,
+                    route: "/admin/users",
+                    ico: faUsers,
+                    fun: (e) => {},
+                  },
+                  {
+                    label: `${langu === "es" ? "Empleados" : "Employees"}`,
+                    route: "/admin/employees",
+                    ico: faUsersGear,
+                    fun: (e) => {},
+                  },
+                  {
+                    label: `${langu === "es" ? "Clientes" : "Clients"}`,
+                    route: "/admin/clients",
+                    ico: faUsersBetweenLines,
+                    fun: (e) => {},
+                  },
+                  {
+                    label: `${langu === "es" ? "Proveedores" : "Suppliers"}`,
+                    route: "/admin/suppliers",
+                    ico: faUsersViewfinder,
+                    fun: (e) => {},
+                  },
+                  {
+                    label: `${langu === "es" ? "Configuracion" : "My Account"}`,
+                    route: "/admin/my-account",
+                    ico: faGear,
+                    fun: (e) => {
+                      setShowConfig(true);
+                    },
+                  },
+                  {
+                    label: `${langu === "es" ? "Salir" : "Logout"}`,
+
+                    route: "/admin/login",
+                    ico: faRightFromBracket,
+                    fun: (e) => {
+                      localStorage.removeItem("sesType");
+                    },
+                  },
+                ]);
+              }else{
+                setLinksAdmin([
+                  {
+                    label: `${langu === "es" ? "Reportes" : "Reports"}`,
+                    route: "/admin/reports",
+                    ico: faFileLines,
+                    fun: (e) => {},
+                  },                  
+                  {
+                    label: `${langu === "es" ? "Configuracion" : "My Account"}`,
+                    route: "/admin/my-account",
+                    ico: faGear,
+                    fun: (e) => {
+                      setShowConfig(true);
+                    },
+                  },
+                  {
+                    label: `${langu === "es" ? "Salir" : "Logout"}`,
+
+                    route: "/admin/login",
+                    ico: faRightFromBracket,
+                    fun: (e) => {
+                      localStorage.removeItem("sesType");
+                    },
+                  },
+                ]);
+              }
+              //console.log(datares.i);
+              //router.push('/user/reports');
+              //    window.location.replace("/user/reports");
+              //const { email, name, id_supplier, hour } = data;
+              //const { last_id } = datares;
+              // setDataClients((prev) => [
+              //   {
+              //     id: `${last_id}`,
+              //     id_supplier: `${id_supplier}`,
+              //     fullname: name,
+              //     email,
+              //     status: "1",
+              //     hour: Number(hour) === 1 ? true : false,
+              //   },
+              //   ...prev,
+              // ]);
+
+              // btnCloseRef.current.click();
+            }
+          })
+          .catch((err) => {
+            //console.log(err);
+            toast.error(err, {
+              duration: 5000,
+            });
+          });
+      }
+      if (val === "user") {
+        await checkEmployee(token)
+          .then((res) => {
+            const datares = res.data;
+            if (datares.error) {
+              toast.error(datares.message, {
+                duration: 5000,
+              });
+              localStorage.removeItem("sesType");
+              navigate("/user/login");
+              //remove the sesType from local storage
+            } else {
+              //localStorage.setItem("sesType", "user");
+              // get token from local storage
+              //router.push('/user/reports');
+              //    window.location.replace("/user/reports");
+              //const { email, name, id_supplier, hour } = data;
+              //const { last_id } = datares;
+              // setDataClients((prev) => [
+              //   {
+              //     id: `${last_id}`,
+              //     id_supplier: `${id_supplier}`,
+              //     fullname: name,
+              //     email,
+              //     status: "1",
+              //     hour: Number(hour) === 1 ? true : false,
+              //   },
+              //   ...prev,
+              // ]);
+              // btnCloseRef.current.click();
+            }
+          })
+          .catch((err) => {
+            //console.log(err);
+            toast.error(err, {
+              duration: 5000,
+            });
+          });
+      }
+      if (val === "client") {
+        await checkClient(token)
+          .then((res) => {
+            const datares = res.data;
+            if (datares.error) {
+              toast.error(datares.message, {
+                duration: 5000,
+              });
+              localStorage.removeItem("sesType");
+              navigate("/client/login");
+            } else {
+              //localStorage.setItem("sesType", "user");
+              // get token from local storage
+              //router.push('/user/reports');
+              //    window.location.replace("/user/reports");
+              //const { email, name, id_supplier, hour } = data;
+              //const { last_id } = datares;
+              // setDataClients((prev) => [
+              //   {
+              //     id: `${last_id}`,
+              //     id_supplier: `${id_supplier}`,
+              //     fullname: name,
+              //     email,
+              //     status: "1",
+              //     hour: Number(hour) === 1 ? true : false,
+              //   },
+              //   ...prev,
+              // ]);
+              // btnCloseRef.current.click();
+            }
+          })
+          .catch((err) => {
+            //console.log(err);
+            toast.error(err, {
+              duration: 5000,
+            });
+          });
+      }
+    };
+    validateUser(token);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  //useEffect(() => {}, [val]);
+
+  useEffect(() => {
+    // const handleStorageChange = (event) => {
+    //   if (event.key === 'sesType') {
+    //     console.log('El valor de "sesType" ha cambiado a: ' + event.newValue);
+    //   }
+    // };
+    // window.addEventListener('storage', handleStorageChange);
+    const val = localStorage.getItem("sesType");
+    if (val === null) {
+      navigate("/");
+    }
     if (val === "user") {
       setMapData(linksUser);
     }
@@ -127,11 +496,15 @@ export default function Header() {
     if (val === "admin") {
       setMapData(linksAdmin);
     }
-  }, []);
-  const pathname = useLocation().pathname;
+    return () => {
+      // window.removeEventListener('storage', handleStorageChange);
+      //console.log("unmount");
+      //setMapData(initialForm);
+    };
+  }, [linksUser, linksClient, linksAdmin]);
 
   useEffect(() => {
-    btnCloseRef.current &&  btnCloseRef.current.click();
+    btnCloseRef.current && btnCloseRef.current.click();
   }, [pathname]);
   //console.log(pathname.includes("reports"));
   return (
@@ -140,7 +513,7 @@ export default function Header() {
         <div className="menu-container">
           <nav>
             <ul>
-            <li className={style.logo}>
+              <li className={style.logo}>
                 <Link href="/app/admin" className="logo">
                   <img src="/assets/img/logo.png" alt="Daryan Saltillo" />
                 </Link>
@@ -148,8 +521,23 @@ export default function Header() {
               {mapData.map(({ label, route, ico, fun }, ind) => (
                 <li key={route}>
                   <Link
-                    to={route}
-                    onClick={(e) => (label === "Salir" ? fun(e) : "")}
+                    to={
+                      label === "Mi Cuenta" ||
+                      label === "My Account" ||
+                      label === "Configuracion" ||
+                      label === "Configuration"
+                        ? "#"
+                        : route
+                    }
+                    onClick={(e) =>
+                      (label === "Salir" ||
+                        label === "Logout" ||
+                        label === "Mi Cuenta" ||
+                        label === "My Account" ||
+                        label === "Configuracion" ||
+                        label === "Configuration") &&
+                      fun(e)
+                    }
                     className={pathname.includes(`${route}`) ? "active" : ""}
                   >
                     <div className={style.ico}>

@@ -2,32 +2,52 @@ import React, { useContext, useEffect, useState } from "react";
 import ReportsTable from "../../components/employee/Reports";
 
 import { MainContext } from "../../context/MainContext";
+import { getEmployReports } from "../../api/daryan.api";
 
 const Reports = () => {
-  const { dataSes, dataT, dataTS, reportData, data, setData, setNumColumnas } =
-    useContext(MainContext);
+  const {
+    dataSes,
+    dataT,
+    dataTS,
+    reportData,
+    data,
+    setData,
+    setNumColumnas,
+    toast,
+  } = useContext(MainContext);
   //console.log(dataT);
 
   useEffect(() => {
-    fetch("http://localhost/daryan-server/api/get")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Request failed.");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const reportes = Object.values(data); 
+    const token = localStorage.getItem("t");
+    const request = async () => {
+      await getEmployReports(token)
+        .then((res) => {
+          const datares = res.data;
+          const reportes = Object.values(datares);
           console.log(reportes);
-        localStorage.setItem("dataTable", JSON.stringify(reportes));  
-        setData(reportes);
-        
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+          localStorage.setItem("dataTable", JSON.stringify(reportes));
+          setData(reportes);
+          // toast.success(datares.message, {
+          //   duration: 4000,
+          // });
+          // setTimeout(() => {
+          //   navigate("/admin/reports");
+          // }, 5000);
+        })
+        .catch((err) => {
+          //console.log(err);
+          toast.error(err, {
+            duration: 5000,
+          });
+        });
+    };
+    request();
   }, []);
   /*
+  const reportes = Object.values(data);
+  console.log(reportes);
+  localStorage.setItem("dataTable", JSON.stringify(reportes));
+  setData(reportes);
   const [dataTa, setDataTa] = useState([]);
   useEffect(() => {
     const date = new Date();

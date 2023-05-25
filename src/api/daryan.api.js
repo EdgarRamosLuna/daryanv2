@@ -20,9 +20,22 @@ export const statusUser = (data) =>
       Authorization: `Bearer 125465`,
     },
   });
+export const loginUser = (data) => serverApi.post("/login/", data);
+export const checkUser = (token) =>
+  serverApi.get("/check_user/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
 // Employee API
 export const getEmployee = (id) => serverApi.post("/get_employee/", id);
+export const getEmployReports = (token) =>
+  serverApi.get("/get_employ_reports/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 export const createEmployee = (data) =>
   serverApi.post("/create_employee/", data);
 export const updateEmployee = (data) =>
@@ -37,6 +50,13 @@ export const statusEmployee = (data) =>
   serverApi.post("/status_employee/", data, {
     headers: {
       Authorization: `Bearer 125465`,
+    },
+  });
+export const loginEmployee = (data) => serverApi.post("/login2/", data);
+export const checkEmployee = (token) =>
+  serverApi.get("/check_employee/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -84,7 +104,20 @@ export const authClients2 = (data) =>
       Authorization: `Bearer 125465`,
     },
   });
+export const loginClient = (data) => serverApi.post("/login3/", data);
+export const checkClient = (token) =>
+  serverApi.get("/check_client/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
+export const getClientReports = (token) =>
+  serverApi.get("/get_client_reports/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 //export const getClients = () => serverApi.get("/get_clients/");
 
 // Supplier API

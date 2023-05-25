@@ -15,8 +15,6 @@ import Checkbox from "../Checkbox";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import { Link, useNavigate } from "react-router-dom";
-import FilterSearch from "./FilterSearch";
-import TableTotals from "./TableTotals";
 import TableComponent from "./TableComponent";
 import Chart1 from "../Chart1";
 import Chart2 from "../Chart2";
@@ -33,6 +31,7 @@ import { ModalCard } from "../../styles/ModalCard";
 import FilterTable from "./FilterTable";
 registerLocale("es", es);
 function ReportsTable({ data }) {
+  console.log(data);
   const {
     handleDel,
     setSort,
@@ -51,8 +50,15 @@ function ReportsTable({ data }) {
     setAuthClientsT,
     showCharts,
     firstDayOfYear,
-    isAdmin
+    isLoading,
+    setIsLoading,
   } = useContext(MainContext);
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  }, [data, activeTab]);
   const [nameFilter, setNameFilter] = useState("");
   const [nameFilter2, setNameFilter2] = useState("");
   const [lastnameFilter, setLastnameFilter] = useState("");
@@ -60,7 +66,6 @@ function ReportsTable({ data }) {
   const today = new Date();
   const sixDaysLater = new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000);
   const sixDaysBefore = new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000);
-  
 
   const [dateStart, setDateStart] = useState(firstDayOfYear);
   const [dateEnd, setDateEnd] = useState(today);
@@ -814,7 +819,7 @@ function ReportsTable({ data }) {
   const navigate = useNavigate();
   const singleView = (id) => {
     // window.location.href = `/admin/reports/${id}`;
-    navigate(`/admin/reports/${id}`);
+    navigate(`/client/reports/${id}`);
   };
   const singleView2 = (id) => {
     navigate(`/user/reports/2/${id}`);
@@ -1182,49 +1187,6 @@ function ReportsTable({ data }) {
                   </div>
                 </div>
               </form>
-              <div
-                className="clients-container"
-                style={{
-                  visibility: uniqueClients.length > 0 ? "visible" : "hidden",
-                }}
-              >
-                <div className="select-container">
-                  <select value={selectedClient} onChange={addClientToList}>
-                    <option value="0" selected>
-                      Selecciona un cliente
-                    </option>
-                    {uniqueClients.map((option) => (
-                      <option key={option} value={option.id}>
-                        {option.fullname}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="list-container">
-                  <div className="item-list">
-                    <ul
-                      style={{
-                        display: `${
-                          clientsToReport.length > 0 ? "flex" : "none"
-                        }`,
-                      }}
-                    >
-                      {clientsToReport.map((client, ind) => (
-                        <li key={ind}>
-                          <span>{client.clientName}</span>
-                          <span onClick={() => removeClient(client.id)}>
-                            <FontAwesomeIcon
-                              icon={faTimes}
-                              color="rgb(87, 0, 0)"
-                            />
-                            {/* <i className="fa-solid fa-times"></i> */}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
             </div>
           )}
           {activeTab === 3 && (
@@ -1831,12 +1793,12 @@ function ReportsTable({ data }) {
           )}
           {activeTab === 3 && (
             <div className="table-controlls">
-              {showFIltersT && (
-                <FilterTable />
-              )}
+              {showFIltersT && <FilterTable />}
               <div className="table-controlls-left">
                 <div
-                  className={`table-controlls-left-item ${showFIltersT ? "activeFilters" : ""}`}
+                  className={`table-controlls-left-item ${
+                    showFIltersT ? "activeFilters" : ""
+                  }`}
                   onClick={showFilterTable}
                 >
                   <i className="fa-solid fa-filter"></i>
@@ -1871,9 +1833,6 @@ function ReportsTable({ data }) {
               <table>
                 <thead>
                   <tr>
-                    <th>
-                      <Checkbox type="all" id={0} callback={handleCheckBox} />
-                    </th>
                     {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
                     <th># Parte</th>
                     <th>Planta</th>
@@ -1884,24 +1843,26 @@ function ReportsTable({ data }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {getPaginatedData().length === 0 ? (
+                  <div className={isLoading === false ? "loaderContainer" : ""}>
                     <Loader>
                       <img src="/assets/img/loading2.svg" alt="" />
                     </Loader>
+                  </div>
+                  {getPaginatedData().length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="100%"
+                        className="table-center"
+                        style={{ opacity: `${isLoading ? 0 : 1}` }}
+                      >
+                        <h1>No hay informacion en la base de datos</h1>
+                      </td>
+                    </tr>
                   ) : (
                     getPaginatedData().map((item, index) => (
-                      <tr key={index} onClick={(e) => singleView(item.id)}>
-                        <td
-                          className="table-center"
-                          onClick={(e) => e.stopPropagation()}
-                          colSpan={1}
-                        >
-                          <Checkbox
-                            type="single"
-                            id={item.id}
-                            callback={handleCheckBox}
-                          />
-                        </td>
+                      <tr 
+                      className={isLoading === false ? "tr-h rloaderContainer" : "tr-hd"}
+                      key={index} onClick={(e) => singleView(item.id)}>
                         {/* <td className="table-center">{item.id}</td> */}
                         <td className="table-center">{item.part_number}</td>
                         <td className="table-center">{item.plant}</td>
@@ -1917,10 +1878,6 @@ function ReportsTable({ data }) {
                           colSpan={1}
                         >
                           <div className="actions">
-                            <FontAwesomeIcon
-                              icon={faTrash}
-                              onClick={() => handleDel(item.id, "reports")}
-                            />
                             {/* <Link
                             to={`/admin/reports/${item.id}`}
                             style={{ color: "green" }}
@@ -1952,9 +1909,6 @@ function ReportsTable({ data }) {
               <table>
                 <thead>
                   <tr>
-                    <th>
-                      <Checkbox type="all" id={0} callback={handleCheckBox} />
-                    </th>
                     {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
                     <th># Parte</th>
                     <th>Planta</th>
@@ -1965,27 +1919,28 @@ function ReportsTable({ data }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {getPaginatedData().length === 0 ? (
+                  <div className={isLoading === false ? "loaderContainer" : ""}>
                     <Loader>
                       <img src="/assets/img/loading2.svg" alt="" />
                     </Loader>
+                  </div>
+                  {getPaginatedData().length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="100%"
+                        className="table-center"
+                        style={{ opacity: `${isLoading ? 0 : 1}` }}
+                      >
+                        <h1>No hay informacion en la base de datos</h1>
+                      </td>
+                    </tr>
                   ) : (
                     getPaginatedData().map((item, index) => (
                       <tr
                         key={index + "tabl2"}
+                        className={isLoading === false ? "tr-h rloaderContainer" : "tr-hd"}
                         onClick={(e) => singleView(item.id)}
                       >
-                        <td
-                          className="table-center"
-                          onClick={(e) => e.stopPropagation()}
-                          colSpan={1}
-                        >
-                          <Checkbox
-                            type="single"
-                            id={item.id}
-                            callback={handleCheckBox}
-                          />
-                        </td>
                         {/* <td className="table-center">{item.id}</td> */}
                         <td className="table-center">{item.part_number}</td>
                         <td className="table-center">{item.plant}</td>
@@ -2001,10 +1956,6 @@ function ReportsTable({ data }) {
                           colSpan={1}
                         >
                           <div className="actions">
-                            <FontAwesomeIcon
-                              icon={faTrash}
-                              onClick={() => handleDel(item.id, "reports")}
-                            />
                             {/* <Link
                            to={`/admin/reports/${item.id}`}
                            style={{ color: "green" }}

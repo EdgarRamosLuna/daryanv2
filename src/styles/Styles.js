@@ -82,6 +82,7 @@ export const Table = styled.div`
     border-left: 0;
     cursor: pointer;
     transition: all 0.3s;
+    user-select: none;
     &:hover {
       transition: all 0.3s;
       background: #002353;
@@ -713,11 +714,15 @@ export const SettingsStyle = styled.div`
   flex-direction: column;
   // background: #f3f3f3;
   background: transparent;
-  width: 60%;
+  width: 90%;
   box-sizing: border-box;
-  padding: 15px 25px;
+  padding: 15px 0;
   position: relative;
   margin: 0 auto;
+  .my-acc-title{
+    text-align: center;
+    margin-bottom: 15px;
+  }
 `;
 
 export const StyledStatusBtn = styled.button`

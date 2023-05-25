@@ -30,6 +30,7 @@ import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { Table } from "../styles/Styles";
 import TotalByPartNumber from "./admin/TotalByPartNumber";
 import ReportDetails from "./admin/ReportDetails";
+import Settings from "../pages/admin/Settings";
 
 let val;
 if (typeof window !== "undefined") {
@@ -83,7 +84,11 @@ export default function SubHeader() {
     setShowCharts,
     showDtable,
     setShowDtable,
-    showDEtable, setShowDEtable
+    showDEtable,
+    setShowDEtable,
+    showConfig,
+    setShowConfig,
+    isAdmin,
   } = useContext(MainContext);
   //console.log(useParams());
 
@@ -115,8 +120,14 @@ export default function SubHeader() {
     setShowModalS(false);
     setShowModalAuth(false);
     setShowDtable(false);
-    setShowDEtable(false);
+    
+    //setShowConfig(false);
     setAuthClientsT([]);
+    //    showModalE, setShowModalE
+  };
+  const handleCloseModal = () => {    
+    setShowConfig(false);
+    setShowDEtable(false);
     //    showModalE, setShowModalE
   };
 
@@ -378,12 +389,17 @@ export default function SubHeader() {
       )}
       {showDtable === true && (
         <Modal callback={handleClose}>
-          <TotalByPartNumber/>
+          <TotalByPartNumber />
         </Modal>
       )}
       {showDEtable === true && (
-        <Modal callback={handleClose}>
+        <Modal callback={handleCloseModal}>
           <ReportDetails />
+        </Modal>
+      )}
+      {showConfig === true && (
+        <Modal callback={handleCloseModal}>
+          <Settings />
         </Modal>
       )}
       {confirm === true && (
@@ -427,11 +443,28 @@ export default function SubHeader() {
           )}
           {pathname === "/admin/reports" && (
             <>
-              {activeTab >= 1 && activeTab <= 2 && (
+              {activeTab >= 1 && activeTab <= 2 && isAdmin === 1 && (
                 <button onClick={addClients} className="auth-clientes">
                   Autorizar Clientes
                 </button>
               )}
+              {activeTab === 3 && (
+                <div className="btn-charts">
+                  <button
+                    className="chart-btn"
+                    onClick={() => setShowCharts((prev) => !prev)}
+                  >
+                    <FontAwesomeIcon
+                      icon={showCharts === true ? faEyeSlash : faEye}
+                    />
+                    <FontAwesomeIcon icon={faChartSimple} />
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+          {pathname === "/client/reports" && (
+            <>
               {activeTab === 3 && (
                 <div className="btn-charts">
                   <button

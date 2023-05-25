@@ -2,30 +2,45 @@ import React, { useContext, useEffect, useState } from "react";
 import ReportsTable from "../../components/client/Reports";
 
 import { MainContext } from "../../context/MainContext";
+import { getClientReports } from "../../api/daryan.api";
 
 const Reports = () => {
-  const { dataSes, dataT, dataTS, reportData, data, setData, setNumColumnas } =
+  const { dataSes, dataT, dataTS, reportData, data, setData, setNumColumnas, toast } =
     useContext(MainContext);
   //console.log(dataT);
 
   useEffect(() => {
-    fetch("http://localhost/daryan-server/api/get")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Request failed.");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const reportes = Object.values(data); 
+    const token = localStorage.getItem("t");
+    const request = async () => {
+      await getClientReports(token)
+        .then((res) => {
+          const datares = res.data;
+
+          if(datares.error) {
+            // toast.error(datares.message, {
+            //   duration: 5000,
+            // });
+            return;
+          }
+          const reportes = Object.values(datares);
           console.log(reportes);
-        localStorage.setItem("dataTable", JSON.stringify(reportes));  
-        setData(reportes);
-        
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+          localStorage.setItem("dataTable", JSON.stringify(reportes));
+          setData(reportes);
+          // toast.success(datares.message, {
+          //   duration: 4000,
+          // });
+          // setTimeout(() => {
+          //   navigate("/admin/reports");
+          // }, 5000);
+        })
+        .catch((err) => {
+          //console.log(err);
+          toast.error(err, {
+            duration: 5000,
+          });
+        });
+    };
+    request();
   }, []);
   /*
   const [dataTa, setDataTa] = useState([]);
