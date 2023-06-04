@@ -158,3 +158,17 @@ export const delReport = (id) =>
       Authorization: `Bearer 123456`,
     },
   });
+export const getReportsByPartNumber = ({ partNumber, token }) =>
+  serverApi.post("/reports/grbpn/", partNumber, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+export const saveReportToDb = ({ dataToSave, token }) =>
+  serverApi.post("/save", dataToSave, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });

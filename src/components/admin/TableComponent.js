@@ -28,16 +28,17 @@ const TableComponent = ({ groupedData, loader }) => {
     //console.log(date);
     //console.log(partNumber);
     //console.log(groupedData);
- 
+
     setShowDEtable(true);
     setPartNumber(`${date}`);
     const filteredData = groupedData[partNumber].filter(
       (item) => item.date === date.toString()
     );
-    
+
     setRDetailsData(filteredData);
   };
 
+  //console.log(groupedData)
   return (
     <table className="table-totals">
       <thead>

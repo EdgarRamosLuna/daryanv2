@@ -72,6 +72,8 @@ const View = () => {
           (data) => Number(data.id) === Number(idReport)
         )[0]
       : data.filter((data) => Number(data.id) === Number(idReport))[0];
+
+  console.log(eData);
   const [dataC, setDataC] = useState(eData);
   const [producedBy, setProducedBy] = useState(eData.made_by);
   const [checkedBy, setCheckedBy] = useState(eData.checked_by);
@@ -271,7 +273,7 @@ const View = () => {
   useEffect(() => {
     setNumColumnas2(numColumnas);
   }, [numColumnas]);
-
+  //console.log(titulosColumnas);
   // const agregarColumnas = (e) => {
   //   console.log('sdsd');
   //   setTitulosColumnas((prevTitulos) => {
@@ -909,7 +911,7 @@ const View = () => {
     keys[9] = <><div className="th-title">scrap <span className="required">*</span></div></>;
     keys.splice(10, 2);
 
-    //console.log(keys);
+    console.log(keys);
     const kLenght = keys.length + 1;
     setNumColumnas(kLenght);
     // if (lastKey !== "I") {
@@ -982,8 +984,11 @@ const View = () => {
   };
   const navigate = useNavigate();
   useEffect(() => {
-    if (!isAdmin) {
-      navigate(`/client/reports/${idReport}`, { replace: true })
+    if(isAdmin !== null){      
+      console.log(isAdmin);
+      if (!isAdmin) {
+        navigate(`/client/reports/${idReport}`, { replace: true })
+      }
     }
   }, [isAdmin]);
   

@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { Toaster, toast } from "sonner";
 import {
   getSuppliers,
+  saveReportToDb,
   statusAuthClient,
   statusClient,
   statusEmployee,
@@ -97,7 +98,7 @@ export const MainContextProvider = ({ children }) => {
             duration: 4000,
           });
           setTimeout(() => {
-            navigate("/admin/reports");
+               navigate("/admin/reports");
           }, 5000);
         }
       })
@@ -109,7 +110,8 @@ export const MainContextProvider = ({ children }) => {
       });
   };
   const navigate = useNavigate();
-  const saveReport = (e) => {
+  const token = localStorage.getItem("t");
+  const saveReport = async (e) => {
     const dT = dataToSave[0];
     //console.log(dataToSave);
 
@@ -144,8 +146,7 @@ export const MainContextProvider = ({ children }) => {
       }
     }
     //  console.log(dataToSave);
-    axios
-      .post(`${serverUrl}/api/save`, dataToSave)
+    await saveReportToDb({ dataToSave, token })
       .then((res) => {
         const datares = res.data;
         if (datares.error) {
@@ -156,9 +157,9 @@ export const MainContextProvider = ({ children }) => {
           toast.success(datares.message, {
             duration: 4000,
           });
-          // setTimeout(() => {
-          //   navigate("/admin/reports");
-          // }, 5000);
+          setTimeout(() => {
+            navigate("/users/reports");
+          }, 5000);
         }
       })
       .catch((err) => {
@@ -805,7 +806,7 @@ export const MainContextProvider = ({ children }) => {
   const LANG = [
     {
       lang: "es",
-      part_nu: "Numero de parte",      
+      part_nu: "Numero de parte",
       total_in: "Total Inspeccionado",
       total_wh: "Total Horas Trabajadas",
       total_ng: "Total NG",
@@ -831,7 +832,7 @@ export const MainContextProvider = ({ children }) => {
     },
     {
       lang: "en",
-      part_nu: "Part Number",      
+      part_nu: "Part Number",
       total_in: "Total Inspected",
       total_wh: "Total Worked Hours",
       total_ng: "Total NG",
@@ -866,7 +867,7 @@ export const MainContextProvider = ({ children }) => {
     localStorage.setItem("lang", langu);
   }, [langu]);
   const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(null);
   return (
     <MainContext.Provider
       value={{
@@ -1015,7 +1016,9 @@ export const MainContextProvider = ({ children }) => {
         showConfig,
         setShowConfig,
         firstDayOfYear,
-        isAdmin, setIsAdmin
+        isAdmin,
+        setIsAdmin,
+        token,
       }}
     >
       <Toaster richColors position={position} closeButton />

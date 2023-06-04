@@ -24,7 +24,7 @@ const PdfTest = () => (
                 <th>Name</th>
                 <th>Age</th>
                 <th>Occupation</th>
-              </tr>
+              </tr> 
             </thead>
             <tbody>
               <tr>

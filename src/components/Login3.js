@@ -31,6 +31,7 @@ export default function Login3() {
           toast.error(datares.msg, {
             duration: 5000,
           });
+          setLoader(false);
         } else {
           localStorage.setItem("sesType", "admin");
           localStorage.setItem("t", datares.token);

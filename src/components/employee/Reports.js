@@ -58,7 +58,7 @@ function ReportsTable({ data }) {
     setTimeout(() => {
       setIsLoading(false);
     }, 500);
-  }, [data]);
+  }, []);
   const [nameFilter, setNameFilter] = useState("");
   const [nameFilter2, setNameFilter2] = useState("");
   const [lastnameFilter, setLastnameFilter] = useState("");
@@ -819,7 +819,8 @@ function ReportsTable({ data }) {
   const navigate = useNavigate();
   const singleView = (id) => {
     // window.location.href = `/admin/reports/${id}`;
-    navigate(`/admin/reports/${id}`);
+    //navigate(`/admin/reports/${id}`);
+    navigate(`/user/reports/${id}`);
   };
   const singleView2 = (id) => {
     navigate(`/user/reports/2/${id}`);
@@ -1876,9 +1877,9 @@ function ReportsTable({ data }) {
               <table>
                 <thead>
                   <tr>
-                    <th>
+                    {/* <th>
                       <Checkbox type="all" id={0} callback={handleCheckBox} />
-                    </th>
+                    </th> */}
                     {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
                     <th># Parte</th>
                     <th>Planta</th>
@@ -1889,29 +1890,27 @@ function ReportsTable({ data }) {
                   </tr>
                 </thead>
                 <tbody>
-                <div className={isLoading === false ? "loaderContainer" : ""}>
+                  {getPaginatedData().length === 0 ? (
                     <Loader>
                       <img src="/assets/img/loading2.svg" alt="" />
                     </Loader>
-                  </div>
-                  {getPaginatedData().length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan="6"
-                        className="table-center"
-                        style={{ opacity: `${isLoading ? 0 : 1}` }}
-                      >
-                        <h1>No hay informacion en la base de datos</h1>
-                      </td>
-                    </tr>
                   ) : (
                     getPaginatedData().map((item, index) => (
-                      <tr key={index} onClick={(e) => singleView(item.id)}>
-                        <td
+                      <tr
+                        key={index + "tabl2"}
+                        onClick={(e) => singleView(item.id)}
+                      >
+                        {/* <td
                           className="table-center"
                           onClick={(e) => e.stopPropagation()}
                           colSpan={1}
-                        ></td>
+                        >
+                          <Checkbox
+                            type="single"
+                            id={item.id}
+                            callback={handleCheckBox}
+                          />
+                        </td> */}
                         {/* <td className="table-center">{item.id}</td> */}
                         <td className="table-center">{item.part_number}</td>
                         <td className="table-center">{item.plant}</td>
@@ -1927,23 +1926,18 @@ function ReportsTable({ data }) {
                           colSpan={1}
                         >
                           <div className="actions">
-                            {/* <Link
-                            to={`/admin/reports/${item.id}`}
-                            style={{ color: "green" }}
-                          >
-                            <i className="fa-solid fa-eye"></i>
-                          </Link> */}
-
-                            {!navigator.onLine ? (
-                              <FontAwesomeIcon icon={faFilePdf} />
-                            ) : (
-                              <i className="fa-solid fa-file-pdf"></i>
-                            )}
                             <FontAwesomeIcon
-                              icon={faUsers}
-                              color="green"
-                              onClick={() => authClientsC(item.id)}
+                              icon={faTrash}
+                              onClick={() => handleDel(item.id, "reports")}
                             />
+                            {/* <Link
+                           to={`/admin/reports/${item.id}`}
+                           style={{ color: "green" }}
+                         >
+                           <i className="fa-solid fa-eye"></i>
+                         </Link> */}
+                            <FontAwesomeIcon icon={faFilePdf} />
+                            {/* <i className="fa-solid fa-file-pdf"></i> */}
                           </div>
                         </td>
                       </tr>
@@ -1958,9 +1952,9 @@ function ReportsTable({ data }) {
               <table>
                 <thead>
                   <tr>
-                    <th>
+                    {/* <th>
                       <Checkbox type="all" id={0} callback={handleCheckBox} />
-                    </th>
+                    </th> */}
                     {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
                     <th># Parte</th>
                     <th>Planta</th>
@@ -1992,11 +1986,11 @@ function ReportsTable({ data }) {
                         key={index + "tabl2"}
                         onClick={(e) => singleView(item.id)}
                       >
-                        <td
+                        {/* <td
                           className="table-center"
                           onClick={(e) => e.stopPropagation()}
                           colSpan={1}
-                        ></td>
+                        ></td> */}
                         {/* <td className="table-center">{item.id}</td> */}
                         <td className="table-center">{item.part_number}</td>
                         <td className="table-center">{item.plant}</td>

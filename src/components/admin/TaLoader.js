@@ -1,9 +1,9 @@
 import React from 'react'
 
-const TaLoader = () => {
+const TaLoader = ({colspan}) => {
   return (
     <tr>
-      <td colSpan="4" className='table-center'>
+      <td colSpan={colspan ? colspan : 4} className='table-center'>
         
           <img src="/assets/img/loading2.svg" alt="" />
         

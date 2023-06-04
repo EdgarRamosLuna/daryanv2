@@ -284,7 +284,7 @@ export default function Header() {
               
               if (Number(datares.i) === 1) {
                 setIsAdmin(true);
-                console.log("asadsaasdasd")
+              ///  console.log("asadsaasdasd")
                 //localStorage.setItem("l", "1");
                 setLinksAdmin([
                   {
@@ -337,6 +337,7 @@ export default function Header() {
                   },
                 ]);
               }else{
+                setIsAdmin(false);
                 setLinksAdmin([
                   {
                     label: `${langu === "es" ? "Reportes" : "Reports"}`,

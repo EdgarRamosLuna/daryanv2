@@ -28,12 +28,14 @@ import { MainContext } from "./context/MainContext";
 import { useContext } from "react";
 import { useEffect } from "react";
 import { checkUser } from "./api/daryan.api";
+import PdfTest from "./Test";
 function App() {
   
   return (
     <div className="App">
       <Routes>
         <Route exact path="/" element={<Login3 />} />
+        <Route exact path="/pdf" element={<PdfTest />} />
         <Route element={<Header />}>
         <Route path="*" element={<Reports3 />} />
           <Route exact path="/user/reports" element={<Reports />} />

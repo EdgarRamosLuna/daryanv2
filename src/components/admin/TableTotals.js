@@ -6,7 +6,7 @@ function Table({ data }) {
   const handleClick = (partNumber) => {
     setSelectedPartNumbers({
       ...selectedPartNumbers,
-      [partNumber]: !selectedPartNumbers[partNumber]
+      [partNumber]: !selectedPartNumbers[partNumber],
     });
   };
 

@@ -268,8 +268,8 @@ export default function SubHeader() {
     navigate(`/user/reports/create/${idCreate}/table2`);
   };
   const singleView = (url) => {
-    window.location.href = url;
-    //navigate(`/user/reports/${id}`);
+   // window.location.href = url;
+    navigate(url);
   };
   const addClients = async () => {
     if (checkList.length > 0 && clientsToReport.length > 0) {
