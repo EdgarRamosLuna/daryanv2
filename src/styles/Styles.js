@@ -111,6 +111,9 @@ export const Table = styled.div`
     background: transparent;
     color: transparent;
     cursor: unset;
+    *{
+      color: transparent !important;
+    }
   }
   tr.hidden {
     border-color: transparent;

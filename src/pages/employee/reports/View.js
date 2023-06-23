@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import { StyledForm, Table } from "../../../styles/Styles";
 import SecondTableCreate from "./SecondTableCreate";
 import DatePickerInputU from "../../../components/DateInputUpdate";
+import Select from "../Select";
 
 const View = () => {
   const {
@@ -793,6 +794,20 @@ const View = () => {
       });
     }
   }
+  const optionClause = [
+    {
+      value: "1",
+      text: "Mal",
+    },
+    {
+      value: "2",
+      text: "Re trabajo",
+    },
+    {
+      value: "3",
+      text: "Scrap",
+    },
+  ];
   return (
     <>
       <div className="container">
@@ -1476,6 +1491,77 @@ const View = () => {
                               )}
                             </>
                           )
+                      )
+                  )}
+                </td>
+                <td colSpan={1} style={{ textAlign: "center" }}>
+                  <div> </div>
+                  {divs2.map(
+                    (fila, i) =>
+                      i === 0 && (
+                        <div key={i + "clauses"}>
+                          {fila.values.map(
+                            (valor, i) =>
+                              i > 6 && (
+                                <div key={i + "clause"}>
+                                  {i === 8 && (
+                                    <>
+                                      <Select data={optionClause} clause="A" />
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 9 && (
+                                    <>
+                                      <Select data={optionClause}  clause="B"/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 10 && (
+                                    <>
+                                      <Select data={optionClause}  clause="C"/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 11 && (
+                                    <>
+                                      <Select data={optionClause}  clause="D"/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 12 && (
+                                    <>
+                                      <Select data={optionClause}  clause="E"/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 13 && (
+                                    <>
+                                      <Select data={optionClause}  clause="F"/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 14 && (
+                                    <>
+                                      <Select data={optionClause}  clause="G"/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 15 && (
+                                    <>
+                                      <Select data={optionClause}  clause="H"/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 16 && (
+                                    <>
+                                      <Select data={optionClause}  clause="I"/>
+                                      <br />
+                                    </>
+                                  )}
+                                </div>
+                              )
+                          )}
+                        </div>
                       )
                   )}
                 </td>

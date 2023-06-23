@@ -54,7 +54,7 @@ const DatePickerInput = ({ value, setDate, name, id, index, style }) => {
           customInput={
             <CustomInputD>
               <InputDate
-                type=""
+                type="text"
                 name=""
                 defaultValue={value !== "" ?  value :(value === '' ? '' : formatedDateStart )}
                 style={style}

@@ -90,6 +90,8 @@ export default function SubHeader() {
     setShowConfig,
     isAdmin,
   } = useContext(MainContext);
+
+  console.log(isAdmin);
   //console.log(useParams());
 
   //   const path = pathname.replaceAll('/', '');
@@ -268,8 +270,8 @@ export default function SubHeader() {
     navigate(`/user/reports/create/${idCreate}/table2`);
   };
   const singleView = (url) => {
-   // window.location.href = url;
-    navigate(url);
+    window.location.href = url;
+   // navigate(url);
   };
   const addClients = async () => {
     if (checkList.length > 0 && clientsToReport.length > 0) {
@@ -443,7 +445,7 @@ export default function SubHeader() {
           )}
           {pathname === "/admin/reports" && (
             <>
-              {activeTab >= 1 && activeTab <= 2 && isAdmin === 1 && (
+              {activeTab >= 1 && activeTab <= 2 && isAdmin && (
                 <button onClick={addClients} className="auth-clientes">
                   Autorizar Clientes
                 </button>

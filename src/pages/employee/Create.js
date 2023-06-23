@@ -10,6 +10,7 @@ import { StyledForm, Table } from "../../styles/Styles";
 import DatePickerInput from "../../components/DateInput";
 import SecondTableCreate from "./SecondTableCreate";
 import ScrollBar from "../../components/ScrollBar";
+import Select from "./Select";
 
 const Create = () => {
   const [data, setData] = useState([]);
@@ -53,6 +54,7 @@ const Create = () => {
     handleScroll1,
     handleScroll2,
     suppliers,
+    incType
   } = useContext(MainContext);
   //console.log(suppliers);
   const [producedBy, setProducedBy] = useState("");
@@ -231,6 +233,7 @@ const Create = () => {
           h: total13,
           i: total14,
         },
+        incType:incType,
       },
     ];
     //  console.log(newArray[0]['total']);
@@ -260,6 +263,7 @@ const Create = () => {
     total12,
     total13,
     total14,
+    incType
   ]);
 
   /*console.log(data);
@@ -285,7 +289,7 @@ const Create = () => {
 
   const handleChange = useCallback(
     (e) => {
-      const selectedOption = getSelectedOptionLocation();      
+      const selectedOption = getSelectedOptionLocation();
       if (selectedOption === undefined) {
         setData({
           ...data,
@@ -303,7 +307,21 @@ const Create = () => {
     },
     [data]
   );
-  console.log(data);
+
+  const optionClause = [
+    {
+      value: "1",
+      text: "Mal",
+    },
+    {
+      value: "2",
+      text: "Re trabajo",
+    },
+    {
+      value: "3",
+      text: "Scrap",
+    },
+  ];
   return (
     <>
       <div className="container">
@@ -314,7 +332,9 @@ const Create = () => {
 
         <StyledForm>
           <div className="form-container">
-            <label htmlFor="data">Planta <span className="required">*</span></label>
+            <label htmlFor="data">
+              Planta <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="data"
@@ -332,8 +352,11 @@ const Create = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data2">Proveedor <span className="required">*</span></label>
+            <label htmlFor="data2">
+              Proveedor <span className="required">*</span>
+            </label>
             <input
+              type="text"
               name="supplier"
               value={data.supplier}
               list="supplier"
@@ -382,17 +405,22 @@ const Create = () => {
             /> */}
           </div>
           <div className="form-container">
-            <label htmlFor="data3">Fecha <span className="required">*</span></label>
+            <label htmlFor="data3">
+              Fecha <span className="required">*</span>
+            </label>
             <DatePickerInput
               id="data3"
               name="date"
               style={{ textAlign: "left", padding: "12px 20px" }}
               value={data.date}
               setDate={handleDate}
+              type="text"
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data4">No. de Reporte <span className="required">*</span></label>
+            <label htmlFor="data4">
+              No. de Reporte <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="data4"
@@ -410,7 +438,9 @@ const Create = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data5">Nombre de parte <span className="required">*</span></label>
+            <label htmlFor="data5">
+              Nombre de parte <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="data5"
@@ -428,7 +458,9 @@ const Create = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data6">Horas Trabajadas <span className="required">*</span></label>
+            <label htmlFor="data6">
+              Horas Trabajadas <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="data6"
@@ -446,7 +478,9 @@ const Create = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data7">Rate <span className="required">*</span></label>
+            <label htmlFor="data7">
+              Rate <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="data7"
@@ -464,10 +498,13 @@ const Create = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data8">Turno <span className="required">*</span></label>
+            <label htmlFor="data8">
+              Turno <span className="required">*</span>
+            </label>
             <select
               id="data8"
               name="shift"
+              type="text"
               required
               value={`${data.shift}`}
               onChange={(e) =>
@@ -484,7 +521,9 @@ const Create = () => {
             </select>
           </div>
           <div className="form-container">
-            <label htmlFor="data10">Numero de parte <span className="required">*</span></label>
+            <label htmlFor="data10">
+              Numero de parte <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="data10"
@@ -501,7 +540,9 @@ const Create = () => {
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data8">Tipo de servicio <span className="required">*</span></label>
+            <label htmlFor="data8">
+              Tipo de servicio <span className="required">*</span>
+            </label>
 
             <div className="container-checkbox">
               <label>
@@ -556,7 +597,9 @@ const Create = () => {
           </div>
 
           <div className="form-container">
-            <label htmlFor="data8">Control para el cliente <span className="required">*</span></label>
+            <label htmlFor="data8">
+              Control para el cliente <span className="required">*</span>
+            </label>
 
             <div className="container-checkbox">
               <label>
@@ -695,11 +738,14 @@ const Create = () => {
                         <td key={i + "tbody"} className="table-center">
                           {i <= 1 || i === fila.values.length - 1 ? (
                             <>
-                              <i className="fa-solid fa-circle-plus" style={{visibility: 'hidden'}}></i>
+                              <i
+                                className="fa-solid fa-circle-plus"
+                                style={{ visibility: "hidden" }}
+                              ></i>
                             </>
                           ) : (
                             <>
-                              <input type="" name="" defaultValue={dumpValue} />
+                              <input type="text" name="" defaultValue={dumpValue} />
                             </>
                           )}
                         </td>
@@ -861,6 +907,7 @@ const Create = () => {
                             <div key={i + "realizo"}>
                               <input
                                 value={valor}
+                                type="text"
                                 onChange={(e) =>
                                   handleUpdate(1, fila.id, i, e.target.value)
                                 }
@@ -882,6 +929,7 @@ const Create = () => {
                             <div key={i + "observacion"}>
                               <input
                                 value={valor}
+                                type="text"
                                 onChange={(e) =>
                                   handleUpdate(2, fila.id, i, e.target.value)
                                 }
@@ -908,6 +956,7 @@ const Create = () => {
                                       <input
                                         placeholder="A"
                                         readOnly
+                                        type="text"
                                         style={{ textAlign: "center" }}
                                         defaultValue={dumpValue}
                                       />
@@ -919,6 +968,7 @@ const Create = () => {
                                       <input
                                         placeholder="B"
                                         readOnly
+                                        type="text"
                                         style={{ textAlign: "center" }}
                                         defaultValue={dumpValue}
                                       />
@@ -930,6 +980,7 @@ const Create = () => {
                                       <input
                                         placeholder="C"
                                         readOnly
+                                        type="text"
                                         style={{ textAlign: "center" }}
                                         defaultValue={dumpValue}
                                       />
@@ -941,6 +992,7 @@ const Create = () => {
                                       <input
                                         placeholder="D"
                                         readOnly
+                                        type="text"
                                         style={{ textAlign: "center" }}
                                         defaultValue={dumpValue}
                                       />
@@ -952,6 +1004,7 @@ const Create = () => {
                                       <input
                                         placeholder="E"
                                         readOnly
+                                        type="text"
                                         style={{ textAlign: "center" }}
                                         defaultValue={dumpValue}
                                       />
@@ -963,6 +1016,7 @@ const Create = () => {
                                       <input
                                         placeholder="F"
                                         readOnly
+                                        type="text"
                                         style={{ textAlign: "center" }}
                                         defaultValue={dumpValue}
                                       />
@@ -974,6 +1028,7 @@ const Create = () => {
                                       <input
                                         placeholder="G"
                                         readOnly
+                                        type="text"
                                         style={{ textAlign: "center" }}
                                         defaultValue={dumpValue}
                                       />
@@ -985,6 +1040,7 @@ const Create = () => {
                                       <input
                                         placeholder="H"
                                         readOnly
+                                        type="text"
                                         style={{ textAlign: "center" }}
                                         defaultValue={dumpValue}
                                       />
@@ -996,6 +1052,7 @@ const Create = () => {
                                       <input
                                         placeholder="I"
                                         readOnly
+                                        type="text"
                                         style={{ textAlign: "center" }}
                                         defaultValue={dumpValue}
                                       />
@@ -1009,11 +1066,106 @@ const Create = () => {
                       )
                   )}
                 </td>
+                <td colSpan={1} style={{ textAlign: "center" }}>
+                  <div> </div>
+                  {divs2.map(
+                    (fila, i) =>
+                      i === 0 && (
+                        <div key={i + "clauses"}>
+                          {fila.values.map(
+                            (valor, i) =>
+                              i > 6 && (
+                                <div key={i + "clause"}>
+                                  {i === 8 && (
+                                    <>
+                                      <Select data={optionClause} clause="A" />
+                                      {/* <input
+                                        placeholder="A"
+                                        readOnly
+                                        type="text"
+                                        style={{ textAlign: "center" }}
+                                        defaultValue={dumpValue}
+                                      /> */}
+
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 9 && (
+                                    <>
+                                      <Select data={optionClause}  clause="B"/>
+                                      {/* <input
+                                        placeholder="B"
+                                        readOnly
+                                        type="text"
+                                        style={{ textAlign: "center" }}
+                                        defaultValue={dumpValue}
+                                      /> */}
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 10 && (
+                                    <>
+                                      {/* <input
+                                        placeholder="C"
+                                        readOnly
+                                        type="text"
+                                        style={{ textAlign: "center" }}
+                                        defaultValue={dumpValue} 
+                                  />*/}
+                                      <Select data={optionClause}  clause="C"/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 11 && (
+                                    <>
+                                      <Select data={optionClause}  clause="D"/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 12 && (
+                                    <>
+                                      <Select data={optionClause}  clause="E"/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 13 && (
+                                    <>
+                                      <Select data={optionClause}  clause="F"/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 14 && (
+                                    <>
+                                      <Select data={optionClause}  clause="G"/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 15 && (
+                                    <>
+                                      <Select data={optionClause}  clause="H"/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 16 && (
+                                    <>
+                                      <Select data={optionClause}  clause="I"/>
+                                      <br />
+                                    </>
+                                  )}
+                                </div>
+                              )
+                          )}
+                        </div>
+                      )
+                  )}
+                </td>
                 <td
-                  colSpan={numColumnas > 15 ? numColumnas / 3 : 3}
+                  colSpan={numColumnas > 15 ? numColumnas / 4 : 3}
                   style={{ textAlign: "center" }}
                 >
-                  <div>INCIDENTES <span className="required">*</span></div>
+                  <div>
+                    INCIDENTES <span className="required">*</span>
+                  </div>
                   {reportFooter3.map(
                     (fila, i) =>
                       i < reportFooter3.length - 1 && (
@@ -1022,6 +1174,7 @@ const Create = () => {
                             <div key={i + "incidente"}>
                               <input
                                 value={valor}
+                                type="text"
                                 onChange={(e) =>
                                   handleUpdate(3, fila.id, i, e.target.value)
                                 }
@@ -1036,10 +1189,12 @@ const Create = () => {
               </tr>
               <tr>
                 <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
-                  <div>ELABORO <span className="required">*</span></div>
+                  <div>
+                    ELABORO <span className="required">*</span>
+                  </div>
                   <div className="firm">
                     <input
-                      type=""
+                      type="text"
                       name=""
                       value={producedBy}
                       onChange={(e) => setProducedBy(e.target.value)}
@@ -1049,10 +1204,12 @@ const Create = () => {
                 </td>
 
                 <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
-                  <div>REVISO <span className="required">*</span></div>
+                  <div>
+                    REVISO <span className="required">*</span>
+                  </div>
                   <div className="firm">
                     <input
-                      type=""
+                      type="text"
                       name=""
                       value={checkedBy}
                       onChange={(e) => setCheckedBy(e.target.value)}
@@ -1062,10 +1219,12 @@ const Create = () => {
                 </td>
 
                 <td colSpan={numColumnas / 3} style={{ textAlign: "center" }}>
-                  <div>AUTORIZO <span className="required">*</span></div>
+                  <div>
+                    AUTORIZO <span className="required">*</span>
+                  </div>
                   <div className="firm">
                     <input
-                      type=""
+                      type="text"
                       name=""
                       value={authorizedBy}
                       onChange={(e) => setAuthorizedBy(e.target.value)}

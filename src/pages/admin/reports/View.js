@@ -11,6 +11,7 @@ import { StyledForm, Table } from "../../../styles/Styles";
 import SecondTableCreate from "./SecondTableCreate";
 import DatePickerInputU from "../../../components/DateInputUpdate";
 import { deleteReportIn, deleteReportItem } from "../../../api/daryan.api";
+import Select from "../../employee/Select";
 
 const View = () => {
   const {
@@ -61,7 +62,8 @@ const View = () => {
     setNumColumnas,
     suppliers,
     toast,
-    isAdmin
+    isAdmin,
+    incType
   } = useContext(MainContext);
   const params = useParams();
   const idReport = params.id;
@@ -72,8 +74,7 @@ const View = () => {
           (data) => Number(data.id) === Number(idReport)
         )[0]
       : data.filter((data) => Number(data.id) === Number(idReport))[0];
-
-  console.log(eData);
+  
   const [dataC, setDataC] = useState(eData);
   const [producedBy, setProducedBy] = useState(eData.made_by);
   const [checkedBy, setCheckedBy] = useState(eData.checked_by);
@@ -166,8 +167,7 @@ const View = () => {
   const updateData = useCallback((data) => {
     setDataC(data);
   }, []);
-  useEffect(() => {
-    //console.log(numColumnas2);
+  useEffect(() => {    
 
     setNumColumnas2(numColumnas);
     // setNumFilas2(numFilas);
@@ -196,8 +196,7 @@ const View = () => {
           .catch((err) => {
             console.log(err);
           });
-        //handleDel()
-        // console.log(idDb);
+        //handleDel()      
       }
       setDivs((prevDatos) => prevDatos.filter((item) => item.id !== itemId));
       setNumFilas2(numFilas2 - 1);
@@ -268,18 +267,14 @@ const View = () => {
       return false;
     }
   };
-
-  //console.log(divs);
+  
   useEffect(() => {
     setNumColumnas2(numColumnas);
-  }, [numColumnas]);
-  //console.log(titulosColumnas);
-  // const agregarColumnas = (e) => {
-  //   console.log('sdsd');
+  }, [numColumnas]);  
+  // const agregarColumnas = (e) => {  
   //   setTitulosColumnas((prevTitulos) => {
   //     const nextLetter = getNextLetter(prevTitulos);
   //     setDbColumns((prev) => [...prev, nextLetter]);
-  //     //   console.log(nextLetter);
   //     const newArr = [...prevTitulos, nextLetter];
   //     const arrayCopy = newArr.slice();
   //     const penultimate = arrayCopy.slice(-2, -1)[0];
@@ -304,7 +299,7 @@ const View = () => {
   // useEffect(() => {
   //   if (Object.keys(dataC).length > 0) {
   //     setNumFilas2(Number(dataC.reports_cc.length));
-  //     //console.log(numColumnas2);
+//     
   //     const clauses = Number(dataC.report_in.length);
   //     const newLength = 11 + clauses;
   //     setNumColumnas2(newLength);
@@ -358,8 +353,7 @@ const View = () => {
       for (let j = 0; j < filas.length; j++) {
         const fil = filas[j];
         const values = fil.values;
-
-        //  console.log(dataC);
+        
         //const keys = Object.keys(dataC.reports_cc[j])
         if (dataC.reports_cc && dataC.reports_cc[j]) {
           const keys = Object.keys(dataC.reports_cc[j]);
@@ -419,15 +413,13 @@ const View = () => {
             }
             // if (k === 0) {
             //   //values[k] = dataC.reports_cc[j]['item']
-            //   //console.log(dataC.reports_cc[j][keys[k]])
-            //   //console.log();
+          //   
+          //   
             // }
           }
         }
-
-        // console.log(values);
-      }
-      //console.log(filas[0].values[0]);
+      
+      }      
       return filas;
     });
   };
@@ -435,12 +427,10 @@ const View = () => {
     const filas = [];
     const dataInfo = eData.report_rby;
     let i2 = 0;
-    const rby = [];
-    //console.log(dataInfo);
+    const rby = [];    
     if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
       const keys = Object.keys(dataInfo[i2]);
-      for (let z = 0; z < dataInfo.length; z++) {
-        //  console.log(keys[z]);
+      for (let z = 0; z < dataInfo.length; z++) {        
         if (
           dataInfo[i2] &&
           typeof dataInfo[i2] === "object" &&
@@ -448,50 +438,40 @@ const View = () => {
         ) {
           const realized_by = dataInfo[i2]["realized_by"];
           const id = dataInfo[i2]["id"];
-          rby.push({ realized_by, id });
-          //  console.log(dataInfo[i2])
-          //console.log(rbyervations);
-        } else {
-          // console.log(
+          rby.push({ realized_by, id });                    
+        } else {        
           //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
           // );
         }
-        i2++;
-        //console.log(dataInfo[i2][keys[z]]);
+        i2++;        
       }
       for (let i = 1; i <= numColumnas2 - 3; i++) {
         if (i > 7) {
-          if (i !== numColumnas2 - 3) {
-            //console.log(numColumnas2 - 3);
+          if (i !== numColumnas2 - 3) {            
             //    console.log(rby[i - 8]);
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
               values: Array.from({ length: 1 }, () => rby[i - 8].realized_by),
               id_db: Number(rby[i - 8].id),
+              type:Number(rby[i - 8].type),
             });
-          }
-          //      console.log(dataInfo[i2])
+          }          
         }
       }
-    } else {
-      // console.log("dataInfo[i2] no es un objeto válido");
+    } else {    
     }
 
     return filas;
-  });
-  //console.log(reportFooter);
+  });  
   const [reportFooter2, setReportFooter2] = useState(() => {
     const filas = [];
     const dataInfo = eData.report_ob;
     let i2 = 0;
-    const obs = [];
-    // console.log(dataInfo);
+    const obs = [];  
     if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
-      const keys = Object(dataInfo[i2]);
-      //console.log(keys);
-      for (let z = 0; z < dataInfo.length; z++) {
-        //  console.log(keys[z]);
+      const keys = Object(dataInfo[i2]);      
+      for (let z = 0; z < dataInfo.length; z++) {        
         if (
           dataInfo[i2] &&
           typeof dataInfo[i2] === "object" &&
@@ -500,31 +480,26 @@ const View = () => {
           const observations = dataInfo[i2]["observations"];
           const id = dataInfo[i2]["id"];
           obs.push({ observations, id });
-        } else {
-          // console.log(
+        } else {        
           //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
           // );
         }
-        i2++;
-        //console.log(dataInfo[i2][keys[z]]);
+        i2++;        
       }
       for (let i = 1; i <= numColumnas2 - 3; i++) {
         if (i > 7) {
-          if (i !== numColumnas2 - 3) {
-            //console.log(numColumnas2 - 3);
-            // console.log(obs[i - 8]);
+          if (i !== numColumnas2 - 3) {            
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
               values: Array.from({ length: 1 }, () => obs[i - 8].observations),
               id_db: Number(obs[i - 8].id),
+              type:Number(obs[i - 8].type),
             });
-          }
-          //      console.log(dataInfo[i2])
+          }          
         }
       }
-    } else {
-      // console.log("dataInfo[i2] no es un objeto válido");
+    } else {    
     }
 
     return filas;
@@ -534,12 +509,10 @@ const View = () => {
     const filas = [];
     const dataInfo = eData.report_in;
     let i2 = 0;
-    const inc = [];
-   // console.log(dataInfo);
+    const inc = [];    
     if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
       const keys = Object.keys(dataInfo[i2]);
-      for (let z = 0; z < dataInfo.length; z++) {
-        //  console.log(keys[z]);
+      for (let z = 0; z < dataInfo.length; z++) {        
         if (
           dataInfo[i2] &&
           typeof dataInfo[i2] === "object" &&
@@ -547,9 +520,9 @@ const View = () => {
         ) {
           const incidents = dataInfo[i2]["incident"];
           const id = dataInfo[i2]["id"];
-          inc.push({ incidents, id });
-        } else {
-          // console.log(
+          const type = dataInfo[i2]["type"];
+          inc.push({ incidents, id, type });
+        } else {        
           //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
           // );
         }
@@ -557,27 +530,25 @@ const View = () => {
       }
       for (let i = 1; i <= numColumnas2 - 3; i++) {
         if (i > 7) {
-          if (i !== numColumnas2 - 3) {
-            // console.log(inc[i - 8]);
+          if (i !== numColumnas2 - 3) {          
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
               values: Array.from({ length: 1 }, () => inc[i - 8].incidents),
               id_db: Number(inc[i - 8].id),
+              type: Number(inc[i - 8].type),
             });
-          }
-          //      console.log(dataInfo[i2])
+          }          
         }
       }
-    } else {
-      // console.log("dataInfo[i2] no es un objeto válido");
+    } else {    
     }
 
     return filas;
   });
   /*console.log(reportFooter);
   console.log(reportFooter2);
-  console.log(reportFooter3);*/
+  console.log(reportFooter3);*/  
   const handleUpdate = (hanldeId = 1, divId, inputIndex, newValue) => {
     if (hanldeId === 1) {
       setReportFooter((prevDivs) => {
@@ -624,8 +595,7 @@ const View = () => {
     cc3: report_cc.serial_number === "1" ? true : false,
     cc4: report_cc.lot === "1" ? true : false,
     cc5: report_cc.others,
-  });
-  //console.log(serviceType)
+  });  
   useEffect(() => {
     setDivs2((prev) => {
       const filas = [];
@@ -636,8 +606,7 @@ const View = () => {
         });
       }
       return filas;
-    });
-    // console.log(divs2)
+    });  
 
     setReportFooter((prev) => {
       const filas = [];
@@ -647,8 +616,7 @@ const View = () => {
 
       if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
         const keys = Object.keys(dataInfo[i2]);
-        for (let z = 0; z < dataInfo.length; z++) {
-          //  console.log(keys[z]);
+        for (let z = 0; z < dataInfo.length; z++) {          
           if (
             dataInfo[i2] &&
             typeof dataInfo[i2] === "object" &&
@@ -656,36 +624,28 @@ const View = () => {
           ) {
             const realized_by = dataInfo[i2]["realized_by"];
             const id = dataInfo[i2]["id"];
-            rby.push({ realized_by, id });
-            //console.log(dataInfo[i2])
-            //console.log(rbyervations);
-          } else {
-            // console.log(
+            rby.push({ realized_by, id });                        
+          } else {          
             //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
             // );
           }
-          i2++;
-          //console.log(dataInfo[i2][keys[z]]);
+          i2++;          
         }
         for (let i = 1; i <= numColumnas2 - 3; i++) {
           if (i > 7) {
-            if (i !== numColumnas2 - 3) {
-              //console.log(numColumnas2 - 3);
-              //  console.log(rby[i - 8]);
+            if (i !== numColumnas2 - 3) {              
               // ... código para aplicar la condición solamente en el último índice ...
               filas.push({
                 id: i,
                 values: Array.from({ length: 1 }, () =>
                   rby[i - 8] !== undefined ? rby[i - 8].realized_by : ""
                 ),
-                id_db: rby[i - 8] ? Number(rby[i - 8].id) : "",
+                id_db: rby[i - 8] ? Number(rby[i - 8].id) : "",                
               });
-            }
-            //      console.log(dataInfo[i2])
+            }            
           }
         }
-      } else {
-        // console.log("dataInfo[i2] no es un objeto válido");
+      } else {      
       }
 
       return filas;
@@ -694,13 +654,10 @@ const View = () => {
       const filas = [];
       const dataInfo = eData.report_ob;
       let i2 = 0;
-      const obs = [];
-      // console.log(dataInfo);
+      const obs = [];    
       if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
-        const keys = Object(dataInfo[i2]);
-        //console.log(keys);
-        for (let z = 0; z < dataInfo.length; z++) {
-          //  console.log(keys[z]);
+        const keys = Object(dataInfo[i2]);        
+        for (let z = 0; z < dataInfo.length; z++) {          
           if (
             dataInfo[i2] &&
             typeof dataInfo[i2] === "object" &&
@@ -709,19 +666,15 @@ const View = () => {
             const observations = dataInfo[i2]["observations"];
             const id = dataInfo[i2]["id"];
             obs.push({ observations, id });
-          } else {
-            // console.log(
+          } else {          
             //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
             // );
           }
-          i2++;
-          //console.log(dataInfo[i2][keys[z]]);
+          i2++;          
         }
         for (let i = 1; i <= numColumnas2 - 3; i++) {
           if (i > 7) {
-            if (i !== numColumnas2 - 3) {
-              //console.log(numColumnas2 - 3);
-              // console.log(obs[i - 8]);
+            if (i !== numColumnas2 - 3) {              
               // ... código para aplicar la condición solamente en el último índice ...
               filas.push({
                 id: i,
@@ -729,13 +682,12 @@ const View = () => {
                   obs[i - 8] ? obs[i - 8].observations : ""
                 ),
                 id_db: obs[i - 8] ? Number(obs[i - 8].id) : "",
+                
               });
-            }
-            //      console.log(dataInfo[i2])
+            }            
           }
         }
-      } else {
-        // console.log("dataInfo[i2] no es un objeto válido");
+      } else {      
       }
 
       return filas;
@@ -744,12 +696,10 @@ const View = () => {
       const filas = [];
       const dataInfo = eData.report_in;
       let i2 = 0;
-      const inc = [];
-
+      const inc = [];      
       if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
         const keys = Object.keys(dataInfo[i2]);
-        for (let z = 0; z < dataInfo.length; z++) {
-          //  console.log(keys[z]);
+        for (let z = 0; z < dataInfo.length; z++) {          
           if (
             dataInfo[i2] &&
             typeof dataInfo[i2] === "object" &&
@@ -757,9 +707,9 @@ const View = () => {
           ) {
             const incidents = dataInfo[i2]["incident"];
             const id = dataInfo[i2]["id"];
-            inc.push({ incidents, id });
-          } else {
-            // console.log(
+            const type = dataInfo[i2]["type"];
+            inc.push({ incidents, id, type });
+          } else {          
             //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
             // );
           }
@@ -767,8 +717,7 @@ const View = () => {
         }
         for (let i = 1; i <= numColumnas2 - 3; i++) {
           if (i > 7) {
-            if (i !== numColumnas2 - 3) {
-              // console.log(inc[i - 8]);
+            if (i !== numColumnas2 - 3) {            
               // ... código para aplicar la condición solamente en el último índice ...
               filas.push({
                 id: i,
@@ -776,13 +725,12 @@ const View = () => {
                   inc[i - 8] ? inc[i - 8].incidents : ""
                 ),
                 id_db: inc[i - 8] ? Number(inc[i - 8].id) : "",
+                type: inc[i - 8] ? Number(inc[i - 8].type) : "",
               });
-            }
-            //      console.log(dataInfo[i2])
+            }            
           }
         }
-      } else {
-        // console.log("dataInfo[i2] no es un objeto válido");
+      } else {      
       }
 
       return filas;
@@ -791,8 +739,7 @@ const View = () => {
     return () => {};
   }, [numColumnas2, numColumnas]);
 
-  useEffect(() => {
-    //console.log()
+  useEffect(() => {    
     const newArray = [
       {
         data: dataCDb,
@@ -823,9 +770,9 @@ const View = () => {
           h: total13,
           i: total14,
         },
+        incType:incType,
       },
-    ];
-    //  console.log(newArray[0]['total']);
+    ];    
     setDataToSave(newArray);
   }, [
     dataCDb,
@@ -853,9 +800,9 @@ const View = () => {
     total12,
     total13,
     total14,
+    incType
   ]);
-  // useEffect(() => {
-  //   //console.log(dataCDb)
+  // useEffect(() => {  
   //   const newArray = [
   //     {
   //       data: dataCDb,
@@ -896,8 +843,7 @@ const View = () => {
     const minutes = ("0" + date.getMinutes()).slice(-2);
     const seconds = ("0" + date.getSeconds()).slice(-2);
     const formattedDateTime = `${year}-${month}-${day}`;
-    const keys = Object.keys(dataC.reports_cc[0]);
-    //console.log(keys);
+    const keys = Object.keys(dataC.reports_cc[0]);    
     const numCol = keys.length;
     keys.splice(1, 1); // Elimina el elemento en la posición 1 (id_report)
     keys[0] = "";
@@ -910,8 +856,7 @@ const View = () => {
     keys[8] = <><div className="th-title">pzas rt <span className="required">*</span></div></>;
     keys[9] = <><div className="th-title">scrap <span className="required">*</span></div></>;
     keys.splice(10, 2);
-
-    console.log(keys);
+    
     const kLenght = keys.length + 1;
     setNumColumnas(kLenght);
     // if (lastKey !== "I") {
@@ -947,10 +892,6 @@ const View = () => {
       id_supplier: dataC.id_supplier,
     });
   }, []);
-  /*
-  console.log(dataToSave)
-  console.log(customerControl);*/
-  //console.log(dataToSave)
   const [dumpValue, setDumpValue] = useState("");
   const inputRef = useRef();
   const dataListRef = useRef();
@@ -972,8 +913,7 @@ const View = () => {
       setDataCDb({
         ...dataCDb,
         [e.target.dataset.name || e.target.name]: e.target.value,
-      });
-      // console.log("option not included in the datalist");
+      });    
     } else {
       const id_supplier = selectedOption.getAttribute("data-id");
       setDataCDb({
@@ -984,14 +924,26 @@ const View = () => {
   };
   const navigate = useNavigate();
   useEffect(() => {
-    if(isAdmin !== null){      
-      console.log(isAdmin);
+    if(isAdmin !== null){            
       if (!isAdmin) {
         navigate(`/client/reports/${idReport}`, { replace: true })
       }
     }
   }, [isAdmin]);
-  
+  const optionClause = [
+    {
+      value: "1",
+      text: "Mal",
+    },
+    {
+      value: "2",
+      text: "Re trabajo",
+    },
+    {
+      value: "3",
+      text: "Scrap",
+    },
+  ];
   return (
     <>
       <div className="container">
@@ -1009,7 +961,7 @@ const View = () => {
               name="plant"
               placeholder=""
               required
-              defaultValue={dataC.plant}
+              defaultValue={dataC.plant}              
               onChange={(e) =>
                 setDataCDb({
                   ...dataCDb,
@@ -1023,10 +975,12 @@ const View = () => {
             <input
               name="supplier"
               value={dataC.supplier}
+              type="text"
               list="supplier"
               onChange={handleChange}
               ref={inputRef}
               autoComplete="off"
+              
             />
             <datalist id="supplier" ref={dataListRef}>
               {suppliers.map((item, indx) => {
@@ -1040,6 +994,7 @@ const View = () => {
                 // Crear etiqueta de opción
                 const option = (
                   <option value={item.fullname} data-id={item.id}>
+                    type="text"
                     {isFirefox ? `${item.fullname}` : ""}
                   </option>
                 );
@@ -1056,6 +1011,7 @@ const View = () => {
               required
               defaultValue=""
               value={data.supplier}
+              type="text"
               onChange={(e) =>
                 setData({
                   ...data,
@@ -1071,6 +1027,7 @@ const View = () => {
               name="date"
               style={{ textAlign: "left", padding: "12px 20px" }}
               value={dataC.date}
+              type="text"
               dataCDb={dataCDb}
             />
           </div>
@@ -1082,7 +1039,7 @@ const View = () => {
               name="report_number"
               placeholder=""
               required
-              defaultValue={dataC.report_number}
+              defaultValue={dataC.report_number}              
               onChange={(e) =>
                 setDataCDb({
                   ...dataCDb,
@@ -1093,8 +1050,7 @@ const View = () => {
           </div>
           <div className="form-container">
             <label htmlFor="data5">Nombre de parte <span className="required">*</span></label>
-            <input
-              type="text"
+            <input              
               id="data5"
               name="part_name"
               placeholder=""
@@ -1110,13 +1066,13 @@ const View = () => {
           </div>
           <div className="form-container">
             <label htmlFor="data6">Horas Trabajadas <span className="required">*</span></label>
-            <input
-              type="text"
+            <input              
               id="data6"
               name="worked_hours"
               placeholder=""
               required
               defaultValue={dataC.worked_h}
+              type="text"
               onChange={(e) =>
                 setDataCDb({
                   ...dataCDb,
@@ -1133,7 +1089,7 @@ const View = () => {
               name="rate"
               placeholder=""
               required
-              defaultValue={dataC.rate}
+              defaultValue={dataC.rate}              
               onChange={(e) =>
                 setDataCDb({
                   ...dataCDb,
@@ -1149,6 +1105,7 @@ const View = () => {
               name="shift"
               required
               defaultValue={dataC.shift}
+              type="text"
               onChange={(e) =>
                 setDataCDb({
                   ...dataCDb,
@@ -1305,7 +1262,7 @@ const View = () => {
                 <input
                   type="text"
                   name="cc5"
-                  value={customerControl.cc5}
+                  value={customerControl.cc5}                 
                   onChange={(e) =>
                     setCustomerControl({
                       ...customerControl,
@@ -1387,10 +1344,10 @@ const View = () => {
                             </td>
                           ) : (
                             <td key={i} className="table-center">
-                              <input
-                                type=""
+                              <input                                
                                 name=""
                                 value={dumpValue}
+                                type="text"
                                 onChange={() => setDumpValue("")}
                               />
                             </td>
@@ -1428,84 +1385,98 @@ const View = () => {
                               {i === 2 && (
                                 <input
                                   value={total1}
+                                  type="text"
                                   onChange={(e) => setTotal1(e.target.value)}
                                 />
                               )}
                               {i === 3 && (
                                 <input
                                   value={total2}
+                                  type="text"
                                   onChange={(e) => setTotal2(e.target.value)}
                                 />
                               )}
                               {i === 4 && (
                                 <input
                                   value={total3}
+                                  type="text"
                                   onChange={(e) => setTotal3(e.target.value)}
                                 />
                               )}
                               {i === 5 && (
                                 <input
                                   value={total4}
+                                  type="text"
                                   onChange={(e) => setTotal4(e.target.value)}
                                 />
                               )}
                               {i === 6 && (
                                 <input
                                   value={total5}
+                                  type="text"
                                   onChange={(e) => setTotal5(e.target.value)}
                                 />
                               )}
                               {i === 7 && (
                                 <input
                                   value={total6}
+                                  type="text"
                                   onChange={(e) => setTotal6(e.target.value)}
                                 />
                               )}
                               {i === 8 && (
                                 <input
                                   value={total7}
+                                  type="text"
                                   onChange={(e) => setTotal7(e.target.value)}
                                 />
                               )}
                               {i === 9 && (
                                 <input
                                   value={total8}
+                                  type="text"
                                   onChange={(e) => setTotal8(e.target.value)}
                                 />
                               )}
                               {i === 10 && (
                                 <input
                                   value={total9}
+                                  type="text"
                                   onChange={(e) => setTotal9(e.target.value)}
                                 />
                               )}
                               {i === 11 && (
                                 <input
                                   value={isNaN(total10) ? 0 : total10}
+                                  type="text"
                                   onChange={(e) => setTotal10(e.target.value)}
                                 />
                               )}
                               {i === 12 && (
                                 <input
                                   value={isNaN(total11) ? 0 : total11}
+                                  type="text"
                                   onChange={(e) => setTotal11(e.target.value)}
                                 />
                               )}
                               {i === 13 && (
                                 <input
                                   value={isNaN(total12) ? 0 : total12}
+                                  type="text"
                                   onChange={(e) => setTotal12(e.target.value)}
                                 />
                               )}
                               {i === 14 && (
                                 <input
                                   value={isNaN(total13) ? 0 : total13}
+                                  type="text"
                                   onChange={(e) => setTotal13(e.target.value)}
                                 />
                               )}
                               {i === 15 && (
                                 <input
                                   value={isNaN(total14) ? 0 : total14}
+                                  type="text"
                                   onChange={(e) => setTotal14(e.target.value)}
                                 />
                               )}
@@ -1526,6 +1497,7 @@ const View = () => {
                         <>
                           <input
                             value={valor}
+                            type="text"
                             onChange={(e) =>
                               handleUpdate(1, fila.id, i, e.target.value)
                             }
@@ -1545,6 +1517,7 @@ const View = () => {
                         <>
                           <input
                             value={valor}
+                            type="text"
                             onChange={(e) =>
                               handleUpdate(2, fila.id, i, e.target.value)
                             }
@@ -1572,6 +1545,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1585,6 +1559,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1598,6 +1573,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1611,6 +1587,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1624,6 +1601,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1637,6 +1615,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1650,6 +1629,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1663,6 +1643,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1676,6 +1657,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1685,6 +1667,73 @@ const View = () => {
                           )
                       )
                   )}
+                </td>
+                <td colSpan={1} style={{ textAlign: "center" }}>
+                  <div> </div>
+                  {reportFooter3.map(
+                    (fila, i) =>
+                      i < reportFooter3.length &&
+                      fila.values.map((valor, i2) => (
+                        <>
+                          <div key={i + "clause"}>
+                                  {i === 0 && (
+                                    <>
+                                      <Select data={optionClause} clause="A" selected={fila.type}  />
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 1 && (
+                                    <>
+                                      <Select data={optionClause}  clause="B" selected={fila.type}/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 2 && (
+                                    <>
+                                      <Select data={optionClause}  clause="C" selected={fila.type}/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 3 && (
+                                    <>
+                                      <Select data={optionClause}  clause="D" selected={fila.type}/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 4 && (
+                                    <>
+                                      <Select data={optionClause}  clause="E" selected={fila.type}/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 5 && (
+                                    <>
+                                      <Select data={optionClause}  clause="F" selected={fila.type}/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 6 && (
+                                    <>
+                                      <Select data={optionClause}  clause="G" selected={fila.type}/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 7 && (
+                                    <>
+                                      <Select data={optionClause}  clause="H" selected={fila.type}/>
+                                      <br />
+                                    </>
+                                  )}
+                                  {i === 8 && (
+                                    <>
+                                      <Select data={optionClause}  clause="I" selected={fila.type}/>
+                                      <br />
+                                    </>
+                                  )}
+                                </div>
+                        </>
+                      ))
+                  )}            
                 </td>
                 <td
                   colSpan={numColumnas2 > 15 ? numColumnas2 / 3 : 3}
@@ -1698,6 +1747,7 @@ const View = () => {
                         <>
                           <input
                             value={valor}
+                            type="text"
                             onChange={(e) =>
                               handleUpdate(3, fila.id, i, e.target.value)
                             }
@@ -1713,10 +1763,10 @@ const View = () => {
                 <td colSpan={numColumnas2 / 3} style={{ textAlign: "center" }}>
                   <div>ELABORO</div>
                   <div className="firm">
-                    <input
-                      type=""
+                    <input                      
                       name=""
                       value={producedBy}
+                      type="text"
                       onChange={(e) => setProducedBy(e.target.value)}
                       className="firm-input"
                     />
@@ -1726,10 +1776,10 @@ const View = () => {
                 <td colSpan={numColumnas2 / 3} style={{ textAlign: "center" }}>
                   <div>REVISO</div>
                   <div className="firm">
-                    <input
-                      type=""
+                    <input                      
                       name=""
                       value={checkedBy}
+                      type="text"
                       onChange={(e) => setCheckedBy(e.target.value)}
                       className="firm-input"
                     />
@@ -1739,10 +1789,10 @@ const View = () => {
                 <td colSpan={numColumnas2 / 3} style={{ textAlign: "center" }}>
                   <div>AUTORIZO</div>
                   <div className="firm">
-                    <input
-                      type=""
+                    <input                      
                       name=""
                       value={authorizedBy}
+                      type="text"
                       onChange={(e) => setAuthorizedBy(e.target.value)}
                       className="firm-input"
                     />

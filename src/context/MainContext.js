@@ -98,7 +98,7 @@ export const MainContextProvider = ({ children }) => {
             duration: 4000,
           });
           setTimeout(() => {
-               navigate("/admin/reports");
+            navigate("/admin/reports");
           }, 5000);
         }
       })
@@ -158,7 +158,7 @@ export const MainContextProvider = ({ children }) => {
             duration: 4000,
           });
           setTimeout(() => {
-            navigate("/users/reports");
+            navigate("/user/reports");
           }, 5000);
         }
       })
@@ -868,6 +868,8 @@ export const MainContextProvider = ({ children }) => {
   }, [langu]);
   const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1);
   const [isAdmin, setIsAdmin] = useState(null);
+
+  const [incType, setIncType] = useState([]);
   return (
     <MainContext.Provider
       value={{
@@ -1019,6 +1021,8 @@ export const MainContextProvider = ({ children }) => {
         isAdmin,
         setIsAdmin,
         token,
+        incType,
+        setIncType,
       }}
     >
       <Toaster richColors position={position} closeButton />

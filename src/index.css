@@ -230,8 +230,11 @@ textarea {
   resize: vertical;
   background: transparent;
   outline: none;
+  
 }
-
+select, input[type="text"], input[type="email"], input[type="password"]{
+  min-height: 50px;
+}
 input[type="submit"] {
   background-color: #001e48;
   color: white;
