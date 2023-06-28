@@ -7,12 +7,12 @@ import DatePickerInputU from "../../../components/DateInputUpdate";
 
 export default function SecondTableCreate({
   dataC,
-  //eliminarColumna2,
+  eliminarColumna2,
   agregarColumna,
   divs,
   setDivs,
   agregarFila,
-  eliminarFila,
+  eliminarFila
 }) {
   const {
     numColumnas,
@@ -186,50 +186,7 @@ export default function SecondTableCreate({
   };
   const btnRef = useRef(null);
   const clauses = Number(dataC.report_in.length);
-  // useEffect(() => {
-  //   for (let p = 0; p < clauses; p++) {
-  //     if (p === 2) {
-  //       //const updatedState = [...titulosColumnas];
-  //       //updatedState[14] = 'E';
-  //       //setTitulosColumnas(updatedState);
-  //     }
-  //     if (p === 3) {
-  //       setIsEClause(true);
-  //     }
-  //     if (p > 3) {
-  //       //agregarColumna2();
-  //       if (numColumnas < 20) {
-  //         agregarColumna2()
-  //         // setNumColumnas((prev) => prev + 1);
-  //         // setTitulosColumnas((prevTitulos) => {
-  //         //   const nextLetter = getNextLetter(prevTitulos);
-  //         //   setDbColumns((prev) => [...prev, nextLetter]);
-  //         //   //   console.log(nextLetter);
-  //         //   const newArr = [...prevTitulos, nextLetter];
-  //         //   const arrayCopy = newArr.slice();
-  //         //   const penultimate = arrayCopy.slice(-2, -1)[0];
-  //         //   // arrayCopy.splice(-2, 1);
-  //         //   // arrayCopy.push(penultimate);
-  //         //   // const tableWrapper = document.querySelectorAll(".scrollX");
-
-  //         //   // tableWrapper.forEach((element) => {
-  //         //   //   const scrollWidth = element.scrollWidth;
-  //         //   //   const clientWidth = element.clientWidth;
-  //         //   //   if (scrollWidth >= clientWidth) {
-  //         //   //     setTimeout(() => {
-  //         //   //       element.scrollLeft = scrollWidth;
-  //         //   //     }, 200);
-  //         //   //   }
-  //         //   // });
-
-  //         //   return arrayCopy;
-  //         // });
-  //       }
-  //     }
-  //   }
-  // }, []);
-
-  //console.log(divs);
+ 
   const date = new Date();
   const year = date.getFullYear();
   const month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -239,12 +196,10 @@ export default function SecondTableCreate({
   const seconds = ("0" + date.getSeconds()).slice(-2);
   const formattedDateTime = `${year}-${month}-${day}`;
   const btnDelIncRef = useRef(null);
-  //const [currentThText, previousThText, handleClick] = useThClick(eliminarColumna2);
-
-  //console.log(previousThText);
+  
   return (
     <Table>
-      <table>
+      <table >
         <thead>
           <tr>
             {titulosColumnas.map((titulo, i) =>
@@ -253,8 +208,9 @@ export default function SecondTableCreate({
                   <i
                     ref={btnRef}
                     className="fa-solid fa-circle-plus"
-                    style={{ color: "transparent" }}
-                    //onClick={() => agregarFila(numColumnas, formattedDateTime)}
+                    style={{
+                      color: "transparent"
+                    }}
                   ></i>
                 </th>
               ) : (
@@ -264,59 +220,16 @@ export default function SecondTableCreate({
             {titulosColumnas.at(-1) !== "I" ? (
               <th>
                 <i
-                  className="fa-solid fa-circle-plus"                  
-                  style={{ color: "transparent" }}
+                  className="fa-solid fa-circle-plus"
+                  style={{
+                    color: "transparent"
+                  }}
                 ></i>
               </th>
             ) : (
               <th></th>
             )}
-            {/* {titulosColumnas.map((titulo, i) => (
-              <th>{titulo}</th>
-            ))}
-            {titulosColumnas.at(-1) !== "I" && (
-              <th>
-                <i
-                  ref={btnRef}
-                  className="fa-solid fa-circle-plus"
-                  onClick={agregarColumna}
-                ></i>
-              </th>
-            )} */}
-            {/* {titulosColumnas.map((titulo, i) =>
-              i === 0 ? (
-                <th key={i}>
-                  <i
-                    ref={btnRef}
-                    className="fa-solid fa-circle-plus"
-                    onClick={() => agregarFila(numColumnas, formattedDateTime)}
-                  ></i>
-                </th>
-              ) : titulosColumnas.length > 15 && i === 14 ? (
-                <th key={i}>E</th>
-              ) : (
-                <th key={i}>{titulo}</th>
-              )
-            )} */}
-            {/*<th>
-              <i className="fa-solid fa-circle-plus" onClick={handleAddDiv}></i>
-            </th>
-            <th>Item</th>
-            <th>Fecha</th>
-            <th>Lote</th>
-            <th>Serie</th>
-            <th>Cantidad Inspeccionada</th>
-            <th>Piezas NG:</th>
-            <th>Piezas Ok:</th>
-            <th>Piezas Retrabajadas:</th>
-            <th>Scrap:</th>
-            <th>A </th>
-            <th>B </th>
-            <th>C </th>
-            <th>D </th>
-            <th>E </th>
-            <th><i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i></th>
-            */}
+        
           </tr>
         </thead>
         <tbody>
@@ -329,22 +242,15 @@ export default function SecondTableCreate({
                       <td>
                         <i
                           className="fa-solid fa-trash"
-                          style={{ opacity: "0" }}
+                          style={{
+                            color: "transparent"
+                          }}
                         ></i>
                       </td>
                     ) : (
                       i === 0 && fila.id === 1 && <td></td>
                     )}
-
-                    {i === fila.values.length - 1 &&
-                      fila.values.length > 15 && (
-                        <td>
-                          <i
-                            className="fa-solid fa-trash"
-                            style={{ opacity: "0" }}
-                          ></i>
-                        </td>
-                      )}
+                  
                   </>
                 ) : i === 1 ? (
                   <td key={i} className="table-center">
@@ -353,9 +259,16 @@ export default function SecondTableCreate({
                 ) : (
                   <td key={i}>
                     {i === 2 ? (
-                      valor !== "" ? 
-                        <input type="text" value={valor} />
-                       : (
+                      valor !== "" ? (
+                        <DatePickerInputU
+                          id={fila.id}
+                          name="date_item"
+                          index={i}
+                          value={valor}
+                          setDate={handleDate}
+                          readOnly
+                        />
+                      ) : (
                         ""
                       )
                     ) : (
@@ -364,6 +277,7 @@ export default function SecondTableCreate({
                         onChange={(e) =>
                           handleInputChange(fila.id, i, e.target.value)
                         }
+                        readOnly
                       />
                     )}
                   </td>
@@ -371,100 +285,7 @@ export default function SecondTableCreate({
               )}
             </tr>
           ))}
-          {/*divs.map((div) => (
-            <tr key={div.id}>
-              <td></td>
-
-              <td>{div.id}</td>
-
-              <td>
-                <input
-                  value={div.values[1]}
-                  onChange={(e) => handleInputChange(div.id, 1, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[2]}
-                  onChange={(e) => handleInputChange(div.id, 2, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[3]}
-                  onChange={(e) => handleInputChange(div.id, 3, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[4]}
-                  onChange={(e) => handleInputChange(div.id, 4, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[5]}
-                  onChange={(e) => handleInputChange(div.id, 5, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[6]}
-                  onChange={(e) => handleInputChange(div.id, 6, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[7]}
-                  onChange={(e) => handleInputChange(div.id, 7, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[8]}
-                  onChange={(e) => handleInputChange(div.id, 8, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[9]}
-                  onChange={(e) => handleInputChange(div.id, 9, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[10]}
-                  onChange={(e) =>
-                    handleInputChange(div.id, 10, e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[11]}
-                  onChange={(e) =>
-                    handleInputChange(div.id, 11, e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[12]}
-                  onChange={(e) =>
-                    handleInputChange(div.id, 12, e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[13]}
-                  onChange={(e) =>
-                    handleInputChange(div.id, 12, e.target.value)
-                  }
-                />
-              </td>
-            </tr>
-          ))*/}
+      
         </tbody>
       </table>
     </Table>

@@ -6,11 +6,12 @@ import React, {
   useState,
 } from "react";
 import { MainContext } from "../../../context/MainContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { StyledForm, Table } from "../../../styles/Styles";
 import SecondTableCreate from "./SecondTableCreate";
 import DatePickerInputU from "../../../components/DateInputUpdate";
 import { deleteReportIn, deleteReportItem } from "../../../api/daryan.api";
+import Select from "../../employee/Select";
 
 const View = () => {
   const {
@@ -61,7 +62,8 @@ const View = () => {
     setNumColumnas,
     suppliers,
     toast,
-    isAdmin
+    isAdmin,
+    incType,
   } = useContext(MainContext);
   const params = useParams();
   const idReport = params.id;
@@ -72,6 +74,7 @@ const View = () => {
           (data) => Number(data.id) === Number(idReport)
         )[0]
       : data.filter((data) => Number(data.id) === Number(idReport))[0];
+
   const [dataC, setDataC] = useState(eData);
   const [producedBy, setProducedBy] = useState(eData.made_by);
   const [checkedBy, setCheckedBy] = useState(eData.checked_by);
@@ -165,13 +168,11 @@ const View = () => {
     setDataC(data);
   }, []);
   useEffect(() => {
-    //console.log(numColumnas2);
-
     setNumColumnas2(numColumnas);
     // setNumFilas2(numFilas);
   }, [numColumnas]);
 
-  const eliminarFila = async(itemId, idDb) => {
+  const eliminarFila = async (itemId, idDb) => {
     const confirmMessage =
       "¿Estás seguro(a) que deseas borrar este elemento? Esta acción no podrá deshacerse.";
     const confirmResult = window.confirm(confirmMessage);
@@ -195,7 +196,6 @@ const View = () => {
             console.log(err);
           });
         //handleDel()
-        // console.log(idDb);
       }
       setDivs((prevDatos) => prevDatos.filter((item) => item.id !== itemId));
       setNumFilas2(numFilas2 - 1);
@@ -267,47 +267,9 @@ const View = () => {
     }
   };
 
-  //console.log(divs);
   useEffect(() => {
     setNumColumnas2(numColumnas);
   }, [numColumnas]);
-
-  // const agregarColumnas = (e) => {
-  //   console.log('sdsd');
-  //   setTitulosColumnas((prevTitulos) => {
-  //     const nextLetter = getNextLetter(prevTitulos);
-  //     setDbColumns((prev) => [...prev, nextLetter]);
-  //     //   console.log(nextLetter);
-  //     const newArr = [...prevTitulos, nextLetter];
-  //     const arrayCopy = newArr.slice();
-  //     const penultimate = arrayCopy.slice(-2, -1)[0];
-  //     arrayCopy.splice(-2, 1);
-  //     arrayCopy.push(penultimate);
-  //     const tableWrapper = document.querySelectorAll(".scrollX");
-
-  //     tableWrapper.forEach((element) => {
-  //       const scrollWidth = element.scrollWidth;
-  //       const clientWidth = element.clientWidth;
-  //       if (scrollWidth >= clientWidth) {
-  //         setTimeout(() => {
-  //           element.scrollLeft = scrollWidth;
-  //         }, 200);
-  //       }
-  //     });
-
-  //     return arrayCopy;
-  //   });
-
-  // };
-  // useEffect(() => {
-  //   if (Object.keys(dataC).length > 0) {
-  //     setNumFilas2(Number(dataC.reports_cc.length));
-  //     //console.log(numColumnas2);
-  //     const clauses = Number(dataC.report_in.length);
-  //     const newLength = 11 + clauses;
-  //     setNumColumnas2(newLength);
-  //   }
-  // }, []);
 
   const [divs2, setDivs2] = useState(() => {
     const filas = [];
@@ -357,7 +319,6 @@ const View = () => {
         const fil = filas[j];
         const values = fil.values;
 
-        //  console.log(dataC);
         //const keys = Object.keys(dataC.reports_cc[j])
         if (dataC.reports_cc && dataC.reports_cc[j]) {
           const keys = Object.keys(dataC.reports_cc[j]);
@@ -415,17 +376,9 @@ const View = () => {
                 values[k] = dataC.reports_cc[j][keys[k + 1]];
                 break;
             }
-            // if (k === 0) {
-            //   //values[k] = dataC.reports_cc[j]['item']
-            //   //console.log(dataC.reports_cc[j][keys[k]])
-            //   //console.log();
-            // }
           }
         }
-
-        // console.log(values);
       }
-      //console.log(filas[0].values[0]);
       return filas;
     });
   };
@@ -434,11 +387,9 @@ const View = () => {
     const dataInfo = eData.report_rby;
     let i2 = 0;
     const rby = [];
-    //console.log(dataInfo);
     if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
       const keys = Object.keys(dataInfo[i2]);
       for (let z = 0; z < dataInfo.length; z++) {
-        //  console.log(keys[z]);
         if (
           dataInfo[i2] &&
           typeof dataInfo[i2] === "object" &&
@@ -447,49 +398,39 @@ const View = () => {
           const realized_by = dataInfo[i2]["realized_by"];
           const id = dataInfo[i2]["id"];
           rby.push({ realized_by, id });
-          //  console.log(dataInfo[i2])
-          //console.log(rbyervations);
         } else {
-          // console.log(
           //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
           // );
         }
         i2++;
-        //console.log(dataInfo[i2][keys[z]]);
       }
       for (let i = 1; i <= numColumnas2 - 3; i++) {
         if (i > 7) {
           if (i !== numColumnas2 - 3) {
-            //console.log(numColumnas2 - 3);
             //    console.log(rby[i - 8]);
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
               values: Array.from({ length: 1 }, () => rby[i - 8].realized_by),
               id_db: Number(rby[i - 8].id),
+              type: Number(rby[i - 8].type),
             });
           }
-          //      console.log(dataInfo[i2])
         }
       }
     } else {
-      // console.log("dataInfo[i2] no es un objeto válido");
     }
 
     return filas;
   });
-  //console.log(reportFooter);
   const [reportFooter2, setReportFooter2] = useState(() => {
     const filas = [];
     const dataInfo = eData.report_ob;
     let i2 = 0;
     const obs = [];
-    // console.log(dataInfo);
     if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
       const keys = Object(dataInfo[i2]);
-      //console.log(keys);
       for (let z = 0; z < dataInfo.length; z++) {
-        //  console.log(keys[z]);
         if (
           dataInfo[i2] &&
           typeof dataInfo[i2] === "object" &&
@@ -499,30 +440,25 @@ const View = () => {
           const id = dataInfo[i2]["id"];
           obs.push({ observations, id });
         } else {
-          // console.log(
           //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
           // );
         }
         i2++;
-        //console.log(dataInfo[i2][keys[z]]);
       }
       for (let i = 1; i <= numColumnas2 - 3; i++) {
         if (i > 7) {
           if (i !== numColumnas2 - 3) {
-            //console.log(numColumnas2 - 3);
-            // console.log(obs[i - 8]);
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
               values: Array.from({ length: 1 }, () => obs[i - 8].observations),
               id_db: Number(obs[i - 8].id),
+              type: Number(obs[i - 8].type),
             });
           }
-          //      console.log(dataInfo[i2])
         }
       }
     } else {
-      // console.log("dataInfo[i2] no es un objeto válido");
     }
 
     return filas;
@@ -533,11 +469,9 @@ const View = () => {
     const dataInfo = eData.report_in;
     let i2 = 0;
     const inc = [];
-   // console.log(dataInfo);
     if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
       const keys = Object.keys(dataInfo[i2]);
       for (let z = 0; z < dataInfo.length; z++) {
-        //  console.log(keys[z]);
         if (
           dataInfo[i2] &&
           typeof dataInfo[i2] === "object" &&
@@ -545,37 +479,30 @@ const View = () => {
         ) {
           const incidents = dataInfo[i2]["incident"];
           const id = dataInfo[i2]["id"];
-          inc.push({ incidents, id });
+          const type = dataInfo[i2]["type"];
+          inc.push({ incidents, id, type });
         } else {
-          // console.log(
-          //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
-          // );
         }
         i2++;
       }
       for (let i = 1; i <= numColumnas2 - 3; i++) {
         if (i > 7) {
           if (i !== numColumnas2 - 3) {
-            // console.log(inc[i - 8]);
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
               values: Array.from({ length: 1 }, () => inc[i - 8].incidents),
               id_db: Number(inc[i - 8].id),
+              type: Number(inc[i - 8].type),
             });
           }
-          //      console.log(dataInfo[i2])
         }
       }
     } else {
-      // console.log("dataInfo[i2] no es un objeto válido");
     }
 
     return filas;
   });
-  /*console.log(reportFooter);
-  console.log(reportFooter2);
-  console.log(reportFooter3);*/
   const handleUpdate = (hanldeId = 1, divId, inputIndex, newValue) => {
     if (hanldeId === 1) {
       setReportFooter((prevDivs) => {
@@ -623,7 +550,6 @@ const View = () => {
     cc4: report_cc.lot === "1" ? true : false,
     cc5: report_cc.others,
   });
-  //console.log(serviceType)
   useEffect(() => {
     setDivs2((prev) => {
       const filas = [];
@@ -635,7 +561,6 @@ const View = () => {
       }
       return filas;
     });
-    // console.log(divs2)
 
     setReportFooter((prev) => {
       const filas = [];
@@ -646,7 +571,6 @@ const View = () => {
       if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
         const keys = Object.keys(dataInfo[i2]);
         for (let z = 0; z < dataInfo.length; z++) {
-          //  console.log(keys[z]);
           if (
             dataInfo[i2] &&
             typeof dataInfo[i2] === "object" &&
@@ -655,21 +579,13 @@ const View = () => {
             const realized_by = dataInfo[i2]["realized_by"];
             const id = dataInfo[i2]["id"];
             rby.push({ realized_by, id });
-            //console.log(dataInfo[i2])
-            //console.log(rbyervations);
           } else {
-            // console.log(
-            //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
-            // );
           }
           i2++;
-          //console.log(dataInfo[i2][keys[z]]);
         }
         for (let i = 1; i <= numColumnas2 - 3; i++) {
           if (i > 7) {
             if (i !== numColumnas2 - 3) {
-              //console.log(numColumnas2 - 3);
-              //  console.log(rby[i - 8]);
               // ... código para aplicar la condición solamente en el último índice ...
               filas.push({
                 id: i,
@@ -679,11 +595,9 @@ const View = () => {
                 id_db: rby[i - 8] ? Number(rby[i - 8].id) : "",
               });
             }
-            //      console.log(dataInfo[i2])
           }
         }
       } else {
-        // console.log("dataInfo[i2] no es un objeto válido");
       }
 
       return filas;
@@ -693,12 +607,9 @@ const View = () => {
       const dataInfo = eData.report_ob;
       let i2 = 0;
       const obs = [];
-      // console.log(dataInfo);
       if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
         const keys = Object(dataInfo[i2]);
-        //console.log(keys);
         for (let z = 0; z < dataInfo.length; z++) {
-          //  console.log(keys[z]);
           if (
             dataInfo[i2] &&
             typeof dataInfo[i2] === "object" &&
@@ -708,18 +619,14 @@ const View = () => {
             const id = dataInfo[i2]["id"];
             obs.push({ observations, id });
           } else {
-            // console.log(
             //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
             // );
           }
           i2++;
-          //console.log(dataInfo[i2][keys[z]]);
         }
         for (let i = 1; i <= numColumnas2 - 3; i++) {
           if (i > 7) {
             if (i !== numColumnas2 - 3) {
-              //console.log(numColumnas2 - 3);
-              // console.log(obs[i - 8]);
               // ... código para aplicar la condición solamente en el último índice ...
               filas.push({
                 id: i,
@@ -729,11 +636,9 @@ const View = () => {
                 id_db: obs[i - 8] ? Number(obs[i - 8].id) : "",
               });
             }
-            //      console.log(dataInfo[i2])
           }
         }
       } else {
-        // console.log("dataInfo[i2] no es un objeto válido");
       }
 
       return filas;
@@ -743,11 +648,9 @@ const View = () => {
       const dataInfo = eData.report_in;
       let i2 = 0;
       const inc = [];
-
       if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
         const keys = Object.keys(dataInfo[i2]);
         for (let z = 0; z < dataInfo.length; z++) {
-          //  console.log(keys[z]);
           if (
             dataInfo[i2] &&
             typeof dataInfo[i2] === "object" &&
@@ -755,9 +658,9 @@ const View = () => {
           ) {
             const incidents = dataInfo[i2]["incident"];
             const id = dataInfo[i2]["id"];
-            inc.push({ incidents, id });
+            const type = dataInfo[i2]["type"];
+            inc.push({ incidents, id, type });
           } else {
-            // console.log(
             //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
             // );
           }
@@ -766,7 +669,6 @@ const View = () => {
         for (let i = 1; i <= numColumnas2 - 3; i++) {
           if (i > 7) {
             if (i !== numColumnas2 - 3) {
-              // console.log(inc[i - 8]);
               // ... código para aplicar la condición solamente en el último índice ...
               filas.push({
                 id: i,
@@ -774,13 +676,12 @@ const View = () => {
                   inc[i - 8] ? inc[i - 8].incidents : ""
                 ),
                 id_db: inc[i - 8] ? Number(inc[i - 8].id) : "",
+                type: inc[i - 8] ? Number(inc[i - 8].type) : "",
               });
             }
-            //      console.log(dataInfo[i2])
           }
         }
       } else {
-        // console.log("dataInfo[i2] no es un objeto válido");
       }
 
       return filas;
@@ -790,7 +691,6 @@ const View = () => {
   }, [numColumnas2, numColumnas]);
 
   useEffect(() => {
-    //console.log()
     const newArray = [
       {
         data: dataCDb,
@@ -821,9 +721,9 @@ const View = () => {
           h: total13,
           i: total14,
         },
+        incType: incType,
       },
     ];
-    //  console.log(newArray[0]['total']);
     setDataToSave(newArray);
   }, [
     dataCDb,
@@ -851,39 +751,9 @@ const View = () => {
     total12,
     total13,
     total14,
+    incType,
   ]);
-  // useEffect(() => {
-  //   //console.log(dataCDb)
-  //   const newArray = [
-  //     {
-  //       data: dataCDb,
-  //       serviceType: serviceType,
-  //       customerControl: customerControl,
-  //       customerControlTable: divs,
-  //       madeBy: reportFooter,
-  //       observations: reportFooter2,
-  //       incidents: reportFooter3,
-  //       producedBy: producedBy,
-  //       checkedBy: checkedBy,
-  //       authorizedBy: authorizedBy,
-  //       id_report: dataC.id,
-  //       reports_cc: dataC.reports_cc,
-  //     },
-  //   ];
-  //   setDataToSave(newArray);
-  // }, [
-  //   dataCDb,
-  //   dataC,
-  //   serviceType,
-  //   customerControl,
-  //   divs,
-  //   reportFooter,
-  //   reportFooter2,
-  //   reportFooter3,
-  //   producedBy,
-  //   checkedBy,
-  //   authorizedBy,
-  // ]);
+
   const [keysTh, setKeysTh] = useState([]);
   useEffect(() => {
     const date = new Date();
@@ -895,40 +765,71 @@ const View = () => {
     const seconds = ("0" + date.getSeconds()).slice(-2);
     const formattedDateTime = `${year}-${month}-${day}`;
     const keys = Object.keys(dataC.reports_cc[0]);
-    //console.log(keys);
     const numCol = keys.length;
     keys.splice(1, 1); // Elimina el elemento en la posición 1 (id_report)
     keys[0] = "";
-    keys[2] = <><div className="th-title">fecha <span className="required">*</span></div></>;
-    keys[3] = <><div className="th-title">lote <span className="required">*</span></div></>;
-    keys[4] = <><div className="th-title">serial <span className="required">*</span></div></>;
-    keys[5] = <><div className="th-title">cant insp <span className="required">*</span></div></>;
-    keys[6] = <><div className="th-title">pzas ng <span className="required">*</span></div></>;
-    keys[7] = <><div className="th-title">pzas ok <span className="required">*</span></div></>;
-    keys[8] = <><div className="th-title">pzas rt <span className="required">*</span></div></>;
-    keys[9] = <><div className="th-title">scrap <span className="required">*</span></div></>;
+    keys[2] = (
+      <>
+        <div className="th-title">
+          fecha <span className="required">*</span>
+        </div>
+      </>
+    );
+    keys[3] = (
+      <>
+        <div className="th-title">
+          lote <span className="required">*</span>
+        </div>
+      </>
+    );
+    keys[4] = (
+      <>
+        <div className="th-title">
+          serial <span className="required">*</span>
+        </div>
+      </>
+    );
+    keys[5] = (
+      <>
+        <div className="th-title">
+          cant insp <span className="required">*</span>
+        </div>
+      </>
+    );
+    keys[6] = (
+      <>
+        <div className="th-title">
+          pzas ng <span className="required">*</span>
+        </div>
+      </>
+    );
+    keys[7] = (
+      <>
+        <div className="th-title">
+          pzas ok <span className="required">*</span>
+        </div>
+      </>
+    );
+    keys[8] = (
+      <>
+        <div className="th-title">
+          pzas rt <span className="required">*</span>
+        </div>
+      </>
+    );
+    keys[9] = (
+      <>
+        <div className="th-title">
+          scrap <span className="required">*</span>
+        </div>
+      </>
+    );
     keys.splice(10, 2);
 
-    //console.log(keys);
     const kLenght = keys.length + 1;
     setNumColumnas(kLenght);
-    // if (lastKey !== "I") {
-    //   keys.push(
-    //     <>
-    //        <i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i>
-    //     </>
-    //   );
 
-    // } else {
-    //   keys.push(
-    //     <>
-    //       <i
-    //         className="fa-solid fa-trash"
-    //         onClick={() => eliminarColumna()}
-    //       ></i>
-    //     </>
-    //   );
-    // }
+    console.log(titulosColumnas);
     setTitulosColumnas(keys);
   }, []);
   useEffect(() => {
@@ -945,10 +846,6 @@ const View = () => {
       id_supplier: dataC.id_supplier,
     });
   }, []);
-  /*
-  console.log(dataToSave)
-  console.log(customerControl);*/
-  //console.log(dataToSave)
   const [dumpValue, setDumpValue] = useState("");
   const inputRef = useRef();
   const dataListRef = useRef();
@@ -971,7 +868,6 @@ const View = () => {
         ...dataCDb,
         [e.target.dataset.name || e.target.name]: e.target.value,
       });
-      // console.log("option not included in the datalist");
     } else {
       const id_supplier = selectedOption.getAttribute("data-id");
       setDataCDb({
@@ -980,8 +876,47 @@ const View = () => {
       });
     }
   };
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isAdmin !== null) {
+      if (!isAdmin) {
+        navigate(`/client/reports/${idReport}`, { replace: true });
+      }
+    }
+  }, [isAdmin]);
+  const optionClause = [
+    {
+      value: "1",
+      text: "Mal",
+    },
+    {
+      value: "2",
+      text: "Re trabajo",
+    },
+    {
+      value: "3",
+      text: "Scrap",
+    },
+  ];
+  const [totalHours, setTotalHours] = useState(0);
 
-  
+  useEffect(() => {
+    if (Object.keys(dataCDb).length > 0) {
+      const totalInsp = Number(total1);
+      const rate = dataCDb.rate;
+      const totalHours = Number(totalInsp) / Number(rate);
+      setTotalHours(totalHours);
+    }
+  }, [total1, dataCDb]);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    const currentInputValue = dataCDb[name];
+
+    setDataCDb({
+      ...dataCDb,
+      [name]: value,
+    });
+  };
   return (
     <>
       <div className="container">
@@ -992,7 +927,9 @@ const View = () => {
 
         <StyledForm>
           <div className="form-container">
-            <label htmlFor="data">Planta <span className="required">*</span></label>
+            <label htmlFor="data">
+              Planta <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="data"
@@ -1000,114 +937,205 @@ const View = () => {
               placeholder=""
               required
               defaultValue={dataC.plant}
-              readOnly
-            />
-          </div>
-          <div className="form-container">
-            <label htmlFor="data2">Proveedor <span className="required">*</span></label>
-            <input
-              name="supplier"
-              defaultValue={dataC.supplier}                   
-              ref={inputRef}              
-              readOnly
-            />
-           
-            {/* <input
-              type="text"
-              id="data2"
-              name="supplier"
-              placeholder=""
-              required
-              defaultValue=""
-              value={data.supplier}
               onChange={(e) =>
-                setData({
-                  ...data,
+                setDataCDb({
+                  ...dataCDb,
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
-            /> */}
+              readOnly
+            />
           </div>
           <div className="form-container">
-            <label htmlFor="data3">Fecha <span className="required">*</span></label>            
-            <input type="text" name="" value={dataC.date} readOnly />
+            <label htmlFor="data2">
+              Proveedor <span className="required">*</span>
+            </label>
+            <input
+              name="supplier"
+              value={dataC.supplier}
+              type="text"
+              list="supplier"
+              onChange={handleChange}
+              ref={inputRef}
+              autoComplete="off"
+              readOnly
+            />
+            <datalist id="supplier" ref={dataListRef}>
+              {suppliers.map((item, indx) => {
+                // Verificar si el navegador es Firefox, Safari o Edge
+                const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
+                const isSafari =
+                  navigator.userAgent.indexOf("Safari") !== -1 ||
+                  navigator.userAgent.indexOf("AppleWebKit") !== -1;
+                const isEdge = navigator.userAgent.indexOf("Edge") !== -1;
+
+                const option = (
+                  <option value={item.fullname} data-id={item.id}>
+                    type="text"
+                    {isFirefox ? `${item.fullname}` : ""}
+                  </option>
+                );
+
+                return option;
+              })}
+            </datalist>
           </div>
           <div className="form-container">
-            <label htmlFor="data4">No. de Reporte <span className="required">*</span></label>
+            <label htmlFor="data3">
+              Fecha <span className="required">*</span>
+            </label>
+            <DatePickerInputU
+              id="data3"
+              name="date"
+              style={{ textAlign: "left", padding: "12px 20px" }}
+              value={dataC.date}
+              type="text"
+              dataCDb={dataCDb}
+              readOnly
+            />
+          </div>
+          <div className="form-container">
+            <label htmlFor="data4">
+              No. de Reporte <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="data4"
               name="report_number"
               placeholder=""
               required
-              defaultValue={dataC.report_number}       
-              readOnly      
-            />
-          </div>
-          <div className="form-container">
-            <label htmlFor="data5">Nombre de parte <span className="required">*</span></label>
-            <input
-              type="text"
-              id="data5"
-              name="part_name"
-              placeholder=""
-              required
-              defaultValue={dataC.part_name}
+              defaultValue={dataC.report_number}
+              onChange={(e) =>
+                setDataCDb({
+                  ...dataCDb,
+                  [e.target.dataset.name || e.target.name]: e.target.value,
+                })
+              }
               readOnly
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data6">Horas Trabajadas <span className="required">*</span></label>
+            <label htmlFor="data5">
+              Nombre de parte <span className="required">*</span>
+            </label>
             <input
+              id="data5"
+              name="part_name"
+              placeholder=""
+              required
               type="text"
+              defaultValue={dataC.part_name}
+              onChange={(e) =>
+                setDataCDb({
+                  ...dataCDb,
+                  [e.target.dataset.name || e.target.name]: e.target.value,
+                })
+              }
+              readOnly
+            />
+          </div>
+          <div className="form-container">
+            <label htmlFor="data6">
+              Horas Trabajadas <span className="required">*</span>
+            </label>
+            <input
               id="data6"
               name="worked_hours"
               placeholder=""
               required
-              defaultValue={dataC.worked_h}     
-              readOnly         
+              value={
+                totalHours > 0 && typeof totalHours === "number"
+                  ? totalHours
+                  : dataCDb.worked_hours
+              }
+              type="text"
+              onChange={(e) =>
+                setDataCDb({
+                  ...dataCDb,
+                  [e.target.dataset.name || e.target.name]: e.target.value,
+                })
+              }
+              readOnly
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data7">Rate <span className="required">*</span></label>
+            <label htmlFor="data7">
+              Rate <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="data7"
               name="rate"
               placeholder=""
               required
-              defaultValue={dataC.rate}     
-              readOnly         
+              value={dataCDb.rate}
+              onChange={(e) => handleInputChange(e)}
+              readOnly
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data8">Turno <span className="required">*</span></label>
-            <input defaultValue={dataC.shift}
-            readOnly
-            />
+            <label htmlFor="data8">
+              Turno <span className="required">*</span>
+            </label>
+            <select
+              id="data8"
+              name="shift"
+              required
+              defaultValue={dataC.shift}
+              type="text"
+              onChange={(e) =>
+                setDataCDb({
+                  ...dataCDb,
+                  [e.target.dataset.name || e.target.name]: e.target.value,
+                })
+              }
+              disabled
+            >
+              <option value="0">Selecciona una opcion</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
           </div>
           <div className="form-container">
-            <label htmlFor="data10">Numero de parte <span className="required">*</span></label>
+            <label htmlFor="data10">
+              Numero de parte <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="data10"
               name="part_number"
               placeholder=""
               required
-              defaultValue={dataC.part_number}         
-              readOnly     
+              defaultValue={dataC.part_number}
+              onChange={(e) =>
+                setDataCDb({
+                  ...dataCDb,
+                  [e.target.dataset.name || e.target.name]: e.target.value,
+                })
+              }
+              readOnly
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data8">Tipo de servicio <span className="required">*</span></label>
+            <label htmlFor="data8">
+              Tipo de servicio <span className="required">*</span>
+            </label>
 
             <div className="container-checkbox">
               <label>
                 <input
                   type="checkbox"
                   name="st1"
-                  checked={serviceType.st1}             
-                  readOnly     
+                  checked={serviceType.st1}
+                  onChange={(e) =>
+                    setServiceType({
+                      ...serviceType,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
+                    })
+                  }
+                  disabled
                 />
                 Selección
               </label>
@@ -1116,36 +1144,58 @@ const View = () => {
                 <input
                   type="checkbox"
                   name="st2"
-                  checked={serviceType.st2}         
-                  readOnly         
+                  checked={serviceType.st2}
+                  onChange={(e) =>
+                    setServiceType({
+                      ...serviceType,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
+                    })
+                  }
+                  disabled
                 />
                 Retrabajo
               </label>
-              <label htmlFor=""> </label>
-              <label htmlFor=""> </label>
-              <label htmlFor=""> </label>
+              <label htmlFor=""> </label>
+              <label htmlFor=""> </label>
+              <label htmlFor=""> </label>
               <div className="others-container">
                 <label>Otros</label>
                 <input
                   type="text"
                   name="st3"
-                  value={serviceType.st3}       
-                  readOnly           
+                  value={serviceType.st3}
+                  onChange={(e) =>
+                    setServiceType({
+                      ...serviceType,
+                      [e.target.dataset.name || e.target.name]: e.target.value,
+                    })
+                  }
+                  disabled
                 />
               </div>
             </div>
           </div>
 
           <div className="form-container">
-            <label htmlFor="data8">Control para el cliente <span className="required">*</span></label>
+            <label htmlFor="data8">
+              Control para el cliente <span className="required">*</span>
+            </label>
 
             <div className="container-checkbox">
               <label>
                 <input
                   type="checkbox"
                   name="cc1"
-                  checked={customerControl.cc1}      
-                  readOnly            
+                  checked={customerControl.cc1}
+                  onChange={(e) =>
+                    setCustomerControl({
+                      ...customerControl,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
+                    })
+                  }
+                  disabled
                 />
                 Fecha de produccion
               </label>
@@ -1154,8 +1204,15 @@ const View = () => {
                 <input
                   type="checkbox"
                   name="cc2"
-                  checked={customerControl.cc2}    
-                  readOnly              
+                  checked={customerControl.cc2}
+                  onChange={(e) =>
+                    setCustomerControl({
+                      ...customerControl,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
+                    })
+                  }
+                  disabled
                 />
                 Fecha de aprobado
               </label>
@@ -1164,8 +1221,15 @@ const View = () => {
                 <input
                   type="checkbox"
                   name="cc3"
-                  checked={customerControl.cc3}  
-                  readOnly                
+                  checked={customerControl.cc3}
+                  onChange={(e) =>
+                    setCustomerControl({
+                      ...customerControl,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
+                    })
+                  }
+                  disabled
                 />
                 Serie
               </label>
@@ -1173,8 +1237,15 @@ const View = () => {
                 <input
                   type="checkbox"
                   name="cc4"
-                  checked={customerControl.cc4}    
-                  readOnly              
+                  checked={customerControl.cc4}
+                  onChange={(e) =>
+                    setCustomerControl({
+                      ...customerControl,
+                      [e.target.dataset.name || e.target.name]:
+                        e.target.checked,
+                    })
+                  }
+                  disabled
                 />
                 Lote
               </label>
@@ -1184,27 +1255,17 @@ const View = () => {
                   type="text"
                   name="cc5"
                   value={customerControl.cc5}
-                  readOnly                 
+                  onChange={(e) =>
+                    setCustomerControl({
+                      ...customerControl,
+                      [e.target.dataset.name || e.target.name]: e.target.value,
+                    })
+                  }
+                  disabled
                 />
               </div>
             </div>
           </div>
-
-          {/*
-        <label htmlFor="subject">Subject <span className="required">*</span></label>
-        <select id="subject" name="subject">
-          <option value="general">General Inquiry</option>
-          <option value="support">Technical Support</option>
-          <option value="billing">Billing Question</option>
-        </select>
-
-        <label htmlFor="message">Message <span className="required">*</span></label>
-        <textarea
-          id="message"
-          name="message"
-          placeholder="Enter your message"
-          required
-        ></textarea>*/}
         </StyledForm>
       </div>
       <div
@@ -1220,6 +1281,8 @@ const View = () => {
           setDivs={setDivs}
           agregarFila={agregarFila}
           eliminarFila={eliminarFila}
+          numFilas2={numFilas2}
+          numColumnas2={numColumnas2}
         />
       </div>
 
@@ -1261,10 +1324,10 @@ const View = () => {
                           ) : (
                             <td key={i} className="table-center">
                               <input
-                                type=""
                                 name=""
-                                defaultValue={dumpValue}
-                                readOnly
+                                value={dumpValue}
+                                type="text"
+                                onChange={() => setDumpValue("")}
                               />
                             </td>
                           )}
@@ -1300,86 +1363,114 @@ const View = () => {
                             <td key={i} className="table-center">
                               {i === 2 && (
                                 <input
-                                  defaultValue={total1}
-                                  readOnly
+                                  value={total1}
+                                  type="text"
+                                  onChange={(e) => setTotal1(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 3 && (
                                 <input
-                                  defaultValue={total2}
-                                  readOnly
+                                  value={total2}
+                                  type="text"
+                                  onChange={(e) => setTotal2(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 4 && (
                                 <input
-                                  defaultValue={total3}
-                                  readOnly
+                                  value={total3}
+                                  type="text"
+                                  onChange={(e) => setTotal3(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 5 && (
                                 <input
-                                  defaultValue={total4}
-                                  readOnly
+                                  value={total4}
+                                  type="text"
+                                  onChange={(e) => setTotal4(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 6 && (
                                 <input
-                                  defaultValue={total5}
-                                  readOnly
+                                  value={total5}
+                                  type="text"
+                                  onChange={(e) => setTotal5(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 7 && (
                                 <input
-                                  defaultValue={total6}
-                                  readOnly
+                                  value={total6}
+                                  type="text"
+                                  onChange={(e) => setTotal6(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 8 && (
                                 <input
-                                  defaultValue={total7}
-                                  readOnly
+                                  value={total7}
+                                  type="text"
+                                  onChange={(e) => setTotal7(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 9 && (
                                 <input
-                                  defaultValue={total8}
-                                  readOnly
+                                  value={total8}
+                                  type="text"
+                                  onChange={(e) => setTotal8(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 10 && (
                                 <input
-                                  defaultValue={total9}
-                                  readOnly
+                                  value={total9}
+                                  type="text"
+                                  onChange={(e) => setTotal9(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 11 && (
                                 <input
-                                  defaultValue={isNaN(total10) ? 0 : total10}
-                                  readOnly
+                                  value={isNaN(total10) ? 0 : total10}
+                                  type="text"
+                                  onChange={(e) => setTotal10(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 12 && (
                                 <input
-                                  defaultValue={isNaN(total11) ? 0 : total11}
-                                  readOnly
+                                  value={isNaN(total11) ? 0 : total11}
+                                  type="text"
+                                  onChange={(e) => setTotal11(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 13 && (
                                 <input
-                                  defaultValue={isNaN(total12) ? 0 : total12}
-                                  readOnly
+                                  value={isNaN(total12) ? 0 : total12}
+                                  type="text"
+                                  onChange={(e) => setTotal12(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 14 && (
                                 <input
-                                  defaultValue={isNaN(total13) ? 0 : total13}
-                                  readOnly
+                                  value={isNaN(total13) ? 0 : total13}
+                                  type="text"
+                                  onChange={(e) => setTotal13(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 15 && (
                                 <input
-                                  defaultValue={isNaN(total14) ? 0 : total14}
-                                  readOnly
+                                  value={isNaN(total14) ? 0 : total14}
+                                  type="text"
+                                  onChange={(e) => setTotal14(e.target.value)}
+                                  disabled
                                 />
                               )}
                             </td>
@@ -1398,9 +1489,13 @@ const View = () => {
                       fila.values.map((valor, i) => (
                         <>
                           <input
-                            defaultValue={valor}
-                            readOnly
+                            value={valor}
+                            type="text"
+                            onChange={(e) =>
+                              handleUpdate(1, fila.id, i, e.target.value)
+                            }
                             key={i}
+                            disabled
                           />{" "}
                           <br />
                         </>
@@ -1415,9 +1510,13 @@ const View = () => {
                       fila.values.map((valor, i) => (
                         <>
                           <input
-                            defaultValue={valor}
-                            readOnly
+                            value={valor}
+                            type="text"
+                            onChange={(e) =>
+                              handleUpdate(2, fila.id, i, e.target.value)
+                            }
                             key={i}
+                            disabled
                           />
                           <br />
                         </>
@@ -1440,8 +1539,9 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
-                                    
+                                    value={dumpValue}
+                                    type="text"
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -1453,8 +1553,9 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
-                                    
+                                    value={dumpValue}
+                                    type="text"
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -1466,8 +1567,9 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
-                                    
+                                    value={dumpValue}
+                                    type="text"
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -1479,8 +1581,9 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
-                                    
+                                    value={dumpValue}
+                                    type="text"
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -1492,8 +1595,9 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
-                                    
+                                    value={dumpValue}
+                                    type="text"
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -1505,8 +1609,9 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
-                                    
+                                    value={dumpValue}
+                                    type="text"
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -1518,8 +1623,9 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
-                                    
+                                    value={dumpValue}
+                                    type="text"
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -1531,8 +1637,9 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
-                                    
+                                    value={dumpValue}
+                                    type="text"
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -1544,8 +1651,9 @@ const View = () => {
                                     readOnly
                                     style={{ textAlign: "center" }}
                                     key={i}
-                                    defaultValue={dumpValue}
-                                    
+                                    value={dumpValue}
+                                    type="text"
+                                    onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
                                 </>
@@ -1555,37 +1663,142 @@ const View = () => {
                       )
                   )}
                 </td>
-                <td
-                  colSpan={numColumnas2 > 15 ? numColumnas2 / 3 : 3}
-                  style={{ textAlign: "center" }}
-                >
-                  <div>INCIDENTES</div>
+                <td colSpan={1} style={{ textAlign: "center" }}>
+                  <div> </div>
                   {reportFooter3.map(
                     (fila, i) =>
                       i < reportFooter3.length &&
-                      fila.values.map((valor, i) => (
+                      fila.values.map((valor, i2) => (
                         <>
-                          <input
-                            defaultValue={valor}
-                            readOnly
-                            key={i}
-                          />{" "}
-                          <br />
+                          <div key={i + "clause"}>
+                            {i === 0 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="A"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 1 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="B"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 2 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="C"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 3 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="D"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 4 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="E"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 5 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="F"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 6 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="G"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 7 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="H"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 8 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="I"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                          </div>
                         </>
                       ))
                   )}
                 </td>
+                <td
+      colSpan={numColumnas2 > 15 ? numColumnas2 / 3 : 3}
+      style={{ textAlign: "center" }}
+    >
+      <div>INCIDENTES</div>
+      {reportFooter3.map(
+        (fila, i) =>
+          i < reportFooter3.length &&
+          fila.values.map((valor, i) => (
+            <>
+              <input
+                value={valor}
+                type="text"                
+                key={i}
+                disabled
+              />{" "}
+              <br />
+            </>
+          ))
+      )}
+    </td>
               </tr>
               <tr>
                 <td colSpan={numColumnas2 / 3} style={{ textAlign: "center" }}>
                   <div>ELABORO</div>
                   <div className="firm">
                     <input
-                      type=""
                       name=""
-                      defaultValue={producedBy}
-                      readOnly
+                      value={producedBy}
+                      type="text"
+                      onChange={(e) => setProducedBy(e.target.value)}
                       className="firm-input"
+                      disabled
                     />
                   </div>
                 </td>
@@ -1594,11 +1807,12 @@ const View = () => {
                   <div>REVISO</div>
                   <div className="firm">
                     <input
-                      type=""
                       name=""
-                      defaultValue={checkedBy}
-                      readOnly
+                      value={checkedBy}
+                      type="text"
+                      onChange={(e) => setCheckedBy(e.target.value)}
                       className="firm-input"
+                      disabled
                     />
                   </div>
                 </td>
@@ -1607,11 +1821,12 @@ const View = () => {
                   <div>AUTORIZO</div>
                   <div className="firm">
                     <input
-                      type=""
                       name=""
-                      defaultValue={authorizedBy}
-                      readOnly
+                      value={authorizedBy}
+                      type="text"
+                      onChange={(e) => setAuthorizedBy(e.target.value)}
                       className="firm-input"
+                      disabled
                     />
                   </div>
                 </td>

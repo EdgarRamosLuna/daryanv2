@@ -10,9 +10,11 @@ const Select = ({ data, clause, selected }) => {
     useEffect(() => {
       
       if(selected){
+        console.log(selected)
         setDataC(selected)
       }    
     }, [selected])
+    
     
     const [dataC, setDataC] = useState("");
     const handleChange = (e) => {

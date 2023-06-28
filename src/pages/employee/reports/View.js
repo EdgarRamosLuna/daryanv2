@@ -6,23 +6,17 @@ import React, {
   useState,
 } from "react";
 import { MainContext } from "../../../context/MainContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { StyledForm, Table } from "../../../styles/Styles";
 import SecondTableCreate from "./SecondTableCreate";
 import DatePickerInputU from "../../../components/DateInputUpdate";
-import Select from "../Select";
+import { deleteReportIn, deleteReportItem } from "../../../api/daryan.api";
+import Select from "../../employee/Select";
 
 const View = () => {
   const {
     titulosColumnas,
-    titulosColumnas2,
-    eliminarColumna,
-    agregarColumna,
-    setTitulosColumnas2,
-    agregarFila,
     total1,
-    divs,
-    setDivs,
     setTotal1,
     total2,
     setTotal2,
@@ -57,36 +51,31 @@ const View = () => {
     handleScroll1,
     handleScroll2,
     data,
-    setData,
     dataTS,
-    isLoading,
-    setIsLoading,
     formattedDate,
     setTitulosColumnas,
     setDbColumns,
     getNextLetter,
-    agregarColumna2,
     dataCDb,
     setDataCDb,
     numColumnas,
     setNumColumnas,
-    numFilas,
     suppliers,
+    toast,
+    isAdmin,
+    incType,
   } = useContext(MainContext);
-  //setData(dataTS)
-
-  //setData(dataTS)
-
   const params = useParams();
   const idReport = params.id;
+  //const [numFilas, setNumFilas] = useState(0);
   const eData =
     data.length === 0
       ? JSON.parse(dataTS).filter(
           (data) => Number(data.id) === Number(idReport)
         )[0]
       : data.filter((data) => Number(data.id) === Number(idReport))[0];
-  const [dataC, setDataC] = useState(eData);
 
+  const [dataC, setDataC] = useState(eData);
   const [producedBy, setProducedBy] = useState(eData.made_by);
   const [checkedBy, setCheckedBy] = useState(eData.checked_by);
   const [authorizedBy, setAuthorizedBy] = useState(eData.authorized_by);
@@ -94,59 +83,235 @@ const View = () => {
   const newLength = 11 + clauses;
   const [numFilas2, setNumFilas2] = useState(Number(dataC.reports_cc.length));
   const [numColumnas2, setNumColumnas2] = useState(newLength);
-  useEffect(() => {
-    console.log(numColumnas2);
+  const [divs, setDivs] = useState(() => {
+    const filas = [];
+    for (let i = 1; i <= numFilas2; i++) {
+      //filas
+      filas.push({
+        //llenar las filas
+        id: i, //id de la fila
+        values: Array.from({ length: numColumnas2 }, () => ""), //llenar con valores vacios
+      });
+    }
 
+    for (let j = 0; j < filas.length; j++) {
+      //filas
+      const fil = filas[j]; //fila
+      const values = fil.values; //valores de la fila
+      if (dataC.reports_cc && dataC.reports_cc[j]) {
+        //si hay datos en el reporte
+        const keys = Object.keys(dataC.reports_cc[j]); //obtener las llaves de cada objeto
+        for (let k = 0; k < values.length; k++) {
+          //valores
+          switch (
+            k //switch para llenar los valores
+          ) {
+            case 0: //si es el indice k valor
+              values[k] = dataC.reports_cc[j][keys[k]]; //llenar con el valor del objeto
+              break;
+            case 1:
+              values[k] = dataC.reports_cc[j][keys[k + 1]];
+              break;
+            case 2:
+              const date = dataC.reports_cc[j][keys[k + 1]];
+              const fdate = formattedDate(date);
+              values[k] = fdate;
+              break;
+            case 10:
+              values[k] = dataC.reports_cc[j]["A"];
+              break;
+            case 11:
+              values[k] = dataC.reports_cc[j]["B"];
+              break;
+            case 12:
+              values[k] = dataC.reports_cc[j]["C"];
+              break;
+            case 13:
+              values[k] = dataC.reports_cc[j]["D"];
+              break;
+            case 14:
+              values[k] = dataC.reports_cc[j]["E"]
+                ? dataC.reports_cc[j]["E"]
+                : "";
+              break;
+            case 15:
+              values[k] = dataC.reports_cc[j]["F"]
+                ? dataC.reports_cc[j]["F"]
+                : "";
+              break;
+            case 16:
+              values[k] = dataC.reports_cc[j]["G"]
+                ? dataC.reports_cc[j]["G"]
+                : "";
+              break;
+            case 17:
+              values[k] = dataC.reports_cc[j]["H"]
+                ? dataC.reports_cc[j]["H"]
+                : "";
+              break;
+            case 18:
+              values[k] = dataC.reports_cc[j]["I"]
+                ? dataC.reports_cc[j]["I"]
+                : "";
+              break;
+            default:
+              values[k] = dataC.reports_cc[j][keys[k + 1]];
+              break;
+          }
+        }
+      }
+    }
+    return filas;
+  });
+
+  const updateData = useCallback((data) => {
+    setDataC(data);
+  }, []);
+  useEffect(() => {
     setNumColumnas2(numColumnas);
     // setNumFilas2(numFilas);
   }, [numColumnas]);
-  // const agregarColumnas = (e) => {
-  //   console.log('sdsd');
-  //   setTitulosColumnas((prevTitulos) => {
-  //     const nextLetter = getNextLetter(prevTitulos);
-  //     setDbColumns((prev) => [...prev, nextLetter]);
-  //     //   console.log(nextLetter);
-  //     const newArr = [...prevTitulos, nextLetter];
-  //     const arrayCopy = newArr.slice();
-  //     const penultimate = arrayCopy.slice(-2, -1)[0];
-  //     arrayCopy.splice(-2, 1);
-  //     arrayCopy.push(penultimate);
-  //     const tableWrapper = document.querySelectorAll(".scrollX");
 
-  //     tableWrapper.forEach((element) => {
-  //       const scrollWidth = element.scrollWidth;
-  //       const clientWidth = element.clientWidth;
-  //       if (scrollWidth >= clientWidth) {
-  //         setTimeout(() => {
-  //           element.scrollLeft = scrollWidth;
-  //         }, 200);
-  //       }
-  //     });
+  const eliminarFila = async (itemId, idDb) => {
+    const confirmMessage =
+      "¿Estás seguro(a) que deseas borrar este elemento? Esta acción no podrá deshacerse.";
+    const confirmResult = window.confirm(confirmMessage);
 
-  //     return arrayCopy;
-  //   });
+    if (confirmResult) {
+      if (idDb !== "") {
+        await deleteReportItem({ id_rcc: idDb })
+          .then((res) => {
+            const datares = res.data;
+            if (datares.error) {
+              toast.error(datares.message, {
+                duration: 5000,
+              });
+            } else {
+              toast.success(datares.message, {
+                duration: 4000,
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        //handleDel()
+      }
+      setDivs((prevDatos) => prevDatos.filter((item) => item.id !== itemId));
+      setNumFilas2(numFilas2 - 1);
+    }
+  };
+  const agregarFila = (numColumnas, date) => {
+    setDivs((prevDatos) => [
+      ...prevDatos,
+      {
+        id: prevDatos.length + 1,
+        values: date
+          ? Array.from({ length: numColumnas }, (v, i) => (i === 2 ? date : ""))
+          : Array.from({ length: numColumnas }, () => ""),
+        // values: Array.from({ length: numColumnas }, () => ""),
+      },
+    ]);
+    setNumFilas2((prev) => prev + 1);
+    const tableWrapper = document.querySelector(".c2");
+    const scrollHeight = tableWrapper.scrollHeight;
+    const clientHeight = tableWrapper.clientHeight;
+    if (scrollHeight > clientHeight) {
+      //tableWrapper.scrollTop = scrollHeight - clientHeight;
+      setTimeout(() => {
+        tableWrapper.scrollTo({ top: scrollHeight, behavior: "smooth" });
+      }, 100);
+    }
+  };
+  const eliminarColumna2 = async (inc) => {
+    const confirmMessage =
+      "¿Estás seguro(a) que deseas borrar este inciso? Esta acción no podrá deshacerse.";
+    const confirmResult = window.confirm(confirmMessage);
 
-  // };
-  // useEffect(() => {
-  //   if (Object.keys(dataC).length > 0) {
-  //     setNumFilas2(Number(dataC.reports_cc.length));
-  //     //console.log(numColumnas2);
-  //     const clauses = Number(dataC.report_in.length);
-  //     const newLength = 11 + clauses;
-  //     setNumColumnas2(newLength);
-  //   }
-  // }, []);
+    if (confirmResult) {
+      await deleteReportIn({ inc: inc, id_report: idReport })
+        .then((res) => {
+          const datares = res.data;
+          if (datares.error) {
+            toast.error(datares.message, {
+              duration: 5000,
+            });
+          } else {
+            toast.success(datares.message, {
+              duration: 4000,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      setDivs((prevDatos) => {
+        const newData = prevDatos.slice(); //copy array
+        newData.map((fila) => {
+          const newArra = fila.values;
+          newArra.splice(-2, 1); // remove last item
+          return newArra; // Return the updated array
+        });
+        return newData;
+      });
+      setTitulosColumnas((prev) => {
+        const newArray = prev.slice();
+        newArray.splice(-1, 1); // remove last item
+        return newArray;
+      });
+      setNumColumnas((prev) => prev - 1);
+    } else {
+      // The user clicked Cancel.
+      // Do something else.
+      return false;
+    }
+  };
 
   useEffect(() => {
-    //console.log(dataC);
-    //    agregarColumna2();
+    setNumColumnas2(numColumnas);
+  }, [numColumnas]);
 
-    setDivs(() => {
+  const [divs2, setDivs2] = useState(() => {
+    const filas = [];
+    for (let i = 1; i <= numFilas2; i++) {
+      filas.push({
+        id: i,
+        values: Array.from({ length: numColumnas2 - 3 }, () => ""),
+      });
+    }
+    return filas;
+  });
+
+  const agregarColumna = (e) => {
+    setNumColumnas((prev) => prev + 1);
+    setTitulosColumnas((prevTitulos) => {
+      const nextLetter = getNextLetter(prevTitulos);
+      setDbColumns((prev) => [...prev, nextLetter]);
+      //   console.log(nextLetter);
+      const newArr = [...prevTitulos, nextLetter];
+      const arrayCopy = newArr.slice();
+      // const penultimate = arrayCopy.slice(-2, -1)[0];
+      // arrayCopy.splice(-2, 1);
+      // arrayCopy.push(penultimate);
+      const tableWrapper = document.querySelectorAll(".scrollX");
+      tableWrapper.forEach((element) => {
+        const scrollWidth = element.scrollWidth;
+        const clientWidth = element.clientWidth;
+        if (scrollWidth >= clientWidth) {
+          setTimeout(() => {
+            element.scrollLeft = scrollWidth;
+          }, 200);
+        }
+      });
+
+      return arrayCopy;
+    });
+    setDivs((prev) => {
       const filas = [];
       for (let i = 1; i <= numFilas2; i++) {
         filas.push({
           id: i,
-          values: Array.from({ length: numColumnas2 }, () => ""),
+          values: Array.from({ length: numColumnas2 + 1 }, () => ""),
           // test:'aaaa'
         });
       }
@@ -154,7 +319,6 @@ const View = () => {
         const fil = filas[j];
         const values = fil.values;
 
-        //  console.log(dataC);
         //const keys = Object.keys(dataC.reports_cc[j])
         if (dataC.reports_cc && dataC.reports_cc[j]) {
           const keys = Object.keys(dataC.reports_cc[j]);
@@ -212,47 +376,20 @@ const View = () => {
                 values[k] = dataC.reports_cc[j][keys[k + 1]];
                 break;
             }
-            // if (k === 0) {
-            //   //values[k] = dataC.reports_cc[j]['item']
-            //   //console.log(dataC.reports_cc[j][keys[k]])
-            //   //console.log();
-            // }
           }
         }
-
-        // console.log(values);
       }
-      //console.log(filas[0].values[0]);
       return filas;
     });
-  }, [numFilas2, numColumnas2]);
-  /* const handleSelect = (e, type) => {
-    setDataCDb({
-      ...dataCDb,
-      [e.target.dataset.name || e.target.name]: e.target.value,
-    });
-  };*/
-  const [divs2, setDivs2] = useState(() => {
-    const filas = [];
-    for (let i = 1; i <= numFilas2; i++) {
-      filas.push({
-        id: i,
-        values: Array.from({ length: numColumnas2 - 3 }, () => ""),
-      });
-    }
-    return filas;
-  });
-
+  };
   const [reportFooter, setReportFooter] = useState(() => {
     const filas = [];
     const dataInfo = eData.report_rby;
     let i2 = 0;
     const rby = [];
-    console.log(dataInfo);
     if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
       const keys = Object.keys(dataInfo[i2]);
       for (let z = 0; z < dataInfo.length; z++) {
-        //  console.log(keys[z]);
         if (
           dataInfo[i2] &&
           typeof dataInfo[i2] === "object" &&
@@ -261,49 +398,39 @@ const View = () => {
           const realized_by = dataInfo[i2]["realized_by"];
           const id = dataInfo[i2]["id"];
           rby.push({ realized_by, id });
-          //  console.log(dataInfo[i2])
-          //console.log(rbyervations);
         } else {
-          // console.log(
           //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
           // );
         }
         i2++;
-        //console.log(dataInfo[i2][keys[z]]);
       }
       for (let i = 1; i <= numColumnas2 - 3; i++) {
         if (i > 7) {
           if (i !== numColumnas2 - 3) {
-            //console.log(numColumnas2 - 3);
-            console.log(rby[i - 8]);
+            //    console.log(rby[i - 8]);
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
               values: Array.from({ length: 1 }, () => rby[i - 8].realized_by),
               id_db: Number(rby[i - 8].id),
+              type: Number(rby[i - 8].type),
             });
           }
-          //      console.log(dataInfo[i2])
         }
       }
     } else {
-      // console.log("dataInfo[i2] no es un objeto válido");
     }
 
     return filas;
   });
-  //console.log(reportFooter);
   const [reportFooter2, setReportFooter2] = useState(() => {
     const filas = [];
     const dataInfo = eData.report_ob;
     let i2 = 0;
     const obs = [];
-    // console.log(dataInfo);
     if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
       const keys = Object(dataInfo[i2]);
-      //console.log(keys);
       for (let z = 0; z < dataInfo.length; z++) {
-        //  console.log(keys[z]);
         if (
           dataInfo[i2] &&
           typeof dataInfo[i2] === "object" &&
@@ -313,30 +440,25 @@ const View = () => {
           const id = dataInfo[i2]["id"];
           obs.push({ observations, id });
         } else {
-          // console.log(
           //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
           // );
         }
         i2++;
-        //console.log(dataInfo[i2][keys[z]]);
       }
       for (let i = 1; i <= numColumnas2 - 3; i++) {
         if (i > 7) {
           if (i !== numColumnas2 - 3) {
-            //console.log(numColumnas2 - 3);
-            // console.log(obs[i - 8]);
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
               values: Array.from({ length: 1 }, () => obs[i - 8].observations),
               id_db: Number(obs[i - 8].id),
+              type: Number(obs[i - 8].type),
             });
           }
-          //      console.log(dataInfo[i2])
         }
       }
     } else {
-      // console.log("dataInfo[i2] no es un objeto válido");
     }
 
     return filas;
@@ -347,11 +469,9 @@ const View = () => {
     const dataInfo = eData.report_in;
     let i2 = 0;
     const inc = [];
-
     if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
       const keys = Object.keys(dataInfo[i2]);
       for (let z = 0; z < dataInfo.length; z++) {
-        //  console.log(keys[z]);
         if (
           dataInfo[i2] &&
           typeof dataInfo[i2] === "object" &&
@@ -359,37 +479,30 @@ const View = () => {
         ) {
           const incidents = dataInfo[i2]["incident"];
           const id = dataInfo[i2]["id"];
-          inc.push({ incidents, id });
+          const type = dataInfo[i2]["type"];
+          inc.push({ incidents, id, type });
         } else {
-          // console.log(
-          //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
-          // );
         }
         i2++;
       }
       for (let i = 1; i <= numColumnas2 - 3; i++) {
         if (i > 7) {
           if (i !== numColumnas2 - 3) {
-            // console.log(inc[i - 8]);
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
               values: Array.from({ length: 1 }, () => inc[i - 8].incidents),
               id_db: Number(inc[i - 8].id),
+              type: Number(inc[i - 8].type),
             });
           }
-          //      console.log(dataInfo[i2])
         }
       }
     } else {
-      // console.log("dataInfo[i2] no es un objeto válido");
     }
 
     return filas;
   });
-  /*console.log(reportFooter);
-  console.log(reportFooter2);
-  console.log(reportFooter3);*/
   const handleUpdate = (hanldeId = 1, divId, inputIndex, newValue) => {
     if (hanldeId === 1) {
       setReportFooter((prevDivs) => {
@@ -437,7 +550,6 @@ const View = () => {
     cc4: report_cc.lot === "1" ? true : false,
     cc5: report_cc.others,
   });
-  //console.log(serviceType)
   useEffect(() => {
     setDivs2((prev) => {
       const filas = [];
@@ -449,7 +561,6 @@ const View = () => {
       }
       return filas;
     });
-    // console.log(divs2)
 
     setReportFooter((prev) => {
       const filas = [];
@@ -460,7 +571,6 @@ const View = () => {
       if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
         const keys = Object.keys(dataInfo[i2]);
         for (let z = 0; z < dataInfo.length; z++) {
-          //  console.log(keys[z]);
           if (
             dataInfo[i2] &&
             typeof dataInfo[i2] === "object" &&
@@ -469,21 +579,13 @@ const View = () => {
             const realized_by = dataInfo[i2]["realized_by"];
             const id = dataInfo[i2]["id"];
             rby.push({ realized_by, id });
-            //console.log(dataInfo[i2])
-            //console.log(rbyervations);
           } else {
-            // console.log(
-            //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
-            // );
           }
           i2++;
-          //console.log(dataInfo[i2][keys[z]]);
         }
         for (let i = 1; i <= numColumnas2 - 3; i++) {
           if (i > 7) {
             if (i !== numColumnas2 - 3) {
-              //console.log(numColumnas2 - 3);
-              //  console.log(rby[i - 8]);
               // ... código para aplicar la condición solamente en el último índice ...
               filas.push({
                 id: i,
@@ -493,11 +595,9 @@ const View = () => {
                 id_db: rby[i - 8] ? Number(rby[i - 8].id) : "",
               });
             }
-            //      console.log(dataInfo[i2])
           }
         }
       } else {
-        // console.log("dataInfo[i2] no es un objeto válido");
       }
 
       return filas;
@@ -507,12 +607,9 @@ const View = () => {
       const dataInfo = eData.report_ob;
       let i2 = 0;
       const obs = [];
-      // console.log(dataInfo);
       if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
         const keys = Object(dataInfo[i2]);
-        //console.log(keys);
         for (let z = 0; z < dataInfo.length; z++) {
-          //  console.log(keys[z]);
           if (
             dataInfo[i2] &&
             typeof dataInfo[i2] === "object" &&
@@ -522,18 +619,14 @@ const View = () => {
             const id = dataInfo[i2]["id"];
             obs.push({ observations, id });
           } else {
-            // console.log(
             //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
             // );
           }
           i2++;
-          //console.log(dataInfo[i2][keys[z]]);
         }
         for (let i = 1; i <= numColumnas2 - 3; i++) {
           if (i > 7) {
             if (i !== numColumnas2 - 3) {
-              //console.log(numColumnas2 - 3);
-              // console.log(obs[i - 8]);
               // ... código para aplicar la condición solamente en el último índice ...
               filas.push({
                 id: i,
@@ -543,11 +636,9 @@ const View = () => {
                 id_db: obs[i - 8] ? Number(obs[i - 8].id) : "",
               });
             }
-            //      console.log(dataInfo[i2])
           }
         }
       } else {
-        // console.log("dataInfo[i2] no es un objeto válido");
       }
 
       return filas;
@@ -557,11 +648,9 @@ const View = () => {
       const dataInfo = eData.report_in;
       let i2 = 0;
       const inc = [];
-
       if (dataInfo[i2] && typeof dataInfo[i2] === "object") {
         const keys = Object.keys(dataInfo[i2]);
         for (let z = 0; z < dataInfo.length; z++) {
-          //  console.log(keys[z]);
           if (
             dataInfo[i2] &&
             typeof dataInfo[i2] === "object" &&
@@ -569,9 +658,9 @@ const View = () => {
           ) {
             const incidents = dataInfo[i2]["incident"];
             const id = dataInfo[i2]["id"];
-            inc.push({ incidents, id });
+            const type = dataInfo[i2]["type"];
+            inc.push({ incidents, id, type });
           } else {
-            // console.log(
             //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
             // );
           }
@@ -580,7 +669,6 @@ const View = () => {
         for (let i = 1; i <= numColumnas2 - 3; i++) {
           if (i > 7) {
             if (i !== numColumnas2 - 3) {
-              // console.log(inc[i - 8]);
               // ... código para aplicar la condición solamente en el último índice ...
               filas.push({
                 id: i,
@@ -588,13 +676,12 @@ const View = () => {
                   inc[i - 8] ? inc[i - 8].incidents : ""
                 ),
                 id_db: inc[i - 8] ? Number(inc[i - 8].id) : "",
+                type: inc[i - 8] ? Number(inc[i - 8].type) : "",
               });
             }
-            //      console.log(dataInfo[i2])
           }
         }
       } else {
-        // console.log("dataInfo[i2] no es un objeto válido");
       }
 
       return filas;
@@ -604,7 +691,6 @@ const View = () => {
   }, [numColumnas2, numColumnas]);
 
   useEffect(() => {
-    //console.log()
     const newArray = [
       {
         data: dataCDb,
@@ -635,9 +721,9 @@ const View = () => {
           h: total13,
           i: total14,
         },
+        incType: incType,
       },
     ];
-    //  console.log(newArray[0]['total']);
     setDataToSave(newArray);
   }, [
     dataCDb,
@@ -665,39 +751,9 @@ const View = () => {
     total12,
     total13,
     total14,
+    incType,
   ]);
-  // useEffect(() => {
-  //   //console.log(dataCDb)
-  //   const newArray = [
-  //     {
-  //       data: dataCDb,
-  //       serviceType: serviceType,
-  //       customerControl: customerControl,
-  //       customerControlTable: divs,
-  //       madeBy: reportFooter,
-  //       observations: reportFooter2,
-  //       incidents: reportFooter3,
-  //       producedBy: producedBy,
-  //       checkedBy: checkedBy,
-  //       authorizedBy: authorizedBy,
-  //       id_report: dataC.id,
-  //       reports_cc: dataC.reports_cc,
-  //     },
-  //   ];
-  //   setDataToSave(newArray);
-  // }, [
-  //   dataCDb,
-  //   dataC,
-  //   serviceType,
-  //   customerControl,
-  //   divs,
-  //   reportFooter,
-  //   reportFooter2,
-  //   reportFooter3,
-  //   producedBy,
-  //   checkedBy,
-  //   authorizedBy,
-  // ]);
+
   const [keysTh, setKeysTh] = useState([]);
   useEffect(() => {
     const date = new Date();
@@ -709,40 +765,71 @@ const View = () => {
     const seconds = ("0" + date.getSeconds()).slice(-2);
     const formattedDateTime = `${year}-${month}-${day}`;
     const keys = Object.keys(dataC.reports_cc[0]);
-    //console.log(keys);
     const numCol = keys.length;
     keys.splice(1, 1); // Elimina el elemento en la posición 1 (id_report)
     keys[0] = "";
-    keys[2] = "fecha";
-    keys[3] = "lote";
-    keys[4] = "serial";
-    keys[5] = "cantidad inspeccionada";
-    keys[6] = "piezas ng";
-    keys[7] = "piezas ok";
-    keys[8] = "piezas trabajadas";
-    keys[9] = "scrap";
+    keys[2] = (
+      <>
+        <div className="th-title">
+          fecha <span className="required">*</span>
+        </div>
+      </>
+    );
+    keys[3] = (
+      <>
+        <div className="th-title">
+          lote <span className="required">*</span>
+        </div>
+      </>
+    );
+    keys[4] = (
+      <>
+        <div className="th-title">
+          serial <span className="required">*</span>
+        </div>
+      </>
+    );
+    keys[5] = (
+      <>
+        <div className="th-title">
+          cant insp <span className="required">*</span>
+        </div>
+      </>
+    );
+    keys[6] = (
+      <>
+        <div className="th-title">
+          pzas ng <span className="required">*</span>
+        </div>
+      </>
+    );
+    keys[7] = (
+      <>
+        <div className="th-title">
+          pzas ok <span className="required">*</span>
+        </div>
+      </>
+    );
+    keys[8] = (
+      <>
+        <div className="th-title">
+          pzas rt <span className="required">*</span>
+        </div>
+      </>
+    );
+    keys[9] = (
+      <>
+        <div className="th-title">
+          scrap <span className="required">*</span>
+        </div>
+      </>
+    );
     keys.splice(10, 2);
 
-    //console.log(keys);
     const kLenght = keys.length + 1;
     setNumColumnas(kLenght);
-    // if (lastKey !== "I") {
-    //   keys.push(
-    //     <>
-    //        <i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i>
-    //     </>
-    //   );
 
-    // } else {
-    //   keys.push(
-    //     <>
-    //       <i
-    //         className="fa-solid fa-trash"
-    //         onClick={() => eliminarColumna()}
-    //       ></i>
-    //     </>
-    //   );
-    // }
+    console.log(titulosColumnas);
     setTitulosColumnas(keys);
   }, []);
   useEffect(() => {
@@ -759,10 +846,6 @@ const View = () => {
       id_supplier: dataC.id_supplier,
     });
   }, []);
-  /*
-  console.log(dataToSave)
-  console.log(customerControl);*/
-  //console.log(dataToSave)
   const [dumpValue, setDumpValue] = useState("");
   const inputRef = useRef();
   const dataListRef = useRef();
@@ -785,7 +868,6 @@ const View = () => {
         ...dataCDb,
         [e.target.dataset.name || e.target.name]: e.target.value,
       });
-      // console.log("option not included in the datalist");
     } else {
       const id_supplier = selectedOption.getAttribute("data-id");
       setDataCDb({
@@ -793,7 +875,15 @@ const View = () => {
         id_supplier,
       });
     }
-  }
+  };
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isAdmin !== null) {
+      if (!isAdmin) {
+        navigate(`/client/reports/${idReport}`, { replace: true });
+      }
+    }
+  }, [isAdmin]);
   const optionClause = [
     {
       value: "1",
@@ -808,6 +898,25 @@ const View = () => {
       text: "Scrap",
     },
   ];
+  const [totalHours, setTotalHours] = useState(0);
+
+  useEffect(() => {
+    if (Object.keys(dataCDb).length > 0) {
+      const totalInsp = Number(total1);
+      const rate = dataCDb.rate;
+      const totalHours = Number(totalInsp) / Number(rate);
+      setTotalHours(totalHours);
+    }
+  }, [total1, dataCDb]);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    const currentInputValue = dataCDb[name];
+
+    setDataCDb({
+      ...dataCDb,
+      [name]: value,
+    });
+  };
   return (
     <>
       <div className="container">
@@ -818,7 +927,9 @@ const View = () => {
 
         <StyledForm>
           <div className="form-container">
-            <label htmlFor="data">Planta:</label>
+            <label htmlFor="data">
+              Planta <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="data"
@@ -832,17 +943,22 @@ const View = () => {
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
+              readOnly
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data2">Proveedor:</label>
+            <label htmlFor="data2">
+              Proveedor <span className="required">*</span>
+            </label>
             <input
               name="supplier"
               value={dataC.supplier}
+              type="text"
               list="supplier"
               onChange={handleChange}
               ref={inputRef}
               autoComplete="off"
+              readOnly
             />
             <datalist id="supplier" ref={dataListRef}>
               {suppliers.map((item, indx) => {
@@ -853,45 +969,35 @@ const View = () => {
                   navigator.userAgent.indexOf("AppleWebKit") !== -1;
                 const isEdge = navigator.userAgent.indexOf("Edge") !== -1;
 
-                // Crear etiqueta de opción
                 const option = (
                   <option value={item.fullname} data-id={item.id}>
+                    type="text"
                     {isFirefox ? `${item.fullname}` : ""}
                   </option>
                 );
 
-                // Devolver opción
                 return option;
               })}
             </datalist>
-            {/* <input
-              type="text"
-              id="data2"
-              name="supplier"
-              placeholder=""
-              required
-              defaultValue=""
-              value={data.supplier}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
-            /> */}
           </div>
           <div className="form-container">
-            <label htmlFor="data3">Fecha:</label>
+            <label htmlFor="data3">
+              Fecha <span className="required">*</span>
+            </label>
             <DatePickerInputU
               id="data3"
               name="date"
               style={{ textAlign: "left", padding: "12px 20px" }}
               value={dataC.date}
+              type="text"
               dataCDb={dataCDb}
+              readOnly
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data4">No. de Reporte:</label>
+            <label htmlFor="data4">
+              No. de Reporte <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="data4"
@@ -905,16 +1011,19 @@ const View = () => {
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
+              readOnly
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data5">Nombre de parte:</label>
+            <label htmlFor="data5">
+              Nombre de parte <span className="required">*</span>
+            </label>
             <input
-              type="text"
               id="data5"
               name="part_name"
               placeholder=""
               required
+              type="text"
               defaultValue={dataC.part_name}
               onChange={(e) =>
                 setDataCDb({
@@ -922,55 +1031,65 @@ const View = () => {
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
+              readOnly
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data6">Horas Trabajadas:</label>
+            <label htmlFor="data6">
+              Horas Trabajadas <span className="required">*</span>
+            </label>
             <input
-              type="text"
               id="data6"
               name="worked_hours"
               placeholder=""
               required
-              defaultValue={dataC.worked_h}
+              value={
+                totalHours > 0 && typeof totalHours === "number"
+                  ? totalHours
+                  : dataCDb.worked_hours
+              }
+              type="text"
               onChange={(e) =>
                 setDataCDb({
                   ...dataCDb,
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
+              readOnly
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data7">Rate:</label>
+            <label htmlFor="data7">
+              Rate <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="data7"
               name="rate"
               placeholder=""
               required
-              defaultValue={dataC.rate}
-              onChange={(e) =>
-                setDataCDb({
-                  ...dataCDb,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              value={dataCDb.rate}
+              onChange={(e) => handleInputChange(e)}
+              readOnly
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data8">Turno:</label>
+            <label htmlFor="data8">
+              Turno <span className="required">*</span>
+            </label>
             <select
               id="data8"
               name="shift"
               required
               defaultValue={dataC.shift}
+              type="text"
               onChange={(e) =>
                 setDataCDb({
                   ...dataCDb,
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
+              disabled
             >
               <option value="0">Selecciona una opcion</option>
               <option value="1">1</option>
@@ -979,7 +1098,9 @@ const View = () => {
             </select>
           </div>
           <div className="form-container">
-            <label htmlFor="data10">Numero de parte:</label>
+            <label htmlFor="data10">
+              Numero de parte <span className="required">*</span>
+            </label>
             <input
               type="text"
               id="data10"
@@ -993,10 +1114,13 @@ const View = () => {
                   [e.target.dataset.name || e.target.name]: e.target.value,
                 })
               }
+              readOnly
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data8">Tipo de servicio:</label>
+            <label htmlFor="data8">
+              Tipo de servicio <span className="required">*</span>
+            </label>
 
             <div className="container-checkbox">
               <label>
@@ -1011,6 +1135,7 @@ const View = () => {
                         e.target.checked,
                     })
                   }
+                  disabled
                 />
                 Selección
               </label>
@@ -1027,12 +1152,13 @@ const View = () => {
                         e.target.checked,
                     })
                   }
+                  disabled
                 />
                 Retrabajo
               </label>
-              <label htmlFor=""> </label>
-              <label htmlFor=""> </label>
-              <label htmlFor=""> </label>
+              <label htmlFor=""> </label>
+              <label htmlFor=""> </label>
+              <label htmlFor=""> </label>
               <div className="others-container">
                 <label>Otros</label>
                 <input
@@ -1045,13 +1171,16 @@ const View = () => {
                       [e.target.dataset.name || e.target.name]: e.target.value,
                     })
                   }
+                  disabled
                 />
               </div>
             </div>
           </div>
 
           <div className="form-container">
-            <label htmlFor="data8">Control para el cliente:</label>
+            <label htmlFor="data8">
+              Control para el cliente <span className="required">*</span>
+            </label>
 
             <div className="container-checkbox">
               <label>
@@ -1066,6 +1195,7 @@ const View = () => {
                         e.target.checked,
                     })
                   }
+                  disabled
                 />
                 Fecha de produccion
               </label>
@@ -1082,6 +1212,7 @@ const View = () => {
                         e.target.checked,
                     })
                   }
+                  disabled
                 />
                 Fecha de aprobado
               </label>
@@ -1098,6 +1229,7 @@ const View = () => {
                         e.target.checked,
                     })
                   }
+                  disabled
                 />
                 Serie
               </label>
@@ -1113,6 +1245,7 @@ const View = () => {
                         e.target.checked,
                     })
                   }
+                  disabled
                 />
                 Lote
               </label>
@@ -1128,26 +1261,11 @@ const View = () => {
                       [e.target.dataset.name || e.target.name]: e.target.value,
                     })
                   }
+                  disabled
                 />
               </div>
             </div>
           </div>
-
-          {/*
-        <label htmlFor="subject">Subject:</label>
-        <select id="subject" name="subject">
-          <option value="general">General Inquiry</option>
-          <option value="support">Technical Support</option>
-          <option value="billing">Billing Question</option>
-        </select>
-
-        <label htmlFor="message">Message:</label>
-        <textarea
-          id="message"
-          name="message"
-          placeholder="Enter your message"
-          required
-        ></textarea>*/}
         </StyledForm>
       </div>
       <div
@@ -1155,7 +1273,17 @@ const View = () => {
         ref={container1Ref}
         onScroll={handleScroll1}
       >
-        <SecondTableCreate dataC={dataC} />
+        <SecondTableCreate
+          dataC={dataC}
+          eliminarColumna2={eliminarColumna2}
+          agregarColumna={agregarColumna}
+          divs={divs}
+          setDivs={setDivs}
+          agregarFila={agregarFila}
+          eliminarFila={eliminarFila}
+          numFilas2={numFilas2}
+          numColumnas2={numColumnas2}
+        />
       </div>
 
       <div
@@ -1196,9 +1324,9 @@ const View = () => {
                           ) : (
                             <td key={i} className="table-center">
                               <input
-                                type=""
                                 name=""
                                 value={dumpValue}
+                                type="text"
                                 onChange={() => setDumpValue("")}
                               />
                             </td>
@@ -1236,85 +1364,113 @@ const View = () => {
                               {i === 2 && (
                                 <input
                                   value={total1}
+                                  type="text"
                                   onChange={(e) => setTotal1(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 3 && (
                                 <input
                                   value={total2}
+                                  type="text"
                                   onChange={(e) => setTotal2(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 4 && (
                                 <input
                                   value={total3}
+                                  type="text"
                                   onChange={(e) => setTotal3(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 5 && (
                                 <input
                                   value={total4}
+                                  type="text"
                                   onChange={(e) => setTotal4(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 6 && (
                                 <input
                                   value={total5}
+                                  type="text"
                                   onChange={(e) => setTotal5(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 7 && (
                                 <input
                                   value={total6}
+                                  type="text"
                                   onChange={(e) => setTotal6(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 8 && (
                                 <input
                                   value={total7}
+                                  type="text"
                                   onChange={(e) => setTotal7(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 9 && (
                                 <input
                                   value={total8}
+                                  type="text"
                                   onChange={(e) => setTotal8(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 10 && (
                                 <input
                                   value={total9}
+                                  type="text"
                                   onChange={(e) => setTotal9(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 11 && (
                                 <input
                                   value={isNaN(total10) ? 0 : total10}
+                                  type="text"
                                   onChange={(e) => setTotal10(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 12 && (
                                 <input
                                   value={isNaN(total11) ? 0 : total11}
+                                  type="text"
                                   onChange={(e) => setTotal11(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 13 && (
                                 <input
                                   value={isNaN(total12) ? 0 : total12}
+                                  type="text"
                                   onChange={(e) => setTotal12(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 14 && (
                                 <input
                                   value={isNaN(total13) ? 0 : total13}
+                                  type="text"
                                   onChange={(e) => setTotal13(e.target.value)}
+                                  disabled
                                 />
                               )}
                               {i === 15 && (
                                 <input
                                   value={isNaN(total14) ? 0 : total14}
+                                  type="text"
                                   onChange={(e) => setTotal14(e.target.value)}
+                                  disabled
                                 />
                               )}
                             </td>
@@ -1334,10 +1490,12 @@ const View = () => {
                         <>
                           <input
                             value={valor}
+                            type="text"
                             onChange={(e) =>
                               handleUpdate(1, fila.id, i, e.target.value)
                             }
                             key={i}
+                            disabled
                           />{" "}
                           <br />
                         </>
@@ -1353,10 +1511,12 @@ const View = () => {
                         <>
                           <input
                             value={valor}
+                            type="text"
                             onChange={(e) =>
                               handleUpdate(2, fila.id, i, e.target.value)
                             }
                             key={i}
+                            disabled
                           />
                           <br />
                         </>
@@ -1380,6 +1540,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1393,6 +1554,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1406,6 +1568,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1419,6 +1582,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1432,6 +1596,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1445,6 +1610,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1458,6 +1624,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1471,6 +1638,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1484,6 +1652,7 @@ const View = () => {
                                     style={{ textAlign: "center" }}
                                     key={i}
                                     value={dumpValue}
+                                    type="text"
                                     onChange={() => setDumpValue("")}
                                   />{" "}
                                   <br />{" "}
@@ -1496,108 +1665,140 @@ const View = () => {
                 </td>
                 <td colSpan={1} style={{ textAlign: "center" }}>
                   <div> </div>
-                  {divs2.map(
-                    (fila, i) =>
-                      i === 0 && (
-                        <div key={i + "clauses"}>
-                          {fila.values.map(
-                            (valor, i) =>
-                              i > 6 && (
-                                <div key={i + "clause"}>
-                                  {i === 8 && (
-                                    <>
-                                      <Select data={optionClause} clause="A" />
-                                      <br />
-                                    </>
-                                  )}
-                                  {i === 9 && (
-                                    <>
-                                      <Select data={optionClause}  clause="B"/>
-                                      <br />
-                                    </>
-                                  )}
-                                  {i === 10 && (
-                                    <>
-                                      <Select data={optionClause}  clause="C"/>
-                                      <br />
-                                    </>
-                                  )}
-                                  {i === 11 && (
-                                    <>
-                                      <Select data={optionClause}  clause="D"/>
-                                      <br />
-                                    </>
-                                  )}
-                                  {i === 12 && (
-                                    <>
-                                      <Select data={optionClause}  clause="E"/>
-                                      <br />
-                                    </>
-                                  )}
-                                  {i === 13 && (
-                                    <>
-                                      <Select data={optionClause}  clause="F"/>
-                                      <br />
-                                    </>
-                                  )}
-                                  {i === 14 && (
-                                    <>
-                                      <Select data={optionClause}  clause="G"/>
-                                      <br />
-                                    </>
-                                  )}
-                                  {i === 15 && (
-                                    <>
-                                      <Select data={optionClause}  clause="H"/>
-                                      <br />
-                                    </>
-                                  )}
-                                  {i === 16 && (
-                                    <>
-                                      <Select data={optionClause}  clause="I"/>
-                                      <br />
-                                    </>
-                                  )}
-                                </div>
-                              )
-                          )}
-                        </div>
-                      )
-                  )}
-                </td>
-                <td
-                  colSpan={numColumnas2 > 15 ? numColumnas2 / 3 : 3}
-                  style={{ textAlign: "center" }}
-                >
-                  <div>INCIDENTES</div>
                   {reportFooter3.map(
                     (fila, i) =>
                       i < reportFooter3.length &&
-                      fila.values.map((valor, i) => (
+                      fila.values.map((valor, i2) => (
                         <>
-                          <input
-                            value={valor}
-                            onChange={(e) =>
-                              handleUpdate(3, fila.id, i, e.target.value)
-                            }
-                            key={i}
-                          />{" "}
-                          <br />
+                          <div key={i + "clause"}>
+                            {i === 0 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="A"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 1 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="B"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 2 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="C"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 3 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="D"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 4 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="E"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 5 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="F"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 6 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="G"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 7 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="H"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                            {i === 8 && (
+                              <>
+                                <Select
+                                  data={optionClause}
+                                  clause="I"
+                                  selected={fila.type}
+                                />
+                                <br />
+                              </>
+                            )}
+                          </div>
                         </>
                       ))
                   )}
                 </td>
+                <td
+      colSpan={numColumnas2 > 15 ? numColumnas2 / 3 : 3}
+      style={{ textAlign: "center" }}
+    >
+      <div>INCIDENTES</div>
+      {reportFooter3.map(
+        (fila, i) =>
+          i < reportFooter3.length &&
+          fila.values.map((valor, i) => (
+            <>
+              <input
+                value={valor}
+                type="text"                
+                key={i}
+                disabled
+              />{" "}
+              <br />
+            </>
+          ))
+      )}
+    </td>
               </tr>
               <tr>
                 <td colSpan={numColumnas2 / 3} style={{ textAlign: "center" }}>
                   <div>ELABORO</div>
                   <div className="firm">
                     <input
-                      type=""
                       name=""
                       value={producedBy}
+                      type="text"
                       onChange={(e) => setProducedBy(e.target.value)}
                       className="firm-input"
+                      disabled
                     />
                   </div>
                 </td>
@@ -1606,11 +1807,12 @@ const View = () => {
                   <div>REVISO</div>
                   <div className="firm">
                     <input
-                      type=""
                       name=""
                       value={checkedBy}
+                      type="text"
                       onChange={(e) => setCheckedBy(e.target.value)}
                       className="firm-input"
+                      disabled
                     />
                   </div>
                 </td>
@@ -1619,11 +1821,12 @@ const View = () => {
                   <div>AUTORIZO</div>
                   <div className="firm">
                     <input
-                      type=""
                       name=""
                       value={authorizedBy}
+                      type="text"
                       onChange={(e) => setAuthorizedBy(e.target.value)}
                       className="firm-input"
+                      disabled
                     />
                   </div>
                 </td>

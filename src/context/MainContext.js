@@ -96,10 +96,8 @@ export const MainContextProvider = ({ children }) => {
         } else {
           toast.success(datares.message, {
             duration: 4000,
-          });
-          setTimeout(() => {
-        //    navigate("/admin/reports");
-          }, 5000);
+          });          
+          navigate("/admin/reports");
         }
       })
       .catch((err) => {

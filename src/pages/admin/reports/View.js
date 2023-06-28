@@ -505,8 +505,6 @@ const View = () => {
     return filas;
   });
 
-
-  
   const [reportFooter3, setReportFooter3] = useState(() => {
     const filas = [];
     const dataInfo = eData.report_in;
@@ -548,7 +546,6 @@ const View = () => {
 
     return filas;
   });
-  console.log(reportFooter3)
   /*console.log(reportFooter);
   console.log(reportFooter2);
   console.log(reportFooter3);*/  
@@ -1095,7 +1092,7 @@ const View = () => {
               name="worked_hours"
               placeholder=""
               required
-              defaultValue={totalHours > 0 && typeof totalHours === "number" ? totalHours : dataCDb.worked_hours
+              value={totalHours > 0 && typeof totalHours === "number" ? totalHours : dataCDb.worked_hours
               }
               type="text" 
               onChange={(e) =>
