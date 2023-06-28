@@ -29,6 +29,7 @@ import { faChartSimple, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { Table } from "../styles/Styles";
 import TotalByPartNumber from "./admin/TotalByPartNumber";
+import TotalByPartNumberClient from "./client/TotalByPartNumber";
 import ReportDetails from "./admin/ReportDetails";
 import Settings from "../pages/admin/Settings";
 
@@ -91,7 +92,7 @@ export default function SubHeader() {
     isAdmin,
   } = useContext(MainContext);
 
-  console.log(isAdmin);
+  //console.log(isAdmin);
   //console.log(useParams());
 
   //   const path = pathname.replaceAll('/', '');
@@ -390,12 +391,13 @@ export default function SubHeader() {
         </Modal>
       )}
       {showDtable === true && (
-        <Modal callback={handleClose}>
-          <TotalByPartNumber />
+        <Modal callback={handleClose} width={1600}>
+          {isAdmin ? <TotalByPartNumber /> : <TotalByPartNumberClient />
+          }
         </Modal>
       )}
       {showDEtable === true && (
-        <Modal callback={handleCloseModal}>
+        <Modal callback={handleCloseModal} >
           <ReportDetails />
         </Modal>
       )}

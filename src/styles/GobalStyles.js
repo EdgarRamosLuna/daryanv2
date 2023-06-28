@@ -225,7 +225,32 @@ const GlobalStyle = createGlobalStyle`
   }
   
 }
+.table-controlls {
+    position: relative;
+}
+.table-controlls-left-item {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(0, 35, 83);
+    border-width: 1px 1px 0px;
+    border: 1px solid rgb(0, 35, 83);
+    border-bottom: 0;
+    width: 30px;
+    &:hover {
+      color: #fff;
+      background-color: rgb(0, 65, 155);
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+    }
+  }
+  .activeFilters {
+    color: #fff;
+    background-color: rgb(0, 65, 155);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+  }
 `;
-
 
 export default GlobalStyle;

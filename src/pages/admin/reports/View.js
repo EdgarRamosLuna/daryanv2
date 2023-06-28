@@ -859,6 +859,8 @@ const View = () => {
     
     const kLenght = keys.length + 1;
     setNumColumnas(kLenght);
+
+    console.log(titulosColumnas)
     // if (lastKey !== "I") {
     //   keys.push(
     //     <>
@@ -944,6 +946,25 @@ const View = () => {
       text: "Scrap",
     },
   ];
+  const [totalHours, setTotalHours] = useState(0);
+
+  useEffect(() => {
+    if (Object.keys(dataCDb).length > 0) {
+      const totalInsp = Number(total1);
+      const rate = dataCDb.rate;
+      const totalHours = Number(totalInsp) / Number(rate);
+      setTotalHours(totalHours);
+    }
+  }, [total1, dataCDb]);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    const currentInputValue = dataCDb[name];
+
+    setDataCDb({
+      ...dataCDb,
+      [name]: value,
+    });
+  };
   return (
     <>
       <div className="container">
@@ -1071,8 +1092,9 @@ const View = () => {
               name="worked_hours"
               placeholder=""
               required
-              defaultValue={dataC.worked_h}
-              type="text"
+              defaultValue={totalHours > 0 && typeof totalHours === "number" ? totalHours : dataCDb.worked_hours
+              }
+              type="text" 
               onChange={(e) =>
                 setDataCDb({
                   ...dataCDb,
@@ -1089,13 +1111,8 @@ const View = () => {
               name="rate"
               placeholder=""
               required
-              defaultValue={dataC.rate}              
-              onChange={(e) =>
-                setDataCDb({
-                  ...dataCDb,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              value={dataCDb.rate}              
+              onChange={(e) => handleInputChange(e)}
             />
           </div>
           <div className="form-container">
@@ -1304,6 +1321,8 @@ const View = () => {
           setDivs={setDivs}
           agregarFila={agregarFila}
           eliminarFila={eliminarFila}
+          numFilas2={numFilas2}
+          numColumnas2={numColumnas2}
         />
       </div>
 

@@ -3,6 +3,44 @@ import styled from "styled-components";
 export const Home = styled.div``;
 
 export const Table = styled.div`
+
+  .span-btn-hover {
+    transition: all 0.6s;
+    color: #fff !important;
+    background-color: green !important;
+    border-color: green !important;
+  }
+  .span-btn1 {
+    color: red;
+    cursor: pointer;
+    border-bottom: 1px solid;
+  }
+  .span-btn3 {
+    color: orange;
+    cursor: pointer;
+    border-bottom: 1px solid;
+  }
+  .span-btn4 {
+    color: gray;
+    cursor: pointer;
+    border-bottom: 1px solid;
+  }
+  .span-btn-clause {
+    pointer-events: none;
+    color: green;
+    cursor: pointer;
+    border: 2px solid;
+    border-radius: 100%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 15px;
+    margin: 0 auto;
+    transition: all 0.6s;
+  }
   table {
     border-collapse: collapse;
     width: 100%;
@@ -20,32 +58,7 @@ export const Table = styled.div`
   .table-controlls-left {
     width: 628px;
   }
-  .table-controlls-left-item {
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgb(0, 35, 83);
-    border-width: 1px 1px 0px;
-    border: 1px solid rgb(0, 35, 83);
-    border-bottom: 0;
-    width: 30px;
-    &:hover {
-      color: #fff;
-      background-color: rgb(0, 65, 155);
-      transition: all 0.3s ease-in-out;
-      cursor: pointer;
-    }
-  }
-  .activeFilters {
-    color: #fff;
-    background-color: rgb(0, 65, 155);
-    transition: all 0.3s ease-in-out;
-    cursor: pointer;
-  }
-  .table-controlls {
-    position: relative;
-  }
+   
   .smoothFadeIn {
     position: relative;
     animation: smoothFadeIn 0.3s;
@@ -111,7 +124,7 @@ export const Table = styled.div`
     background: transparent;
     color: transparent;
     cursor: unset;
-    *{
+    * {
       color: transparent !important;
     }
   }
@@ -143,6 +156,9 @@ export const Table = styled.div`
 
   .table-center {
     text-align: center;
+    span {
+      font-weight: bold;
+    }
   }
   tbody tr:nth-child(even) {
     /*background-color: #f9f9f9;*/
@@ -672,12 +688,12 @@ export const StyledModal = styled.div`
     justify-content: end;
   }
   .modal-container {
-    width: auto;
+    width: 100%;
     margin: 0 auto;
     height: auto;
     background: #fff;
     padding: 15px 25px;
-    max-width: 900px;
+    max-width: ${(props) => (props.width ? props.width : "900")}px;
     min-width: 350px;
   }
   .modal-details-header {
@@ -722,7 +738,7 @@ export const SettingsStyle = styled.div`
   padding: 15px 0;
   position: relative;
   margin: 0 auto;
-  .my-acc-title{
+  .my-acc-title {
     text-align: center;
     margin-bottom: 15px;
   }

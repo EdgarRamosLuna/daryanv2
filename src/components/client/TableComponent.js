@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import Loader from "../Loader";
 import { MainContext } from "../../context/MainContext";
-import { useEffect } from "react";
 
 const TableComponent = ({ groupedData, loader }) => {
   const {
@@ -15,8 +14,6 @@ const TableComponent = ({ groupedData, loader }) => {
     LANG,
     langu,
     setLangu,
-    isLoading,
-    setIsLoading,
   } = useContext(MainContext);
   //console.log(tableFilters);
   const showDetailsTable = (part_number) => {
@@ -41,6 +38,7 @@ const TableComponent = ({ groupedData, loader }) => {
     setRDetailsData(filteredData);
   };
 
+  //console.log(groupedData)
   return (
     <table className="table-totals">
       <thead>
@@ -75,81 +73,65 @@ const TableComponent = ({ groupedData, loader }) => {
         </tr>
       </thead>
       <tbody>
-        <div className={isLoading === false ? "loaderContainer" : ""}>
+        <div className={loader === false ? "loaderContainer" : ""}>
           <Loader>
             <img src="/assets/img/loading2.svg" alt="" />
           </Loader>
         </div>
-        { Object.entries(groupedData).length === 0 ? (
-          <tr>
-            <td
-              colSpan="100%"
-              className="table-center"
-              style={{ opacity: `${isLoading ? 0 : 1}` }}
-            >
-              <h1>No hay informacion en la base de datos</h1>
-            </td>
-          </tr>
-        ) : (
-          Object.entries(groupedData).map(([partNumber, dates]) => {
-            return dates.map((dateData, index) => {
-              return (
-                <tr
-                  className={
-                    loader === false ? "tr-h rloaderContainer" : "tr-hd"
-                  }
-                  key={`${partNumber}-${index}`}
-                >
-                  {index === 0 && (
-                    <td
-                      className="table-center td-nh"
-                      rowSpan={dates.length}
-                      onClick={() => showDetailsTable(partNumber)}
-                    >
-                      {partNumber}
-                    </td>
-                  )}
-                  <td className="table-center">{dateData.date}</td>
-
-                  {tableFilters[0].total_in === true && (
-                    <td className="table-center">{dateData.total_inspected}</td>
-                  )}
-                  {tableFilters[0].total_ng === true && (
-                    <td className="table-center">{dateData.total_ng_pieces}</td>
-                  )}
-                  {tableFilters[0].total_ok === true && (
-                    <td className="table-center">{dateData.total_ok_pieces}</td>
-                  )}
-                  {tableFilters[0].total_rw === true && (
-                    <td className="table-center">
-                      {dateData.total_re_work_parts}
-                    </td>
-                  )}
-                  {tableFilters[0].total_sc === true && (
-                    <td className="table-center">{dateData.total_scrap}</td>
-                  )}
-                  {tableFilters[0].total_wh === true && (
-                    <td className="table-center">{dateData.worked_h}</td>
-                  )}
-                  <td className="table-center">
-                    <i
-                      className="fas fa-eye"
-                      style={{
-                        fontSize: "1.5rem",
-                        cursor: "pointer",
-                        color: "green",
-                      }}
-                      onClick={() =>
-                        showExtraDetails(dateData.date, partNumber)
-                      }
-                    />
+        {Object.entries(groupedData).map(([partNumber, dates]) => {
+          return dates.map((dateData, index) => {
+            return (
+              <tr
+                className={loader === false ? "tr-h rloaderContainer" : "tr-hd"}
+                key={`${partNumber}-${index}`}
+              >
+                {index === 0 && (
+                  <td
+                    className="table-center td-nh"
+                    rowSpan={dates.length}
+                    onClick={() => showDetailsTable(partNumber)}
+                  >
+                    {partNumber}
                   </td>
-                  {/* <td className="table-center">{dateData.total_A}</td> */}
-                </tr>
-              );
-            });
-          })
-        )}
+                )}
+                <td className="table-center">{dateData.date}</td>
+
+                {tableFilters[0].total_in === true && (
+                  <td className="table-center">{dateData.total_inspected}</td>
+                )}
+                {tableFilters[0].total_ng === true && (
+                  <td className="table-center">{dateData.total_ng_pieces}</td>
+                )}
+                {tableFilters[0].total_ok === true && (
+                  <td className="table-center">{dateData.total_ok_pieces}</td>
+                )}
+                {tableFilters[0].total_rw === true && (
+                  <td className="table-center">
+                    {dateData.total_re_work_parts}
+                  </td>
+                )}
+                {tableFilters[0].total_sc === true && (
+                  <td className="table-center">{dateData.total_scrap}</td>
+                )}
+                {tableFilters[0].total_wh === true && (
+                  <td className="table-center">{dateData.worked_h}</td>
+                )}
+                <td className="table-center">
+                  <i
+                    className="fas fa-eye"
+                    style={{
+                      fontSize: "1.5rem",
+                      cursor: "pointer",
+                      color: "green",
+                    }}
+                    onClick={() => showExtraDetails(dateData.date, partNumber)}
+                  />
+                </td>
+                {/* <td className="table-center">{dateData.total_A}</td> */}
+              </tr>
+            );
+          });
+        })}
       </tbody>
     </table>
   );

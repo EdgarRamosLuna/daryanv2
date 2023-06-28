@@ -165,6 +165,13 @@ export const getReportsByPartNumber = ({ partNumber, token }) =>
       "Content-Type": "application/json",
     },
   });
+export const getReportsByPartNumberClient = ({ partNumber, token }) =>
+  serverApi.post("/reports/grbpnc/", partNumber, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 export const saveReportToDb = ({ dataToSave, token }) =>
   serverApi.post("/save", dataToSave, {
     headers: {

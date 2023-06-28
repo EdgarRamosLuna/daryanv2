@@ -4,6 +4,7 @@ function TableComponentC({ uniqueClauses, resultArray }) {
   return (
     <table>
       <thead>
+        aaa
         <tr>
           <th>Report ID</th>
           {uniqueClauses.map(clause => (

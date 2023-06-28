@@ -4,10 +4,12 @@ import { MainContext } from "../context/MainContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-const Modal = ({ children, callback }) => {
+const Modal = ({ children, callback, width }) => {
   const { btnCloseRef } = useContext(MainContext);
+
+  console.log(width)
   return (
-    <StyledModal>
+    <StyledModal width={width}>
       <div className="modal-container">
         <div className="modal-close">
           <button ref={btnCloseRef} onClick={() => callback()}><FontAwesomeIcon icon={faXmark} color="#450107" />

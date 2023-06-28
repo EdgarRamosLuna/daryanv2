@@ -779,6 +779,16 @@ export const MainContextProvider = ({ children }) => {
       total_wh: true,
     },
   ]);
+  const [tableFilters2, setTableFilters2] = useState([
+    {
+      total_in: true,
+      total_ng: true,
+      total_ok: true,
+      total_rw: true,
+      total_sc: true,
+      total_wh: true,
+    },
+  ]);
   // const LANG = [
   //   {
   //     value: "es",
@@ -1012,6 +1022,8 @@ export const MainContextProvider = ({ children }) => {
         setShowDEtable,
         tableFilters,
         setTableFilters,
+        tableFilters2,
+        setTableFilters2,
         LANG,
         langu,
         setLangu,

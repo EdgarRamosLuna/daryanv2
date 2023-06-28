@@ -13,25 +13,14 @@ export default function SecondTableCreate({
   divs,
   setDivs,
   agregarFila,
-  eliminarFila
+  eliminarFila,
+  numFilas2,
+  numColumnas2
 }) {
   const {
     numColumnas,
     titulosColumnas,
-    setTotal1,
-    setTotal2,
-    setTotal3,
-    setTotal4,
-    setTotal5,
-    setTotal6,
-    setTotal7,
-    setTotal8,
-    setTotal9,
-    setTotal10,
-    setTotal11,
-    setTotal12,
-    setTotal13,
-    setTotal14,
+    formattedDate,
   } = useContext(MainContext);
 
   //console.log(numColumnas);
@@ -63,122 +52,91 @@ export default function SecondTableCreate({
     });
   };
 
-  useEffect(() => {
-    //console.log(divs);
-    let newValue1 = 0;
-    let newValue2 = 0;
-    let newValue3 = 0;
-    let newValue4 = 0;
-    let newValue5 = 0;
-    let newValue6 = 0;
-    let newValue7 = 0;
-    let newValue8 = 0;
-    let newValue9 = 0;
-    let newValue10 = 0;
-    let newValue11 = 0;
-    let newValue12 = 0;
-    let newValue13 = 0;
-    let newValue14 = 0;
-
-    divs.map((div) => {
-      //console.log(div.id)
-      const values = div.values;
-      values.forEach((value, i) => {
-        if (i > 4) {
-          //<= values.length - 2
-          switch (i) {
-            case 5:
-              if (value !== "") {
-                newValue1 = newValue1 + Number(value);
-                setTotal1(newValue1);
-              }
-              break;
-            case 6:
-              if (value !== "") {
-                newValue2 = newValue2 + Number(value);
-                setTotal2(newValue2);
-              }
-              break;
-            case 7:
-              if (value !== "") {
-                newValue3 = newValue3 + Number(value);
-                setTotal3(newValue3);
-              }
-              break;
-            case 8:
-              if (value !== "") {
-                newValue4 = newValue4 + Number(value);
-                setTotal4(newValue4);
-              }
-              break;
-            case 9:
-              if (value !== "") {
-                newValue5 = newValue5 + Number(value);
-                setTotal5(newValue5);
-              }
-              break;
-            case 10:
-              if (value !== "") {
-                newValue6 = newValue6 + Number(value);
-                setTotal6(newValue6);
-              }
-              break;
-            case 11:
-              if (value !== "") {
-                newValue7 = newValue7 + Number(value);
-                setTotal7(newValue7);
-              }
-              break;
-            case 12:
-              if (value !== "") {
-                newValue8 = newValue8 + Number(value);
-                setTotal8(newValue8);
-              }
-              break;
-            case 13:
-              if (value !== "") {
-                newValue9 = newValue9 + Number(value);
-                setTotal9(newValue9);
-              }
-              break;
-            case 14:
-              if (value !== "") {
-                newValue10 = newValue10 + Number(value);
-                setTotal10(newValue10);
-              }
-              break;
-            case 15:
-              if (value !== "") {
-                newValue11 = newValue11 + Number(value);
-                setTotal11(newValue11);
-              }
-              break;
-            case 16:
-              if (value !== "") {
-                newValue12 = newValue12 + Number(value);
-                setTotal12(newValue12);
-              }
-              break;
-            case 17:
-              if (value !== "") {
-                newValue13 = newValue13 + Number(value);
-                setTotal13(newValue13);
-              }
-              break;
-            case 18:
-              if (value !== "") {
-                newValue14 = newValue14 + Number(value);
-                setTotal14(newValue14);
-              }
-              break;
-            default:
-              break;
+  useEffect(() => {    
+    setDivs((prev) => {
+      const filas = [];
+      for (let i = 1; i <= numFilas2; i++) {
+        filas.push({
+          id: i,
+          values: Array.from({ length: numColumnas2 }, () => ""),
+          // test:'aaaa'
+        });
+      }
+      for (let j = 0; j < filas.length; j++) {
+        const fil = filas[j];
+        const values = fil.values;
+        
+        //const keys = Object.keys(dataC.reports_cc[j])
+        if (dataC.reports_cc && dataC.reports_cc[j]) {
+          const keys = Object.keys(dataC.reports_cc[j]);
+          for (let k = 0; k < values.length; k++) {
+            switch (k) {
+              case 0:
+                values[k] = dataC.reports_cc[j][keys[k]];
+                break;
+              case 1:
+                values[k] = dataC.reports_cc[j][keys[k + 1]];
+                break;
+              case 2:
+                const date = dataC.reports_cc[j][keys[k + 1]];
+                const fdate = formattedDate(date);
+                values[k] = fdate;
+                break;
+              case 10:
+                values[k] = dataC.reports_cc[j]["A"];
+                break;
+              case 11:
+                values[k] = dataC.reports_cc[j]["B"];
+                break;
+              case 12:
+                values[k] = dataC.reports_cc[j]["C"];
+                break;
+              case 13:
+                values[k] = dataC.reports_cc[j]["D"];
+                break;
+              case 14:
+                values[k] = dataC.reports_cc[j]["E"]
+                  ? dataC.reports_cc[j]["E"]
+                  : "";
+                break;
+              case 15:
+                values[k] = dataC.reports_cc[j]["F"]
+                  ? dataC.reports_cc[j]["F"]
+                  : "";
+                break;
+              case 16:
+                values[k] = dataC.reports_cc[j]["G"]
+                  ? dataC.reports_cc[j]["G"]
+                  : "";
+                break;
+              case 17:
+                values[k] = dataC.reports_cc[j]["H"]
+                  ? dataC.reports_cc[j]["H"]
+                  : "";
+                break;
+              case 18:
+                values[k] = dataC.reports_cc[j]["I"]
+                  ? dataC.reports_cc[j]["I"]
+                  : "";
+                break;
+              default:
+                values[k] = dataC.reports_cc[j][keys[k + 1]];
+                break;
+            }
+            // if (k === 0) {
+            //   //values[k] = dataC.reports_cc[j]['item']
+          //   
+          //   
+            // }
           }
         }
-      });
+      
+      }      
+      return filas;
     });
-  }, [divs]);
-  //console.log(divs);
+   
+  }, [numFilas2, numColumnas2]);
+  console.log(divs);
   //const [first, setfirst] = useState(second)
   const [data, setData] = useState([]);
   const [isEClause, setIsEClause] = useState(false);

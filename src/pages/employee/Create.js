@@ -54,7 +54,7 @@ const Create = () => {
     handleScroll1,
     handleScroll2,
     suppliers,
-    incType
+    incType,
   } = useContext(MainContext);
   //console.log(suppliers);
   const [producedBy, setProducedBy] = useState("");
@@ -66,6 +66,19 @@ const Create = () => {
       [e.target.dataset.name || e.target.name]: e.target.value,
     });
   };*/
+
+  const [totalHours, setTotalHours] = useState(0);
+
+  useEffect(() => {
+    if (Object.keys(data).length > 0) {
+      const totalInsp = Number(total1);
+      const rate = data.rate;
+      const totalHours = Number(totalInsp) / Number(rate);
+      setTotalHours(totalHours);
+    }
+  }, [total1, data]);
+
+  //console.log(totalHours);
   const [divs2, setDivs2] = useState(() => {
     const filas = [];
     for (let i = 1; i <= numFilas; i++) {
@@ -233,7 +246,7 @@ const Create = () => {
           h: total13,
           i: total14,
         },
-        incType:incType,
+        incType: incType,
       },
     ];
     //  console.log(newArray[0]['total']);
@@ -263,7 +276,7 @@ const Create = () => {
     total12,
     total13,
     total14,
-    incType
+    incType,
   ]);
 
   /*console.log(data);
@@ -322,6 +335,50 @@ const Create = () => {
       text: "Scrap",
     },
   ];
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   const currentInputValue = data[name];
+
+  //   // Verificar si el primer carácter es un número
+  //   const isFirstCharacterNumber = /^\d/.test(currentInputValue);
+
+  //   if (!currentInputValue) {
+  //     // If the current input is empty, the user is typing the first character
+  //     // We accept any value
+  //     setData({
+  //       ...data,
+  //       [name]: value,
+  //     });
+  //   } else {
+  //     if (isFirstCharacterNumber) {
+  //       // If the first character was a number, we only accept numbers
+  //       if (/^\d*$/.test(value)) {
+  //         setData({
+  //           ...data,
+  //           [name]: value,
+  //         });
+  //       }
+  //     } else {
+  //       // If the first character wasn't a number, we accept anything
+  //       setData({
+  //         ...data,
+  //         [name]: value,
+  //       });
+  //     }
+  //   }
+  // };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    const currentInputValue = data[name];
+    console.log(value)
+    setData(prevData => {
+      return {
+        ...prevData,
+        rate: value
+      };
+    });
+  };
   return (
     <>
       <div className="container">
@@ -468,7 +525,11 @@ const Create = () => {
               placeholder=""
               required
               defaultValue=""
-              value={data.worked_hours}
+              value={
+                totalHours > 0 && typeof totalHours === "number"
+                  ? totalHours
+                  : data.worked_hours
+              }
               onChange={(e) =>
                 setData({
                   ...data,
@@ -489,12 +550,7 @@ const Create = () => {
               required
               defaultValue=""
               value={data.rate}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              onChange={handleInputChange}
             />
           </div>
           <div className="form-container">
@@ -745,7 +801,11 @@ const Create = () => {
                             </>
                           ) : (
                             <>
-                              <input type="text" name="" defaultValue={dumpValue} />
+                              <input
+                                type="text"
+                                name=""
+                                defaultValue={dumpValue}
+                              />
                             </>
                           )}
                         </td>
@@ -1092,7 +1152,7 @@ const Create = () => {
                                   )}
                                   {i === 9 && (
                                     <>
-                                      <Select data={optionClause}  clause="B"/>
+                                      <Select data={optionClause} clause="B" />
                                       {/* <input
                                         placeholder="B"
                                         readOnly
@@ -1112,43 +1172,43 @@ const Create = () => {
                                         style={{ textAlign: "center" }}
                                         defaultValue={dumpValue} 
                                   />*/}
-                                      <Select data={optionClause}  clause="C"/>
+                                      <Select data={optionClause} clause="C" />
                                       <br />
                                     </>
                                   )}
                                   {i === 11 && (
                                     <>
-                                      <Select data={optionClause}  clause="D"/>
+                                      <Select data={optionClause} clause="D" />
                                       <br />
                                     </>
                                   )}
                                   {i === 12 && (
                                     <>
-                                      <Select data={optionClause}  clause="E"/>
+                                      <Select data={optionClause} clause="E" />
                                       <br />
                                     </>
                                   )}
                                   {i === 13 && (
                                     <>
-                                      <Select data={optionClause}  clause="F"/>
+                                      <Select data={optionClause} clause="F" />
                                       <br />
                                     </>
                                   )}
                                   {i === 14 && (
                                     <>
-                                      <Select data={optionClause}  clause="G"/>
+                                      <Select data={optionClause} clause="G" />
                                       <br />
                                     </>
                                   )}
                                   {i === 15 && (
                                     <>
-                                      <Select data={optionClause}  clause="H"/>
+                                      <Select data={optionClause} clause="H" />
                                       <br />
                                     </>
                                   )}
                                   {i === 16 && (
                                     <>
-                                      <Select data={optionClause}  clause="I"/>
+                                      <Select data={optionClause} clause="I" />
                                       <br />
                                     </>
                                   )}

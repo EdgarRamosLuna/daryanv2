@@ -7,11 +7,10 @@ import React, {
 } from "react";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
-import { getReportsByPartNumber } from "../../api/daryan.api";
+import { getReportsByPartNumberClient } from "../../api/daryan.api";
 import TaLoader from "./TaLoader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
-import FilterTable from "./FilterTable";
 
 export const DynamicTable = ({ data, type }) => {
   const [groupedData, setGroupedData] = useState([]);
@@ -116,14 +115,14 @@ export const DynamicTable = ({ data, type }) => {
   const handleBlur = () => {
     setIsFocused(false);
     if (spanRef.current) {
-      spanRef.current.classList.remove("removable");
+      spanRef.current.classList.remove("span-btn-hover");
     }
   };
 
   const handleFocus = () => {
     setIsFocused(true);
     if (spanRef.current) {
-      spanRef.current.classList.add("removable");
+      spanRef.current.classList.add("span-btn-hover");
     }
   };
 
@@ -141,83 +140,72 @@ export const DynamicTable = ({ data, type }) => {
   }, [tooltip]);
 
   //  console.log(groupedData2[4])
-
   return (
-    <>
-      <table>
-        <thead>
-          <tr>
-            <th>Report ID</th>
+    <table>
+      <thead>
+        <tr>
+          <th>Report ID</th>
+          {clauses.map((clause, index) => (
+            <th key={index}>{clause}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {reportIds.map((reportId, index) => (
+          <tr key={index}>
+            <td className="table-center">{reportId}</td>
             {clauses.map((clause, index) => (
-              <th key={index}>{clause}</th>
+              <td
+                className="table-center"
+                key={index}
+                onClick={(e) =>
+                  handleCellClick(
+                    e,
+                    groupedData2[reportId][clause] &&
+                      groupedData2[reportId][clause].incident,
+                    groupedData[reportId][clause]
+                  )
+                }
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                tabIndex="0"
+              >
+                <span
+                  ref={spanRef}
+                  className={`${
+                    groupedData[reportId][clause] !== 0 && "span-btn-clause"
+                  } ${isFocused ? "removable" : ""}`}
+                  style={{ pointerEvents: "none" }}
+                >
+                  {groupedData[reportId][clause]}
+                </span>
+              </td>
             ))}
           </tr>
-        </thead>
-        <tbody>
-          {reportIds.map((reportId, index) => (
-            <tr key={index}>
-              <td className="table-center">{reportId}</td>
-              {clauses.map((clause, index) => (
-                <td
-                  className="table-center"
-                  key={index}
-                  onClick={(e) =>
-                    handleCellClick(
-                      e,
-                      groupedData2[reportId][clause] &&
-                        groupedData2[reportId][clause].incident,
-                      groupedData[reportId][clause]
-                    )
-                  }
-                  onBlur={handleBlur}
-                  onFocus={handleFocus}
-                  tabIndex="0"
-                >
-                  <span
-                    ref={spanRef}
-                    className={`${
-                      groupedData[reportId][clause] !== 0 && "span-btn-clause"
-                    } ${isFocused ? "removable" : ""}`}
-                    style={{ pointerEvents: "none" }}
-                  >
-                    {groupedData[reportId][clause]}
-                  </span>
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-        {tooltip.show && (
-          <div
-            style={{
-              position: "fixed",
-              left: tooltip.x,
-              top: tooltip.y,
-              backgroundColor: "white",
-              border: "1px solid black",
-              padding: "5px",
-              zIndex: 100,
-            }}
-          >
-            <b>Incidencia: </b>
-            {tooltip.text}
-          </div>
-        )}
-      </table>
-    </>
+        ))}
+      </tbody>
+      {tooltip.show && (
+        <div
+          style={{
+            position: "fixed",
+            left: tooltip.x,
+            top: tooltip.y,
+            backgroundColor: "white",
+            border: "1px solid black",
+            padding: "5px",
+            zIndex: 100,
+          }}
+        >
+          <b>Incidencia: </b>
+          {tooltip.text}
+        </div>
+      )}
+    </table>
   );
 };
 
 const TotalByPartNumber = () => {
-  const {
-    rDetailsData,
-    partNumber,
-    token,
-    tableFilters2,
-    setTableFilters2,
-    LANG,
-    langu,
-  } = useContext(MainContext);
+  const { rDetailsData, partNumber, token } = useContext(MainContext);
 
   const [total_inspected, setTotalInspected] = useState([]);
   const [showDetails, setShowDetails] = useState(false); // Nuevo estado para el toggle
@@ -226,11 +214,13 @@ const TotalByPartNumber = () => {
   const [originalTableData, setOriginalTableData] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  console.log(token)
   useEffect(() => {
     const getAllDetails = async () => {
       setIsLoading(true); // Comienza la carga
       try {
-        const res = await getReportsByPartNumber({ partNumber, token });
+        const res = await getReportsByPartNumberClient({ partNumber, token });
         const data = res.data;
 
         console.log(data);
@@ -282,13 +272,10 @@ const TotalByPartNumber = () => {
         {!navigator.onLine ? (
           <FontAwesomeIcon icon={faFilePdf} />
         ) : (
-          <i
-            className="fa-solid fa-file-pdf"
-            style={{
-              fontSize: "1.3rem",
-              color: "#600404",
-            }}
-          ></i>
+          <i className="fa-solid fa-file-pdf" style={{
+            fontSize: '1.3rem',
+            color:"#600404"
+          }}></i>
         )}
       </>,
     ]);
@@ -386,30 +373,6 @@ const TotalByPartNumber = () => {
     maxHeight: "200px",
     overflowY: "auto",
   };
-  const [showFIltersT, setShowFiltersT] = useState(false);
-  const showFilterTable = () => {
-    console.log("showFilterTable");
-    setShowFiltersT((prev) => !prev);
-  };
-  useEffect(() => {
-    if (
-      tableFilters2 &&
-      !showFIltersT &&
-      Object.values(tableFilters2[0]).every((value) => !value)
-    ) {
-      setTableFilters2([
-        {
-          total_in: true,
-          total_ng: true,
-          total_ok: true,
-          total_rw: true,
-          total_sc: true,
-          total_wh: true,
-        },
-      ]);
-    }
-  }, [tableFilters2]);
-
   return (
     <div className="modal-details">
       <div className="modal-details-content">
@@ -418,47 +381,16 @@ const TotalByPartNumber = () => {
           <h3>{partNumber}</h3>
         </div>
         <div className="modal-details-body">
-          <div className="table-controlls">
-            {showFIltersT && <FilterTable tableFilters2={tableFilters2} />}
-            <div className="table-controlls-left">
-              <div
-                className={`table-controlls-left-item ${
-                  showFIltersT ? "activeFilters" : ""
-                }`}
-                onClick={showFilterTable}
-              >
-                <i className="fa-solid fa-filter"></i>
-              </div>
-            </div>
-          </div>
           <Table>
             <table className="table-details">
               <thead>
                 <tr>
-                  {tableFilters2[0].total_in === true && (
-                    // if value exist in array LANG
-                    <th>{LANG.find((item) => item.lang === langu).total_in}</th>
-                  )}
-                  {tableFilters2[0].total_ng === true && (
-                    // if value exist in array LANG
-                    <th>{LANG.find((item) => item.lang === langu).total_ng}</th>
-                  )}
-                  {tableFilters2[0].total_ok === true && (
-                    // if value exist in array LANG
-                    <th>{LANG.find((item) => item.lang === langu).total_ok}</th>
-                  )}
-                  {tableFilters2[0].total_rw === true && (
-                    // if value exist in array LANG
-                    <th>{LANG.find((item) => item.lang === langu).total_rw}</th>
-                  )}
-                  {tableFilters2[0].total_sc === true && (
-                    // if value exist in array LANG
-                    <th>{LANG.find((item) => item.lang === langu).total_sc}</th>
-                  )}
-                  {tableFilters2[0].total_wh === true && (
-                    // if value exist in array LANG
-                    <th>{LANG.find((item) => item.lang === langu).total_wh}</th>
-                  )}
+                  <th>Total Inspeccionado</th>
+                  <th>Total NG Piezas</th>
+                  <th>Total OK Piezas</th>
+                  <th>Total Retrabajadas</th>
+                  <th>Total Scrap</th>
+                  <th>Total Horas Trabajadas</th>
                   <th></th>
                 </tr>
               </thead>
@@ -466,71 +398,8 @@ const TotalByPartNumber = () => {
                 <tr>
                   {total_inspected.map((item, index) => {
                     return (
-                      <>
-                        {index === 0 && tableFilters2[0].total_in === true && (
-                          <td key={index} className="table-center">
-                            {item}
-                          </td>
-                        )}
-                        {index === 1 && tableFilters2[0].total_ng === true && (
-                          <td key={index} className="table-center">
-                            <span
-                              className={`span-btn${index}`}
-                              onClick={() =>
-                                getDetails(index !== 1 ? index - 1 : index)
-                              }
-                            >
-                              {item}
-                            </span>
-                          </td>
-                        )}
-                        {index === 2 && tableFilters2[0].total_ok === true && (
-                          <td key={index} className="table-center">
-                            <span
-                              className={`span-btn${index}`}
-                              onClick={() =>
-                                getDetails(index !== 1 ? index - 1 : index)
-                              }
-                            >
-                              {item}
-                            </span>
-                          </td>
-                        )}
-                        {index === 3 && tableFilters2[0].total_rw === true && (
-                          <td key={index} className="table-center">
-                            <span
-                              className={`span-btn${index}`}
-                              onClick={() =>
-                                getDetails(index !== 1 ? index - 1 : index)
-                              }
-                            >
-                              {item}
-                            </span>
-                          </td>
-                        )}
-                        {index === 4 && tableFilters2[0].total_sc === true && (
-                          <td key={index} className="table-center">
-                            <span
-                              className={`span-btn${index}`}
-                              onClick={() =>
-                                getDetails(index !== 1 ? index - 1 : index)
-                              }
-                            >
-                              {item}
-                            </span>
-                          </td>
-                        )}
-                        {index === 5 && tableFilters2[0].total_wh === true && (
-                          <td key={index} className="table-center">
-                            {item}
-                          </td>
-                        )}
-                        {index === 6 && (
-                          <td key={index} className="table-center">
-                            {item}
-                          </td>
-                        )}
-                        {/* {index >= 1 && index <= 4 ? (                        
+                      <td key={index} className="table-center">
+                        {index >= 1 && index <= 4 ? (
                           <>
                             {index !== 2 ? (
                               <span
@@ -546,10 +415,9 @@ const TotalByPartNumber = () => {
                             )}
                           </>
                         ) : (
-                          
                           item
-                        )} */}
-                      </>
+                        )}
+                      </td>
                     );
                   })}
                 </tr>
