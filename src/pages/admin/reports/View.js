@@ -505,6 +505,8 @@ const View = () => {
     return filas;
   });
 
+
+  
   const [reportFooter3, setReportFooter3] = useState(() => {
     const filas = [];
     const dataInfo = eData.report_in;
@@ -546,6 +548,7 @@ const View = () => {
 
     return filas;
   });
+  console.log(reportFooter3)
   /*console.log(reportFooter);
   console.log(reportFooter2);
   console.log(reportFooter3);*/  

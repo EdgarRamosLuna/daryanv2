@@ -98,7 +98,7 @@ export const MainContextProvider = ({ children }) => {
             duration: 4000,
           });
           setTimeout(() => {
-            navigate("/admin/reports");
+        //    navigate("/admin/reports");
           }, 5000);
         }
       })
