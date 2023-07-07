@@ -29,6 +29,7 @@ import { useContext } from "react";
 import { useEffect } from "react";
 import { checkUser } from "./api/daryan.api";
 import PdfTest from "./Test";
+import InspectionReport from "./components/pdf/InspectionReport";
 function App() {
   
   return (
@@ -51,6 +52,7 @@ function App() {
           <Route exact path="/admin/reports/2/:id" element={<View4 />} />
           <Route exact path="/admin/users" element={<Users />} />
           
+          
           <Route exact path="/admin/clients" element={<Clients />} />
           <Route exact path="/admin/employees" element={<Employees/>} />
           <Route exact path="/admin/suppliers" element={<Suppliers/>} />
@@ -59,6 +61,7 @@ function App() {
           <Route exact path="/client/reports/:id" element={<View5 />} />
           {/* <Route exact path="/client/my-account" element={<Settings />} /> */}
         </Route>
+        <Route exact path="/reporte_inspeccion/:id" element={<InspectionReport />} />
         <Route exact path="/user/login" element={<Login />} />
         <Route exact path="/client/login" element={<Login2 />} />
         <Route exact path="/admin/login" element={<Login3 />} />

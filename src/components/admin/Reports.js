@@ -51,7 +51,7 @@ function ReportsTable({ data }) {
     setAuthClientsT,
     showCharts,
     firstDayOfYear,
-    isAdmin
+    isAdmin,
   } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const [nameFilter2, setNameFilter2] = useState("");
@@ -60,7 +60,6 @@ function ReportsTable({ data }) {
   const today = new Date();
   const sixDaysLater = new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000);
   const sixDaysBefore = new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000);
-  
 
   const [dateStart, setDateStart] = useState(firstDayOfYear);
   const [dateEnd, setDateEnd] = useState(today);
@@ -1068,7 +1067,9 @@ function ReportsTable({ data }) {
     console.log("showFilterTable");
     setShowFiltersT((prev) => !prev);
   };
-
+  const inspectionReport = () =>{
+     
+  }
   return (
     <>
       <Table>
@@ -1831,12 +1832,12 @@ function ReportsTable({ data }) {
           )}
           {activeTab === 3 && (
             <div className="table-controlls">
-              {showFIltersT && (
-                <FilterTable />
-              )}
+              {showFIltersT && <FilterTable />}
               <div className="table-controlls-left">
                 <div
-                  className={`table-controlls-left-item ${showFIltersT ? "activeFilters" : ""}`}
+                  className={`table-controlls-left-item ${
+                    showFIltersT ? "activeFilters" : ""
+                  }`}
                   onClick={showFilterTable}
                 >
                   <i className="fa-solid fa-filter"></i>
@@ -1927,12 +1928,13 @@ function ReportsTable({ data }) {
                           >
                             <i className="fa-solid fa-eye"></i>
                           </Link> */}
-
-                            {!navigator.onLine ? (
-                              <FontAwesomeIcon icon={faFilePdf} />
-                            ) : (
-                              <i className="fa-solid fa-file-pdf"></i>
-                            )}
+                            <a href={`/reporte_inspeccion/${item.id}`} target="_blank" className="btn-pdf" rel="noreferrer">
+                              {!navigator.onLine ? (
+                                <FontAwesomeIcon icon={faFilePdf} />
+                              ) : (
+                                <i className="fa-solid fa-file-pdf"></i>
+                              )}
+                            </a>
                             <FontAwesomeIcon
                               icon={faUsers}
                               color="green"

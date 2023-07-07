@@ -45,6 +45,7 @@ export default function SubHeader() {
   const {
     dataSes,
     saveReport,
+    saveReportH,
     aproveReport,
     confirm,
     setConfirm,
@@ -90,6 +91,8 @@ export default function SubHeader() {
     showConfig,
     setShowConfig,
     isAdmin,
+    dataReportH,
+    setDataReportH,
   } = useContext(MainContext);
 
   //console.log(isAdmin);
@@ -123,12 +126,12 @@ export default function SubHeader() {
     setShowModalS(false);
     setShowModalAuth(false);
     setShowDtable(false);
-    
+
     //setShowConfig(false);
     setAuthClientsT([]);
     //    showModalE, setShowModalE
   };
-  const handleCloseModal = () => {    
+  const handleCloseModal = () => {
     setShowConfig(false);
     setShowDEtable(false);
     //    showModalE, setShowModalE
@@ -272,7 +275,7 @@ export default function SubHeader() {
   };
   const singleView = (url) => {
     window.location.href = url;
-   // navigate(url);
+    // navigate(url);
   };
   const addClients = async () => {
     if (checkList.length > 0 && clientsToReport.length > 0) {
@@ -392,12 +395,11 @@ export default function SubHeader() {
       )}
       {showDtable === true && (
         <Modal callback={handleClose} width={1600}>
-          {isAdmin ? <TotalByPartNumber /> : <TotalByPartNumberClient />
-          }
+          {isAdmin ? <TotalByPartNumber /> : <TotalByPartNumberClient />}
         </Modal>
       )}
       {showDEtable === true && (
-        <Modal callback={handleCloseModal} >
+        <Modal callback={handleCloseModal}>
           <ReportDetails />
         </Modal>
       )}
@@ -489,7 +491,7 @@ export default function SubHeader() {
           )}
           {pathname === "/user/reports/create/2" && (
             <>
-              <button onClick={(e) => saveReport(e)}>Enviar Reporte</button>
+              <button onClick={(e) => saveReportH(e)}>Enviar Reporte</button>
               <button onClick={(e) => handleLink(e)}>Tabla de muestreo</button>
             </>
           )}

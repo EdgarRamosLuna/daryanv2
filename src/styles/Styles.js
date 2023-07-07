@@ -3,7 +3,10 @@ import styled from "styled-components";
 export const Home = styled.div``;
 
 export const Table = styled.div`
-
+  .btn-pdf {
+      display: flex;
+      align-items: center;
+  }
   .span-btn-hover {
     transition: all 0.6s;
     color: #fff !important;

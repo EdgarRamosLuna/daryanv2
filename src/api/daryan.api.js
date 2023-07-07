@@ -179,3 +179,15 @@ export const saveReportToDb = ({ dataToSave, token }) =>
       "Content-Type": "application/json",
     },
   });
+export const saveReportHToDb = async ({ dataReportH, token }) => {
+  try {
+    await serverApi.post("/reportH_save", dataReportH, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};

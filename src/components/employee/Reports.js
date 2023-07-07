@@ -1926,18 +1926,15 @@ function ReportsTable({ data }) {
                           colSpan={1}
                         >
                           <div className="actions">
-                            <FontAwesomeIcon
-                              icon={faTrash}
-                              onClick={() => handleDel(item.id, "reports")}
-                            />
+                         
                             {/* <Link
                            to={`/admin/reports/${item.id}`}
                            style={{ color: "green" }}
                          >
                            <i className="fa-solid fa-eye"></i>
                          </Link> */}
-                            <FontAwesomeIcon icon={faFilePdf} />
-                            {/* <i className="fa-solid fa-file-pdf"></i> */}
+                            {/* <FontAwesomeIcon icon={faFilePdf} /> */}
+                            <i className="fa-solid fa-file-pdf"></i>
                           </div>
                         </td>
                       </tr>

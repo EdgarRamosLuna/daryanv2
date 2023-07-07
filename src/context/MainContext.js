@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { Toaster, toast } from "sonner";
 import {
   getSuppliers,
+  saveReportHToDb,
   saveReportToDb,
   statusAuthClient,
   statusClient,
@@ -96,7 +97,7 @@ export const MainContextProvider = ({ children }) => {
         } else {
           toast.success(datares.message, {
             duration: 4000,
-          });          
+          });
           navigate("/admin/reports");
         }
       })
@@ -176,6 +177,74 @@ export const MainContextProvider = ({ children }) => {
       window.location.replace("/user/reports");
     }, 1000);*/
     // setDataT(prev => [...prev, data]);
+  };
+  const saveReportH = async (e) => {
+
+    console.log(dataReportH);
+    await saveReportHToDb({ dataReportH:dataReportH[0], token })
+      .then((res) => {
+        const datares = res.data;
+        if (datares.error) {
+          toast.error(datares.message, {
+            duration: 5000,
+          });
+        } else {
+          toast.success(datares.message, {
+            duration: 4000,
+          });
+          setTimeout(() => {
+         //   navigate("/user/reports");
+          }, 5000);
+        }
+      })
+      .catch((err) => {
+        toast.error(err, {
+          duration: 5000,
+        });
+      });
+
+      console.log('toy guardando klk');
+ //     setDataT(prev => [...prev, data]);
+    /*e.target.innerHTML = '<img src="/assets/img/loading2.svg" alt="" />';
+    console.log(data);
+    setData(data);
+    setReportData((prev) => [...prev, data]);
+    setTimeout(() => {
+      e.target.innerHTML = "Enviar Reporte";
+      window.location.replace("/user/reports");
+    }, 1000);*/
+    // if (
+    //   dT.data.length < 9 ||
+    //   dT.producedBy === "" ||
+    //   dT.checkedBy === "" ||
+    //   dT.authorizedBy === "" ||
+    //   dT.serviceType.length === 0 ||
+    //   dT.customerControl.length === 0
+    // ) {
+    //   toast.error("Todos los campos con * con obligatorios", {
+    //     duration: 5000,
+    //   });
+
+    //   return;
+    // }
+    // for (let i = 0; i < dT.customerControlTable.length; i++) {
+    //   const element = dT.customerControlTable[i].values;
+
+    //   for (let j = 0; j < element.length; j++) {
+    //     const el = element[j];
+    //     //console.log(el);
+    //     if (j > 2 && j <= 9) {
+    //       if (el === "") {
+    //         toast.error("Todos los campos con * con obligatorios", {
+    //           duration: 5000,
+    //         });
+    //         return;
+    //       }
+    //     }
+    //   }
+    // }
+    // //  console.log(dataToSave);
+    
   };
   /*useEffect(() => {
     if (reportData.length !== 0) {
@@ -811,6 +880,7 @@ export const MainContextProvider = ({ children }) => {
   //     total_sc: "Total Scrap",
   //   },
   // ];
+  const [dataReportH, setDataReportH] = useState([]);
   const LANG = [
     {
       lang: "es",
@@ -1033,6 +1103,9 @@ export const MainContextProvider = ({ children }) => {
         token,
         incType,
         setIncType,
+        dataReportH,
+        setDataReportH,
+        saveReportH
       }}
     >
       <Toaster richColors position={position} closeButton />
