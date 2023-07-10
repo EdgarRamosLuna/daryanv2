@@ -33,11 +33,13 @@ export const MainContextProvider = ({ children }) => {
   const [idDelete, setIdDelete] = useState("");
   const [tableName, setTableName] = useState("");
   const [data, setData] = useState([]);
+  const [data2, setData2] = useState([]);
   const [dataUsers, setDataUsers] = useState([]);
   const [dataEmployees, setDataEmployees] = useState([]);
   const [dataClients, setDataClients] = useState([]);
   const [dataSuppliers, setDataSuppliers] = useState([]);
   const dataTS = localStorage.getItem("dataTable");
+  const dataTS2 = localStorage.getItem("dataTable2");
   //console.log(data);
   const [reportData, setReportData] = useState(
     dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
@@ -183,24 +185,23 @@ export const MainContextProvider = ({ children }) => {
     console.log(dataReportH);
     await saveReportHToDb({ dataReportH:dataReportH[0], token })
       .then((res) => {
-        const datares = res.data;
-        if (datares.error) {
-          toast.error(datares.message, {
-            duration: 5000,
-          });
-        } else {
-          toast.success(datares.message, {
-            duration: 4000,
-          });
-          setTimeout(() => {
-         //   navigate("/user/reports");
-          }, 5000);
-        }
+        console.log(res);
+        // const datares = res.data;
+        // if (datares.error) {
+        //   toast.error(datares.message, {
+        //     duration: 5000,
+        //   });
+        // } else {
+        //   toast.success(datares.message, {
+        //     duration: 4000,
+        //   });
+        //   setTimeout(() => {
+        //  //   navigate("/user/reports");
+        //   }, 5000);
+        // }
       })
       .catch((err) => {
-        toast.error(err, {
-          duration: 5000,
-        });
+       console.log(err);
       });
 
       console.log('toy guardando klk');
@@ -258,6 +259,9 @@ export const MainContextProvider = ({ children }) => {
   };
 
   const [dataT, setDataT] = useState(
+    dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
+  );
+  const [dataT2, setDataT2] = useState(
     dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
   );
   const [confirm, setConfirm] = useState(false);
@@ -955,11 +959,14 @@ export const MainContextProvider = ({ children }) => {
         dataT,
         data,
         setData,
+        data2,
+        setData2,
         saveReport,
         aproveReport,
         dataToSave,
         setDataToSave,
         dataTS,
+        dataTS2,
         reportData,
         confirm,
         setConfirm,

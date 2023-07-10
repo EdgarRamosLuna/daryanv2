@@ -48,8 +48,8 @@ function App() {
           <Route exact path="/admin/reports" element={<Reports3 />} />
           <Route exact path="/admin/reports/:id" element={<View />} />
           <Route exact path="/user/reports/:id" element={<View2 />} />
-          <Route exact path="/user/reports/2/:id" element={<View3 />} />
-          <Route exact path="/admin/reports/2/:id" element={<View4 />} />
+          <Route exact path="/user/reports_by_h/:id" element={<View3 />} />
+          <Route exact path="/admin/reports_by_h/:id" element={<View4 />} />
           <Route exact path="/admin/users" element={<Users />} />
           
           

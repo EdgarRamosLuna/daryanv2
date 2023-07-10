@@ -5,32 +5,34 @@ import { StyledForm, Table } from "../../styles/Styles";
 import SecondTableCreate from "./SecondTableCreate";
 import SecondTableCreate2 from "./SecondTableCreate2";
 import { useEffect } from "react";
+import DatePickerInput from "../../components/DateInput";
 
 
 const Create2 = () => {
-  const { data, setData, dataReportH, setDataReportH } = useContext(MainContext);
+  const { dataReportH, setDataReportH } = useContext(MainContext);
   //console.log(data);
+  const [data, setData] = useState([]);
   const [divs, setDivs] = useState([
     { id: 1, values: Array(15).fill("") },
-    { id: 2, values: Array(15).fill("") },
-    { id: 3, values: Array(15).fill("") },
-    { id: 4, values: Array(15).fill("") },
-    { id: 5, values: Array(15).fill("") },
-    { id: 6, values: Array(15).fill("") },
-    { id: 7, values: Array(15).fill("") },
-    { id: 8, values: Array(15).fill("") },
-    { id: 9, values: Array(15).fill("") },
-    { id: 10, values: Array(15).fill("") },
-    { id: 11, values: Array(15).fill("") },
-    { id: 12, values: Array(15).fill("") },
-    { id: 13, values: Array(15).fill("") },
-    { id: 14, values: Array(15).fill("") },
-    { id: 15, values: Array(15).fill("") },
-    { id: 16, values: Array(15).fill("") },
-    { id: 17, values: Array(15).fill("") },
-    { id: 18, values: Array(15).fill("") },
-    { id: 19, values: Array(15).fill("") },
-    { id: 20, values: Array(15).fill("") },
+    // { id: 2, values: Array(15).fill("") },
+    // { id: 3, values: Array(15).fill("") },
+    // { id: 4, values: Array(15).fill("") },
+    // { id: 5, values: Array(15).fill("") },
+    // { id: 6, values: Array(15).fill("") },
+    // { id: 7, values: Array(15).fill("") },
+    // { id: 8, values: Array(15).fill("") },
+    // { id: 9, values: Array(15).fill("") },
+    // { id: 10, values: Array(15).fill("") },
+    // { id: 11, values: Array(15).fill("") },
+    // { id: 12, values: Array(15).fill("") },
+    // { id: 13, values: Array(15).fill("") },
+    // { id: 14, values: Array(15).fill("") },
+    // { id: 15, values: Array(15).fill("") },
+    // { id: 16, values: Array(15).fill("") },
+    // { id: 17, values: Array(15).fill("") },
+    // { id: 18, values: Array(15).fill("") },
+    // { id: 19, values: Array(15).fill("") },
+    // { id: 20, values: Array(15).fill("") },
   ]);
 
   const handleSelect = (e, type) => {
@@ -62,7 +64,14 @@ const Create2 = () => {
   const [totalPiecesInsp, setTotalPiecesInsp] = useState(Array(13).fill(""));
   const handleInputChangeTotalPieInsp = (index, event) => {
     const newTotalPiecesInsp = [...totalPiecesInsp];
-    newTotalPiecesInsp[index] = event.target.value;
+    newTotalPiecesInsp[index] = Number(event.target.value);  // Convertir a número
+  
+    // Sumar todos los valores menos el último
+    const sum = newTotalPiecesInsp.slice(0, -1).reduce((a, b) => a + b, 0);
+  
+    // Poner la suma en el último índice
+    newTotalPiecesInsp[newTotalPiecesInsp.length - 1] = sum;
+  
     setTotalPiecesInsp(newTotalPiecesInsp);
   };
   const [inspectedBy, setInspectedBy] = useState("");
@@ -86,12 +95,18 @@ const Create2 = () => {
     setDataReportH(newArray);
   }, [data, inspectors, comments, inspectedBy, authorizedBy, totalesD, divs, totalPiecesInsp]);
   //console.log(dataReportH)
-
+  const handleDate = (name, date) => {
+    setData({
+      ...data,
+      [name]: date,
+    });
+  };
+  //console.log(data.shift);
   return (
     <>
       <div className="container">
         <div className="title">
-          <h3>REPORTE POR HORAS</h3>
+          <h3>REPORTE POR HORASs</h3>
           <br />
         </div>
         <StyledForm>
@@ -103,7 +118,7 @@ const Create2 = () => {
               name="plant"
               placeholder=""
               required
-              value={data.data}
+              value={data.plant}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -120,7 +135,7 @@ const Create2 = () => {
               name="part_number"
               placeholder=""
               required
-              value={data.data2}
+              value={data.part_number}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -131,19 +146,13 @@ const Create2 = () => {
           </div>
           <div className="form-container">
             <label htmlFor="data3">Fecha:</label>
-            <input
-              type="text"
+            <DatePickerInput
               id="data3"
               name="date"
-              placeholder=""
-              required
-              value={data.data3}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
+              style={{ textAlign: "left", padding: "12px 20px" }}
+              value={data.date}
+              setDate={handleDate}
+              type="text"
             />
           </div>
           <div className="form-container">
@@ -154,7 +163,7 @@ const Create2 = () => {
               name="report_number"
               placeholder=""
               required
-              value={data.data4}
+              value={data.report_number}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -171,7 +180,7 @@ const Create2 = () => {
               name="table"
               placeholder=""
               required
-              value={data.data5}
+              value={data.table}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -188,7 +197,7 @@ const Create2 = () => {
               name="part_name"
               placeholder=""
               required
-              value={data.data6}
+              value={data.part_name}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -203,7 +212,7 @@ const Create2 = () => {
               id="data8"
               name="shift"
               required
-              value={data.data8}
+              value={data.shift}
               onChange={(e) =>
                 setData({
                   ...data,
@@ -362,7 +371,7 @@ const Create2 = () => {
               </tr>
               <tr>
                 <td colSpan={3} style={{ textAlign: "center" }}>
-                  <div>INSPECTORe</div>
+                  <div>INSPECTOR</div>                  
                   {inspectors.map((inspector, index) => (
                     <React.Fragment key={index}>
                       <input

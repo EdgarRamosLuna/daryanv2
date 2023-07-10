@@ -614,7 +614,7 @@ export const CreateForm = styled.div`
   }
   button {
     padding: 10px;
-    background-color: rgb(79, 0, 3);
+    background: linear-gradient(-90deg, #002353 10%, #00060e 100%);
     color: #fff;
     border: none;
     border-radius: 4px;

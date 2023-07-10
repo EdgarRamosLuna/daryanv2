@@ -73,6 +73,8 @@
     display: flex;
     align-items: center;
     box-sizing: border-box;
+    position: fixed;  
+    z-index: 999;
     /*padding: 0 25px;*/
     
 }
@@ -97,11 +99,12 @@
     width: 100%;
     display: flex;
     box-sizing: border-box;
-    padding: 30px 25px;
-
+    padding: 30px 25px;    
+    margin-top: 50px;
     height: 100%;
     overflow-y: auto;
     flex-wrap: wrap;
+    
     
     /*scroll-snap-type: x mandatory;*/
 }

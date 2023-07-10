@@ -233,7 +233,7 @@ textarea {
   
 }
 select, input[type="text"], input[type="email"], input[type="password"]{
-  min-height: 50px !important;
+  /*min-height: 50px !important;*/
 }
 input[type="submit"] {
   background-color: #001e48;

@@ -36,6 +36,12 @@ export const getEmployReports = (token) =>
       Authorization: `Bearer ${token}`,
     },
   });
+export const getEmployReportsByH = (token) =>
+  serverApi.get("/get_employ_reports_by_h/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 export const createEmployee = (data) =>
   serverApi.post("/create_employee/", data);
 export const updateEmployee = (data) =>
@@ -179,15 +185,10 @@ export const saveReportToDb = ({ dataToSave, token }) =>
       "Content-Type": "application/json",
     },
   });
-export const saveReportHToDb = async ({ dataReportH, token }) => {
-  try {
-    await serverApi.post("/reportH_save", dataReportH, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
+export const saveReportHToDb = ({ dataReportH, token }) =>
+  serverApi.post("/reportH_save", dataReportH, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });

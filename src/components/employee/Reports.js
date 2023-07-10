@@ -31,7 +31,7 @@ import { ModalCard } from "../../styles/ModalCard";
 import FilterTable from "./FilterTable";
 registerLocale("es", es);
 function ReportsTable({ data }) {
-  console.log(data);
+  console.log(data);  
   const {
     handleDel,
     setSort,
@@ -351,33 +351,36 @@ function ReportsTable({ data }) {
 
   //console.log(uniqueClients);
 
-  const filterData2 = useCallback(
-    (data) => {
-      return data.filter((item, index) => {
-        const part_number = item.part_number;
-        const id = item.id.toLowerCase();
-        const fullName = `${part_number} ${id} ${item.reports_cc
-          .map((cc) => cc.lot)
-          .join(", ")} ${item.reports_cc.map((cc) => cc.serial).join(", ")}`; // combinamos name, id y lot en una sola variable
-        const date = new Date(item.date);
-        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-        if (
-          nameFilter &&
-          fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
-        ) {
-          return false;
-        }
-        if (dateStart && date < new Date(dateStart).setHours(0, 0, 0, 0)) {
-          return false;
-        }
-        if (dateEnd && date > new Date(dateEnd).setHours(23, 59, 59, 999)) {
-          return false;
-        }
-        return true;
-      });
-    },
-    [nameFilter, dateStart, dateEnd, data]
-  );
+  
+  const filterData2 = useCallback(() => {
+    return data.filter((item) => {
+      const name = item.client;
+      const id = item.id.toLowerCase();
+      const plant = item.plant.toLowerCase();
+      const part_number = item.part_number;
+      const fullName = `${name} ${id} ${plant} ${part_number}`; // combinamos name y id en una sola variable
+      const date = new Date(item.date);
+      date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+
+      if (nameFilter && fullName.indexOf(nameFilter.toLowerCase()) === -1) {
+        // buscamos dentro de fullName
+        return false;
+      }
+
+      if (dateStart && date < new Date(dateStart).setHours(0, 0, 0, 0)) {
+        return false;
+      }
+      if (dateEnd && date > new Date(dateEnd).setHours(23, 59, 59, 999)) {
+        return false;
+      }
+      /*
+      if () {
+        return false;
+      }*/
+
+      return true;
+    });
+  }, [nameFilter, dateStart, dateEnd, data]);
   const [totalFiltered, setTotalFiltered] = useState([]);
   const [dataToTable, setDataToTable] = useState([]);
   const [totalGeneral, setTotalGeneral] = useState([]);
@@ -1194,7 +1197,7 @@ function ReportsTable({ data }) {
                   visibility: uniqueClients.length > 0 ? "visible" : "hidden",
                 }}
               >
-                <div className="select-container">
+                {/* <div className="select-container">
                   <select value={selectedClient} onChange={addClientToList}>
                     <option value="0" selected>
                       Selecciona un cliente
@@ -1205,7 +1208,7 @@ function ReportsTable({ data }) {
                       </option>
                     ))}
                   </select>
-                </div>
+                </div> */}
                 <div className="list-container">
                   <div className="item-list">
                     <ul
@@ -1796,7 +1799,7 @@ function ReportsTable({ data }) {
                   visibility: uniqueClients.length > 0 ? "visible" : "hidden",
                 }}
               >
-                <div className="select-container">
+                {/* <div className="select-container">
                   <select value={selectedClient} onChange={addClientToList}>
                     <option value="0" selected>
                       Selecciona un cliente
@@ -1807,7 +1810,7 @@ function ReportsTable({ data }) {
                       </option>
                     ))}
                   </select>
-                </div>
+                </div> */}
                 <div className="list-container">
                   <div className="item-list">
                     <ul
@@ -1944,82 +1947,7 @@ function ReportsTable({ data }) {
               </table>
             </div>
           )}
-          {activeTab === 2 && (
-            <div className="table-body table-reports">
-              <table>
-                <thead>
-                  <tr>
-                    {/* <th>
-                      <Checkbox type="all" id={0} callback={handleCheckBox} />
-                    </th> */}
-                    {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
-                    <th># Parte</th>
-                    <th>Planta</th>
-                    <th>Proveedor</th>
-                    <th>Fecha</th>
-                    <th>Status</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <div className={isLoading === false ? "loaderContainer" : ""}>
-                    <Loader>
-                      <img src="/assets/img/loading2.svg" alt="" />
-                    </Loader>
-                  </div>
-                  {getPaginatedData().length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan="6"
-                        className="table-center"
-                        style={{ opacity: `${isLoading ? 0 : 1}` }}
-                      >
-                        <h1>No hay informacion en la base de datos</h1>
-                      </td>
-                    </tr>
-                  ) : (
-                    getPaginatedData().map((item, index) => (
-                      <tr
-                        key={index + "tabl2"}
-                        onClick={(e) => singleView(item.id)}
-                      >
-                        {/* <td
-                          className="table-center"
-                          onClick={(e) => e.stopPropagation()}
-                          colSpan={1}
-                        ></td> */}
-                        {/* <td className="table-center">{item.id}</td> */}
-                        <td className="table-center">{item.part_number}</td>
-                        <td className="table-center">{item.plant}</td>
-                        <td className="table-center">{item.supplier}</td>
-                        <td className="table-center">{item.date}</td>
-                        <td className="table-center">
-                          {Number(item.status) === 1 && "Sin aprobar"}{" "}
-                          {Number(item.status) === 3 && "Aprobado"}
-                        </td>
-                        <td
-                          className="table-center"
-                          onClick={(e) => e.stopPropagation()}
-                          colSpan={1}
-                        >
-                          <div className="actions">
-                            {/* <Link
-                           to={`/admin/reports/${item.id}`}
-                           style={{ color: "green" }}
-                         >
-                           <i className="fa-solid fa-eye"></i>
-                         </Link> */}
-                            <FontAwesomeIcon icon={faFilePdf} />
-                            {/* <i className="fa-solid fa-file-pdf"></i> */}
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
+     
           {activeTab === 3 && (
             <div className="table-body table-reports">
               {/* <TableTotals data={totalFiltered} /> */}
