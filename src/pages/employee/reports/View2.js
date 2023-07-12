@@ -27,7 +27,7 @@ const View2 = () => {
   const [divs, setDivs] = useState([]);
   const [totalPiecesInsp, setTotalPiecesInsp] = useState([]);
   useEffect(() => {
-   dataC.reports_cc.forEach((element) => {
+    dataC.reports_cc.forEach((element) => {
       const newData = {
         id: element.item,
         values: [
@@ -48,21 +48,54 @@ const View2 = () => {
           element.total,
         ],
       };
-      setDivs(prev => [...prev, newData]);
+      setDivs((prev) => [...prev, newData]);
     });
-   dataC.report_total.forEach((element, index) => {      
-     if(index === dataC.report_total.length - 1 ){
-      setTotalPiecesInsp(prev => [...prev, element.total]);
-      
-      setTotalPiecesInsp(prev => [...prev, prev.reduce((a, b) => Number(a) + Number(b), 0)]);
-    }else{
-      setTotalPiecesInsp(prev => [...prev, element.total]);
-    }
+  }, []);
+  useEffect(() => {
+    dataC.report_total.forEach((element, index) => {
+      setTotalPiecesInsp((prev) => {
+        // Si el array ya tiene 12 elementos
+        if (prev.length >= 12) {
+          // Crear un nuevo array con los valores actualizados
+          const updatedArray = prev.map((item, itemIndex) => {
+            // Actualizar el valor, excluyendo el último elemento
+            if (itemIndex < prev.length - 1) {
+              return dataC.report_total[itemIndex]?.total || item;
+            }
+            // Mantener el último elemento (la suma total)
+            else {
+              return item;
+            }
+          });
+
+          // Reemplazar la última posición con la suma total
+          const totalSum = updatedArray
+            .slice(0, -1)
+            .reduce((a, b) => Number(a) + Number(b), 0);
+          updatedArray[updatedArray.length - 1] = totalSum;
+
+          return updatedArray;
+        }
+        // Si el array tiene menos de 12 elementos
+        else {
+          // Agregar el elemento al array
+          const newArray = [...prev, element.total];
+
+          // Si es el último elemento, agregar la suma total
+          if (index === dataC.report_total.length - 1) {
+            const totalSum = newArray.reduce(
+              (a, b) => Number(a) + Number(b),
+              0
+            );
+            return [...newArray, totalSum];
+          } else {
+            return newArray;
+          }
+        }
+      });
     });
   }, [dataC]);
-//  console.log(divs);
-
-  
+  //  console.log(divs);
 
   const handleSelect = (e, type) => {
     setDataC({
@@ -90,20 +123,22 @@ const View2 = () => {
     newComments[index] = event.target.value;
     setComments(newComments);
   };
-  
+
   const handleInputChangeTotalPieInsp = (index, event) => {
     const newTotalPiecesInsp = [...totalPiecesInsp];
-    newTotalPiecesInsp[index] = Number(event.target.value);  // Convertir a número
-  
+    newTotalPiecesInsp[index] = Number(event.target.value); // Convertir a número
+
     // Sumar todos los valores menos el último
-    const sum = newTotalPiecesInsp.slice(0, -1).reduce((a, b) => a + b, 0);
-  
+    const sum = newTotalPiecesInsp
+      .slice(0, -1)
+      .reduce((a, b) => Number(a) + Number(b), 0);
+
     // Poner la suma en el último índice
     newTotalPiecesInsp[newTotalPiecesInsp.length - 1] = sum;
-  
+
     setTotalPiecesInsp(newTotalPiecesInsp);
   };
-  
+
   const [inspectedBy, setInspectedBy] = useState("");
   const [authorizedBy, setAuthorizedBy] = useState("");
   // function handleInputChange(divId, inputIndex, newValue) {
