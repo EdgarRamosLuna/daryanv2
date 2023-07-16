@@ -813,7 +813,7 @@ function ReportsTable({ data }) {
   const navigate = useNavigate();
   const singleView = (id) => {
     // window.location.href = `/admin/reports/${id}`;
-    navigate(`/admin/reports/${id}`);
+    navigate(`/admin/reports_insp/${id}`);
   };
   const singleView2 = (id) => {
     navigate(`/user/reports/2/${id}`);

@@ -131,7 +131,7 @@ export default function Header() {
         setLinksAdmin([
           {
             label: `${langu === "es" ? "Reportes" : "Reports"}`,
-            route: "/admin/reports",
+            route: "/admin/reports_insp",
             ico: faFileLines,
             fun: (e) => {},
           },

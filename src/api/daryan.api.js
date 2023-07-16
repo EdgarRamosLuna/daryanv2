@@ -30,6 +30,7 @@ export const checkUser = (token) =>
 
 // Employee API
 export const getEmployee = (id) => serverApi.post("/get_employee/", id);
+
 export const getEmployReports = (token) =>
   serverApi.get("/get_employ_reports/", {
     headers: {
@@ -190,5 +191,25 @@ export const saveReportHToDb = ({ dataReportH, token }) =>
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
+    },
+  });
+export const aproveReportHToDb = ({ dataReportH, token }) =>
+  serverApi.post("/reportH_aprove", dataReportH, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+export const getReportsIns = (token) =>
+  serverApi.get("/get/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+export const getReportsByH = (token) =>
+  serverApi.get("/get_rh", {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
   });

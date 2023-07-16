@@ -93,6 +93,7 @@ export default function SubHeader() {
     isAdmin,
     dataReportH,
     setDataReportH,
+    aproveReportH
   } = useContext(MainContext);
 
   //console.log(isAdmin);
@@ -500,10 +501,21 @@ export default function SubHeader() {
           )}
           {dataSes === "admin" &&
             pathname.includes("admin") &&
-            pathname.includes("reports") &&
             typeof p !== "undefined" && (
-              <button onClick={(e) => aproveReport(e)}>Aprobar Reporte</button>
+              <>
+                {pathname.includes("reports_by_h") && (
+                  <button onClick={(e) => aproveReportH(e)}>
+                    Aprobar Reporte
+                  </button>
+                )}
+                {pathname.includes("reports_insp") && (
+                  <button onClick={(e) => aproveReport(e)}>
+                    Aprobar Reporte
+                  </button>
+                )}
+              </>
             )}
+
           {pathname.includes("table2") && (
             <>
               <button onClick={(e) => navigate(-1)}>Regresar</button>

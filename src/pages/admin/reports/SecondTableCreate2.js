@@ -1,33 +1,14 @@
-import React, { useContext, useState } from "react";
-import { MainContext } from "../../../context/MainContext";
+import React, { useEffect, useState } from "react";
 import { Table } from "../../../styles/Styles";
 
-export default function SecondTableCreate2() {
-  const { eliminarColumna, agregarFila, numColumnas } = useContext(MainContext);
-  const [divs, setDivs] = useState([
-    { id: 1, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 2, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 3, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 4, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 5, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 6, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 7, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 8, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 9, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 10, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 11, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 12, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 13, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 14, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 15, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-  ]);
-  const eliminarFila = (itemId) => {
-    //console.log(penultimate);
-    setDivs((prevDatos) => prevDatos.filter((item) => item.id !== itemId));
-  };
+export default function SecondTableCreate2({
+  setTotalesDefectos,
+  divs,
+  setDivs,
+}) {
   function handleAddDiv() {
     const newId = divs.length + 1;
-    const newValues = ["", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+    const newValues = Array(15).fill("");
     setDivs([...divs, { id: newId, values: newValues }]);
     const tableWrapper = document.querySelector(".c2");
     const scrollHeight = tableWrapper.scrollHeight;
@@ -39,17 +20,108 @@ export default function SecondTableCreate2() {
       }, 100);
     }
   }
+  const handleDeleteRow = (index) => {
+    setDivs(prev => prev.filter((d, i) => i !== index));
+  };
 
+  //console.log(divs);
+  // function handleInputChange(divId, inputIndex, newValue) {
+  //   setDivs((prevDivs) => {
+  //     const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
+  //     const updatedDiv = { ...prevDivs[divToUpdateIndex] };
+  //     updatedDiv.values[inputIndex] = newValue;
+  //     const updatedDivs = [...prevDivs];
+  //     updatedDivs[divToUpdateIndex] = updatedDiv;
+  //     return updatedDivs;
+  //   });
+  // }
+  // function handleInputChange(divId, inputIndex, newValue) {
+  //   setDivs((prevDivs) => {
+  //     const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
+  //     const updatedDiv = { ...prevDivs[divToUpdateIndex] };
+  //     updatedDiv.values[inputIndex] = newValue;
+
+  //     // Suma todos los números en la fila (excluyendo el último índice)
+  //     const rowSum = updatedDiv.values
+  //       .slice() // excluye el último índice
+  //       .reduce((total, value) => total + Number(value || 0), 0);
+  //     updatedDiv.values[updatedDiv.values.length - 1] = rowSum; // almacena el total en el último índice
+
+  //     const updatedDivs = [...prevDivs];
+  //     updatedDivs[divToUpdateIndex] = updatedDiv;
+  //     return updatedDivs;
+  //   });
+  // }
+  // function handleInputChange(divId, inputIndex, newValue) {
+  //   setDivs((prevDivs) => {
+  //     // Busca el índice del objeto a actualizar en el array de divs basándose en el divId.
+  //     const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
+  //     // Crea una copia del objeto a actualizar usando el operador de propagación.
+  //     const updatedDiv = { ...prevDivs[divToUpdateIndex] };
+
+  //     // Guarda el valor antiguo de la celda antes de actualizarlo.
+  //     const oldValue = updatedDiv.values[inputIndex];
+  //     // Actualiza el valor en la celda correspondiente.
+  //     updatedDiv.values[inputIndex] = newValue;
+
+  //     // Guarda la suma antigua de la fila.
+  //     const oldRowSum = Number(updatedDiv.values[updatedDiv.values.length - 1] || 0);
+  //     // Calcula la diferencia entre el nuevo valor y el antiguo.
+  //     const delta = Number(newValue || 0) - Number(oldValue || 0);
+  //     // Actualiza la suma de la fila restando el valor antiguo y sumando el nuevo.
+  //     updatedDiv.values[updatedDiv.values.length - 1] = oldRowSum + delta;
+
+  //     // Crea una copia de la lista de divs, reemplaza el div actualizado y devuelve la nueva lista.
+  //     const updatedDivs = [...prevDivs];
+  //     updatedDivs[divToUpdateIndex] = updatedDiv;
+  //     return updatedDivs;
+  //   });
+  // }
   function handleInputChange(divId, inputIndex, newValue) {
     setDivs((prevDivs) => {
+      // Busca el índice del objeto a actualizar en el array de divs basándose en el divId.
       const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
+      // Crea una copia del objeto a actualizar usando el operador de propagación.
       const updatedDiv = { ...prevDivs[divToUpdateIndex] };
+
+      // Guarda el valor antiguo de la celda antes de actualizarlo.
+      const oldValue = Number(updatedDiv.values[inputIndex]) || 0;
+      // Actualiza el valor en la celda correspondiente.
       updatedDiv.values[inputIndex] = newValue;
+
+      // Guarda la suma antigua de la fila.
+      const oldRowSum = Number(
+        updatedDiv.values[updatedDiv.values.length - 1] || 0
+      );
+      // Calcula la diferencia entre el nuevo valor y el antiguo si ambos son números.
+      const delta = !isNaN(newValue) ? Number(newValue) - oldValue : 0;
+      // Actualiza la suma de la fila restando el valor antiguo y sumando el nuevo.
+      updatedDiv.values[updatedDiv.values.length - 1] = oldRowSum + delta;
+
+      // Crea una copia de la lista de divs, reemplaza el div actualizado y devuelve la nueva lista.
       const updatedDivs = [...prevDivs];
       updatedDivs[divToUpdateIndex] = updatedDiv;
       return updatedDivs;
     });
   }
+
+  const [colSums, setColSums] = useState([]);
+  useEffect(() => {
+    const totalIssues = divs.slice();
+    if (totalIssues !== undefined && totalIssues.length > 0) {
+      let colSum = totalIssues.reduce((total, row) => {
+        row.values.forEach((value, i) => {
+          // Utilizamos .slice(2) para excluir los dos primeros índices
+          total[i] = total[i] + Number(value);
+        });
+        return total;
+      }, Array(totalIssues[0].values.length).fill(0)); // Restamos 2 al largo inicial para que coincida con el nuevo tamaño de la fila
+      setTotalesDefectos(colSum);
+    }
+    return () => {};
+  }, [divs]);
+
+  const [sums, setSums] = useState(Array(14).fill(0));
 
   return (
     <Table>
@@ -77,13 +149,15 @@ export default function SecondTableCreate2() {
           </tr>
         </thead>
         <tbody>
-          {divs.map((div) => (
-            <tr key={div.id}>
-              <td>
-                <i
-                  className="fa-solid fa-trash"
-                  onClick={() => eliminarFila(div.id)}
-                ></i>
+          {divs.map((div, i) => (
+            <tr key={div.id_report}>
+              <td>                
+                {i !== 0 && (
+                  <i
+                    className="fa-solid fa-trash"
+                    onClick={() => handleDeleteRow(i)}
+                  ></i>
+                )}
               </td>
 
               <td>{div.id}</td>
@@ -178,14 +252,26 @@ export default function SecondTableCreate2() {
               <td>
                 <input
                   value={div.values[14]}
-                  onChange={(e) =>
-                    handleInputChange(div.id, 14, e.target.value)
-                  }
+                  readOnly
+                  disabled
+                  onChange={(e) => {
+                    //  handleInputChange(div.id, 14, e.target.value)
+                  }}
                 />
               </td>
             </tr>
           ))}
         </tbody>
+        {/* <tfoot>
+    <tr>
+      <td>Totales:</td>
+      <td></td>
+      <td></td>
+      {colSums.map((sum, i) => (
+        <td key={i}>{sum}</td>
+      ))}
+    </tr>
+  </tfoot> */}
       </table>
     </Table>
   );

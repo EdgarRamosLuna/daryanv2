@@ -45,9 +45,9 @@ function App() {
           <Route exact path="/user/reports/create/2/:t" element={<Create3 />} />
           {/* <Route exact path="/user/my-account" element={<Settings />} /> */}
           {/* <Route exact path="/admin/my-account" element={<Settings2 />} /> */}
-          <Route exact path="/admin/reports" element={<Reports3 />} />
-          <Route exact path="/admin/reports/:id" element={<View />} />
-          <Route exact path="/user/reports/:id" element={<View2 />} />
+          <Route exact path="/admin/reports_insp" element={<Reports3 />} />
+          <Route exact path="/admin/reports_insp/:id" element={<View />} />
+          <Route exact path="/user/reports_insp/:id" element={<View2 />} />
           <Route exact path="/user/reports_by_h/:id" element={<View3 />} />
           <Route exact path="/admin/reports_by_h/:id" element={<View4 />} />
           <Route exact path="/admin/users" element={<Users />} />

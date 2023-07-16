@@ -240,7 +240,7 @@ function ReportsByH({ data }) {
   //console.log(checkList);
   const navigate = useNavigate();
   const singleView = (id) => {
-    navigate(`/user/reports_by_h/${id}`);
+    navigate(`/admin/reports_by_h/${id}`);
   };
 
   const tabSwitch = (tab) => {

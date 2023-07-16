@@ -13,7 +13,7 @@ const Create2 = () => {
   //console.log(data);
   const [data, setData] = useState([]);
   const [divs, setDivs] = useState([
-    { id: 1, values: Array(15).fill("") },
+    { id: 1, values: Array(12).fill("") },
     // { id: 2, values: Array(15).fill("") },
     // { id: 3, values: Array(15).fill("") },
     // { id: 4, values: Array(15).fill("") },
