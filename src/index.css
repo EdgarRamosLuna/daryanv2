@@ -218,7 +218,7 @@ a {
   margin-bottom: 49px;
 }
 
-input,
+/* input,
 select,
 textarea {
   width: 100%;
@@ -231,7 +231,7 @@ textarea {
   background: transparent;
   outline: none;
   
-}
+} */
 select, input[type="text"], input[type="email"], input[type="password"]{
   /*min-height: 50px !important;*/
 }

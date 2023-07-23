@@ -6,12 +6,9 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { addDays } from "date-fns";
+
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
-import "react-date-range/dist/styles.css"; // main css file
-import "react-date-range/dist/theme/default.css"; // theme css file
-import "react-datepicker/dist/react-datepicker.css";
-import { DateRangePicker } from "react-date-range";
+
 import es from "date-fns/locale/es";
 import Loader from "../Loader";
 import Checkbox from "../Checkbox";
@@ -32,9 +29,8 @@ import FilterTable from "./FilterTable";
 import ReportsByH from "./ReportsByH";
 import ComponentPagination from "../ComponentPagination";
 import TabContainer from "../tabs/TabContainer";
-import DatePickerMUI2 from "../datepicker/DatePickerMUI2";
 import { TextField } from "@mui/material";
-import DatePickerMUI from "../datepicker/DatePickerMUI";
+import DatePickerRange from "../datepicker/DateRangePicker";
 registerLocale("es", es);
 function ReportsTable({ data, dataReportByH }) {
   const {
@@ -52,14 +48,7 @@ function ReportsTable({ data, dataReportByH }) {
   } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const today = new Date();
-  const [state, setState] = useState([
-    {
-      startDate: new Date(),
-      endDate: addDays(new Date(), 7),
-      key: "selection",
-    },
-  ]);
-
+ 
   const [dateStart, setDateStart] = useState(firstDayOfYear);
   const [dateEnd, setDateEnd] = useState(today);
   const [currentPage, setCurrentPage] = useState(1);
@@ -486,8 +475,7 @@ function ReportsTable({ data, dataReportByH }) {
                 rowsPerPage={rowsPerPage}
                 setRowsPerPage={setRowsPerPage}
                 data={data}
-                setState={setState}
-                state={state}
+      
               />
             }
           />
@@ -522,22 +510,15 @@ export const ReportsInspection = ({
   rowsPerPage,
   setRowsPerPage,
   data,
-  setState,
-  state,
+
 }) => {
   return (
     <>
       <div className="header-container">
         <form autoComplete="off">
-          <DateRangePicker
-            onChange={(item) => setState([item.selection])}
-            showSelectionPreview={true}
-            moveRangeOnFirstSelection={false}
-            months={2}
-            ranges={state}
-            direction="horizontal"
+          <DatePickerRange
+          
           />
-          ;
           {/* <DatePickerMUI setDateStart={setDateStart} setDateEnd={setDateEnd} /> */}
           <div className="filter-container">
             <div className="filter-item"></div>
@@ -556,6 +537,7 @@ export const ReportsInspection = ({
               value={nameFilter}
               onChange={(e) => handleNameFilterChange(e)}
               placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
+          
             />
           </div>
         </form>
