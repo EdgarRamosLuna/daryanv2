@@ -32,17 +32,17 @@ function a11yProps(index) {
  * El componente utiliza la biblioteca de Material-UI para los componentes de la interfaz de usuario.
  * 21/07/2023 11pm
  * @param {Object} props - Las propiedades del componente.
- * @param {Object} props.tabContent - Un objeto que mapea las claves a los objetos de contenido de la pestaña.
- *                                    Cada objeto de contenido de la pestaña debe tener las propiedades `componenteTitle`,
+ * @param {Object} props.tabContent - Un objeto que mapea las claves a los objetos de contenido de la pestaña. 
+ *                                    Cada objeto de contenido de la pestaña debe tener las propiedades `componenteTitle`, 
  *                                    `componenteTop`, `componenteMiddle` y `componenteBottom`.
  *                                    - `componenteTitle` es la etiqueta de la pestaña.
- *                                    - `componenteTop`, `componenteMiddle` y `componenteBottom` son los componentes JSX que
+ *                                    - `componenteTop`, `componenteMiddle` y `componenteBottom` son los componentes JSX que 
  *                                      se renderizarán en la parte superior, media e inferior de la pestaña, respectivamente.
  *
  * @returns {JSX.Element} Un contenedor de pestañas.
  */
-export default function TabContainer({ tabChildren1 }) {
-  const [value, setValue] = React.useState(1);
+export default function TabContainer({ tabContent }) {
+  const [value, setValue] = React.useState(0);
   const { setActiveTab } = useContext(MainContext);
 
   const handleChange = (event, newValue) => {
@@ -58,35 +58,22 @@ export default function TabContainer({ tabChildren1 }) {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab
-            label={"Reportes de inspeccion"}
-            {...a11yProps(0)}            
-          />
-          <Tab
-            label={"Reportes de inspeccion"}
-            {...a11yProps(1)}            
-          />
-          {/* {Object.keys(tabContent).map((key, index) => (
+          {Object.keys(tabContent).map((key, index) => (
             <Tab
               label={tabContent[key].componenteTitle}
               {...a11yProps(index)}
               key={key}
             />
-          ))} */}
+          ))}
         </Tabs>
       </Box>
-      {/* {Object.entries(tabContent).map(([key, val], index) => ( */}
-      <CustomTabPanel value={value} index={0}>
-        {tabChildren1}
-      
-        {/* {val.componenteTop}
+      {Object.entries(tabContent).map(([key, val], index) => (
+        <CustomTabPanel value={value} index={index} key={index+1}>
+          {val.componenteTop}
           {val.componenteMiddle}
-          {val.componenteBottom} */}
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={0}>
-        aa
-      </CustomTabPanel>
-      {/* ))} */}
+          {val.componenteBottom}
+        </CustomTabPanel>
+      ))}
     </Box>
   );
 }

@@ -132,8 +132,8 @@ function ReportsTable({ data, dataReportByH }) {
           .join(", ")} ${item.reports_cc
           .map((cc) => cc.serial)
           .join(", ")} ${suppliers} ${planta} `; // combinamos name, id y lot en una sola variable
-        // const date = new Date(item.date);
-        // date.setHours(0, 0, 0, 0);
+        const date = new Date(item.date);
+        date.setHours(0, 0, 0, 0);
 
         // const date = new Date(item.date);
         // date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
@@ -144,21 +144,21 @@ function ReportsTable({ data, dataReportByH }) {
           //console.log(fullName.slice(3, 4));
           return false;
         }
-        // if (dateStart) {
-        //   const startDate = new Date(dateStart);
-        //   startDate.setHours(0, 0, 0, 0);
-        //   if (date < startDate) {
-        //     return false;
-        //   }
-        // }
+        if (dateStart) {
+          const startDate = new Date(dateStart);
+          startDate.setHours(0, 0, 0, 0);
+          if (date < startDate) {
+            return false;
+          }
+        }
 
-        // if (dateEnd) {
-        //   const endDate = new Date(dateEnd);
-        //   endDate.setHours(23, 59, 59, 999);
-        //   if (date > endDate) {
-        //     return false;
-        //   }
-        // }
+        if (dateEnd) {
+          const endDate = new Date(dateEnd);
+          endDate.setHours(23, 59, 59, 999);
+          if (date > endDate) {
+            return false;
+          }
+        }
 
         // if (dateStart && date < new Date(dateStart).setHours(0, 0, 0, 0)) {
         //   return false;
@@ -437,13 +437,7 @@ function ReportsTable({ data, dataReportByH }) {
       componenteTitle: reportesComponents["byh"].p,
       componenteTop: <></>,
       componenteMiddle: (
-        <ReportsByH
-          data={dataReportByH}
-          dateStart={dateStart}
-          dateEnd={dateEnd}
-          setDateStart={setDateStart}
-          setDateEnd={setDateEnd}
-        />
+       <></>
       ),
     },
   };
@@ -478,6 +472,14 @@ function ReportsTable({ data, dataReportByH }) {
       
               />
             }
+            tabChildren2={
+              <ReportsByH
+              data={dataReportByH}
+              dateStart={dateStart}
+              dateEnd={dateEnd}
+              setDateStart={setDateStart}
+              setDateEnd={setDateEnd}
+            />}
           />
         </div>
       </Table>
@@ -517,7 +519,8 @@ export const ReportsInspection = ({
       <div className="header-container">
         <form autoComplete="off">
           <DatePickerRange
-          
+            setDateStart={setDateStart} 
+            setDateEnd={setDateEnd}
           />
           {/* <DatePickerMUI setDateStart={setDateStart} setDateEnd={setDateEnd} /> */}
           <div className="filter-container">

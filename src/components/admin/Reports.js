@@ -35,7 +35,21 @@ import ReportsByH from "./ReportsByH";
 import ComponentPagination from "../ComponentPagination";
 import TabContainer from "../tabs/TabContainer";
 import DatePickerMUI2 from "../datepicker/DatePickerMUI2";
-import { TextField } from "@mui/material";
+import DatePickerRange from "../datepicker/DateRangePicker";
+
+import {
+  Box,
+  TextField,
+  Select,
+  MenuItem,
+  List,
+  ListItem,
+  IconButton,
+  Grid,
+  FormControlLabel,
+  Checkbox as CheckboxMUI,
+} from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
 registerLocale("es", es);
 function ReportsTable({ data, dataReportByH }) {
   const {
@@ -888,10 +902,19 @@ function ReportsTable({ data, dataReportByH }) {
     }
   }, [filterOption, filtersPartNumber, filtersSupplier, toast]);
 
+  // Convert your array of clients to an object for easy lookup
+  const clientsById = uniqueClients.reduce((obj, client) => {
+    obj[client.id] = client;
+    return obj;
+  }, {});
+
   const addClientToList = (e) => {
     const id = e.target.value;
     setSelectedClient(id);
-    const clientName = e.target.selectedOptions[0].text;
+
+    // Look up the client name by id
+    const clientName = clientsById[id].fullname;
+
     setClientsToReport((prev) => {
       if (!prev.some((client) => client.id === id) && id !== "0") {
         return [...prev, { id, clientName }];
@@ -899,6 +922,18 @@ function ReportsTable({ data, dataReportByH }) {
       return prev;
     });
   };
+
+  // const addClientToList = (e) => {
+  //   const id = e.target.value;
+  //   setSelectedClient(id);
+  //   const clientName = e.target.selectedOptions[0].text;
+  //   setClientsToReport((prev) => {
+  //     if (!prev.some((client) => client.id === id) && id !== "0") {
+  //       return [...prev, { id, clientName }];
+  //     }
+  //     return prev;
+  //   });
+  // };
 
   //console.log(clientsToReport);
   const removeClient = (id) => {
@@ -918,14 +953,16 @@ function ReportsTable({ data, dataReportByH }) {
           <div className="header-container">
             <form autoComplete="off">
               <div className="filter-container">
-                <div className="filter-item">                 
+                <div className="filter-item">
+                  <label htmlFor="date-filter" className="label-center">
+                    Buscar por Fechas:
+                  </label>
 
                   <div className="filter-item-input input-date">
-                    <DatePickerMUI2
+                    <DatePickerRange
                       setDateStart={setDateStart}
                       setDateEnd={setDateEnd}
                     />
-
                     {/* <div className="range">
                       <DatePicker
                         id="fechaInicio"
@@ -1680,14 +1717,78 @@ function ReportsTable({ data, dataReportByH }) {
       componenteTop: (
         <div className="header-container">
           <form autoComplete="off">
-            <div className="filter-container">
+            <Grid
+              sx={{
+                marginTop: "15px",
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+              }}
+            >
               <div className="filter-item">
-                <DatePickerMUI2
-                  setDateStart={setDateStart}
-                  setDateEnd={setDateEnd}
+                <TextField
+                  id="outlined-basic"
+                  label="Buscar"
+                  variant="outlined"
+                  autoComplete="off"
+                  sx={{
+                    width: "90%",
+                  }}
+                  type="text"
+                  name="buscar"
+                  value={nameFilter}
+                  onChange={(e) => handleNameFilterChange(e)}
+                  placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
                 />
-
-                {/* <div className="filter-item-input input-date">
+              </div>
+              <div className="filter-item">
+                <Box
+                  sx={{
+                    visibility: uniqueClients.length > 0 ? "visible" : "hidden",
+                  }}
+                >
+                  <Box>
+                    <Select
+                      value={selectedClient}
+                      onChange={addClientToList}
+                      sx={{
+                        width: "90%",
+                      }}
+                    >
+                      <MenuItem value="0">Selecciona un cliente</MenuItem>
+                      {uniqueClients.map((option) => (
+                        <MenuItem key={option} value={option.id}>
+                          {option.fullname}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Box>
+                  <Box>
+                    <List
+                      sx={{
+                        display: `${
+                          clientsToReport.length > 0 ? "flex" : "none"
+                        }`,
+                        flexDirection: "column",
+                      }}
+                    >
+                      {clientsToReport.map((client, ind) => (
+                        <ListItem key={ind}>
+                          <span>{client.clientName}</span>
+                          <IconButton onClick={() => removeClient(client.id)}>
+                            <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
+                          </IconButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                </Box>
+              </div>
+              <DatePickerRange
+                setDateStart={setDateStart}
+                setDateEnd={setDateEnd}
+              />
+              {/* <div className="filter-container">
+              <div className="filter-item-input input-date">
                   <div className="range">
                     <DatePicker
                       id="fechaInicio"
@@ -1736,41 +1837,12 @@ function ReportsTable({ data, dataReportByH }) {
                       }
                     />
                   </div>
-                </div> */}
-              </div>
-              {/* <div className="filter-item">
-                <label htmlFor="name-filter" className="label-center">
-                  Buscar:
-                </label>
-                <div className="filter-item-input">
-                  <input
-                    type="text"
-                    id="name-filter"
-                    value={nameFilter}
-                    onChange={(e) => handleNameFilterChange(e)}
-                    placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
-                  />
                 </div>
               </div> */}
-            </div>
-            <div className="filter-item">
-              <TextField
-                id="outlined-basic"
-                label="Buscar"
-                variant="outlined"
-                autoComplete="off"
-                sx={{
-                  width: "95%",
-                }}
-                type="text"
-                name="buscar"
-                value={nameFilter}
-                onChange={(e) => handleNameFilterChange(e)}
-                placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
-              />
-            </div>
+            </Grid>
           </form>
-          <div
+
+          {/* <div
             className="clients-container"
             style={{
               visibility: uniqueClients.length > 0 ? "visible" : "hidden",
@@ -1806,7 +1878,7 @@ function ReportsTable({ data, dataReportByH }) {
                 </ul>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       ),
       componenteMiddle: (
@@ -1911,7 +1983,136 @@ function ReportsTable({ data, dataReportByH }) {
     2: {
       componenteTitle: reportesComponents["byh"].p,
       componenteTop: (
-       <></>
+        <>
+          <div className="header-container">
+            <form autoComplete="off">
+              <Grid
+                sx={{
+                  marginTop: "15px",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, 1fr)",
+                }}
+              >
+                <div className="filter-item">
+                  <TextField
+                    id="outlined-basic"
+                    label="Buscar"
+                    variant="outlined"
+                    autoComplete="off"
+                    sx={{
+                      width: "90%",
+                    }}
+                    type="text"
+                    name="buscar"
+                    value={nameFilter}
+                    onChange={(e) => handleNameFilterChange(e)}
+                    placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
+                  />
+                </div>
+                <div className="filter-item">
+                  <Box
+                    sx={{
+                      visibility:
+                        uniqueClients.length > 0 ? "visible" : "hidden",
+                    }}
+                  >
+                    <Box>
+                      <Select
+                        value={selectedClient}
+                        onChange={addClientToList}
+                        sx={{
+                          width: "90%",
+                        }}
+                      >
+                        <MenuItem value="0">Selecciona un cliente</MenuItem>
+                        {uniqueClients.map((option) => (
+                          <MenuItem key={option} value={option.id}>
+                            {option.fullname}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Box>
+                    <Box>
+                      <List
+                        sx={{
+                          display: `${
+                            clientsToReport.length > 0 ? "flex" : "none"
+                          }`,
+                          flexDirection: "column",
+                        }}
+                      >
+                        {clientsToReport.map((client, ind) => (
+                          <ListItem key={ind}>
+                            <span>{client.clientName}</span>
+                            <IconButton onClick={() => removeClient(client.id)}>
+                              <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
+                            </IconButton>
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  </Box>
+                </div>
+                <DatePickerRange
+                  setDateStart={setDateStart}
+                  setDateEnd={setDateEnd}
+                />
+                {/* <div className="filter-container">
+              <div className="filter-item-input input-date">
+                  <div className="range">
+                    <DatePicker
+                      id="fechaInicio"
+                      selected={dateStart}
+                      onChange={(date) => setDateStart(date)}
+                      locale="es"
+                      customInput={
+                        <CustomInputD>
+                          <p>
+                            Desde:{" "}
+                            <span
+                              style={{
+                                minWidth: "90px",
+                                maxWidth: "100px",
+                              }}
+                            >
+                              {formatedDateStart !== ""
+                                ? formatedDateStart
+                                : ""}
+                            </span>
+                          </p>
+                        </CustomInputD>
+                      }
+                    />
+                  </div>
+                  <div className="range">
+                    <DatePicker
+                      id="fechaInicio"
+                      selected={dateEnd}
+                      onChange={(date) => setDateEnd(date)}
+                      locale="es"
+                      customInput={
+                        <CustomInputD>
+                          <p>
+                            Hasta:
+                            <span
+                              style={{
+                                minWidth: "90px",
+                                maxWidth: "100px",
+                              }}
+                            >
+                              {formatedDateEnd !== "" ? formatedDateEnd : ""}
+                            </span>
+                          </p>
+                        </CustomInputD>
+                      }
+                    />
+                  </div>
+                </div>
+              </div> */}
+              </Grid>
+            </form>
+          </div>
+        </>
       ),
       componenteMiddle: (
         <ReportsByH
@@ -1928,328 +2129,255 @@ function ReportsTable({ data, dataReportByH }) {
       componenteTop: (
         <div className="header-container2">
           <form autoComplete="off">
-            <div className="filter-options">
-              <div className="filter-items">
-                <div className="filter-item-checkbox">
-                  <div className="filter-item-in">
-                    <label htmlFor="supplier">Proveedor</label>
-                    <input
-                      type="checkbox"
-                      value={0}
-                      onChange={(e) => setFilterOption(e.target.value)}
-                      checked={Number(filterOption) === 0 ? true : false}
-                      id="supplier"
-                    />
-                  </div>
-                  <div className="item-list">
-                    <ul
-                      style={{
-                        display: `${
-                          filtersSupplier.length > 0 ? "flex" : "none"
-                        }`,
-                      }}
-                    >
-                      {filtersSupplier.map((filterSupplier, ind) => (
-                        <li key={ind}>
-                          <span>{filterSupplier}</span>{" "}
-                          <span>
-                            <FontAwesomeIcon
-                              icon={faTimes}
-                              color="rgb(87, 0, 0)"
-                              onClick={(e) =>
-                                setFiltersSupplier((prev) =>
-                                  prev.filter((pre) => pre !== filterSupplier)
-                                )
-                              }
-                            />
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-                <div className="filter-item-checkbox">
-                  <div className="filter-item-in">
-                    <label htmlFor="part_n">Numero de parte</label>
-                    <input
-                      type="checkbox"
-                      value={1}
-                      onChange={(e) => setFilterOption(e.target.value)}
-                      checked={Number(filterOption) === 1 ? true : false}
-                      id="part_n"
-                    />
-                  </div>
-                  <div className="item-list">
-                    <ul
-                      style={{
-                        display: `${
-                          filtersPartNumber.length > 0 ? "flex" : "none"
-                        }`,
-                      }}
-                    >
-                      {filtersPartNumber.map((filterPartNumber, ind) => (
-                        <li key={ind}>
-                          <span>{filterPartNumber}</span>{" "}
-                          <span>
-                            <i
-                              className="fa-solid fa-times"
-                              onClick={(e) =>
-                                setFiltersPartNumber((prev) =>
-                                  prev.filter((pre) => pre !== filterPartNumber)
-                                )
-                              }
-                            ></i>
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-                <div className="filter-item-checkbox">
-                  <div className="filter-item-in">
-                    <label htmlFor="lote">Lote</label>
-                    <input
-                      type="checkbox"
-                      value={2}
-                      onChange={(e) => setFilterOption(e.target.value)}
-                      checked={Number(filterOption) === 2 ? true : false}
-                      id="lote"
-                    />
-                  </div>
-                  <div className="item-list">
-                    <ul
-                      style={{
-                        display: `${filtersLot.length > 0 ? "flex" : "none"}`,
-                      }}
-                    >
-                      {filtersLot.map((filterLot, ind) => (
-                        <li key={ind}>
-                          <span>{filterLot}</span>{" "}
-                          <span>
-                            <i
-                              className="fa-solid fa-times"
-                              onClick={(e) =>
-                                setFiltersLot((prev) =>
-                                  prev.filter((pre) => pre !== filterLot)
-                                )
-                              }
-                            ></i>
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-                <div className="filter-item-checkbox">
-                  <div className="filter-item-in">
-                    <label htmlFor="serie">Series</label>
-                    <input
-                      type="checkbox"
-                      value={3}
-                      onChange={(e) => setFilterOption(e.target.value)}
-                      checked={Number(filterOption) === 3 ? true : false}
-                      id="serie"
-                    />
-                  </div>
-                  <div className="item-list">
-                    <ul
-                      style={{
-                        display: `${
-                          filtersSerial.length > 0 ? "flex" : "none"
-                        }`,
-                      }}
-                    >
-                      {filtersSerial.map((filterSerial, ind) => (
-                        <li key={ind}>
-                          <span>{filterSerial}</span>{" "}
-                          <span>
-                            <i
-                              className="fa-solid fa-times"
-                              onClick={(e) =>
-                                setFiltersSerial((prev) =>
-                                  prev.filter((pre) => pre !== filterSerial)
-                                )
-                              }
-                            ></i>
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="filter-container">
+          <Box className=""
+          sx={{
+            width: "99%",
+          }}
+          >
+             {Number(filterOption) === 0 && (
+                <Box className="" sx={{
+                  width:'100%'
+                }}>
+                  <TextField
+                    id="serial"
+                    label="Buscar:"
+                    value={nameFilter2}
+                    onChange={handleNameFilterChange5}
+                    select
+                    sx={{
+                      width:'100%'
+                    }}
+                  >
+                    {uniqueSuppliers.map((serial, indx) => (
+                      <MenuItem key={indx} value={serial}>
+                        {serial}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Box>
+              )}
+              {Number(filterOption) === 1 && (
+                <Box className="" sx={{
+                  width:'100%'
+                }}>
+                  <TextField
+                    id="part_number"
+                    label="Buscar:"
+                    value={nameFilter2}
+                    onChange={handleNameFilterChange2}
+                    disabled={filtersSupplier.length === 0}
+                    select
+                    sx={{
+                      width: "99%",
+                    }}
+                  >
+                    {uniquePart_number.map((part_number, indx) => (
+                      <MenuItem key={indx} value={part_number}>
+                        Parte #{part_number}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Box>
+              )}
+              {Number(filterOption) === 2 && (
+                <Box className="" sx={{
+                  width:'100%'
+                }}>
+                  <TextField
+                    id="lot"
+                    label="Buscar:"
+                    value={nameFilter2}
+                    onChange={handleNameFilterChange3}
+                    disabled={filtersPartNumber.length === 0}
+                    select
+                  >
+                    {uniqueLots.map((lot, indx) => (
+                      <MenuItem key={indx} value={lot}>
+                        Lote #{lot}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Box>
+              )}
+              {Number(filterOption) === 3 && (
+                <Box className="" sx={{
+                  width:'100%'
+                }}>
+                  <TextField
+                    id="serial"
+                    label="Buscar:"
+                    value={nameFilter2}
+                    onChange={handleNameFilterChange4}
+                    disabled={filtersPartNumber.length === 0}
+                    select
+                  >
+                    {uniqueSerial.map((serial, indx) => (
+                      <MenuItem key={indx} value={serial}>
+                        Serial #{serial}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Box>
+              )}
+             
+            </Box>
+            <Box className="filter-options">
+              <Box className="filter-items">
+                <Box className="filter-item-checkbox">
+                  <FormControlLabel
+                    control={
+                      <CheckboxMUI
+                        checked={Number(filterOption) === 0}
+                        onChange={(e) => setFilterOption(e.target.value)}
+                        value={0}
+                      />
+                    }
+                    label="Proveedor"
+                  />
+                  <List
+                    sx={{
+                      display: `${
+                        filtersSupplier.length > 0 ? "flex" : "none"
+                      }`,
+                      flexDirection: "column",
+                    }}
+                  >
+                    {filtersSupplier.map((filterSupplier, ind) => (
+                      <ListItem key={ind}>
+                        <span>{filterSupplier}</span>
+                        <IconButton
+                          onClick={() =>
+                            setFiltersSupplier((prev) =>
+                              prev.filter((pre) => pre !== filterSupplier)
+                            )
+                          }
+                        >
+                          <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
+                        </IconButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+                <Box className="filter-item-checkbox">
+                  <FormControlLabel
+                    control={
+                      <CheckboxMUI
+                        checked={Number(filterOption) === 1}
+                        onChange={(e) => setFilterOption(e.target.value)}
+                        value={1}
+                      />
+                    }
+                    label="Numero de parte"
+                  />
+                  <List
+                    sx={{
+                      display: `${
+                        filtersPartNumber.length > 0 ? "flex" : "none"
+                      }`,
+                      flexDirection: "column",
+                    }}
+                  >
+                    {filtersPartNumber.map((filterPartNumber, ind) => (
+                      <ListItem key={ind}>
+                        <span>{filterPartNumber}</span>
+                        <IconButton
+                          onClick={() =>
+                            setFiltersPartNumber((prev) =>
+                              prev.filter((pre) => pre !== filterPartNumber)
+                            )
+                          }
+                        >
+                          <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
+                        </IconButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+                <Box className="filter-item-checkbox">
+                  <FormControlLabel
+                    control={
+                      <CheckboxMUI
+                        checked={Number(filterOption) === 2}
+                        onChange={(e) => setFilterOption(e.target.value)}
+                        value={2}
+                      />
+                    }
+                    label="Lote"
+                  />
+                  <List
+                    sx={{
+                      display: `${filtersLot.length > 0 ? "flex" : "none"}`,
+                      flexDirection: "column",
+                    }}
+                    
+                  >
+                    {filtersLot.map((filterLot, ind) => (
+                      <ListItem key={ind}>
+                        <span>{filterLot}</span>
+                        <IconButton
+                          onClick={() =>
+                            setFiltersLot((prev) =>
+                              prev.filter((pre) => pre !== filterLot)
+                            )
+                          }
+                        >
+                          <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
+                        </IconButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+                <Box className="filter-item-checkbox">
+                  <FormControlLabel
+                    control={
+                      <CheckboxMUI
+                        checked={Number(filterOption) === 3}
+                        onChange={(e) => setFilterOption(e.target.value)}
+                        value={3}
+                      />
+                    }
+                    label="Series"
+                  />
+                  <List
+                    sx={{
+                      display: `${filtersSerial.length > 0 ? "flex" : "none"}`,
+                      flexDirection: "column",
+                    }}
+                  >
+                    {filtersSerial.map((filterSerial, ind) => (
+                      <ListItem key={ind}>
+                        <span>{filterSerial}</span>
+                        <IconButton
+                          onClick={() =>
+                            setFiltersSerial((prev) =>
+                              prev.filter((pre) => pre !== filterSerial)
+                            )
+                          }
+                        >
+                          <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
+                        </IconButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+              </Box>
+            </Box>
+            <DatePickerRange
+              setDateStart={setDateStart}
+              setDateEnd={setDateEnd}
+            />
+            {/* <div className="filter-container">
               <div className="filter-item">
                 <label htmlFor="date-filter" className="label-center">
                   Buscar por Fecha:
                 </label>
 
                 <div className="filter-item-input input-date">
-                  <DatePickerMUI2
-                    setDateStart={setDateStart}
-                    setDateEnd={setDateEnd}
-                  />
+              
                 </div>
               </div>
-            </div>
-            <div className="filter-container">
-              {Number(filterOption) === 1 && (
-                <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar:</label>
-                  <div className="filter-item-input">
-                    {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
-                    <input
-                      list="parts_number"
-                      id="part_number"
-                      name="part_number"
-                      value={nameFilter2}
-                      onChange={handleNameFilterChange2}
-                      disabled={filtersSupplier.length === 0 ? true : false}
-                    />
-
-                    <datalist id="parts_number">
-                      {uniquePart_number.map((part_number, indx) => {
-                        // Verificar si el navegador es Firefox, Safari o Edge
-                        const isFirefox =
-                          navigator.userAgent.indexOf("Firefox") !== -1;
-                        const isSafari =
-                          navigator.userAgent.indexOf("Safari") !== -1 ||
-                          navigator.userAgent.indexOf("AppleWebKit") !== -1;
-                        const isEdge =
-                          navigator.userAgent.indexOf("Edge") !== -1;
-
-                        // Crear etiqueta de opción
-                        const option = (
-                          <option value={part_number}>
-                            {isFirefox ? `Parte #${part_number}` : "# Parte"}
-                          </option>
-                        );
-
-                        // Devolver opción
-                        return option;
-                      })}
-                    </datalist>
-                  </div>
-                </div>
-              )}
-              {Number(filterOption) === 2 && (
-                <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar:</label>
-                  <div className="filter-item-input">
-                    <input
-                      list="lots"
-                      id="lot"
-                      name="lot"
-                      value={nameFilter2}
-                      onChange={handleNameFilterChange3}
-                      disabled={filtersPartNumber.length === 0 ? true : false}
-                    />
-
-                    <datalist id="lots">
-                      {uniqueLots.map((lot, indx) => {
-                        // Verificar si el navegador es Firefox, Safari o Edge
-                        const isFirefox =
-                          navigator.userAgent.indexOf("Firefox") !== -1;
-                        const isSafari =
-                          navigator.userAgent.indexOf("Safari") !== -1 ||
-                          navigator.userAgent.indexOf("AppleWebKit") !== -1;
-                        const isEdge =
-                          navigator.userAgent.indexOf("Edge") !== -1;
-
-                        // Crear etiqueta de opción
-                        const option = (
-                          <option value={lot}>
-                            {isFirefox ? `Lote #${lot}` : "# Lote"}
-                          </option>
-                        );
-
-                        // Devolver opción
-                        return option;
-                      })}
-                    </datalist>
-                  </div>
-                </div>
-              )}
-              {Number(filterOption) === 3 && (
-                <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar:</label>
-                  <div className="filter-item-input">
-                    {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
-                    <input
-                      list="serials"
-                      id="serial"
-                      name="serial"
-                      value={nameFilter2}
-                      onChange={handleNameFilterChange4}
-                      disabled={filtersPartNumber.length === 0 ? true : false}
-                    />
-
-                    <datalist id="serials">
-                      {uniqueSerial.map((serial, indx) => {
-                        // Verificar si el navegador es Firefox, Safari o Edge
-                        const isFirefox =
-                          navigator.userAgent.indexOf("Firefox") !== -1;
-                        const isSafari =
-                          navigator.userAgent.indexOf("Safari") !== -1 ||
-                          navigator.userAgent.indexOf("AppleWebKit") !== -1;
-                        const isEdge =
-                          navigator.userAgent.indexOf("Edge") !== -1;
-
-                        // Crear etiqueta de opción
-                        const option = (
-                          <option value={serial}>
-                            {isFirefox ? `Serial #${serial}` : "# Serial"}
-                          </option>
-                        );
-
-                        // Devolver opción
-                        return option;
-                      })}
-                    </datalist>
-                  </div>
-                </div>
-              )}
-              {Number(filterOption) === 0 && (
-                <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar:</label>
-                  <div className="filter-item-input">
-                    {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
-                    <input
-                      list="suppliers"
-                      id="serial"
-                      name="serial"
-                      value={nameFilter2}
-                      onChange={handleNameFilterChange5}
-                      //disabled={filtersPartNumber.length === 0 ? true : false}
-                    />
-
-                    <datalist id="suppliers">
-                      {uniqueSuppliers.map((serial, indx) => {
-                        // Verificar si el navegador es Firefox, Safari o Edge
-                        const isFirefox =
-                          navigator.userAgent.indexOf("Firefox") !== -1;
-                        const isSafari =
-                          navigator.userAgent.indexOf("Safari") !== -1 ||
-                          navigator.userAgent.indexOf("AppleWebKit") !== -1;
-                        const isEdge =
-                          navigator.userAgent.indexOf("Edge") !== -1;
-
-                        // Crear etiqueta de opción
-                        const option = (
-                          <option value={serial}>
-                            {isFirefox ? `${serial}` : ""}
-                          </option>
-                        );
-
-                        // Devolver opción
-                        return option;
-                      })}
-                    </datalist>
-                  </div>
-                </div>
-              )}
-            </div>
+            </div> */}
+          
           </form>
           <div className={`charts ${showCharts === true && "smoothFadeIn"}`}>
             {showCharts === true && (
@@ -2287,7 +2415,7 @@ function ReportsTable({ data, dataReportByH }) {
         </div>
       ),
     },
-  };  
+  };
   return (
     <>
       <Table>

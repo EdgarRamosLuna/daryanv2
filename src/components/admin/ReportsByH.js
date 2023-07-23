@@ -121,7 +121,7 @@ function ReportsByH({ data, dateStart, dateEnd, setDateStart,  setDateEnd }) {
 
   return (
     <>
-     <div className="header-container">
+     {/* <div className="header-container">
           <form autoComplete="off">
             <div className="filter-container">
               <div className="filter-item">
@@ -152,7 +152,7 @@ function ReportsByH({ data, dateStart, dateEnd, setDateStart,  setDateEnd }) {
               </div>
             </div>
           </form>
-        </div>
+        </div> */}
     <Table>
       <div className="table-container">
         <div className="table-body table-reports">
