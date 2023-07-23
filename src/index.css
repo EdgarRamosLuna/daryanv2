@@ -267,6 +267,8 @@ input[type="submit"]:hover {
 .form-container {
   width: 24%;
   position: relative;
+  display: flex;
+  align-items: end;
 }
 h1,
 h2,
@@ -320,8 +322,8 @@ body,
   padding-top: 4px;
 }
 legend {
-  margin: 0 auto;
-  color: #447b91;
+  /* margin: 0 auto;
+  color: #447b91; */
 }
 fieldset {
   position: absolute;

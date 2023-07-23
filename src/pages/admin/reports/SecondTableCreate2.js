@@ -150,7 +150,7 @@ export default function SecondTableCreate2({
         </thead>
         <tbody>
           {divs.map((div, i) => (
-            <tr key={div.id_report}>
+            <tr key={div.id}>
               <td>                
                 {i !== 0 && (
                   <i

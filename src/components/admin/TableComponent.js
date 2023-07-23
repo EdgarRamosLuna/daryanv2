@@ -1,34 +1,51 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Loader from "../Loader";
 import { MainContext } from "../../context/MainContext";
+import ComponentPagination from "../ComponentPagination";
 
 const TableComponent = ({ groupedData, loader }) => {
+  // Add state for current page and rows per page
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
+
   const {
-    showDtable,
     setShowDtable,
     setRDetailsData,
-    partNumber,
     setPartNumber,
     setShowDEtable,
     tableFilters,
     LANG,
     langu,
-    setLangu,
   } = useContext(MainContext);
-  //console.log(tableFilters);
+
+  // Calculate total pages
+  const totalEntries = Object.keys(groupedData).length;
+  const totalPages = Math.ceil(totalEntries / rowsPerPage);
+
+  // Paginate data
+  const paginate = (data, currentPage, rowsPerPage) => {
+    const start = (currentPage - 1) * rowsPerPage;
+    return Object.entries(data).slice(start, start + rowsPerPage);
+  };
+
+  const [paginatedData, setPaginatedData] = useState(
+    paginate(groupedData, currentPage, rowsPerPage)
+  );
+
+  // Update paginated data whenever groupedData, currentPage or rowsPerPage changes
+  useEffect(() => {
+    setPaginatedData(paginate(groupedData, currentPage, rowsPerPage));
+  }, [groupedData, currentPage, rowsPerPage]);
+
   const showDetailsTable = (part_number) => {
     setShowDtable(true);
     //filter data by key as part_number
     const filteredData = groupedData[part_number];
-    // console.log(filteredData)
     setPartNumber(part_number);
     setRDetailsData(filteredData);
   };
-  const showExtraDetails = (date, partNumber) => {
-    //console.log(date);
-    //console.log(partNumber);
-    //console.log(groupedData);
 
+  const showExtraDetails = (date, partNumber) => {
     setShowDEtable(true);
     setPartNumber(`${date}`);
     const filteredData = groupedData[partNumber].filter(
@@ -38,8 +55,14 @@ const TableComponent = ({ groupedData, loader }) => {
     setRDetailsData(filteredData);
   };
 
-  //console.log(groupedData)
+  // Handle pagination
+  const handleFirstPageClick = () => setCurrentPage(1);
+  const handleLastPageClick = () => setCurrentPage(totalPages);
+  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+
+
   return (
+    <>
     <table className="table-totals">
       <thead>
         <tr>
@@ -134,6 +157,17 @@ const TableComponent = ({ groupedData, loader }) => {
         })}
       </tbody>
     </table>
+    <ComponentPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          handleFirstPageClick={handleFirstPageClick}
+          handlePageChange={handlePageChange}
+          handleLastPageClick={handleLastPageClick}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
+          data={totalEntries}
+        />
+    </>
   );
 };
 

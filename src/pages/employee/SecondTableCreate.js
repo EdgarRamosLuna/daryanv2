@@ -250,16 +250,19 @@ export default function SecondTableCreate() {
           </tr>
         </thead>
         <tbody>
-          {divs.map((fila) => (
+          {divs.map((fila, indexFilas) => (
             <tr key={fila.id}>
               {fila.values.map((valor, i) =>
                 i === 0 || i === fila.values.length - 1 ? (
                   <td key={i+'stTbody'}>
-                    {i === 0 && fila.id !== 1 && (
+                    {i === 0 && fila.id !== 1 && indexFilas === divs.length - 1 && (
+
+                      <>                        
                       <i
                         className="fa-solid fa-trash"
                         onClick={() => eliminarFila(fila.id)}
                       ></i>
+                      </>
                     )}
                     {i === fila.values.length - 1 &&
                       fila.values.length > 15 && (

@@ -14,9 +14,71 @@ import {
   statusSupplier,
   statusUser,
 } from "../api/daryan.api";
+import SpanishApp from "../components/datepicker/AdapterDates";
 export const MainContext = createContext();
 export const MainContextProvider = ({ children }) => {
   const dataSes = localStorage.getItem("sesType");
+
+  const handleCheckBox = (e, type, id, data) => {
+    const allCheckBox = document.querySelectorAll('input[type="checkbox"]');
+    const idM = data.map((data) => data.id);
+    const classCheckbox = e.target.classList;
+
+    if (type === "all") {
+      if (e.target.checked === false) {
+        setCheckList([]);
+
+        allCheckBox.forEach((checkbox) => {
+          checkbox.checked = false;
+          checkbox.classList.remove("ucSingle");
+        });
+      }
+      if (classCheckbox.length > 1) {
+        const clsName = e.target.classList[1];
+        if (clsName === "ucAll") {
+          setCheckList([]);
+          classCheckbox.remove("ucAll");
+
+          allCheckBox.forEach((checkbox) => {
+            checkbox.checked = false;
+          });
+        } else {
+          //console.log(id);
+          setCheckList(idM);
+          allCheckBox.forEach((checkbox) => {
+            checkbox.checked = true;
+          });
+          classCheckbox.add("ucAll");
+        }
+      } else {
+        //console.log(idM);
+        setCheckList(idM);
+        allCheckBox.forEach((checkbox, index) => {
+          checkbox.checked = true;
+          if (index !== 0) {
+            checkbox.classList.add("ucSingle");
+          }
+        });
+        classCheckbox.add("ucAll");
+      }
+    }
+    if (type === "single") {
+      if (classCheckbox.length > 1) {
+        const clsName = e.target.classList[1];
+        if (clsName === "ucSingle") {
+          setCheckList((prev) => prev.filter((data) => data !== id));
+
+          classCheckbox.remove("ucSingle");
+        } else {
+          setCheckList((prev) => [...prev, id]);
+          classCheckbox.add("ucSingle");
+        }
+      } else {
+        setCheckList((prev) => [...prev, id]);
+        classCheckbox.add("ucSingle");
+      }
+    }
+  };
   /* const data = [
     {
       id: 1,
@@ -41,6 +103,8 @@ export const MainContextProvider = ({ children }) => {
   const [dataSuppliers, setDataSuppliers] = useState([]);
   const dataTS = localStorage.getItem("dataTable");
   const dataTS2 = localStorage.getItem("dataTable2");
+  const [activeTabReportByH, setActiveTabReportByH] = useState(1);
+  const [activeTabReportInsp, setActiveTabReportInsp] = useState(1);
   //console.log(data);
   const [reportData, setReportData] = useState(
     dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
@@ -181,6 +245,49 @@ export const MainContextProvider = ({ children }) => {
     }, 1000);*/
     // setDataT(prev => [...prev, data]);
   };
+  const [numFilasReportByH, setNumFilasReportByH] = useState(1);
+
+  // Función para generar filas
+  const generateRows = (numRows, start = 1) => {
+    const filas = [];
+    for (let i = start; i <= numRows; i++) {
+      filas.push({
+        id: i,
+        values: Array.from({ length: 7 }, () => ""),
+      });
+    }
+    return filas;
+  };
+
+  const [divsSamplingTable, setDivsSamplingTable] = useState(() =>
+    generateRows(numFilasReportByH)
+  );
+
+  useEffect(() => {
+    console.log("entre");
+
+    setDivsSamplingTable((prev) => {
+      let arrayCopy = [...prev];
+
+      if (numFilasReportByH < arrayCopy.length && arrayCopy.length !== 0) {
+        // Eliminar los elementos adicionales si numFilasReportByH es menor
+        arrayCopy = arrayCopy.slice(0, numFilasReportByH);
+      } else if (numFilasReportByH > arrayCopy.length) {
+        console.log(arrayCopy.length);
+        // Añadir nuevas filas si numFilasReportByH es mayor
+        //const additionalRows = generateRows(arrayCopy.length === 1 ? 1 : arrayCopy.length + 1, arrayCopy.length === 1 ? arrayCopy.length - 1 : 0);
+        arrayCopy = [
+          ...arrayCopy,
+          {
+            id: numFilasReportByH,
+            values: Array.from({ length: 7 }, () => ""),
+          },
+        ];
+      }
+
+      return arrayCopy;
+    });
+  }, [numFilasReportByH]);
   const saveReportH = async (e) => {
     console.log(dataReportH);
     await saveReportHToDb({ dataReportH: dataReportH[0], token })
@@ -387,6 +494,7 @@ export const MainContextProvider = ({ children }) => {
   const [updateId, setUpdateId] = useState(false);
   const [delType, setDelType] = useState(0);
   const [numFilas, setNumFilas] = useState(20);
+
   const [numColumnas, setNumColumnas] = useState(15);
   const [dbColumns, setDbColumns] = useState(["A", "B", "C", "D"]);
   const ABECEDARIO = [
@@ -901,6 +1009,7 @@ export const MainContextProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(null);
 
   const [incType, setIncType] = useState([]);
+
   return (
     <MainContext.Provider
       value={{
@@ -938,6 +1047,7 @@ export const MainContextProvider = ({ children }) => {
         setDelType,
         numFilas,
         setNumFilas,
+        numFilasReportByH,
         numColumnas,
         setNumColumnas,
         titulosColumnas,
@@ -1062,11 +1172,20 @@ export const MainContextProvider = ({ children }) => {
         dataReportH,
         setDataReportH,
         saveReportH,
-        aproveReportH
+        aproveReportH,
+        activeTabReportByH,
+        setActiveTabReportByH,
+        activeTabReportInsp,
+        setActiveTabReportInsp,
+        setNumFilasReportByH,
+        divsSamplingTable,
+        setDivsSamplingTable,
+        handleCheckBox,
       }}
     >
       <Toaster richColors position={position} closeButton />
-      {children}
+
+      <SpanishApp>{children}</SpanishApp>
     </MainContext.Provider>
   );
 };

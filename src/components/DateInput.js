@@ -15,7 +15,7 @@ const CustomInputD = forwardRef(({ onClick, children }, ref) => (
   </div>
 ));
 CustomInputD.displayName = "CustomInputD";
-const DatePickerInput = ({ value, setDate, name, id, index, style }) => {
+const DatePickerInput = ({ value, setDate, name, id, index, style, handleDate }) => {
   const today = new Date();
   const [dateStart, setDateStart] = useState(today);
   const [formatedDateStart, setFormatedDateStart] = useState("");
@@ -32,6 +32,12 @@ const DatePickerInput = ({ value, setDate, name, id, index, style }) => {
 
     return () => {};
   }, [dateStart]);
+
+  const callbackDate = () =>{
+    if(["function"].includes(typeof handleDate)){
+      handleDate()
+    }
+  }
   /*  const handleDate = (e, date) => {
     //setDate(e);
   //  setDate('date', date);

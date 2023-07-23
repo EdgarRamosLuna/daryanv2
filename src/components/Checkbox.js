@@ -1,8 +1,8 @@
 import React from "react";
 
-const Checkbox = ({ type, id, callback }) => {
+const Checkbox = ({ type, id, callback, data }) => {
   const handleClick = (e) => {
-    callback(e, type, id);
+    callback(e, type, id, data);
   };
   return (
     <div className="checkbox-table">

@@ -546,7 +546,7 @@ export const Table = styled.div`
     flex-direction: column;
     //width: 100%;
     gap: 20px;
-    width: 55%;
+    width: 100%;
   }
   .filter-options {
     height: 145px;

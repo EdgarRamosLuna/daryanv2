@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "../../styles/Styles";
+import { useContext } from "react";
+import { MainContext } from "../../context/MainContext";
 
 export default function SecondTableCreate2({
   setTotalesDefectos,
   divs,
   setDivs,
 }) {
+  const { setNumFilasReportByH } = useContext(MainContext);
   function handleAddDiv() {
     const newId = divs.length + 1;
+    setNumFilasReportByH((prev) => prev + 1);
     const newValues = Array(15).fill("");
     setDivs([...divs, { id: newId, values: newValues }]);
     const tableWrapper = document.querySelector(".c2");
@@ -21,62 +25,10 @@ export default function SecondTableCreate2({
     }
   }
   const handleDeleteRow = (index) => {
-    setDivs(prev => prev.filter((d, i) => i !== index));
+    setNumFilasReportByH((prev) => prev - 1);
+    setDivs((prev) => prev.filter((d, i) => i !== index));
   };
 
-  //console.log(divs);
-  // function handleInputChange(divId, inputIndex, newValue) {
-  //   setDivs((prevDivs) => {
-  //     const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
-  //     const updatedDiv = { ...prevDivs[divToUpdateIndex] };
-  //     updatedDiv.values[inputIndex] = newValue;
-  //     const updatedDivs = [...prevDivs];
-  //     updatedDivs[divToUpdateIndex] = updatedDiv;
-  //     return updatedDivs;
-  //   });
-  // }
-  // function handleInputChange(divId, inputIndex, newValue) {
-  //   setDivs((prevDivs) => {
-  //     const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
-  //     const updatedDiv = { ...prevDivs[divToUpdateIndex] };
-  //     updatedDiv.values[inputIndex] = newValue;
-
-  //     // Suma todos los números en la fila (excluyendo el último índice)
-  //     const rowSum = updatedDiv.values
-  //       .slice() // excluye el último índice
-  //       .reduce((total, value) => total + Number(value || 0), 0);
-  //     updatedDiv.values[updatedDiv.values.length - 1] = rowSum; // almacena el total en el último índice
-
-  //     const updatedDivs = [...prevDivs];
-  //     updatedDivs[divToUpdateIndex] = updatedDiv;
-  //     return updatedDivs;
-  //   });
-  // }
-  // function handleInputChange(divId, inputIndex, newValue) {
-  //   setDivs((prevDivs) => {
-  //     // Busca el índice del objeto a actualizar en el array de divs basándose en el divId.
-  //     const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
-  //     // Crea una copia del objeto a actualizar usando el operador de propagación.
-  //     const updatedDiv = { ...prevDivs[divToUpdateIndex] };
-
-  //     // Guarda el valor antiguo de la celda antes de actualizarlo.
-  //     const oldValue = updatedDiv.values[inputIndex];
-  //     // Actualiza el valor en la celda correspondiente.
-  //     updatedDiv.values[inputIndex] = newValue;
-
-  //     // Guarda la suma antigua de la fila.
-  //     const oldRowSum = Number(updatedDiv.values[updatedDiv.values.length - 1] || 0);
-  //     // Calcula la diferencia entre el nuevo valor y el antiguo.
-  //     const delta = Number(newValue || 0) - Number(oldValue || 0);
-  //     // Actualiza la suma de la fila restando el valor antiguo y sumando el nuevo.
-  //     updatedDiv.values[updatedDiv.values.length - 1] = oldRowSum + delta;
-
-  //     // Crea una copia de la lista de divs, reemplaza el div actualizado y devuelve la nueva lista.
-  //     const updatedDivs = [...prevDivs];
-  //     updatedDivs[divToUpdateIndex] = updatedDiv;
-  //     return updatedDivs;
-  //   });
-  // }
   function handleInputChange(divId, inputIndex, newValue) {
     setDivs((prevDivs) => {
       // Busca el índice del objeto a actualizar en el array de divs basándose en el divId.
@@ -129,7 +81,22 @@ export default function SecondTableCreate2({
         <thead>
           <tr>
             <th>
-              <i className="fa-solid fa-circle-plus" onClick={handleAddDiv}></i>
+              <span className="btn-table-cont">
+                <i
+                  className="fa-solid fa-trash"
+                  onClick={
+                    divs.length - 1 !== 0
+                      ? () => handleDeleteRow(divs.length - 1)
+                      : () => {
+                          return;
+                        }
+                  }
+                ></i>
+                <i
+                  className="fa-solid fa-circle-plus"
+                  onClick={handleAddDiv}
+                ></i>
+              </span>
             </th>
             <th>Item</th>
             <th>Defecto</th>
@@ -151,14 +118,7 @@ export default function SecondTableCreate2({
         <tbody>
           {divs.map((div, i) => (
             <tr key={div.id}>
-              <td>                
-                {i !== 0 && (
-                  <i
-                    className="fa-solid fa-trash"
-                    onClick={() => handleDeleteRow(i)}
-                  ></i>
-                )}
-              </td>
+              <td></td>
 
               <td>{div.id}</td>
 

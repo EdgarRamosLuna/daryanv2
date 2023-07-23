@@ -6,35 +6,18 @@ import SecondTableCreate from "./SecondTableCreate";
 import SecondTableCreate2 from "./SecondTableCreate2";
 import { useEffect } from "react";
 import DatePickerInput from "../../components/DateInput";
-
+import Create3 from "./Create3";
 
 const Create2 = () => {
-  const { dataReportH, setDataReportH } = useContext(MainContext);
-  //console.log(data);
+  const {
+    dataReportH,
+    setDataReportH,
+    numFilasReportByH,
+    activeTabReportByH,
+    setActiveTabReportByH,
+    divsSamplingTable
+  } = useContext(MainContext);
   const [data, setData] = useState([]);
-  const [divs, setDivs] = useState([
-    { id: 1, values: Array(12).fill("") },
-    // { id: 2, values: Array(15).fill("") },
-    // { id: 3, values: Array(15).fill("") },
-    // { id: 4, values: Array(15).fill("") },
-    // { id: 5, values: Array(15).fill("") },
-    // { id: 6, values: Array(15).fill("") },
-    // { id: 7, values: Array(15).fill("") },
-    // { id: 8, values: Array(15).fill("") },
-    // { id: 9, values: Array(15).fill("") },
-    // { id: 10, values: Array(15).fill("") },
-    // { id: 11, values: Array(15).fill("") },
-    // { id: 12, values: Array(15).fill("") },
-    // { id: 13, values: Array(15).fill("") },
-    // { id: 14, values: Array(15).fill("") },
-    // { id: 15, values: Array(15).fill("") },
-    // { id: 16, values: Array(15).fill("") },
-    // { id: 17, values: Array(15).fill("") },
-    // { id: 18, values: Array(15).fill("") },
-    // { id: 19, values: Array(15).fill("") },
-    // { id: 20, values: Array(15).fill("") },
-  ]);
-
   const handleSelect = (e, type) => {
     setData({
       ...data,
@@ -64,21 +47,94 @@ const Create2 = () => {
   const [totalPiecesInsp, setTotalPiecesInsp] = useState(Array(13).fill(""));
   const handleInputChangeTotalPieInsp = (index, event) => {
     const newTotalPiecesInsp = [...totalPiecesInsp];
-    newTotalPiecesInsp[index] = Number(event.target.value);  // Convertir a número
-  
+    newTotalPiecesInsp[index] = Number(event.target.value); // Convertir a número
+
     // Sumar todos los valores menos el último
     const sum = newTotalPiecesInsp.slice(0, -1).reduce((a, b) => a + b, 0);
-  
+
     // Poner la suma en el último índice
     newTotalPiecesInsp[newTotalPiecesInsp.length - 1] = sum;
-  
+
     setTotalPiecesInsp(newTotalPiecesInsp);
   };
   const [inspectedBy, setInspectedBy] = useState("");
   const [authorizedBy, setAuthorizedBy] = useState("");
 
+  //console.log(data);
 
+  const [divs, setDivs] = useState(() => {
+    const filas = [];
+    for (let i = 1; i <= numFilasReportByH; i++) {
+      filas.push({
+        id: i,
+        values: Array.from({ length: 15 }, () => ""),
+      });
+    }
+    return filas;
+  });
 
+  const tabsObj = {
+    1: {
+      component: (
+        <Create2FirstTable
+          dataReportH={dataReportH}
+          setDataReportH={setDataReportH}
+          numFilasReportByH={numFilasReportByH}
+          activeTabReportByH={activeTabReportByH}
+          setActiveTabReportByH={setActiveTabReportByH}
+          divs={divs} setDivs={setDivs}
+          divsSamplingTable={divsSamplingTable}
+          handleInputChangeInsp={handleInputChangeInsp}
+          handleInputChangeComm={handleInputChangeComm}
+          handleInputChangeTotalPieInsp={handleInputChangeTotalPieInsp}
+          inspectedBy={inspectedBy}
+          setInspectedBy={setInspectedBy}
+          authorizedBy={authorizedBy}
+          setAuthorizedBy={setAuthorizedBy}
+          data={data}
+          setData={setData}
+          inspectors={inspectors}
+          comments={comments}
+          totalesD={totalesD}
+          totalPiecesInsp={totalPiecesInsp}
+          setTotalesDefectos={setTotalesDefectos}
+        />
+      ),
+    },
+    2: {
+      component: <Create3 divs={divs} setDivs={setDivs} />,
+    },
+  };
+  return <>{tabsObj[activeTabReportByH]?.component}</>;
+};
+
+export default Create2;
+
+export const Create2FirstTable = ({
+  dataReportH,
+  setDataReportH,
+  numFilasReportByH,
+  activeTabReportByH,
+  setActiveTabReportByH,
+  divs,
+  setDivs,
+  divsSamplingTable,
+  handleInputChangeInsp,
+  handleInputChangeComm,
+  handleInputChangeTotalPieInsp,
+  inspectedBy,
+  setInspectedBy,
+  authorizedBy,
+  setAuthorizedBy,
+  data,
+  setData,
+  inspectors,
+  comments,
+  totalesD,
+  totalPiecesInsp,
+  setTotalesDefectos
+}) => {
+ 
   useEffect(() => {
     const newArray = [
       {
@@ -88,13 +144,24 @@ const Create2 = () => {
         comments,
         inspectedBy,
         authorizedBy,
-        totalDefects:totalesD,
-        totalPieces:totalPiecesInsp
+        totalDefects: totalesD,
+        totalPieces: totalPiecesInsp,
+        divsSamplingTable
       },
     ];
     setDataReportH(newArray);
-  }, [data, inspectors, comments, inspectedBy, authorizedBy, totalesD, divs, totalPiecesInsp]);
-  //console.log(dataReportH)
+  }, [
+    data,
+    inspectors,
+    comments,
+    inspectedBy,
+    authorizedBy,
+    totalesD,
+    divs,
+    totalPiecesInsp,
+    divsSamplingTable
+  ]);
+  console.log(dataReportH)
   const handleDate = (name, date) => {
     setData({
       ...data,
@@ -363,7 +430,9 @@ const Create2 = () => {
                     <input
                       type="text"
                       value={total}
-                      onChange={(event) => handleInputChangeTotalPieInsp(index, event)}
+                      onChange={(event) =>
+                        handleInputChangeTotalPieInsp(index, event)
+                      }
                     />
                     <br />
                   </td>
@@ -371,7 +440,7 @@ const Create2 = () => {
               </tr>
               <tr>
                 <td colSpan={3} style={{ textAlign: "center" }}>
-                  <div>INSPECTOR</div>                  
+                  <div>INSPECTOR</div>
                   {inspectors.map((inspector, index) => (
                     <React.Fragment key={index}>
                       <input
@@ -435,5 +504,3 @@ const Create2 = () => {
     </>
   );
 };
-
-export default Create2;

@@ -12,7 +12,8 @@ import CreateClient from "../pages/admin/clients/Create";
 import UpdateClient from "../pages/admin/clients/Update";
 import CreateSupplier from "../pages/admin/suppliers/Create";
 import UpdateSupplier from "../pages/admin/suppliers/Update";
-import axios from "axios";
+import HowToRegIcon from '@mui/icons-material/HowToReg';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import {
   authClients,
   authClients2,
@@ -32,7 +33,8 @@ import TotalByPartNumber from "./admin/TotalByPartNumber";
 import TotalByPartNumberClient from "./client/TotalByPartNumber";
 import ReportDetails from "./admin/ReportDetails";
 import Settings from "../pages/admin/Settings";
-
+import ButtonOutlined from "./buttons/ButtonOutlined";
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 let val;
 if (typeof window !== "undefined") {
   // This code will only be executed in the browser
@@ -93,7 +95,11 @@ export default function SubHeader() {
     isAdmin,
     dataReportH,
     setDataReportH,
-    aproveReportH
+    aproveReportH,
+    activeTabReportByH,
+    setActiveTabReportByH,
+    activeTabReportInsp,
+    setActiveTabReportInsp
   } = useContext(MainContext);
 
   //console.log(isAdmin);
@@ -272,7 +278,8 @@ export default function SubHeader() {
 
   const handleLink = (e) => {
     let idCreate = pathname.slice(-1);
-    navigate(`/user/reports/create/${idCreate}/table2`);
+    setActiveTabReportByH(2);
+    //navigate(`/user/reports/create/${idCreate}/table2`);
   };
   const singleView = (url) => {
     window.location.href = url;
@@ -423,15 +430,18 @@ export default function SubHeader() {
               Esta acción no podrá deshacerse.
             </div>
             <div className="delete-confirm-btns">
-              <button onClick={handleClose} className="btn btn-danger">
+              <ButtonOutlined 
+              icon={<HowToRegIcon />} 
+              onClick={handleClose} className="btn btn-danger">
                 Cancelar
-              </button>
-              <button
+              </ButtonOutlined>
+              <ButtonOutlined 
+              icon={<HowToRegIcon />}
                 onClick={() => callbackConfirm(idDelete)}
                 className="btn btn-success"
               >
                 Confirmar
-              </button>
+              </ButtonOutlined>
             </div>
           </div>
         </Modal>
@@ -440,32 +450,34 @@ export default function SubHeader() {
         <div className="btns-header">
           {pathname === "/user/reports" && (
             <>
-              <button onClick={() => singleView("/user/reports/create/1")}>
+              <ButtonOutlined 
+              icon={<HowToRegIcon />} onClick={() => singleView("/user/reports/create/1")}>
                 <center>Reporte de inspeccion</center>
-              </button>
-              <button onClick={() => singleView("/user/reports/create/2")}>
+              </ButtonOutlined>
+              <ButtonOutlined 
+              icon={<HowToRegIcon />} onClick={() => singleView("/user/reports/create/2")}>
                 <center>Reporte por horas</center>
-              </button>
+              </ButtonOutlined>
             </>
           )}
           {pathname === "/admin/reports" && (
             <>
               {activeTab >= 1 && activeTab <= 2 && isAdmin && (
-                <button onClick={addClients} className="auth-clientes">
+                <ButtonOutlined icon={<HowToRegIcon />} onClick={addClients} className="auth-clientes">
                   Autorizar Clientes
-                </button>
+                </ButtonOutlined>
               )}
               {activeTab === 3 && (
                 <div className="btn-charts">
-                  <button
+                  <ButtonOutlined icon={<BarChartIcon />}
                     className="chart-btn"
                     onClick={() => setShowCharts((prev) => !prev)}
                   >
                     <FontAwesomeIcon
                       icon={showCharts === true ? faEyeSlash : faEye}
                     />
-                    <FontAwesomeIcon icon={faChartSimple} />
-                  </button>
+                    {/* <FontAwesomeIcon icon={faChartSimple} /> */}
+                  </ButtonOutlined>
                 </div>
               )}
             </>
@@ -474,7 +486,7 @@ export default function SubHeader() {
             <>
               {activeTab === 3 && (
                 <div className="btn-charts">
-                  <button
+                  <ButtonOutlined icon={<BarChartIcon />}
                     className="chart-btn"
                     onClick={() => setShowCharts((prev) => !prev)}
                   >
@@ -482,73 +494,101 @@ export default function SubHeader() {
                       icon={showCharts === true ? faEyeSlash : faEye}
                     />
                     <FontAwesomeIcon icon={faChartSimple} />
-                  </button>
+                  </ButtonOutlined>
                 </div>
               )}
             </>
           )}
-          {pathname === "/user/reports/create/1" && (
-            <button onClick={(e) => saveReport(e)}>Enviar Reporte</button>
-          )}
-          {pathname === "/user/reports/create/2" && (
-            <>
-              <button onClick={(e) => saveReportH(e)}>Enviar Reporte</button>
-              <button onClick={(e) => handleLink(e)}>Tabla de muestreo</button>
-            </>
-          )}
+          {[1].includes(activeTabReportInsp) &&
+            pathname === "/user/reports/create/1" && (
+              <>
+                <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => saveReport(e)}>Enviar Reporte</ButtonOutlined>
+                <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => setActiveTabReportInsp(2)}>
+                  Tabla de muestreo
+                </ButtonOutlined>
+              </>
+            )}
+          {[1].includes(activeTabReportByH) &&
+            pathname === "/user/reports/create/2" && (
+              <>
+                <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => saveReportH(e)}>Enviar Reporte </ButtonOutlined>
+                <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => setActiveTabReportByH(2)}>
+                  Tabla de muestreos
+                </ButtonOutlined>
+              </>
+            )}
           {pathname === "/admin/users/create" && (
-            <button onClick={(e) => saveReport(e)}>Guardar</button>
+            <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => saveReport(e)}>Guardar</ButtonOutlined>
           )}
           {dataSes === "admin" &&
             pathname.includes("admin") &&
             typeof p !== "undefined" && (
               <>
                 {pathname.includes("reports_by_h") && (
-                  <button onClick={(e) => aproveReportH(e)}>
+                  <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => aproveReportH(e)}>
                     Aprobar Reporte
-                  </button>
+                  </ButtonOutlined>
                 )}
                 {pathname.includes("reports_insp") && (
-                  <button onClick={(e) => aproveReport(e)}>
+                  <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => aproveReport(e)}>
                     Aprobar Reporte
-                  </button>
+                  </ButtonOutlined>
                 )}
               </>
             )}
 
-          {pathname.includes("table2") && (
+          {[2].includes(activeTabReportByH) && (
             <>
-              <button onClick={(e) => navigate(-1)}>Regresar</button>
-              <button onClick={(e) => saveReport(e)}>Guardar</button>
+              {["/user/reports/create/2"].includes(pathname) && (
+                <>
+                  <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => setActiveTabReportByH(1)}>
+                    Regresare
+                  </ButtonOutlined>
+                  <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => saveReport(e)}>Guardar</ButtonOutlined>
+                </>
+              )}
+            </>
+          )}
+
+          {[2].includes(activeTabReportInsp) && (
+            <>
+              {["/user/reports/create/1"].includes(pathname) && (
+                <>
+                  <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => setActiveTabReportInsp(1)}>
+                    Regresare
+                  </ButtonOutlined>
+                  <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => saveReport(e)}>Guardar</ButtonOutlined>
+                </>
+              )}
             </>
           )}
 
           {pathname === "/admin/users" && (
             <>
-              <button onClick={handleClickModal}>
+              <ButtonOutlined icon={<PersonAddAltIcon />} onClick={handleClickModal}>
                 <center>Crear usuario</center>
-              </button>
+              </ButtonOutlined>
             </>
           )}
           {pathname === "/admin/employees" && (
             <>
-              <button onClick={handleClickModal2}>
+              <ButtonOutlined icon={<PersonAddAltIcon />} onClick={handleClickModal2}>
                 <center>Crear empleado</center>
-              </button>
+              </ButtonOutlined>
             </>
           )}
           {pathname === "/admin/clients" && (
             <>
-              <button onClick={handleClickModal3}>
+              <ButtonOutlined icon={<PersonAddAltIcon />} onClick={handleClickModal3}>
                 <center>Crear cliente</center>
-              </button>
+              </ButtonOutlined>
             </>
           )}
           {pathname === "/admin/suppliers" && (
             <>
-              <button onClick={handleClickModal4}>
+              <ButtonOutlined icon={<PersonAddAltIcon />} onClick={handleClickModal4}>
                 <center>Crear proveedor</center>
-              </button>
+              </ButtonOutlined>
             </>
           )}
         </div>

@@ -13,22 +13,12 @@ const AuthUsers = ({ data, deleteAU }) => {
   return (
     <AuthUsersContainer>
       <h3>Usuarios autorizados</h3>
-      <div className="list-users">
-        {/* <ul>
-                <li>Usuario</li>
-                <li>Status</li>
-                <li>Fecha de autorizacion</li>
-                {data.map((user, i) => {
-                    return (
-                        <li key={user.id+'client'}>
-                            
-                            {i === 0 && user.fullname}
-
-                        </li>
-                    )
-                } )}
-            </ul>
-             */}
+      <div className="table-body table-reports"
+      style={{
+        width:"100%",
+        textAlign:'center'
+      }}
+      >
         <Table>
           <table>
             <thead>

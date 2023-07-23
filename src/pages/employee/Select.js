@@ -4,7 +4,7 @@ import { MainContext } from "../../context/MainContext";
 import { useState } from "react";
 import { useEffect } from "react";
 
-const Select = ({ data, clause, selected }) => {
+const SelectCustom = ({ data, clause, selected }) => {
 
     const {setIncType} = useContext(MainContext);    
     useEffect(() => {
@@ -41,4 +41,4 @@ const Select = ({ data, clause, selected }) => {
   );
 };
 
-export default Select;
+export default SelectCustom;

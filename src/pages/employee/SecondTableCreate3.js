@@ -1,29 +1,17 @@
 import React, { useState } from "react";
 import { Table } from "../../styles/Styles";
+import { useContext } from "react";
+import { MainContext } from "../../context/MainContext";
 
 export default function SecondTableCreate3() {
-  const [divs, setDivs] = useState([
-    { id: 1, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 2, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 3, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 4, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 5, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 6, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 7, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 8, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 9, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 10, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 11, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 12, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 13, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 14, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 15, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 16, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 17, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 18, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 19, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-    { id: 20, values: ["", "", "", "", "", "", "", "", "", "", "", "", ""] },
-  ]);
+  const { 
+    numFilasReportByH, 
+    divsSamplingTable: divs, 
+    setDivsSamplingTable: setDivs 
+
+   } = useContext(MainContext);
+
+   
 
   function handleAddDiv() {
     const newId = divs.length + 1;
@@ -57,12 +45,12 @@ export default function SecondTableCreate3() {
         <thead>
           <tr>
             <th>
-              <i className="fa-solid fa-circle-plus" onClick={handleAddDiv}></i>
+              <i className="fa-solid fa-circle-plus" style={{visibility:"hidden"}}></i>
             </th>
             <th>Item</th>
             <th>Lote</th>
             <th>Serial</th>
-            <th>#PZSI NSP</th>
+            <th>#PZAS INSP</th>
             <th>#PZAS MUESTREO</th>
             <th>Hora</th>
             <th>Firma </th>

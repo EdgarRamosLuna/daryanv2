@@ -78,7 +78,9 @@ const GlobalStyle = createGlobalStyle`
     padding: 0 4px;
     border-radius: 7px;
   }
-
+  .MuiInputBase-input{
+    
+  }
   /* Firefox */
   .list-container ul, .item-list ul{
     scrollbar-color: #fff #fff;
@@ -88,8 +90,12 @@ const GlobalStyle = createGlobalStyle`
     
   }
 
-
-
+  .filter-container .filter-item:first-child div:first-child {
+    color: #002353;
+  }
+  .date-picker-hint {
+    color: transparent !important;
+}
   /* scrollbar-thumb {
     border-radius: 10px;
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
@@ -250,6 +256,13 @@ const GlobalStyle = createGlobalStyle`
     background-color: rgb(0, 65, 155);
     transition: all 0.3s ease-in-out;
     cursor: pointer;
+  }
+
+  .btn-table-cont{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
   }
 `;
 
