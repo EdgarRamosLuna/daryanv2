@@ -35,6 +35,7 @@ import ReportsByH from "./ReportsByH";
 import ComponentPagination from "../ComponentPagination";
 import TabContainer from "../tabs/TabContainer";
 import DatePickerMUI2 from "../datepicker/DatePickerMUI2";
+import { TextField } from "@mui/material";
 registerLocale("es", es);
 function ReportsTable({ data, dataReportByH }) {
   const {
@@ -917,10 +918,7 @@ function ReportsTable({ data, dataReportByH }) {
           <div className="header-container">
             <form autoComplete="off">
               <div className="filter-container">
-                <div className="filter-item">
-                  <label htmlFor="date-filter" className="label-center">
-                    Buscar por Fechas:
-                  </label>
+                <div className="filter-item">                 
 
                   <div className="filter-item-input input-date">
                     <DatePickerMUI2
@@ -1684,9 +1682,6 @@ function ReportsTable({ data, dataReportByH }) {
           <form autoComplete="off">
             <div className="filter-container">
               <div className="filter-item">
-                <label htmlFor="date-filter" className="label-center">
-                  Buscar por Fechae:
-                </label>
                 <DatePickerMUI2
                   setDateStart={setDateStart}
                   setDateEnd={setDateEnd}
@@ -1743,7 +1738,7 @@ function ReportsTable({ data, dataReportByH }) {
                   </div>
                 </div> */}
               </div>
-              <div className="filter-item">
+              {/* <div className="filter-item">
                 <label htmlFor="name-filter" className="label-center">
                   Buscar:
                 </label>
@@ -1756,7 +1751,23 @@ function ReportsTable({ data, dataReportByH }) {
                     placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
                   />
                 </div>
-              </div>
+              </div> */}
+            </div>
+            <div className="filter-item">
+              <TextField
+                id="outlined-basic"
+                label="Buscar"
+                variant="outlined"
+                autoComplete="off"
+                sx={{
+                  width: "95%",
+                }}
+                type="text"
+                name="buscar"
+                value={nameFilter}
+                onChange={(e) => handleNameFilterChange(e)}
+                placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
+              />
             </div>
           </form>
           <div

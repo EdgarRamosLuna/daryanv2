@@ -354,7 +354,8 @@ const Create = () => {
       };
     });
   };
-  console.log(suppliers);
+  console.log(data);
+  console.log(serviceType);
   const tabContent = {
     1: {
       component: (
@@ -396,8 +397,14 @@ const Create = () => {
                   getOptionLabel={(option) => option.fullname}
                   sx={{ width: "95%" }}
                   renderInput={(params) => (
-                    <TextField {...params} label="Movie" />
+                    <TextField {...params} label="Proveedor" />
                   )}
+                  onChange={(e) =>
+                    setData({
+                      ...data,
+                      [e.target.name]: e.target.value,
+                    })
+                  }
                 />
 
                 {/* <input
@@ -448,6 +455,7 @@ const Create = () => {
                       sx={{
                         width: "95%",
                       }}
+                      onChange={handleDate}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
@@ -552,18 +560,24 @@ const Create = () => {
               </div>
               <div className="form-container">
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                  <InputLabel id="demo-simple-select-label">Fecha</InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     name="shift"
                     type="text"
                     required
-                    value={`${data.shift}`}
+                    defaultValue={`${data.shift}`}
                     label="Turno"
                     sx={{
-                      width:'95%'
+                      width: "95%",
                     }}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        [e.target.name]: e.target.value,
+                      })
+                    }
                   >
                     <MenuItem value={1}>1</MenuItem>
                     <MenuItem value={2}>2</MenuItem>
@@ -592,10 +606,10 @@ const Create = () => {
                   <option value="3">3</option>
                 </select> */}
               </div>
-              <Grid 
-              sx={{
-                width:'24%'
-              }}
+              <Grid
+                sx={{
+                  width: "24%",
+                }}
               >
                 <TextField
                   id="outlined-basic"
@@ -617,10 +631,10 @@ const Create = () => {
                   }
                 />
               </Grid>
-              <Grid 
-              sx={{
-                width:'24%'
-              }}
+              <Grid
+                sx={{
+                  width: "24%",
+                }}
               >
                 <label htmlFor="data8">
                   Tipo de servicio <span className="required">*</span>
@@ -684,10 +698,10 @@ const Create = () => {
                 </div>
               </Grid>
 
-              <Grid 
-              sx={{
-                width:'24%'
-              }}
+              <Grid
+                sx={{
+                  width: "24%",
+                }}
               >
                 <label htmlFor="data8">
                   Control para el cliente <span className="required">*</span>
@@ -755,7 +769,7 @@ const Create = () => {
                     />
                     Lote
                   </label>
-                  <div className="others-container">                    
+                  <div className="others-container">
                     <TextField
                       id="outlined-basic"
                       label="Otros"

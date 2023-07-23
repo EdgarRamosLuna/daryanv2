@@ -14,6 +14,7 @@ import CreateSupplier from "../pages/admin/suppliers/Create";
 import UpdateSupplier from "../pages/admin/suppliers/Update";
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import {
   authClients,
   authClients2,
@@ -35,6 +36,8 @@ import ReportDetails from "./admin/ReportDetails";
 import Settings from "../pages/admin/Settings";
 import ButtonOutlined from "./buttons/ButtonOutlined";
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import SendIcon from '@mui/icons-material/Send';
+import TableChartIcon from '@mui/icons-material/TableChart';
 let val;
 if (typeof window !== "undefined") {
   // This code will only be executed in the browser
@@ -451,10 +454,12 @@ export default function SubHeader() {
           {pathname === "/user/reports" && (
             <>
               <ButtonOutlined 
+              disableRipple={true}
               icon={<HowToRegIcon />} onClick={() => singleView("/user/reports/create/1")}>
                 <center>Reporte de inspeccion</center>
               </ButtonOutlined>
               <ButtonOutlined 
+                disableRipple={true}
               icon={<HowToRegIcon />} onClick={() => singleView("/user/reports/create/2")}>
                 <center>Reporte por horas</center>
               </ButtonOutlined>
@@ -502,8 +507,8 @@ export default function SubHeader() {
           {[1].includes(activeTabReportInsp) &&
             pathname === "/user/reports/create/1" && (
               <>
-                <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => saveReport(e)}>Enviar Reporte</ButtonOutlined>
-                <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => setActiveTabReportInsp(2)}>
+                <ButtonOutlined icon={<SendIcon />} onClick={(e) => saveReport(e)}>Enviar Reporte</ButtonOutlined>
+                <ButtonOutlined icon={<TableChartIcon />} onClick={(e) => setActiveTabReportInsp(2)}>
                   Tabla de muestreo
                 </ButtonOutlined>
               </>
@@ -511,8 +516,8 @@ export default function SubHeader() {
           {[1].includes(activeTabReportByH) &&
             pathname === "/user/reports/create/2" && (
               <>
-                <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => saveReportH(e)}>Enviar Reporte </ButtonOutlined>
-                <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => setActiveTabReportByH(2)}>
+                <ButtonOutlined icon={<SendIcon />} onClick={(e) => saveReportH(e)}>Enviar Reporte </ButtonOutlined>
+                <ButtonOutlined icon={<TableChartIcon />} onClick={(e) => setActiveTabReportByH(2)}>
                   Tabla de muestreos
                 </ButtonOutlined>
               </>
@@ -541,10 +546,10 @@ export default function SubHeader() {
             <>
               {["/user/reports/create/2"].includes(pathname) && (
                 <>
-                  <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => setActiveTabReportByH(1)}>
-                    Regresare
+                  <ButtonOutlined iconStart={<ArrowBackIosIcon />} onClick={(e) => setActiveTabReportByH(1)}>
+                    Regresar
                   </ButtonOutlined>
-                  <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => saveReport(e)}>Guardar</ButtonOutlined>
+                  
                 </>
               )}
             </>
@@ -554,10 +559,10 @@ export default function SubHeader() {
             <>
               {["/user/reports/create/1"].includes(pathname) && (
                 <>
-                  <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => setActiveTabReportInsp(1)}>
-                    Regresare
+                  <ButtonOutlined iconStart={<ArrowBackIosIcon />} onClick={(e) => setActiveTabReportInsp(1)}>
+                    Regresar
                   </ButtonOutlined>
-                  <ButtonOutlined icon={<HowToRegIcon />} onClick={(e) => saveReport(e)}>Guardar</ButtonOutlined>
+                  
                 </>
               )}
             </>
