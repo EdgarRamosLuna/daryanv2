@@ -25,6 +25,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import SelectCustom from "./Select";
+import dayjs from "dayjs";
 
 const Create = () => {
   const [data, setData] = useState([]);
@@ -72,6 +73,8 @@ const Create = () => {
     incType,
     activeTabReportInsp,
     setActiveTabReportInsp,
+    divsSamplingTableInsp,
+    setdivsSamplingTableInsp,
   } = useContext(MainContext);
   //console.log(suppliers);
   const [producedBy, setProducedBy] = useState("");
@@ -297,6 +300,7 @@ const Create = () => {
   };
   const inputRef = useRef();
   const dataListRef = useRef();
+  
   const getSelectedOptionLocation = () => {
     for (let i = 0; i < dataListRef.current.options.length; i++) {
       if (dataListRef.current.options[i].value === inputRef.current.value) {
@@ -371,6 +375,7 @@ const Create = () => {
                 <TextField
                   id="outlined-basic"
                   label="Planta"
+                  required
                   variant="outlined"
                   sx={{
                     width: "95%",
@@ -378,13 +383,12 @@ const Create = () => {
                   type="text"
                   name="plant"
                   placeholder=""
-                  required
                   value={data.plant}
                   defaultValue=""
                   onChange={(e) =>
                     setData({
                       ...data,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.name]: e.target.value,
                     })
                   }
                 />
@@ -393,16 +397,23 @@ const Create = () => {
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
+                  name="id_supplier"
                   options={suppliers}
                   getOptionLabel={(option) => option.fullname}
                   sx={{ width: "95%" }}
                   renderInput={(params) => (
-                    <TextField {...params} label="Proveedor" />
+                    <TextField
+                      {...params}
+                      required
+                      label="Proveedors"
+                      name="id_supplier"
+                    />
                   )}
-                  onChange={(e) =>
+                  onChange={(e, newValue) =>
                     setData({
                       ...data,
-                      [e.target.name]: e.target.value,
+                      id_supplier: newValue.id,
+                      
                     })
                   }
                 />
@@ -451,14 +462,24 @@ const Create = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker"]}>
                     <DatePicker
-                      label="Basic date picker"
+                      label="Fecha *"
+                      required
+                      name="date"
                       sx={{
                         width: "95%",
                       }}
-                      onChange={handleDate}
+                      onChange={(newValue) =>
+                        setData({
+                          ...data,
+                          date: newValue
+                            ? dayjs(newValue).format("YYYY-MM-DD")
+                            : "",
+                        })
+                      }
                     />
                   </DemoContainer>
                 </LocalizationProvider>
+
                 {/* <label htmlFor="data3">
                   Fecha <span className="required">*</span>
                 </label> */}
@@ -474,7 +495,7 @@ const Create = () => {
               <div className="form-container">
                 <TextField
                   id="outlined-basic"
-                  label="No. de Reporte *"
+                  label="No. de Reporte"
                   variant="outlined"
                   type="text"
                   name="report_number"
@@ -488,7 +509,7 @@ const Create = () => {
                   onChange={(e) =>
                     setData({
                       ...data,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.name]: e.target.value,
                     })
                   }
                 />
@@ -510,7 +531,7 @@ const Create = () => {
                   onChange={(e) =>
                     setData({
                       ...data,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.name]: e.target.value,
                     })
                   }
                 />
@@ -536,7 +557,7 @@ const Create = () => {
                   onChange={(e) =>
                     setData({
                       ...data,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.name]: e.target.value,
                     })
                   }
                 />
@@ -560,14 +581,14 @@ const Create = () => {
               </div>
               <div className="form-container">
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Fecha</InputLabel>
+                  <InputLabel id="demo-simple-select-label">Turno *</InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     name="shift"
                     type="text"
                     required
-                    defaultValue={`${data.shift}`}
+                    defaultValue={`${data.length > 0 ? data.shift : ""}`}
                     label="Turno"
                     sx={{
                       width: "95%",
@@ -596,7 +617,7 @@ const Create = () => {
                   onChange={(e) =>
                     setData({
                       ...data,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [ e.target.name]: e.target.value,
                     })
                   }
                 >
@@ -626,7 +647,7 @@ const Create = () => {
                   onChange={(e) =>
                     setData({
                       ...data,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                      [e.target.name]: e.target.value,
                     })
                   }
                 />
@@ -649,8 +670,7 @@ const Create = () => {
                       onChange={(e) =>
                         setServiceType({
                           ...serviceType,
-                          [e.target.dataset.name || e.target.name]:
-                            e.target.checked,
+                          [e.target.name]: e.target.checked,
                         })
                       }
                     />
@@ -665,8 +685,7 @@ const Create = () => {
                       onChange={(e) =>
                         setServiceType({
                           ...serviceType,
-                          [e.target.dataset.name || e.target.name]:
-                            e.target.checked,
+                          [e.target.name]: e.target.checked,
                         })
                       }
                     />
@@ -1398,7 +1417,7 @@ const Create = () => {
       ),
     },
     2: {
-      component: <Create3 divs={divs} setDivs={setDivs} />,
+      component: <Create3 divs={divsSamplingTableInsp} setDivs={setdivsSamplingTableInsp}  />,
     },
   };
   return <>{tabContent[activeTabReportInsp]?.component}</>;

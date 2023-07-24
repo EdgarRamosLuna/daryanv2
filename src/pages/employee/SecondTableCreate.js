@@ -188,7 +188,10 @@ export default function SecondTableCreate() {
   const max = 9000000;
 
   const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
-
+  const handleDeleteRow = (index) => {
+    setNumFilas((prev) => prev - 1);
+    setDivs((prev) => prev.filter((d, i) => i !== index));
+  };
   return (
     <Table>
       <table>
@@ -196,14 +199,26 @@ export default function SecondTableCreate() {
           <tr>
             {titulosColumnas.map((titulo, i) =>
               i === 0 ? (
-                <th key={i+'stThead'}>
-                  <i
-                    className="fa-solid fa-circle-plus"
-                    onClick={() => agregarFila(numColumnas)}
-                  ></i>
+                <th key={i + "stThead"}>
+                  <span className="btn-table-cont">
+                    <i
+                      className="fa-solid fa-trash"
+                      onClick={
+                        divs.length - 1 !== 0
+                          ? () => handleDeleteRow(divs.length - 1)
+                          : () => {
+                              return;
+                            }
+                      }
+                    ></i>
+                    <i
+                      className="fa-solid fa-circle-plus"
+                      onClick={() => agregarFila(numColumnas)}
+                    ></i>{" "}
+                  </span>
                 </th>
               ) : (
-                <th key={i+'stThead'}>{titulo}</th>
+                <th key={i + "stThead"}>{titulo}</th>
               )
             )}
             {titulosColumnas.at(-1) !== "I" ? (
@@ -254,16 +269,14 @@ export default function SecondTableCreate() {
             <tr key={fila.id}>
               {fila.values.map((valor, i) =>
                 i === 0 || i === fila.values.length - 1 ? (
-                  <td key={i+'stTbody'}>
-                    {i === 0 && fila.id !== 1 && indexFilas === divs.length - 1 && (
-
-                      <>                        
-                      <i
-                        className="fa-solid fa-trash"
-                        onClick={() => eliminarFila(fila.id)}
-                      ></i>
-                      </>
-                    )}
+                  <td key={i + "stTbody"}>
+                    {i === 0 &&
+                      fila.id !== 1 &&
+                      indexFilas === divs.length - 1 && (
+                        <>
+                        
+                        </>
+                      )}
                     {i === fila.values.length - 1 &&
                       fila.values.length > 15 && (
                         <i
@@ -273,11 +286,11 @@ export default function SecondTableCreate() {
                       )}
                   </td>
                 ) : i === 1 ? (
-                  <td key={i+'tbody'} className="table-center">
+                  <td key={i + "tbody"} className="table-center">
                     {fila.id}
                   </td>
                 ) : (
-                  <td key={i+'tbody'}>
+                  <td key={i + "tbody"}>
                     {i === 2 ? (
                       <DatePickerInput
                         id={fila.id}

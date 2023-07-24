@@ -5,7 +5,7 @@ import { StyledForm, Table } from "../../styles/Styles";
 import SecondTableCreate from "./SecondTableCreate";
 import SecondTableCreate3 from "./SecondTableCreate3";
 const Create3 = ({divs, setDivs}) => {
-  const { data, setData, numFilasReportByH, } = useContext(MainContext);
+  const { data, setData, numFilasReportByH } = useContext(MainContext);
 
   console.log(divs)
   const handleSelect = (e, type) => {

@@ -911,7 +911,7 @@ const View = () => {
       ...dataC,
       [e.target.dataset.name || e.target.name]: e.target.value,
     });
-    if (selectedOption == undefined) {
+    if (selectedOption === undefined) {
       setDataCDb({
         ...dataCDb,
         [e.target.dataset.name || e.target.name]: e.target.value,

@@ -3,8 +3,15 @@ import { Table } from "../../styles/Styles";
 import { useContext } from "react";
 import { MainContext } from "../../context/MainContext";
 
-export default function SecondTableCreate3({ divs, setDivs }) {
-  const { numFilasReportByH } = useContext(MainContext);
+export default function SecondTableCreate3() {
+  const { 
+    numFilasReportByH, 
+    divsSamplingTable: divs, 
+    setDivsSamplingTable: setDivs 
+
+   } = useContext(MainContext);
+
+   
 
   function handleAddDiv() {
     const newId = divs.length + 1;
@@ -38,10 +45,7 @@ export default function SecondTableCreate3({ divs, setDivs }) {
         <thead>
           <tr>
             <th>
-              <i
-                className="fa-solid fa-circle-plus"
-                style={{ visibility: "hidden" }}
-              ></i>
+              <i className="fa-solid fa-circle-plus" style={{visibility:"hidden"}}></i>
             </th>
             <th>Item</th>
             <th>Lote</th>

@@ -138,6 +138,22 @@ const GlobalStyle = createGlobalStyle`
     min-height: 214px;
     justify-content: space-between;
 }
+.c2{
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      border: 1px solid #447b91;
+      border-radius: 4px;
+      resize: vertical;
+      background: transparent;
+      outline: none;
+      
+    } 
+  }
 .App{
   tr input{
     padding-left: 5px;

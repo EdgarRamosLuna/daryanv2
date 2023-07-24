@@ -245,7 +245,7 @@ export const MainContextProvider = ({ children }) => {
     }, 1000);*/
     // setDataT(prev => [...prev, data]);
   };
-  const [numFilasReportByH, setNumFilasReportByH] = useState(1);
+  const [numFilasReportByH, setNumFilasReportByH] = useState(5);
 
   // Función para generar filas
   const generateRows = (numRows, start = 1) => {
@@ -269,17 +269,17 @@ export const MainContextProvider = ({ children }) => {
     setDivsSamplingTable((prev) => {
       let arrayCopy = [...prev];
 
-      if (numFilasReportByH < arrayCopy.length && arrayCopy.length !== 0) {
-        // Eliminar los elementos adicionales si numFilasReportByH es menor
-        arrayCopy = arrayCopy.slice(0, numFilasReportByH);
-      } else if (numFilasReportByH > arrayCopy.length) {
+      if (5 < arrayCopy.length && arrayCopy.length !== 0) {
+        // Eliminar los elementos adicionales si 5 es menor
+        arrayCopy = arrayCopy.slice(0, 5);
+      } else if (5 > arrayCopy.length) {
         console.log(arrayCopy.length);
-        // Añadir nuevas filas si numFilasReportByH es mayor
+        // Añadir nuevas filas si 5 es mayor
         //const additionalRows = generateRows(arrayCopy.length === 1 ? 1 : arrayCopy.length + 1, arrayCopy.length === 1 ? arrayCopy.length - 1 : 0);
         arrayCopy = [
           ...arrayCopy,
           {
-            id: numFilasReportByH,
+            id: 5,
             values: Array.from({ length: 7 }, () => ""),
           },
         ];
@@ -288,6 +288,45 @@ export const MainContextProvider = ({ children }) => {
       return arrayCopy;
     });
   }, [numFilasReportByH]);
+
+  const [showModalU, setShowModalU] = useState(false);
+  const [showModalE, setShowModalE] = useState(false);
+  const [showModalS, setShowModalS] = useState(false);
+  const [showModalC, setShowModalC] = useState(false);
+  const [showModalAuth, setShowModalAuth] = useState(false);
+  const [updateId, setUpdateId] = useState(false);
+  const [delType, setDelType] = useState(0);
+  const [numFilas, setNumFilas] = useState(20);
+  const [divsSamplingTableInsp, setDivsSamplingTableInsp] = useState(() =>
+    generateRows(numFilas)
+  );
+
+  useEffect(() => {
+    console.log(numFilas);
+
+    setDivsSamplingTableInsp((prev) => {
+      let arrayCopy = [...prev];
+
+      if (numFilas < arrayCopy.length && arrayCopy.length !== 0) {
+        // Eliminar los elementos adicionales si numFilas es menor
+        arrayCopy = arrayCopy.slice(0, numFilas);
+      } else if (numFilas > arrayCopy.length) {
+        console.log(arrayCopy.length);
+        // Añadir nuevas filas si numFilas es mayor
+        //const additionalRows = generateRows(arrayCopy.length === 1 ? 1 : arrayCopy.length + 1, arrayCopy.length === 1 ? arrayCopy.length - 1 : 0);
+        arrayCopy = [
+          ...arrayCopy,
+          {
+            id: numFilas,
+            values: Array.from({ length: 7 }, () => ""),
+          },
+        ];
+      }
+
+      return arrayCopy;
+    });
+  }, [numFilas]);
+
   const saveReportH = async (e) => {
     console.log(dataReportH);
     await saveReportHToDb({ dataReportH: dataReportH[0], token })
@@ -486,14 +525,6 @@ export const MainContextProvider = ({ children }) => {
     }
     // console.log('Route changed to:', location.pathname);
   }, [location]);*/
-  const [showModalU, setShowModalU] = useState(false);
-  const [showModalE, setShowModalE] = useState(false);
-  const [showModalS, setShowModalS] = useState(false);
-  const [showModalC, setShowModalC] = useState(false);
-  const [showModalAuth, setShowModalAuth] = useState(false);
-  const [updateId, setUpdateId] = useState(false);
-  const [delType, setDelType] = useState(0);
-  const [numFilas, setNumFilas] = useState(20);
 
   const [numColumnas, setNumColumnas] = useState(15);
   const [dbColumns, setDbColumns] = useState(["A", "B", "C", "D"]);
@@ -1181,6 +1212,8 @@ export const MainContextProvider = ({ children }) => {
         divsSamplingTable,
         setDivsSamplingTable,
         handleCheckBox,
+        divsSamplingTableInsp,
+        setDivsSamplingTableInsp,
       }}
     >
       <Toaster richColors position={position} closeButton />

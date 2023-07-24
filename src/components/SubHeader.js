@@ -38,12 +38,15 @@ import ButtonOutlined from "./buttons/ButtonOutlined";
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import SendIcon from '@mui/icons-material/Send';
 import TableChartIcon from '@mui/icons-material/TableChart';
+import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
 let val;
 if (typeof window !== "undefined") {
   // This code will only be executed in the browser
   const value = localStorage.getItem("sesType");
   val = value;
 }
+
 export default function SubHeader() {
   let pathname = useLocation().pathname;
 
@@ -104,7 +107,7 @@ export default function SubHeader() {
     activeTabReportInsp,
     setActiveTabReportInsp
   } = useContext(MainContext);
-
+  console.log(dataSes);
   //console.log(isAdmin);
   //console.log(useParams());
 
@@ -451,21 +454,21 @@ export default function SubHeader() {
       )}
       <div className={style.subHeader}>
         <div className="btns-header">
-          {pathname === "/user/reports" && (
+          {(pathname === "/user/reports" || pathname === "/admin/reports_insp")  && (
             <>
               <ButtonOutlined 
               disableRipple={true}
-              icon={<HowToRegIcon />} onClick={() => singleView("/user/reports/create/1")}>
+              icon={<AssignmentTurnedInOutlinedIcon />} onClick={() => singleView("/user/reports/create/1")}>
                 <center>Reporte de inspeccion</center>
               </ButtonOutlined>
               <ButtonOutlined 
                 disableRipple={true}
-              icon={<HowToRegIcon />} onClick={() => singleView("/user/reports/create/2")}>
+              icon={<PendingActionsIcon />} onClick={() => singleView("/user/reports/create/2")}>
                 <center>Reporte por horas</center>
               </ButtonOutlined>
             </>
           )}
-          {pathname === "/admin/reports" && (
+          {pathname === "/admin/reports_insp" && (
             <>
               {activeTab >= 1 && activeTab <= 2 && isAdmin && (
                 <ButtonOutlined icon={<HowToRegIcon />} onClick={addClients} className="auth-clientes">

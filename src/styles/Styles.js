@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const Home = styled.div``;
 
 export const Table = styled.div`
+
   .btn-pdf {
       display: flex;
       align-items: center;
@@ -44,6 +45,7 @@ export const Table = styled.div`
     margin: 0 auto;
     transition: all 0.6s;
   }
+
   table {
     border-collapse: collapse;
     width: 100%;
@@ -269,7 +271,7 @@ export const Table = styled.div`
   .filter-items {
     display: grid;
     grid-template-columns: repeat(4, auto);
-    justify-items: start;
+    justify-items: center;
   }
   .filter-items2 {
     display: grid;
