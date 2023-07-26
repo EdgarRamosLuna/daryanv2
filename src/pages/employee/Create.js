@@ -517,7 +517,7 @@ const Create = () => {
               <div className="form-container">
                 <TextField
                   id="outlined-basic"
-                  label="  Nombre de parte"
+                  label="Nombre de parte"
                   variant="outlined"
                   type="text"
                   sx={{

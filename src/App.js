@@ -30,6 +30,7 @@ import { useEffect } from "react";
 import { checkUser } from "./api/daryan.api";
 import PdfTest from "./Test";
 import InspectionReport from "./components/pdf/InspectionReport";
+import NoFound404 from "./404";
 function App() {
   
   return (
@@ -38,14 +39,14 @@ function App() {
         <Route exact path="/" element={<Login3 />} />
         <Route exact path="/pdf" element={<PdfTest />} />
         <Route element={<Header />}>
-        <Route path="*" element={<Reports3 />} />
+        <Route path="*" element={<NoFound404 />} />
           <Route exact path="/user/reports" element={<Reports />} />
           <Route exact path="/user/reports/create/1" element={<Create />} />
           <Route exact path="/user/reports/create/2" element={<Create2 />} />
           <Route exact path="/user/reports/create/2/:t" element={<Create3 />} />
           {/* <Route exact path="/user/my-account" element={<Settings />} /> */}
           {/* <Route exact path="/admin/my-account" element={<Settings2 />} /> */}
-          <Route exact path="/admin/reports_insp" element={<Reports3 />} />
+          <Route exact path="/admin/reports" element={<Reports3 />} />
           <Route exact path="/admin/reports_insp/:id" element={<View />} />
           <Route exact path="/user/reports_insp/:id" element={<View2 />} />
           <Route exact path="/user/reports_by_h/:id" element={<View3 />} />

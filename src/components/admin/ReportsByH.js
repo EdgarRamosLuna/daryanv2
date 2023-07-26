@@ -19,8 +19,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ComponentPagination from "../ComponentPagination";
 import DatePickerMUI2 from "../datepicker/DatePickerMUI2";
 registerLocale("es", es);
-function ReportsByH({ data, dateStart, dateEnd, setDateStart,  setDateEnd }) {
-  console.log(data);
+function ReportsByH({ data, dateStart, dateEnd, nameFilterByH }) {
+  console.log(nameFilterByH);
 
 
   const { activeTab, setActiveTab, checkList, setCheckList, handleCheckBox } =
@@ -47,8 +47,8 @@ function ReportsByH({ data, dateStart, dateEnd, setDateStart,  setDateEnd }) {
       // const date = new Date(item.date);
       // date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
       if (
-        nameFilter &&
-        fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
+        nameFilterByH &&
+        fullName.toLowerCase().indexOf(nameFilterByH.toLowerCase()) === -1
       ) {
         //console.log(fullName.slice(3, 4));
         return false;
@@ -75,7 +75,7 @@ function ReportsByH({ data, dateStart, dateEnd, setDateStart,  setDateEnd }) {
 
       return true;
     });
-  }, [nameFilter, dateStart, dateEnd, data]);
+  }, [nameFilterByH, dateStart, dateEnd, data]);
 
   const filteredData = filterData();
   const getPaginatedData = useCallback(() => {
@@ -103,11 +103,6 @@ function ReportsByH({ data, dateStart, dateEnd, setDateStart,  setDateEnd }) {
       <i className="fa-solid fa-calendar-days"></i>
     </div>
   ));
-  const handleNameFilterChange = (event) => {
-    const value = event.target.value;
-    setNameFilter(value);
-    //debounceSetNameFilter(value);
-  };
   CustomInputD.displayName = "CustomInputD";
   //console.log(checkList);
   const navigate = useNavigate();

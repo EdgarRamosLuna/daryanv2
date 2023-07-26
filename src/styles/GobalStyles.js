@@ -138,7 +138,7 @@ const GlobalStyle = createGlobalStyle`
     min-height: 214px;
     justify-content: space-between;
 }
-.c2{
+.c2, .c4{
     input,
     select,
     textarea {
@@ -226,7 +226,7 @@ const GlobalStyle = createGlobalStyle`
   font-size: 1em !important;
 }
 .btn-charts{
-  margin:0 auto !important;
+ // margin:0 auto !important;
 
 }
 .container-app{

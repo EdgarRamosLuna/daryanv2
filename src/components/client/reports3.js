@@ -33,20 +33,15 @@ registerLocale("es", es);
 function ReportsTable({ data }) {
   console.log(data);
   const {
-    handleDel,
-    setSort,
     toast,
     activeTab,
     setActiveTab,
-    checkList,
     setCheckList,
     uniqueClients,
     setUniqueClients,
     clientsToReport,
     setClientsToReport,
-    showModalAuth,
     setShowModalAuth,
-    authClientsT,
     setAuthClientsT,
     showCharts,
     firstDayOfYear,

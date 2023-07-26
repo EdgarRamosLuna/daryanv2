@@ -165,7 +165,7 @@ export const MainContextProvider = ({ children }) => {
           toast.success(datares.message, {
             duration: 4000,
           });
-          navigate("/admin/reports");
+     //     navigate("/admin/reports");
         }
       })
       .catch((err) => {

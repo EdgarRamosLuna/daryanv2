@@ -75,6 +75,7 @@ function ReportsTable({ data, dataReportByH }) {
   } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const [nameFilter2, setNameFilter2] = useState("");
+  const [nameFilterByH, setNameFilterByH] = useState("");
   const [lastnameFilter, setLastnameFilter] = useState("");
   const [idSupplier, setIdSupplier] = useState(0);
   const today = new Date();
@@ -173,7 +174,13 @@ function ReportsTable({ data, dataReportByH }) {
   const [selectedClient, setSelectedClient] = useState("0");
   const handleNameFilterChange = (event) => {
     const value = event.target.value;
-    setNameFilter(value);
+    if(activeTab === 2){
+
+      setNameFilterByH(value);
+    }else{
+
+      setNameFilter(value);
+    }
     //debounceSetNameFilter(value);
   };
 
@@ -337,63 +344,63 @@ function ReportsTable({ data, dataReportByH }) {
     },
     [nameFilter, dateStart, dateEnd]
   );
-  const filterDataReportsByH = useCallback(
-    (data) => {
-      let dataId = 0;
-      return data.filter((item, index) => {
-        const part_number = item.part_number;
-        const id = item.id.toLowerCase();
-        const id_supplier = item.id_supplier;
-        const suppliers = item.supplier.toLowerCase();
-        const planta = item.plant.toLowerCase();
-        const fullName = `${id}${id_supplier} ${part_number}${item.reports_cc
-          .map((cc) => cc.lot)
-          .join(", ")} ${item.reports_cc
-          .map((cc) => cc.serial)
-          .join(", ")} ${suppliers} ${planta} `; // combinamos name, id y lot en una sola variable
-        const date = new Date(item.date);
-        date.setHours(0, 0, 0, 0);
+  // const filterDataReportsByH = useCallback(
+  //   (data) => {
+  //     let dataId = 0;
+  //     return data.filter((item, index) => {
+  //       const part_number = item.part_number;
+  //       const id = item.id.toLowerCase();
+  //       const id_supplier = item.id_supplier;
+  //       const suppliers = item.supplier.toLowerCase();
+  //       const planta = item.plant.toLowerCase();
+  //       const fullName = `${id}${id_supplier} ${part_number}${item.reports_cc
+  //         .map((cc) => cc.lot)
+  //         .join(", ")} ${item.reports_cc
+  //         .map((cc) => cc.serial)
+  //         .join(", ")} ${suppliers} ${planta} `; // combinamos name, id y lot en una sola variable
+  //       const date = new Date(item.date);
+  //       date.setHours(0, 0, 0, 0);
 
-        // const date = new Date(item.date);
-        // date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-        if (
-          nameFilter &&
-          fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
-        ) {
-          //console.log(fullName.slice(3, 4));
-          return false;
-        }
-        if (dateStart) {
-          const startDate = new Date(dateStart);
-          startDate.setHours(0, 0, 0, 0);
-          if (date < startDate) {
-            return false;
-          }
-        }
+  //       // const date = new Date(item.date);
+  //       // date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+  //       if (
+  //         nameFilter &&
+  //         fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
+  //       ) {
+  //         //console.log(fullName.slice(3, 4));
+  //         return false;
+  //       }
+  //       if (dateStart) {
+  //         const startDate = new Date(dateStart);
+  //         startDate.setHours(0, 0, 0, 0);
+  //         if (date < startDate) {
+  //           return false;
+  //         }
+  //       }
 
-        if (dateEnd) {
-          const endDate = new Date(dateEnd);
-          endDate.setHours(23, 59, 59, 999);
-          if (date > endDate) {
-            return false;
-          }
-        }
+  //       if (dateEnd) {
+  //         const endDate = new Date(dateEnd);
+  //         endDate.setHours(23, 59, 59, 999);
+  //         if (date > endDate) {
+  //           return false;
+  //         }
+  //       }
 
-        // if (dateStart && date < new Date(dateStart).setHours(0, 0, 0, 0)) {
-        //   return false;
-        // }
-        // if (dateEnd && date > new Date(dateEnd).setHours(23, 59, 59, 999)) {
-        //   return false;
-        // }
-        if (nameFilter.length > 3) {
-          dataId = id_supplier;
-          //setIdSupplier(id_supplier)
-        }
-        return true;
-      });
-    },
-    [nameFilter, dateStart, dateEnd]
-  );
+  //       // if (dateStart && date < new Date(dateStart).setHours(0, 0, 0, 0)) {
+  //       //   return false;
+  //       // }
+  //       // if (dateEnd && date > new Date(dateEnd).setHours(23, 59, 59, 999)) {
+  //       //   return false;
+  //       // }
+  //       if (nameFilter.length > 3) {
+  //         dataId = id_supplier;
+  //         //setIdSupplier(id_supplier)
+  //       }
+  //       return true;
+  //     });
+  //   },
+  //   [nameFilterByH, dateStart, dateEnd]
+  // );
   //const [idSupplier, setIdSupplier] = useState(0);
 
   useEffect(() => {
@@ -2336,7 +2343,7 @@ function ReportsTable({ data, dataReportByH }) {
                     }}
                     type="text"
                     name="buscar"
-                    value={nameFilter}
+                    value={nameFilterByH}
                     onChange={(e) => handleNameFilterChange(e)}
                     placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
                   />
@@ -2453,6 +2460,7 @@ function ReportsTable({ data, dataReportByH }) {
           dateEnd={dateEnd}
           setDateStart={setDateStart}
           setDateEnd={setDateEnd}
+          nameFilterByH={nameFilterByH}
         />
       ),
     },
