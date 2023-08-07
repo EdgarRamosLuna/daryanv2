@@ -43,7 +43,7 @@ export const MainContextProvider = ({ children }) => {
             checkbox.checked = false;
           });
         } else {
-          //console.log(id);
+          //
           setCheckList(idM);
           allCheckBox.forEach((checkbox) => {
             checkbox.checked = true;
@@ -51,7 +51,7 @@ export const MainContextProvider = ({ children }) => {
           classCheckbox.add("ucAll");
         }
       } else {
-        //console.log(idM);
+        //
         setCheckList(idM);
         allCheckBox.forEach((checkbox, index) => {
           checkbox.checked = true;
@@ -105,16 +105,13 @@ export const MainContextProvider = ({ children }) => {
   const dataTS2 = localStorage.getItem("dataTable2");
   const [activeTabReportByH, setActiveTabReportByH] = useState(1);
   const [activeTabReportInsp, setActiveTabReportInsp] = useState(1);
-  //console.log(data);
+  //
   const [reportData, setReportData] = useState(
     dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
   );
   const [dataToSave, setDataToSave] = useState([]);
   const aproveReport = (e) => {
-    //  console.log(dataToSave);
     const dT = dataToSave[0];
-    //console.log(dT.serviceType['st1']);
-
     if (
       dT.data.length < 9 ||
       dT.producedBy === "" ||
@@ -142,7 +139,7 @@ export const MainContextProvider = ({ children }) => {
 
       for (let j = 0; j < element.length; j++) {
         const el = element[j];
-        //console.log(el);
+        //
         if (j > 2 && j <= 9) {
           if (el === "") {
             toast.error("Todos los campos con * con obligatorios", {
@@ -169,7 +166,7 @@ export const MainContextProvider = ({ children }) => {
         }
       })
       .catch((err) => {
-        //console.log(err);
+        //
         toast.error(err, {
           duration: 5000,
         });
@@ -179,7 +176,7 @@ export const MainContextProvider = ({ children }) => {
   const token = localStorage.getItem("t");
   const saveReport = async (e) => {
     const dT = dataToSave[0];
-    //console.log(dataToSave);
+    //
 
     if (
       dT.data.length < 9 ||
@@ -200,7 +197,7 @@ export const MainContextProvider = ({ children }) => {
 
       for (let j = 0; j < element.length; j++) {
         const el = element[j];
-        //console.log(el);
+        //
         if (j > 2 && j <= 9) {
           if (el === "") {
             toast.error("Todos los campos con * con obligatorios", {
@@ -211,7 +208,7 @@ export const MainContextProvider = ({ children }) => {
         }
       }
     }
-    //  console.log(dataToSave);
+    //  
     await saveReportToDb({ dataToSave, token })
       .then((res) => {
         const datares = res.data;
@@ -234,16 +231,7 @@ export const MainContextProvider = ({ children }) => {
         });
       });
 
-    //  console.log('toy guardando klk');
-    /*e.target.innerHTML = '<img src="/assets/img/loading2.svg" alt="" />';
-    // console.log(data);
-    //setData(data);
-    setReportData((prev) => [...prev, data]);
-    setTimeout(() => {
-      e.target.innerHTML = "Enviar Reporte";
-      window.location.replace("/user/reports");
-    }, 1000);*/
-    // setDataT(prev => [...prev, data]);
+
   };
   const [numFilasReportByH, setNumFilasReportByH] = useState(5);
 
@@ -264,7 +252,7 @@ export const MainContextProvider = ({ children }) => {
   );
 
   useEffect(() => {
-    console.log("entre");
+
 
     setDivsSamplingTable((prev) => {
       let arrayCopy = [...prev];
@@ -273,7 +261,7 @@ export const MainContextProvider = ({ children }) => {
         // Eliminar los elementos adicionales si 5 es menor
         arrayCopy = arrayCopy.slice(0, 5);
       } else if (5 > arrayCopy.length) {
-        console.log(arrayCopy.length);
+        
         // Añadir nuevas filas si 5 es mayor
         //const additionalRows = generateRows(arrayCopy.length === 1 ? 1 : arrayCopy.length + 1, arrayCopy.length === 1 ? arrayCopy.length - 1 : 0);
         arrayCopy = [
@@ -302,7 +290,7 @@ export const MainContextProvider = ({ children }) => {
   );
 
   useEffect(() => {
-    console.log(numFilas);
+    
 
     setDivsSamplingTableInsp((prev) => {
       let arrayCopy = [...prev];
@@ -311,7 +299,7 @@ export const MainContextProvider = ({ children }) => {
         // Eliminar los elementos adicionales si numFilas es menor
         arrayCopy = arrayCopy.slice(0, numFilas);
       } else if (numFilas > arrayCopy.length) {
-        console.log(arrayCopy.length);
+        
         // Añadir nuevas filas si numFilas es mayor
         //const additionalRows = generateRows(arrayCopy.length === 1 ? 1 : arrayCopy.length + 1, arrayCopy.length === 1 ? arrayCopy.length - 1 : 0);
         arrayCopy = [
@@ -328,40 +316,33 @@ export const MainContextProvider = ({ children }) => {
   }, [numFilas]);
 
   const saveReportH = async (e) => {
-    console.log(dataReportH);
+    
     await saveReportHToDb({ dataReportH: dataReportH[0], token })
       .then((res) => {
-        console.log(res);
+        
       })
       .catch((err) => {
-        console.log(err);
+        
       });
   };
   const aproveReportH = async (e) => {
-    console.log(dataReportH);
+    
     await aproveReportHToDb({ dataReportH: dataReportH[0], token })
       .then((res) => {
-        console.log(res);
+        
       })
       .catch((err) => {
-        console.log(err);
+        
       });
   };
 
-  const saveData = () => {
-    localStorage.setItem("dataTable", JSON.stringify(reportData));
-    setDataT(reportData);
-  };
 
   const [dataT, setDataT] = useState(
     dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
   );
-  const [dataT2, setDataT2] = useState(
-    dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
-  );
   const [confirm, setConfirm] = useState(false);
   const handleDel = (id, tableName) => {
-    //console.log(data, id);
+    //
     setIdDelete(id);
     setTableName(tableName);
     setConfirm(true);
@@ -391,11 +372,11 @@ export const MainContextProvider = ({ children }) => {
           }
         })
         .catch((err) => {
-          console.log(err);
+          
         });
     }
     if (tableName === "auth_clients") {
-      console.log(id, status, tableName);
+      
       await statusAuthClient({ id, status })
         .then((res) => {
           const datares = res.data;
@@ -419,7 +400,7 @@ export const MainContextProvider = ({ children }) => {
           }
         })
         .catch((err) => {
-          console.log(err);
+          
         });
     }
     if (tableName === "employees") {
@@ -444,7 +425,7 @@ export const MainContextProvider = ({ children }) => {
           }
         })
         .catch((err) => {
-          console.log(err);
+          
         });
     }
     if (tableName === "suppliers") {
@@ -469,7 +450,7 @@ export const MainContextProvider = ({ children }) => {
           }
         })
         .catch((err) => {
-          console.log(err);
+          
         });
     }
     if (tableName === "users") {
@@ -494,7 +475,7 @@ export const MainContextProvider = ({ children }) => {
           }
         })
         .catch((err) => {
-          console.log(err);
+          
         });
     }
     //setConfirm(true);
@@ -503,28 +484,7 @@ export const MainContextProvider = ({ children }) => {
     setConfirm(false);
   };
   const location = useLocation();
-  /*
-  useEffect(() => {
-    if (location.pathname === "/user/reports") {
-      fetch(
-        "http://phpstack-921351-3198370.cloudwaysapps.com/server/api/get_sales"
-      )
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Request failed.");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          
-          setData(data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-    // console.log('Route changed to:', location.pathname);
-  }, [location]);*/
+ 
 
   const [numColumnas, setNumColumnas] = useState(15);
   const [dbColumns, setDbColumns] = useState(["A", "B", "C", "D"]);
@@ -567,12 +527,10 @@ export const MainContextProvider = ({ children }) => {
       const posicion = ABECEDARIO.indexOf(element);
       const siguiente = ABECEDARIO[posicion + 1];
       if (index + 1 === valoresComunes.length) {
-        //   console.log(`Elemento ${index + 1}: ${element}, Siguiente: ${siguiente}`);
+        //   
       }
       nextVal = siguiente;
     });
-    /*const commonVal = valoresComunes.slice();
-    commonVal.push(nextVal);*/
 
     return nextVal;
   };
@@ -587,7 +545,7 @@ export const MainContextProvider = ({ children }) => {
     return filas;
   });
   const eliminarFila = (itemId) => {
-    //console.log(penultimate);
+    //
 
     setDivs((prevDatos) => prevDatos.filter((item) => item.id !== itemId));
     setNumFilas(numFilas - 1);
@@ -611,23 +569,13 @@ export const MainContextProvider = ({ children }) => {
   };
 
   const eliminarColumna2 = (id) => {
-    //console.log(penultimate);
+    //
     const confirmMessage =
       "¿Estás seguro(a) que deseas borrar este inciso? Esta acción no podrá deshacerse.";
     const confirmResult = window.confirm(confirmMessage);
 
     if (confirmResult) {
-      // The user clicked OK.
-      // Do something.
-      // setDivs((prevDatos) => {
-      //   const newData = prevDatos.slice(); //copy array
-      //   newData.map((fila) => {
-      //     const newArra = fila.values;
-      //     newArra.splice(-2, 1); // remove last item
-      //     return newArra; // Return the updated array
-      //   });
-      //   return newData;
-      // });
+
       setTitulosColumnas((prev) => {
         const newArray = prev.slice();
         newArray.splice(-1, 1); // remove last item
@@ -640,7 +588,7 @@ export const MainContextProvider = ({ children }) => {
       return false;
     }
   };
-  //console.log(divs);
+  //
   const container1Ref = useRef(null);
   const container2Ref = useRef(null);
   const btnCloseRef = useRef(null);
@@ -656,7 +604,7 @@ export const MainContextProvider = ({ children }) => {
     setTitulosColumnas((prevTitulos) => {
       const nextLetter = getNextLetter(prevTitulos);
       setDbColumns((prev) => [...prev, nextLetter]);
-      //   console.log(nextLetter);
+      //   
       const newArr = [...prevTitulos, nextLetter];
       const arrayCopy = newArr.slice();
       // const penultimate = arrayCopy.slice(-2, -1)[0];
@@ -692,23 +640,13 @@ export const MainContextProvider = ({ children }) => {
     setTitulosColumnas2((prevTitulos) => {
       const nextLetter = getNextLetter(prevTitulos);
       setDbColumns((prev) => [...prev, nextLetter]);
-      //   console.log(nextLetter);
+      //   
       const newArr = [...prevTitulos, nextLetter];
       const arrayCopy = newArr.slice();
       const penultimate = arrayCopy.slice(-2, -1)[0];
       arrayCopy.splice(-2, 1);
       arrayCopy.push(penultimate);
-      // const tableWrapper = document.querySelectorAll(".scrollX");
-
-      // tableWrapper.forEach((element) => {
-      //   const scrollWidth = element.scrollWidth;
-      //   const clientWidth = element.clientWidth;
-      //   if (scrollWidth >= clientWidth) {
-      //     setTimeout(() => {
-      //       element.scrollLeft = scrollWidth;
-      //     }, 200);
-      //   }
-      // });
+ 
 
       return arrayCopy;
     });
@@ -736,7 +674,7 @@ export const MainContextProvider = ({ children }) => {
       }, 100);
     }
   };
-  //console.log(numColumnas)
+  //
   const [titulosColumnas, setTitulosColumnas] = useState([
     "",
     "Item",
@@ -820,53 +758,16 @@ export const MainContextProvider = ({ children }) => {
       <i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i>
     </>,
   ]);
-  /* useEffect(() => {
-    //console.log(numColumnas);
-    if (numColumnas > 15) {
-    } else {
-      if(numColumnas)
-      setTitulosColumnas([
-        "",
-        "Items",
-        "Fecha",
-        "Lote",
-        "Serie",
-        "Cantidad Inspeccionada",
-        "Piezas NG:",
-        "Piezas Ok:",
-        "Piezas Retrabajadas:",
-        "Scrap:",
-        "A",
-        "B",
-        "C",
-        "D",
-        <>
-          <i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i>
-        </>,
-      ]);
-    }
-  }, [numColumnas]);*/
+
   useEffect(() => {
     const penultimate = titulosColumnas.slice(-2, -1)[0];
     if (penultimate === "I") {
-      // setTitulosColumnas((prev) => {
-      //   prev[titulosColumnas.length - 1] = <></>;
-      //   return prev;
-      // });
+
     } else {
-      // if(penultimate === 'D'){
-      //   setTitulosColumnas((prev) => {
-      //     prev[titulosColumnas.length - 1] = (
-      //       <>
-      //         <i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i>
-      //       </>
-      //     );
-      //     return prev;
-      //   });
-      // }
+ 
     }
   }, [numColumnas]);
-  //console.log(titulosColumnas);
+  //
   const [total1, setTotal1] = useState(0);
   const [total2, setTotal2] = useState(0);
   const [total3, setTotal3] = useState(0);
@@ -890,13 +791,7 @@ export const MainContextProvider = ({ children }) => {
     const month = ("0" + (date.getMonth() + 1)).slice(-2);
     const day = ("0" + date.getDate()).slice(-2);
     const formattedDateTime = `${year}-${month}-${day}`;
-    // const date = new Date(value); // Supongamos que la fecha que quieres formatear es la fecha actual
 
-    // const year = date.getFullYear(); // Obtiene el año de la fecha
-    // const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Obtiene el mes de la fecha y lo convierte a una cadena con dos dígitos, y se agrega un cero inicial si el mes es menor a 10
-    // const day = date.getDate().toString().padStart(2, "0"); // Obtiene el día del mes de la fecha y lo convierte a una cadena con dos dígitos, y se agrega un cero inicial si el día es menor a 10
-
-    // const result = `${year}-${month}-${day}`; // Combina los valores del año, mes y día en una cadena con el formato deseado
     return formattedDateTime;
   };
   const [dataCDb, setDataCDb] = useState([]);
@@ -948,30 +843,7 @@ export const MainContextProvider = ({ children }) => {
       total_wh: true,
     },
   ]);
-  // const LANG = [
-  //   {
-  //     value: "es",
-  //     part_nu: "Numero de parte",
-  //     date: "Fecha",
-  //     total_in: "Total Inspeccionado",
-  //     total_wh: "Total Horas Trabajadas",
-  //     total_ng: "Total NG",
-  //     total_ok: "Total OK",
-  //     total_rw: "Total Re-Trabajadas",
-  //     total_sc: "Total Scrap",
-  //   },
-  //   {
-  //     value: "en",
-  //     part_nu: "Part Number",
-  //     date: "Date",
-  //     total_in: "Total Inspected",
-  //     total_wh: "Total Worked Hours",
-  //     total_ng: "Total NG",
-  //     total_ok: "Total OK",
-  //     total_rw: "Total Re-Work Parts",
-  //     total_sc: "Total Scrap",
-  //   },
-  // ];
+
   const [dataReportH, setDataReportH] = useState([]);
   const LANG = [
     {

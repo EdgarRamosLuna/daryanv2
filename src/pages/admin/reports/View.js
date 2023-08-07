@@ -193,7 +193,7 @@ const View = () => {
   useEffect(() => {
     setNumColumnas2(numColumnas);
 
-    // setNumFilas2(numFilas);
+    
   }, [numColumnas]);
 
   const eliminarFila = async (itemId, idDb) => {
@@ -294,40 +294,7 @@ const View = () => {
   useEffect(() => {
     setNumColumnas2(numColumnas);
   }, [numColumnas]);
-  // const agregarColumnas = (e) => {
-  //   setTitulosColumnas((prevTitulos) => {
-  //     const nextLetter = getNextLetter(prevTitulos);
-  //     setDbColumns((prev) => [...prev, nextLetter]);
-  //     const newArr = [...prevTitulos, nextLetter];
-  //     const arrayCopy = newArr.slice();
-  //     const penultimate = arrayCopy.slice(-2, -1)[0];
-  //     arrayCopy.splice(-2, 1);
-  //     arrayCopy.push(penultimate);
-  //     const tableWrapper = document.querySelectorAll(".scrollX");
-
-  //     tableWrapper.forEach((element) => {
-  //       const scrollWidth = element.scrollWidth;
-  //       const clientWidth = element.clientWidth;
-  //       if (scrollWidth >= clientWidth) {
-  //         setTimeout(() => {
-  //           element.scrollLeft = scrollWidth;
-  //         }, 200);
-  //       }
-  //     });
-
-  //     return arrayCopy;
-  //   });
-
-  // };
-  // useEffect(() => {
-  //   if (Object.keys(dataC).length > 0) {
-  //     setNumFilas2(Number(dataC.reports_cc.length));
-  //
-  //     const clauses = Number(dataC.report_in.length);
-  //     const newLength = 11 + clauses;
-  //     setNumColumnas2(newLength);
-  //   }
-  // }, []);
+ 
 
   const [divs2, setDivs2] = useState(() => {
     const filas = [];
@@ -568,9 +535,7 @@ const View = () => {
 
     return filas;
   });
-  /*console.log(reportFooter);
-  console.log(reportFooter2);
-  console.log(reportFooter3);*/
+
   const handleUpdate = (hanldeId = 1, divId, inputIndex, newValue) => {
     if (hanldeId === 1) {
       setReportFooter((prevDivs) => {
@@ -823,37 +788,7 @@ const View = () => {
     total14,
     incType,
   ]);
-  // useEffect(() => {
-  //   const newArray = [
-  //     {
-  //       data: dataCDb,
-  //       serviceType: serviceType,
-  //       customerControl: customerControl,
-  //       customerControlTable: divs,
-  //       madeBy: reportFooter,
-  //       observations: reportFooter2,
-  //       incidents: reportFooter3,
-  //       producedBy: producedBy,
-  //       checkedBy: checkedBy,
-  //       authorizedBy: authorizedBy,
-  //       id_report: dataC.id,
-  //       reports_cc: dataC.reports_cc,
-  //     },
-  //   ];
-  //   setDataToSave(newArray);
-  // }, [
-  //   dataCDb,
-  //   dataC,
-  //   serviceType,
-  //   customerControl,
-  //   divs,
-  //   reportFooter,
-  //   reportFooter2,
-  //   reportFooter3,
-  //   producedBy,
-  //   checkedBy,
-  //   authorizedBy,
-  // ]);
+  
   const [keysTh, setKeysTh] = useState([]);
   useEffect(() => {
     
@@ -1036,9 +971,6 @@ const View = () => {
     });
   };
 
-  // console.log(suppliers.find(
-  //   (supplier) => Number(supplier.id) === Number(dataC.id_supplier)
-  // ));
   const supplierValue = suppliers?.find(
     (supplier) => Number(supplier?.id) === Number(dataC?.id_supplier)
   );
@@ -1102,22 +1034,6 @@ const View = () => {
                   }
                 />
 
-                {/* <input
-                type="text"
-                id="data2"
-                name="supplier"
-                placeholder=""
-                required
-                defaultValue=""
-                value={data.supplier}
-                type="text"
-                onChange={(e) =>
-                  setData({
-                    ...data,
-                    [e.target.dataset.name || e.target.name]: e.target.value,
-                  })
-                }
-              /> */}
               </Box>
               <Box
                 className="form-containers"

@@ -18,8 +18,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ComponentPagination from "../ComponentPagination";
 import DatePickerMUI2 from "../datepicker/DatePickerMUI2";
+import NoInfo from "../helpers/NoInfo";
 registerLocale("es", es);
-function ReportsByH({ data, dateStart, dateEnd, nameFilterByH }) {
+function ReportsByH({ data, dateStart, dateEnd, nameFilterByH, loader }) {
   console.log(nameFilterByH);
 
 
@@ -170,11 +171,15 @@ function ReportsByH({ data, dateStart, dateEnd, nameFilterByH }) {
               </tr>
             </thead>
             <tbody>
-              {getPaginatedData().length === 0 ? (
-                <Loader>
-                  <img src="/assets/img/loading2.svg" alt="" />
-                </Loader>
-              ) : (
+            <div className={loader === false ? "loaderContainer" : ""}>
+                  <Loader>
+                    <img src="/assets/img/loading2.svg" alt="" />
+                  </Loader>
+                </div>
+              
+            {getPaginatedData().length === 0 ? (
+                  <NoInfo />
+                ) : (
                 getPaginatedData().map((item, index) => (
                   <tr key={index} onClick={(e) => singleView(item.id)}>
                     <td

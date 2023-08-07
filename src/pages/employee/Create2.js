@@ -7,7 +7,13 @@ import SecondTableCreate2 from "./SecondTableCreate2";
 import { useEffect } from "react";
 import DatePickerInput from "../../components/DateInput";
 import Create3 from "./Create3";
-
+import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import SelectCustom from "./Select";
+import dayjs from "dayjs";
 const Create2 = () => {
   const {
     dataReportH,
@@ -15,7 +21,7 @@ const Create2 = () => {
     numFilasReportByH,
     activeTabReportByH,
     setActiveTabReportByH,
-    divsSamplingTable
+    divsSamplingTable,
   } = useContext(MainContext);
   const [data, setData] = useState([]);
   const handleSelect = (e, type) => {
@@ -82,7 +88,8 @@ const Create2 = () => {
           numFilasReportByH={numFilasReportByH}
           activeTabReportByH={activeTabReportByH}
           setActiveTabReportByH={setActiveTabReportByH}
-          divs={divs} setDivs={setDivs}
+          divs={divs}
+          setDivs={setDivs}
           divsSamplingTable={divsSamplingTable}
           handleInputChangeInsp={handleInputChangeInsp}
           handleInputChangeComm={handleInputChangeComm}
@@ -132,9 +139,8 @@ export const Create2FirstTable = ({
   comments,
   totalesD,
   totalPiecesInsp,
-  setTotalesDefectos
+  setTotalesDefectos,
 }) => {
- 
   useEffect(() => {
     const newArray = [
       {
@@ -146,7 +152,7 @@ export const Create2FirstTable = ({
         authorizedBy,
         totalDefects: totalesD,
         totalPieces: totalPiecesInsp,
-        divsSamplingTable
+        divsSamplingTable,
       },
     ];
     setDataReportH(newArray);
@@ -159,9 +165,9 @@ export const Create2FirstTable = ({
     totalesD,
     divs,
     totalPiecesInsp,
-    divsSamplingTable
+    divsSamplingTable,
   ]);
-  console.log(dataReportH)
+  console.log(dataReportH);
   const handleDate = (name, date) => {
     setData({
       ...data,
@@ -178,10 +184,14 @@ export const Create2FirstTable = ({
         </div>
         <StyledForm>
           <div className="form-container">
-            <label htmlFor="data">Planta:</label>
-            <input
+            <TextField
+              id="outlined-basic"
+              variant="outlined"
+              label="Planta"
+              sx={{
+                width: "95%",
+              }}
               type="text"
-              id="data"
               name="plant"
               placeholder=""
               required
@@ -195,10 +205,14 @@ export const Create2FirstTable = ({
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data2">Numero de parte:</label>
-            <input
+            <TextField
+              id="outlined-basic"
+              variant="outlined"
+              label="Numero de parte"
+              sx={{
+                width: "95%",
+              }}
               type="text"
-              id="data2"
               name="part_number"
               placeholder=""
               required
@@ -211,7 +225,34 @@ export const Create2FirstTable = ({
               }
             />
           </div>
-          <div className="form-container">
+          <div
+            className="form-containers"
+            style={{
+              width: "24%",
+            }}
+          >
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  label="Fecha *"
+                  required
+                  name="date"
+                  sx={{
+                    width: "95%",
+                  }}
+                  onChange={(newValue) =>
+                    setData({
+                      ...data,
+                      date: newValue
+                        ? dayjs(newValue).format("YYYY-MM-DD")
+                        : "",
+                    })
+                  }
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </div>
+          {/* <div className="form-container">
             <label htmlFor="data3">Fecha:</label>
             <DatePickerInput
               id="data3"
@@ -221,12 +262,16 @@ export const Create2FirstTable = ({
               setDate={handleDate}
               type="text"
             />
-          </div>
+          </div> */}
           <div className="form-container">
-            <label htmlFor="data4">No. de Reporte:</label>
-            <input
+            <TextField
+              id="outlined-basic"
+              variant="outlined"
+              label="No. de Reporte"
+              sx={{
+                width: "95%",
+              }}
               type="text"
-              id="data4"
               name="report_number"
               placeholder=""
               required
@@ -240,10 +285,14 @@ export const Create2FirstTable = ({
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data5">Mesa:</label>
-            <input
+            <TextField
+              id="outlined-basic"
+              variant="outlined"
+              label="Mesa"
+              sx={{
+                width: "95%",
+              }}
               type="text"
-              id="data5"
               name="table"
               placeholder=""
               required
@@ -257,10 +306,14 @@ export const Create2FirstTable = ({
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data6">Nombre de parte:</label>
-            <input
+            <TextField
+              id="outlined-basic"
+              variant="outlined"
+              label="Nombre de parte"
+              sx={{
+                width: "95%",
+              }}
               type="text"
-              id="data6"
               name="part_name"
               placeholder=""
               required
@@ -274,23 +327,32 @@ export const Create2FirstTable = ({
             />
           </div>
           <div className="form-container">
-            <label htmlFor="data8">Turno:</label>
-            <select
-              id="data8"
-              name="shift"
-              required
-              value={data.shift}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
-            >
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
+          <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Turno *</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    name="shift"
+                    type="text"
+                    required
+                    defaultValue={`${data.length > 0 ? data.shift : ""}`}
+                    label="Turno"
+                    sx={{
+                      width: "95%",
+                    }}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        [e.target.name]: e.target.value,
+                      })
+                    }
+                  >
+                    <MenuItem value={1}>1</MenuItem>
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                  </Select>
+                </FormControl>
+          
           </div>
 
           {/*
@@ -319,7 +381,7 @@ export const Create2FirstTable = ({
       </div>
 
       <div
-        className="container"
+        className="container c2"
         style={{ overflowY: "scroll", paddingRight: 0 }}
       >
         <Table>
@@ -327,10 +389,14 @@ export const Create2FirstTable = ({
             <thead className="no-sticky">
               <tr>
                 <th>
-                  <i
-                    className="fa-solid fa-circle-plus"
-                    style={{ color: "transparent" }}
-                  ></i>
+                <i
+                  className="fa-solid fa-trash"
+                 
+                ></i>
+                <i
+                  className="fa-solid fa-circle-plus"
+                  
+                ></i>
                 </th>
                 <th>Item</th>
                 <th>Defecto</th>
@@ -351,7 +417,7 @@ export const Create2FirstTable = ({
             </thead>
             <tbody>
               <tr className="hidden">
-                <td> </td>
+                <td></td>
                 <td> </td>
                 <td>
                   <input />

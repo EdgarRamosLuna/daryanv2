@@ -13,7 +13,7 @@ export default function SecondTableCreate({
   divs,
   setDivs,
   agregarFila,
-  eliminarFila
+  eliminarFila,
 }) {
   const {
     numColumnas,
@@ -34,24 +34,6 @@ export default function SecondTableCreate({
     setTotal14,
   } = useContext(MainContext);
 
-  //console.log(numColumnas);
-
-  //console.log(numColumnas);
-
-  /*function handleAddDiv() {
-    const newId = divs.length + 1;
-    const newValues = ["", "", "", "", "", "", "", "", "", "", "", "", "", ""];
-    setDivs([...divs, { id: newId, values: newValues }]);
-    const tableWrapper = document.querySelector(".c2");
-    const scrollHeight = tableWrapper.scrollHeight;
-    const clientHeight = tableWrapper.clientHeight;
-    if (scrollHeight > clientHeight) {
-      //tableWrapper.scrollTop = scrollHeight - clientHeight;
-      setTimeout(() => {
-        tableWrapper.scrollTo({ top: scrollHeight, behavior: "smooth" });
-      }, 100);
-    }
-  }*/
   const handleInputChange = (divId, inputIndex, newValue) => {
     setDivs((prevDivs) => {
       const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
@@ -64,7 +46,6 @@ export default function SecondTableCreate({
   };
 
   useEffect(() => {
-    //console.log(divs);
     let newValue1 = 0;
     let newValue2 = 0;
     let newValue3 = 0;
@@ -178,8 +159,7 @@ export default function SecondTableCreate({
       });
     });
   }, [divs]);
-  //console.log(divs);
-  //const [first, setfirst] = useState(second)
+
   const [data, setData] = useState([]);
   const [isEClause, setIsEClause] = useState(false);
   const handleDate = (name, date, id, index) => {
@@ -187,50 +167,7 @@ export default function SecondTableCreate({
   };
   const btnRef = useRef(null);
   const clauses = Number(dataC.report_in.length);
-  // useEffect(() => {
-  //   for (let p = 0; p < clauses; p++) {
-  //     if (p === 2) {
-  //       //const updatedState = [...titulosColumnas];
-  //       //updatedState[14] = 'E';
-  //       //setTitulosColumnas(updatedState);
-  //     }
-  //     if (p === 3) {
-  //       setIsEClause(true);
-  //     }
-  //     if (p > 3) {
-  //       //agregarColumna2();
-  //       if (numColumnas < 20) {
-  //         agregarColumna2()
-  //         // setNumColumnas((prev) => prev + 1);
-  //         // setTitulosColumnas((prevTitulos) => {
-  //         //   const nextLetter = getNextLetter(prevTitulos);
-  //         //   setDbColumns((prev) => [...prev, nextLetter]);
-  //         //   //   console.log(nextLetter);
-  //         //   const newArr = [...prevTitulos, nextLetter];
-  //         //   const arrayCopy = newArr.slice();
-  //         //   const penultimate = arrayCopy.slice(-2, -1)[0];
-  //         //   // arrayCopy.splice(-2, 1);
-  //         //   // arrayCopy.push(penultimate);
-  //         //   // const tableWrapper = document.querySelectorAll(".scrollX");
 
-  //         //   // tableWrapper.forEach((element) => {
-  //         //   //   const scrollWidth = element.scrollWidth;
-  //         //   //   const clientWidth = element.clientWidth;
-  //         //   //   if (scrollWidth >= clientWidth) {
-  //         //   //     setTimeout(() => {
-  //         //   //       element.scrollLeft = scrollWidth;
-  //         //   //     }, 200);
-  //         //   //   }
-  //         //   // });
-
-  //         //   return arrayCopy;
-  //         // });
-  //       }
-  //     }
-  //   }
-  // }, []);
-
-  //console.log(divs);
   const date = new Date();
   const year = date.getFullYear();
   const month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -240,12 +177,13 @@ export default function SecondTableCreate({
   const seconds = ("0" + date.getSeconds()).slice(-2);
   const formattedDateTime = `${year}-${month}-${day}`;
   const btnDelIncRef = useRef(null);
-  const [currentThText, previousThText, handleClick] = useThClick(eliminarColumna2);
-  
+  const [currentThText, previousThText, handleClick] =
+    useThClick(eliminarColumna2);
+
   //console.log(previousThText);
   return (
     <Table>
-      <table >
+      <table>
         <thead>
           <tr>
             {titulosColumnas.map((titulo, i) =>
@@ -271,66 +209,22 @@ export default function SecondTableCreate({
             ) : (
               <th></th>
             )}
-            {/* {titulosColumnas.map((titulo, i) => (
-              <th>{titulo}</th>
-            ))}
-            {titulosColumnas.at(-1) !== "I" && (
-              <th>
-                <i
-                  ref={btnRef}
-                  className="fa-solid fa-circle-plus"
-                  onClick={agregarColumna}
-                ></i>
-              </th>
-            )} */}
-            {/* {titulosColumnas.map((titulo, i) =>
-              i === 0 ? (
-                <th key={i}>
-                  <i
-                    ref={btnRef}
-                    className="fa-solid fa-circle-plus"
-                    onClick={() => agregarFila(numColumnas, formattedDateTime)}
-                  ></i>
-                </th>
-              ) : titulosColumnas.length > 15 && i === 14 ? (
-                <th key={i}>E</th>
-              ) : (
-                <th key={i}>{titulo}</th>
-              )
-            )} */}
-            {/*<th>
-              <i className="fa-solid fa-circle-plus" onClick={handleAddDiv}></i>
-            </th>
-            <th>Item</th>
-            <th>Fecha</th>
-            <th>Lote</th>
-            <th>Serie</th>
-            <th>Cantidad Inspeccionada</th>
-            <th>Piezas NG:</th>
-            <th>Piezas Ok:</th>
-            <th>Piezas Retrabajadas:</th>
-            <th>Scrap:</th>
-            <th>A </th>
-            <th>B </th>
-            <th>C </th>
-            <th>D </th>
-            <th>E </th>
-            <th><i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i></th>
-            */}
           </tr>
         </thead>
         <tbody onClick={handleClick}>
-          {divs.map((fila) => (
+          {divs.map((fila, indx) => (
             <tr key={fila.id}>
               {fila.values.map((valor, i) =>
                 i === 0 || i === fila.values.length - 1 ? (
                   <>
                     {i === 0 && fila.id !== 1 ? (
                       <td>
-                        <i
-                          className="fa-solid fa-trash"
-                          onClick={() => eliminarFila(fila.id, valor)}
-                        ></i>
+                        {indx === divs.length - 1 && (
+                          <i
+                            className="fa-solid fa-trash"
+                            onClick={() => eliminarFila(fila.id, valor)}
+                          ></i>
+                        )}
                       </td>
                     ) : (
                       i === 0 && fila.id === 1 && <td></td>
@@ -338,7 +232,13 @@ export default function SecondTableCreate({
 
                     {i === fila.values.length - 1 &&
                       fila.values.length > 15 && (
-                        <td className="fa-solid fa-trash" style={{display:'table-cell', verticalAlign:'middle'}} />
+                        <td
+                          className="fa-solid fa-trash"
+                          style={{
+                            display: "table-cell",
+                            verticalAlign: "middle",
+                          }}
+                        />
                       )}
                   </>
                 ) : i === 1 ? (

@@ -48,6 +48,7 @@ import {
   Checkbox as CheckboxMUI,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
+import NoInfo from "../helpers/NoInfo";
 registerLocale("es", es);
 function ReportsTable({ data, dataReportByH }) {
   const {
@@ -1704,7 +1705,6 @@ function ReportsTable({ data, dataReportByH }) {
     byh: {
       p: <p>Reportes por hora</p>,
     },
-
   };
 
   const tabContent = {
@@ -1736,9 +1736,7 @@ function ReportsTable({ data, dataReportByH }) {
                   placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
                 />
               </div>
-              <div className="filter-item">
-               
-              </div>
+              <div className="filter-item"></div>
               <DatePickerRange
                 setDateStart={setDateStart}
                 setDateEnd={setDateEnd}
@@ -1859,10 +1857,13 @@ function ReportsTable({ data, dataReportByH }) {
               </tr>
             </thead>
             <tbody>
-              {getPaginatedData().length === 0 ? (
+              <div className={loader === false ? "loaderContainer" : ""}>
                 <Loader>
                   <img src="/assets/img/loading2.svg" alt="" />
                 </Loader>
+              </div>
+              {getPaginatedData().length === 0 ? (
+                <NoInfo />
               ) : (
                 getPaginatedData().map((item, index) => (
                   <tr key={index} onClick={(e) => singleView(item.id)}>
@@ -1965,9 +1966,7 @@ function ReportsTable({ data, dataReportByH }) {
                     placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
                   />
                 </div>
-                <div className="filter-item">
-                  
-                </div>
+                <div className="filter-item"></div>
                 <DatePickerRange
                   setDateStart={setDateStart}
                   setDateEnd={setDateEnd}
@@ -2036,9 +2035,10 @@ function ReportsTable({ data, dataReportByH }) {
           dateEnd={dateEnd}
           setDateStart={setDateStart}
           setDateEnd={setDateEnd}
+          loader={loader}
         />
       ),
-    },  
+    },
   };
   return (
     <>

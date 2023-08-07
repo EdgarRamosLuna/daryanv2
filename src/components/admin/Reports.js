@@ -50,6 +50,7 @@ import {
   Checkbox as CheckboxMUI,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
+import NoInfo from "../helpers/NoInfo";
 registerLocale("es", es);
 function ReportsTable({ data, dataReportByH }) {
   const {
@@ -174,11 +175,9 @@ function ReportsTable({ data, dataReportByH }) {
   const [selectedClient, setSelectedClient] = useState("0");
   const handleNameFilterChange = (event) => {
     const value = event.target.value;
-    if(activeTab === 2){
-
+    if (activeTab === 2) {
       setNameFilterByH(value);
-    }else{
-
+    } else {
       setNameFilter(value);
     }
     //debounceSetNameFilter(value);
@@ -262,11 +261,10 @@ function ReportsTable({ data, dataReportByH }) {
     setNameFilter2(event.target.value);
     let value = event.target.value.trim(); // Elimina espacios en blanco del valor
     //arr = arr.map(item => item.replace(/\n/g, ''));
-    value = value.replace(/\n/g, '');
-    console.log(value)
-    console.log(uniqueSuppliers)
+    value = value.replace(/\n/g, "");
+    console.log(value);
+    console.log(uniqueSuppliers);
     if (value !== "" && uniqueSuppliers.includes(value)) {
-      
       // Verifica que el valor no esté vacío y existe en uniquePart_number
       setLoader(true);
       // setTimeout(() => {
@@ -1088,7 +1086,7 @@ function ReportsTable({ data, dataReportByH }) {
       data.forEach((item) => {
         if (!seen0[item.supplier]) {
           seen0[item.supplier] = true;
-          let item_supplier = item.supplier.replace(/\n/g, '');
+          let item_supplier = item.supplier.replace(/\n/g, "");
           res0.push(item_supplier);
         }
       });
@@ -1437,10 +1435,13 @@ function ReportsTable({ data, dataReportByH }) {
                 </tr>
               </thead>
               <tbody>
-                {getPaginatedData().length === 0 ? (
+                <div className={loader === false ? "loaderContainer" : ""}>
                   <Loader>
                     <img src="/assets/img/loading2.svg" alt="" />
                   </Loader>
+                </div>
+                {getPaginatedData().length === 0 ? (
+                  <NoInfo />
                 ) : (
                   getPaginatedData().map((item, index) => (
                     <tr key={index} onClick={(e) => singleView(item.id)}>
@@ -2126,98 +2127,8 @@ function ReportsTable({ data, dataReportByH }) {
                 setDateStart={setDateStart}
                 setDateEnd={setDateEnd}
               />
-              {/* <div className="filter-container">
-              <div className="filter-item-input input-date">
-                  <div className="range">
-                    <DatePicker
-                      id="fechaInicio"
-                      selected={dateStart}
-                      onChange={(date) => setDateStart(date)}
-                      locale="es"
-                      customInput={
-                        <CustomInputD>
-                          <p>
-                            Desde:{" "}
-                            <span
-                              style={{
-                                minWidth: "90px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {formatedDateStart !== ""
-                                ? formatedDateStart
-                                : ""}
-                            </span>
-                          </p>
-                        </CustomInputD>
-                      }
-                    />
-                  </div>
-                  <div className="range">
-                    <DatePicker
-                      id="fechaInicio"
-                      selected={dateEnd}
-                      onChange={(date) => setDateEnd(date)}
-                      locale="es"
-                      customInput={
-                        <CustomInputD>
-                          <p>
-                            Hasta:
-                            <span
-                              style={{
-                                minWidth: "90px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {formatedDateEnd !== "" ? formatedDateEnd : ""}
-                            </span>
-                          </p>
-                        </CustomInputD>
-                      }
-                    />
-                  </div>
-                </div>
-              </div> */}
             </Grid>
           </form>
-
-          {/* <div
-            className="clients-container"
-            style={{
-              visibility: uniqueClients.length > 0 ? "visible" : "hidden",
-            }}
-          >
-            <div className="select-container">
-              <select value={selectedClient} onChange={addClientToList}>
-                <option value="0" selected>
-                  Selecciona un cliente
-                </option>
-                {uniqueClients.map((option) => (
-                  <option key={option} value={option.id}>
-                    {option.fullname}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="list-container">
-              <div className="item-list">
-                <ul
-                  style={{
-                    display: `${clientsToReport.length > 0 ? "flex" : "none"}`,
-                  }}
-                >
-                  {clientsToReport.map((client, ind) => (
-                    <li key={ind}>
-                      <span>{client.clientName}</span>
-                      <span onClick={() => removeClient(client.id)}>
-                        <FontAwesomeIcon icon={faTimes} color="rgb(87, 0, 0)" />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div> */}
         </div>
       ),
       componenteMiddle: (
@@ -2242,10 +2153,21 @@ function ReportsTable({ data, dataReportByH }) {
               </tr>
             </thead>
             <tbody>
-              {getPaginatedData().length === 0 ? (
+              <div className={loader === false ? "loaderContainer" : ""}>
                 <Loader>
                   <img src="/assets/img/loading2.svg" alt="" />
                 </Loader>
+              </div>
+              {getPaginatedData().length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="7"
+                    className="table-center"
+                    style={{ opacity: `${loader ? 0 : 1}` }}
+                  >
+                    <h1>No hay informacion en la base de datos</h1>
+                  </td>
+                </tr>
               ) : (
                 getPaginatedData().map((item, index) => (
                   <tr key={index} onClick={(e) => singleView(item.id)}>
@@ -2281,7 +2203,7 @@ function ReportsTable({ data, dataReportByH }) {
                           onClick={() => handleDel(item.id, "reports")}
                         />
                         <a
-                          href={`/reporte_inspeccion/${item.id}`}
+                          href={`http://localhost:3001/reporte-inspeccion/${item.id}`}
                           target="_blank"
                           className="btn-pdf"
                           rel="noreferrer"
@@ -2461,6 +2383,7 @@ function ReportsTable({ data, dataReportByH }) {
           setDateStart={setDateStart}
           setDateEnd={setDateEnd}
           nameFilterByH={nameFilterByH}
+          loader={loader}
         />
       ),
     },
@@ -2469,15 +2392,19 @@ function ReportsTable({ data, dataReportByH }) {
       componenteTop: (
         <div className="header-container2">
           <form autoComplete="off">
-          <Box className=""
-          sx={{
-            width: "99%",
-          }}
-          >
-             {Number(filterOption) === 0 && (
-                <Box className="" sx={{
-                  width:'100%'
-                }}>
+            <Box
+              className=""
+              sx={{
+                width: "99%",
+              }}
+            >
+              {Number(filterOption) === 0 && (
+                <Box
+                  className=""
+                  sx={{
+                    width: "100%",
+                  }}
+                >
                   <TextField
                     id="serial"
                     label="Buscare:"
@@ -2485,7 +2412,7 @@ function ReportsTable({ data, dataReportByH }) {
                     onChange={handleNameFilterChange5}
                     select
                     sx={{
-                      width:'100%'
+                      width: "100%",
                     }}
                   >
                     {uniqueSuppliers.map((serial, indx) => (
@@ -2497,9 +2424,12 @@ function ReportsTable({ data, dataReportByH }) {
                 </Box>
               )}
               {Number(filterOption) === 1 && (
-                <Box className="" sx={{
-                  width:'100%'
-                }}>
+                <Box
+                  className=""
+                  sx={{
+                    width: "100%",
+                  }}
+                >
                   <TextField
                     id="part_number"
                     label="Buscar:"
@@ -2520,9 +2450,12 @@ function ReportsTable({ data, dataReportByH }) {
                 </Box>
               )}
               {Number(filterOption) === 2 && (
-                <Box className="" sx={{
-                  width:'100%'
-                }}>
+                <Box
+                  className=""
+                  sx={{
+                    width: "100%",
+                  }}
+                >
                   <TextField
                     id="lot"
                     label="Buscar:"
@@ -2540,9 +2473,12 @@ function ReportsTable({ data, dataReportByH }) {
                 </Box>
               )}
               {Number(filterOption) === 3 && (
-                <Box className="" sx={{
-                  width:'100%'
-                }}>
+                <Box
+                  className=""
+                  sx={{
+                    width: "100%",
+                  }}
+                >
                   <TextField
                     id="serial"
                     label="Buscar:"
@@ -2559,7 +2495,6 @@ function ReportsTable({ data, dataReportByH }) {
                   </TextField>
                 </Box>
               )}
-             
             </Box>
             <Box className="filter-options">
               <Box className="filter-items">
@@ -2649,7 +2584,6 @@ function ReportsTable({ data, dataReportByH }) {
                       display: `${filtersLot.length > 0 ? "flex" : "none"}`,
                       flexDirection: "column",
                     }}
-                    
                   >
                     {filtersLot.map((filterLot, ind) => (
                       <ListItem key={ind}>
@@ -2717,7 +2651,6 @@ function ReportsTable({ data, dataReportByH }) {
                 </div>
               </div>
             </div> */}
-          
           </form>
           <div className={`charts ${showCharts === true && "smoothFadeIn"}`}>
             {showCharts === true && (

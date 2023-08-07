@@ -154,6 +154,8 @@ export const Table = styled.div`
   }
   tbody > tr {
     cursor: pointer;
+    position: relative;
+    z-index: 9;
     &:hover {
       background-color: rgb(0 65 155 / 28%) !important;
     }

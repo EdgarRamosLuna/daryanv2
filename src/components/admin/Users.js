@@ -14,6 +14,7 @@ import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import StatusBtn from "../StatusBtn";
 import TaLoader from "./TaLoader";
+import NoInfo from "../helpers/NoInfo";
 
 registerLocale("es", es);
 function UsersTable({ data }) {
@@ -232,11 +233,7 @@ function UsersTable({ data }) {
                   </Loader>
                 </div>
                 {getPaginatedData().length === 0 ? (
-                  <tr>
-                    <td colSpan="4" className="table-center" style={{opacity:`${isLoading ? 0 : 1}`}}>
-                      <h1>No hay informacion en la base de datos</h1>
-                    </td>
-                  </tr>
+                  <NoInfo />
                 ) : (
                   getPaginatedData().map((item, index) => (
                     <tr

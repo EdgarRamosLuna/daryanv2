@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { MainContext } from "../../context/MainContext";
 import { useState } from "react";
 import { set } from "react-hook-form";
+import { Box, Button, Grid, MenuItem, Select } from "@mui/material";
 
 const Settings = () => {
   const { langu, setLangu, btnCloseRef, toast } = useContext(MainContext);
@@ -35,21 +36,36 @@ const Settings = () => {
           <label>Contraseña</label>
           <input type="text" />
         </div> */}
+
+
         <div className="my-acc-input">
-          <label>{langI === "es" ? "Idioma" : "Language"}</label>
-          <select
-            value={langI}
-            onChange={(e) => {
-              setLangI(e.target.value);
-            }}
-          >
-            <option value="es">{langI === "es" ? "Español" : "Spanish"}</option>
-            <option value="en">{langI === "en" ? "English" : "Ingles"}</option>
-          </select>
+
+        <Box>
+                    <Select
+                      value={langI}
+                      onChange={(e) => {
+                        setLangI(e.target.value);
+                      }}
+                      defaultValue={0}
+                      sx={{
+                        width: "100%",
+                      }}
+                    >
+                      <MenuItem value="0">{langI === "es" ? "Idioma" : "Language"}</MenuItem>
+                      <MenuItem value="es">
+                      {langI === "es" ? "Español" : "Spanish"}
+                        </MenuItem>
+                      <MenuItem value="es">
+                      {langI === "en" ? "English" : "Ingles"}
+                        </MenuItem>
+                    </Select>
+                  </Box>        
         </div>
-        <div className="my-acc-input">
-          <input type="submit" value={`${langI === "es" ? "Guardar" : "Save"}`} onClick={handleSubmit} />
-        </div>
+        <Grid className="my-acc-input" sx={{
+          mt:'12px'
+        }}>
+          <Button variant="outlined" type="submit" children={`${langI === "es" ? "Guardar" : "Save"}`} onClick={handleSubmit} />
+        </Grid>
       </div>
     </SettingsStyle>
   );

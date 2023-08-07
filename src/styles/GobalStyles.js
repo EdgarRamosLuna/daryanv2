@@ -154,6 +154,11 @@ const GlobalStyle = createGlobalStyle`
       
     } 
   }
+  .c2, .c4{
+    select, input{
+      max-height: 43px;
+    }
+  }
 .App{
   tr input{
     padding-left: 5px;
