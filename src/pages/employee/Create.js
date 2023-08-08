@@ -374,12 +374,12 @@ const Create = () => {
               <div className="form-container">
                 <TextField
                   id="outlined-basic"
-                  label="Planta"
-                  required
                   variant="outlined"
+                  label="Planta"
                   sx={{
                     width: "95%",
                   }}
+                  required
                   type="text"
                   name="plant"
                   placeholder=""
@@ -480,17 +480,7 @@ const Create = () => {
                   </DemoContainer>
                 </LocalizationProvider>
 
-                {/* <label htmlFor="data3">
-                  Fecha <span className="required">*</span>
-                </label> */}
-                {/* <DatePickerInput
-                  id="data3"
-                  name="date"
-                  style={{ textAlign: "left", padding: "12px 20px" }}
-                  value={data.date}
-                  setDate={handleDate}
-                  type="text"
-                /> */}
+           
               </div>
               <div className="form-container">
                 <TextField

@@ -298,50 +298,41 @@ function ReportsTable({ data, dataReportByH }) {
           .map((cc) => cc.lot)
           .join(", ")} ${item.reports_cc
           .map((cc) => cc.serial)
-          .join(", ")} ${suppliers} ${planta} `; // combinamos name, id y lot en una sola variable
+          .join(", ")} ${suppliers} ${planta} `; 
         const date = new Date(item.date);
+        
+        // Ajusta la fecha 'date' para que solo tenga año, mes y día
         date.setHours(0, 0, 0, 0);
-
-        // const date = new Date(item.date);
-        // date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-        if (
-          nameFilter &&
-          fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
-        ) {
-          //console.log(fullName.slice(3, 4));
+        // Luego ajusta para tener en cuenta el desplazamiento de la zona horaria
+        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+  
+        const startDate = new Date(dateStart);
+        startDate.setHours(0, 0, 0, 0);
+        startDate.setMinutes(startDate.getMinutes() + startDate.getTimezoneOffset());
+  
+        const endDate = new Date(dateEnd);
+        endDate.setHours(23, 59, 59, 999);
+        endDate.setMinutes(endDate.getMinutes() + endDate.getTimezoneOffset());
+  
+        if (nameFilter && fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1) {
           return false;
         }
-        if (dateStart) {
-          const startDate = new Date(dateStart);
-          startDate.setHours(0, 0, 0, 0);
-          if (date < startDate) {
-            return false;
-          }
+        if (dateStart && date < startDate) {
+          return false;
         }
-
-        if (dateEnd) {
-          const endDate = new Date(dateEnd);
-          endDate.setHours(23, 59, 59, 999);
-          if (date > endDate) {
-            return false;
-          }
+        if (dateEnd && date > endDate) {
+          return false;
         }
-
-        // if (dateStart && date < new Date(dateStart).setHours(0, 0, 0, 0)) {
-        //   return false;
-        // }
-        // if (dateEnd && date > new Date(dateEnd).setHours(23, 59, 59, 999)) {
-        //   return false;
-        // }
         if (nameFilter.length > 3) {
           dataId = id_supplier;
-          //setIdSupplier(id_supplier)
         }
         return true;
       });
     },
     [nameFilter, dateStart, dateEnd]
   );
+  
+
   // const filterDataReportsByH = useCallback(
   //   (data) => {
   //     let dataId = 0;
@@ -442,16 +433,31 @@ function ReportsTable({ data, dataReportByH }) {
           .join(", ")} ${item.reports_cc.map((cc) => cc.serial).join(", ")}`; // combinamos name, id y lot en una sola variable
         const date = new Date(item.date);
         date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+
+        const startDate = new Date(dateStart);
+        const startDateOffset = startDate.getTimezoneOffset();
+        const currentOffset = new Date().getTimezoneOffset();
+        const startDateInCurrentOffset = new Date(startDate).setMinutes(
+          date.getMinutes() + currentOffset - startDateOffset
+        );
+
+        const endDate = new Date(dateEnd);
+        const endDateOffset = endDate.getTimezoneOffset();
+        const endDateInCurrentOffset = new Date(endDate).setMinutes(
+          date.getMinutes() + currentOffset - endDateOffset
+        );
+
         if (
           nameFilter &&
           fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
         ) {
           return false;
         }
-        if (dateStart && date < new Date(dateStart).setHours(0, 0, 0, 0)) {
+        if (dateStart && new Date(date) < new Date(startDateInCurrentOffset)) {
           return false;
         }
-        if (dateEnd && date > new Date(dateEnd).setHours(23, 59, 59, 999)) {
+
+        if (dateEnd && new Date(date) > new Date(endDateInCurrentOffset)) {
           return false;
         }
         return true;
@@ -459,6 +465,7 @@ function ReportsTable({ data, dataReportByH }) {
     },
     [nameFilter, dateStart, dateEnd, data]
   );
+
   const [totalFiltered, setTotalFiltered] = useState([]);
   const [dataToTable, setDataToTable] = useState([]);
   const [totalGeneral, setTotalGeneral] = useState([]);
@@ -547,9 +554,21 @@ function ReportsTable({ data, dataReportByH }) {
           }
         }
         // Aplicar filtros para cada objeto en el data
-        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
 
         const dateString = date.toISOString().slice(0, 10);
+        // Ajusta la fecha 'date' para que solo tenga año, mes y día
+        date.setHours(0, 0, 0, 0);
+
+        // Luego ajusta para tener en cuenta el desplazamiento de la zona horaria
+        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+
+        // Ajusta las fechas 'startDate' y 'endDate' para que solo tengan año, mes y día
+        const adjustedStartDate = new Date(startDate);
+        adjustedStartDate.setHours(0, 0, 0, 0);
+
+        const adjustedEndDate = new Date(endDate);
+        adjustedEndDate.setHours(23, 59, 59, 999);
+
         if (
           (filterLot.length &&
             !reports_cc.some((report) => filterLot.includes(report.lot))) ||
@@ -559,9 +578,7 @@ function ReportsTable({ data, dataReportByH }) {
             )) ||
           (filterPartNumber.length && !filterPartNumber.includes(partNumber)) || // Nueva condición para el filtro de búsqueda de part_number
           (filterSupplier.length && !filterSupplier.includes(supplier)) ||
-          (filterDate &&
-            (date < new Date(startDate).setHours(0, 0, 0, 0) ||
-              date > new Date(endDate).setHours(23, 59, 59, 999)))
+          (filterDate && (date < adjustedStartDate || date > adjustedEndDate))
         ) {
           continue; // Saltar a la siguiente iteración del loop
         }
@@ -1483,7 +1500,8 @@ function ReportsTable({ data, dataReportByH }) {
                             <i className="fa-solid fa-eye"></i>
                           </Link> */}
                           <a
-                            href={`/reporte_inspeccion/${item.id}`}
+                            // href={`http://phpstack-1070657-3746640.cloudwaysapps.com/reporte-inspeccion/${item.id}`}
+                            href={`http://phpstack-1070657-3746640.cloudwaysapps.com/reporte-inspeccion/${item.id}`}
                             target="_blank"
                             className="btn-pdf"
                             rel="noreferrer"
@@ -2203,7 +2221,7 @@ function ReportsTable({ data, dataReportByH }) {
                           onClick={() => handleDel(item.id, "reports")}
                         />
                         <a
-                          href={`http://localhost:3001/reporte-inspeccion/${item.id}`}
+                          href={`http://phpstack-1070657-3746640.cloudwaysapps.com/reporte-inspeccion/${item.id}`}
                           target="_blank"
                           className="btn-pdf"
                           rel="noreferrer"

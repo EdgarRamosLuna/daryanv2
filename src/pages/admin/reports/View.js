@@ -1045,9 +1045,10 @@ const View = () => {
                   id="data3"
                   name="date"
                   style={{ textAlign: "left", padding: "12px 20px" }}
-                  value={dataC.date}
+                  defaultValue={dataC.date}
                   type="text"
                   dataCDb={dataCDb}
+                  setData={setDataCDb}
                 />
               </Box>
               <Box className="form-container">
@@ -1187,25 +1188,7 @@ const View = () => {
                   }
                 />
               </Box>
-              {/* <Box className="form-container">
-              <label htmlFor="data10">
-                Numero de parte <span className="required">*</span>
-              </label>
-              <input
-                type="text"
-                id="data10"
-                name="part_number"
-                placeholder=""
-                required
-                defaultValue={dataC.part_number}
-                onChange={(e) =>
-                  setDataCDb({
-                    ...dataCDb,
-                    [e.target.dataset.name || e.target.name]: e.target.value,
-                  })
-                }
-              />
-            </Box> */}
+          
               <Box
                 sx={{
                   width: "24%",
@@ -1359,21 +1342,7 @@ const View = () => {
                 </div>
               </Box>
 
-              {/*
-          <label htmlFor="subject">Subject <span className="required">*</span></label>
-          <select id="subject" name="subject">
-            <option value="general">General Inquiry</option>
-            <option value="support">Technical Support</option>
-            <option value="billing">Billing Question</option>
-          </select>
-  
-          <label htmlFor="message">Message <span className="required">*</span></label>
-          <textarea
-            id="message"
-            name="message"
-            placeholder="Enter your message"
-            required
-          ></textarea>*/}
+        
             </StyledForm>
           </div>
           <div

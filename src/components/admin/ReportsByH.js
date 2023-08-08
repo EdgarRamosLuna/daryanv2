@@ -208,7 +208,7 @@ function ReportsByH({ data, dateStart, dateEnd, nameFilterByH, loader }) {
                     >
                       <div className="actions">
                         <a
-                          href={`/reporte_inspeccion/${item.id}`}
+                          href={`http://phpstack-1070657-3746640.cloudwaysapps.com/reporte-inspeccion/${item.id}`}
                           target="_blank"
                           className="btn-pdf"
                           rel="noreferrer"

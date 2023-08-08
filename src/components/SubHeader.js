@@ -589,8 +589,9 @@ export default function SubHeader() {
                     <ButtonOutlined
                       icon={<TableChartIcon />}
                       onClick={(e) => setActiveTabReportByH(2)}
+                      disabled
                     >
-                      Tabla de muestreos
+                      Tabla de muestreo
                     </ButtonOutlined>
                   </>
                 )}
@@ -617,8 +618,9 @@ export default function SubHeader() {
                     <ButtonOutlined
                       icon={<TableChartIcon />}
                       onClick={(e) => setActiveTabReportInsp(2)}
+                      disabled
                     >
-                      Tabla de muestreos
+                      Tabla de muestreo
                     </ButtonOutlined>
                   </>
                 )}

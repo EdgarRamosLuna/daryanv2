@@ -1142,7 +1142,7 @@ function ReportsTable({ data, dataReportByH }) {
                             <i className="fa-solid fa-eye"></i>
                           </Link> */}
                           <a
-                            href={`/reporte_inspeccion/${item.id}`}
+                            href={`http://phpstack-1070657-3746640.cloudwaysapps.com/reporte-inspeccion/${item.id}`}
                             target="_blank"
                             className="btn-pdf"
                             rel="noreferrer"
@@ -1899,7 +1899,7 @@ function ReportsTable({ data, dataReportByH }) {
                           onClick={() => handleDel(item.id, "reports")}
                         />
                         <a
-                          href={`/reporte_inspeccion/${item.id}`}
+                          href={`http://phpstack-1070657-3746640.cloudwaysapps.com/reporte-inspeccion/${item.id}`}
                           target="_blank"
                           className="btn-pdf"
                           rel="noreferrer"
