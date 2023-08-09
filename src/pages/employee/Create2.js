@@ -7,7 +7,13 @@ import SecondTableCreate2 from "./SecondTableCreate2";
 import { useEffect } from "react";
 import DatePickerInput from "../../components/DateInput";
 import Create3 from "./Create3";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -66,8 +72,6 @@ const Create2 = () => {
   const [inspectedBy, setInspectedBy] = useState("");
   const [authorizedBy, setAuthorizedBy] = useState("");
 
-  //console.log(data);
-
   const [divs, setDivs] = useState(() => {
     const filas = [];
     for (let i = 1; i <= numFilasReportByH; i++) {
@@ -109,7 +113,7 @@ const Create2 = () => {
       ),
     },
     2: {
-      component: <Create3 divs={divs} setDivs={setDivs} />,
+      component: <Create3 divs={divs} setDivs={setDivs}  reportType="byh" />,
     },
   };
   return <>{tabsObj[activeTabReportByH]?.component}</>;
@@ -141,6 +145,7 @@ export const Create2FirstTable = ({
   totalPiecesInsp,
   setTotalesDefectos,
 }) => {
+  const dataSes = localStorage.getItem("sesType");
   useEffect(() => {
     const newArray = [
       {
@@ -167,19 +172,18 @@ export const Create2FirstTable = ({
     totalPiecesInsp,
     divsSamplingTable,
   ]);
-  console.log(dataReportH);
+
   const handleDate = (name, date) => {
     setData({
       ...data,
       [name]: date,
     });
   };
-  //console.log(data.shift);
   return (
     <>
       <div className="container">
         <div className="title">
-          <h3>REPORTE POR HORASs</h3>
+          <h3>REPORTE POR HORAS</h3>
           <br />
         </div>
         <StyledForm>
@@ -252,17 +256,7 @@ export const Create2FirstTable = ({
               </DemoContainer>
             </LocalizationProvider>
           </div>
-          {/* <div className="form-container">
-            <label htmlFor="data3">Fecha:</label>
-            <DatePickerInput
-              id="data3"
-              name="date"
-              style={{ textAlign: "left", padding: "12px 20px" }}
-              value={data.date}
-              setDate={handleDate}
-              type="text"
-            />
-          </div> */}
+
           <div className="form-container">
             <TextField
               id="outlined-basic"
@@ -327,49 +321,32 @@ export const Create2FirstTable = ({
             />
           </div>
           <div className="form-container">
-          <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Turno *</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    name="shift"
-                    type="text"
-                    required
-                    defaultValue={`${data.length > 0 ? data.shift : ""}`}
-                    label="Turno"
-                    sx={{
-                      width: "95%",
-                    }}
-                    onChange={(e) =>
-                      setData({
-                        ...data,
-                        [e.target.name]: e.target.value,
-                      })
-                    }
-                  >
-                    <MenuItem value={1}>1</MenuItem>
-                    <MenuItem value={2}>2</MenuItem>
-                    <MenuItem value={3}>3</MenuItem>
-                  </Select>
-                </FormControl>
-          
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Turno *</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                name="shift"
+                type="text"
+                required
+                defaultValue={`${data.length > 0 ? data.shift : ""}`}
+                label="Turno"
+                sx={{
+                  width: "95%",
+                }}
+                onChange={(e) =>
+                  setData({
+                    ...data,
+                    [e.target.name]: e.target.value,
+                  })
+                }
+              >
+                <MenuItem value={1}>1</MenuItem>
+                <MenuItem value={2}>2</MenuItem>
+                <MenuItem value={3}>3</MenuItem>
+              </Select>
+            </FormControl>
           </div>
-
-          {/*
-        <label htmlFor="subject">Subject:</label>
-        <select id="subject" name="subject">
-          <option value="general">General Inquiry</option>
-          <option value="support">Technical Support</option>
-          <option value="billing">Billing Question</option>
-        </select>
-
-        <label htmlFor="message">Message:</label>
-        <textarea
-          id="message"
-          name="message"
-          placeholder="Enter your message"
-          required
-        ></textarea>*/}
         </StyledForm>
       </div>
       <div className="container c2">
@@ -381,7 +358,7 @@ export const Create2FirstTable = ({
       </div>
 
       <div
-        className="container c2"
+        className="container c4"
         style={{ overflowY: "scroll", paddingRight: 0 }}
       >
         <Table>
@@ -389,14 +366,10 @@ export const Create2FirstTable = ({
             <thead className="no-sticky">
               <tr>
                 <th>
-                <i
-                  className="fa-solid fa-trash"
-                 
-                ></i>
-                <i
-                  className="fa-solid fa-circle-plus"
-                  
-                ></i>
+                  <span className="btn-table-cont">
+                    <i className="fa-solid fa-trash"></i>
+                    <i className="fa-solid fa-circle-plus"></i>
+                  </span>
                 </th>
                 <th>Item</th>
                 <th>Defecto</th>
@@ -475,9 +448,22 @@ export const Create2FirstTable = ({
                 {totalesD.map((sum, i) => (
                   <td key={i}>
                     {i === totalesD.length - 1 ? (
-                      <input type="text" value={sum} readOnly />
+                      <input
+                        type="text"
+                        value={sum}
+                        readOnly
+                        onChange={() => {
+                          return;
+                        }}
+                      />
                     ) : (
-                      <input type="text" value={sum} />
+                      <input
+                        type="text"
+                        value={sum}
+                        onChange={() => {
+                          return;
+                        }}
+                      />
                     )}
                   </td>
                 ))}
@@ -538,7 +524,9 @@ export const Create2FirstTable = ({
               </tr>
               <tr>
                 <td colSpan={8} style={{ textAlign: "center" }}>
-                  <div>REVISO</div>
+                  <div>
+                    REVISO <span className="required">*</span>
+                  </div>
                   <div className="firm">
                     <input
                       type=""
@@ -557,7 +545,19 @@ export const Create2FirstTable = ({
                       type=""
                       name=""
                       className="firm-input"
-                      onChange={(e) => setAuthorizedBy(e.target.value)}
+                      readOnly={
+                        ["admin"].includes(dataSes.toLowerCase()) ? false : true
+                      }
+                      disabled={
+                        ["admin"].includes(dataSes.toLowerCase()) ? false : true
+                      }
+                      onChange={
+                        ["admin"].includes(dataSes.toLowerCase())
+                          ? (e) => setAuthorizedBy(e.target.value)
+                          : () => {
+                              return;
+                            }
+                      }
                       value={authorizedBy}
                     />
                   </div>

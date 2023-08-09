@@ -162,7 +162,7 @@ export const MainContextProvider = ({ children }) => {
           toast.success(datares.message, {
             duration: 4000,
           });
-     //     navigate("/admin/reports");
+          //     navigate("/admin/reports");
         }
       })
       .catch((err) => {
@@ -208,30 +208,38 @@ export const MainContextProvider = ({ children }) => {
         }
       }
     }
-    //  
-    await saveReportToDb({ dataToSave, token })
-      .then((res) => {
-        const datares = res.data;
-        if (datares.error) {
-          toast.error(datares.message, {
+
+    //
+
+    try {
+      const response = await saveReportToDb({ dataToSave, token });
+
+      const { error: errorDb, message } = response.data;
+      if (typeof errorDb !== "boolean") {
+        toast.error("Ocurrio un error intentalo mas tarde.", {
+          duration: 5000,
+        });
+      } else {
+        if (errorDb) {
+          toast.error(message, {
             duration: 5000,
           });
         } else {
-          toast.success(datares.message, {
+          toast.success(message, {
             duration: 4000,
           });
-          setTimeout(() => {
-            navigate("/user/reports");
-          }, 5000);
+          navigate(
+            `${
+              ["admin"].includes(dataSes.toLowerCase()) ? "admin" : "user"
+            }/reports`
+          );
         }
-      })
-      .catch((err) => {
-        toast.error(err, {
-          duration: 5000,
-        });
+      }
+    } catch (error) {
+      toast.error("Ocurrio un error intentalo mas tarde.", {
+        duration: 5000,
       });
-
-
+    }
   };
   const [numFilasReportByH, setNumFilasReportByH] = useState(5);
 
@@ -252,8 +260,6 @@ export const MainContextProvider = ({ children }) => {
   );
 
   useEffect(() => {
-
-
     setDivsSamplingTable((prev) => {
       let arrayCopy = [...prev];
 
@@ -261,7 +267,6 @@ export const MainContextProvider = ({ children }) => {
         // Eliminar los elementos adicionales si 5 es menor
         arrayCopy = arrayCopy.slice(0, 5);
       } else if (5 > arrayCopy.length) {
-        
         // Añadir nuevas filas si 5 es mayor
         //const additionalRows = generateRows(arrayCopy.length === 1 ? 1 : arrayCopy.length + 1, arrayCopy.length === 1 ? arrayCopy.length - 1 : 0);
         arrayCopy = [
@@ -290,8 +295,6 @@ export const MainContextProvider = ({ children }) => {
   );
 
   useEffect(() => {
-    
-
     setDivsSamplingTableInsp((prev) => {
       let arrayCopy = [...prev];
 
@@ -299,9 +302,7 @@ export const MainContextProvider = ({ children }) => {
         // Eliminar los elementos adicionales si numFilas es menor
         arrayCopy = arrayCopy.slice(0, numFilas);
       } else if (numFilas > arrayCopy.length) {
-        
         // Añadir nuevas filas si numFilas es mayor
-        //const additionalRows = generateRows(arrayCopy.length === 1 ? 1 : arrayCopy.length + 1, arrayCopy.length === 1 ? arrayCopy.length - 1 : 0);
         arrayCopy = [
           ...arrayCopy,
           {
@@ -316,26 +317,31 @@ export const MainContextProvider = ({ children }) => {
   }, [numFilas]);
 
   const saveReportH = async (e) => {
-    
-    await saveReportHToDb({ dataReportH: dataReportH[0], token })
-      .then((res) => {
-        
-      })
-      .catch((err) => {
-        
+    try {
+      const response = await saveReportHToDb({
+        dataReportH: dataReportH[0],
+        token,
       });
+      const { error: errorDb, message } = response.data;
+      if (typeof errorDb !== "boolean") {
+        toast.error("Ocurrio un error intentalo mas tarde");
+      } else {
+        toast.success(message);
+        navigate(
+          `${
+            ["admin"].includes(dataSes.toLowerCase()) ? "admin" : "user"
+          }/reports`
+        );
+      }
+    } catch (error) {
+      toast.error("Ocurrio un error intentalo mas tarde");
+    }
   };
   const aproveReportH = async (e) => {
-    
     await aproveReportHToDb({ dataReportH: dataReportH[0], token })
-      .then((res) => {
-        
-      })
-      .catch((err) => {
-        
-      });
+      .then((res) => {})
+      .catch((err) => {});
   };
-
 
   const [dataT, setDataT] = useState(
     dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
@@ -371,12 +377,9 @@ export const MainContextProvider = ({ children }) => {
             setDataClients(newData);
           }
         })
-        .catch((err) => {
-          
-        });
+        .catch((err) => {});
     }
     if (tableName === "auth_clients") {
-      
       await statusAuthClient({ id, status })
         .then((res) => {
           const datares = res.data;
@@ -399,9 +402,7 @@ export const MainContextProvider = ({ children }) => {
             setAuthClientsT(newData);
           }
         })
-        .catch((err) => {
-          
-        });
+        .catch((err) => {});
     }
     if (tableName === "employees") {
       await statusEmployee({ id, status })
@@ -424,9 +425,7 @@ export const MainContextProvider = ({ children }) => {
             setDataEmployees(newData);
           }
         })
-        .catch((err) => {
-          
-        });
+        .catch((err) => {});
     }
     if (tableName === "suppliers") {
       await statusSupplier({ id, status })
@@ -449,9 +448,7 @@ export const MainContextProvider = ({ children }) => {
             setDataSuppliers(newData);
           }
         })
-        .catch((err) => {
-          
-        });
+        .catch((err) => {});
     }
     if (tableName === "users") {
       await statusUser({ id, status })
@@ -474,9 +471,7 @@ export const MainContextProvider = ({ children }) => {
             setDataUsers(newData);
           }
         })
-        .catch((err) => {
-          
-        });
+        .catch((err) => {});
     }
     //setConfirm(true);
   };
@@ -484,7 +479,6 @@ export const MainContextProvider = ({ children }) => {
     setConfirm(false);
   };
   const location = useLocation();
- 
 
   const [numColumnas, setNumColumnas] = useState(15);
   const [dbColumns, setDbColumns] = useState(["A", "B", "C", "D"]);
@@ -527,7 +521,7 @@ export const MainContextProvider = ({ children }) => {
       const posicion = ABECEDARIO.indexOf(element);
       const siguiente = ABECEDARIO[posicion + 1];
       if (index + 1 === valoresComunes.length) {
-        //   
+        //
       }
       nextVal = siguiente;
     });
@@ -575,7 +569,6 @@ export const MainContextProvider = ({ children }) => {
     const confirmResult = window.confirm(confirmMessage);
 
     if (confirmResult) {
-
       setTitulosColumnas((prev) => {
         const newArray = prev.slice();
         newArray.splice(-1, 1); // remove last item
@@ -604,7 +597,7 @@ export const MainContextProvider = ({ children }) => {
     setTitulosColumnas((prevTitulos) => {
       const nextLetter = getNextLetter(prevTitulos);
       setDbColumns((prev) => [...prev, nextLetter]);
-      //   
+      //
       const newArr = [...prevTitulos, nextLetter];
       const arrayCopy = newArr.slice();
       // const penultimate = arrayCopy.slice(-2, -1)[0];
@@ -640,13 +633,12 @@ export const MainContextProvider = ({ children }) => {
     setTitulosColumnas2((prevTitulos) => {
       const nextLetter = getNextLetter(prevTitulos);
       setDbColumns((prev) => [...prev, nextLetter]);
-      //   
+      //
       const newArr = [...prevTitulos, nextLetter];
       const arrayCopy = newArr.slice();
       const penultimate = arrayCopy.slice(-2, -1)[0];
       arrayCopy.splice(-2, 1);
       arrayCopy.push(penultimate);
- 
 
       return arrayCopy;
     });
@@ -762,9 +754,7 @@ export const MainContextProvider = ({ children }) => {
   useEffect(() => {
     const penultimate = titulosColumnas.slice(-2, -1)[0];
     if (penultimate === "I") {
-
     } else {
- 
     }
   }, [numColumnas]);
   //

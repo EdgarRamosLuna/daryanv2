@@ -2481,6 +2481,9 @@ function ReportsTable({ data, dataReportByH }) {
                     onChange={handleNameFilterChange3}
                     disabled={filtersPartNumber.length === 0}
                     select
+                    sx={{
+                      width: "99%",
+                    }}
                   >
                     {uniqueLots.map((lot, indx) => (
                       <MenuItem key={indx} value={lot}>
@@ -2504,6 +2507,9 @@ function ReportsTable({ data, dataReportByH }) {
                     onChange={handleNameFilterChange4}
                     disabled={filtersPartNumber.length === 0}
                     select
+                    sx={{
+                      width: "99%",
+                    }}
                   >
                     {uniqueSerial.map((serial, indx) => (
                       <MenuItem key={indx} value={serial}>

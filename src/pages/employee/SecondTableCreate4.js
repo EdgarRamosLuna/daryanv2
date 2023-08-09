@@ -3,16 +3,16 @@ import { Table } from "../../styles/Styles";
 import { useContext } from "react";
 import { MainContext } from "../../context/MainContext";
 
-export default function SecondTableCreate3() {
-  const { 
-    numFilasReportByH, 
-    divsSamplingTable: divs, 
-    setDivsSamplingTable: setDivs 
+export default function SecondTableCreate4() {
+  const { numFilasReportByH } = useContext(MainContext);
 
-   } = useContext(MainContext);
-
-   
-
+  const [divs, setDivs] = useState([
+    { id: 1, values: Array(15).fill("") },
+    { id: 2, values: Array(15).fill("") },
+    { id: 3, values: Array(15).fill("") },
+    { id: 4, values: Array(15).fill("") },
+    { id: 5, values: Array(15).fill("") },
+  ]);
   function handleAddDiv() {
     const newId = divs.length + 1;
     const newValues = ["", "", "", "", "", "", "", "", "", "", "", "", "", ""];
@@ -28,7 +28,7 @@ export default function SecondTableCreate3() {
     }
   }
 
-  const handleInputChange = (divId, inputIndex, newValue) => {
+  function handleInputChange(divId, inputIndex, newValue) {
     setDivs((prevDivs) => {
       const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
       const updatedDiv = { ...prevDivs[divToUpdateIndex] };
@@ -37,7 +37,7 @@ export default function SecondTableCreate3() {
       updatedDivs[divToUpdateIndex] = updatedDiv;
       return updatedDivs;
     });
-  };
+  }
 
   return (
     <Table>
@@ -45,7 +45,10 @@ export default function SecondTableCreate3() {
         <thead>
           <tr>
             <th>
-              <i className="fa-solid fa-circle-plus" style={{visibility:"hidden"}}></i>
+              <i
+                className="fa-solid fa-circle-plus"
+                style={{ visibility: "hidden" }}
+              ></i>
             </th>
             <th>Item</th>
             <th>Lote</th>

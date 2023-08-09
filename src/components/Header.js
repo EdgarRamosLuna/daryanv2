@@ -63,7 +63,6 @@ export default function Header() {
     },
   ];
   const [linksUser, setLinksUser] = useState(initialForm);
-  //console.log(linksUser)
   useEffect(() => {
     //language
     let val;
@@ -72,7 +71,6 @@ export default function Header() {
       const value = localStorage.getItem("sesType");
       val = value;
     }
-    //console.log(langu);
     if (val === "user") {
       setLinksUser([
         {
@@ -100,7 +98,6 @@ export default function Header() {
       ]);
     }
     if (val === "client") {
-      //console.log("client")
       setLinksClient([
         {
           label: `${langu === "es" ? "Reportes" : "Reports"}`,
@@ -255,18 +252,16 @@ export default function Header() {
     },
   ]);
   useEffect(() => {
-    //console.log(val);
     // request to api to valida the token
     const token = localStorage.getItem("t");
     const handleStorageChange = (event) => {
       if (event.key === 'sesType') {
-        console.log('El valor de "sesType" ha cambiado a: ' + event.newValue);
+        
       }
     };
     window.addEventListener('storage', handleStorageChange);
      const val = localStorage.getItem("sesType");
 
-    //console.log(val, token);
     const validateUser = async (token) => {
       if (val === "admin") {
         await checkUser(token)
@@ -279,13 +274,10 @@ export default function Header() {
               localStorage.removeItem("sesType");
               navigate("/admin/login");
             } else {
-              //localStorage.setItem("sesType", "user");
               // get token from local storage
               
               if (Number(datares.i) === 1) {
                 setIsAdmin(true);
-              ///  console.log("asadsaasdasd")
-                //localStorage.setItem("l", "1");
                 setLinksAdmin([
                   {
                     label: `${langu === "es" ? "Reportes" : "Reports"}`,
@@ -364,7 +356,6 @@ export default function Header() {
                   },
                 ]);
               }
-              //console.log(datares.i);
               //router.push('/user/reports');
               //    window.location.replace("/user/reports");
               //const { email, name, id_supplier, hour } = data;
@@ -385,7 +376,6 @@ export default function Header() {
             }
           })
           .catch((err) => {
-            //console.log(err);
             toast.error(err, {
               duration: 5000,
             });
@@ -424,7 +414,6 @@ export default function Header() {
             }
           })
           .catch((err) => {
-            //console.log(err);
             toast.error(err, {
               duration: 5000,
             });
@@ -462,7 +451,6 @@ export default function Header() {
             }
           })
           .catch((err) => {
-            //console.log(err);
             toast.error(err, {
               duration: 5000,
             });
@@ -480,7 +468,7 @@ export default function Header() {
   useEffect(() => {
     // const handleStorageChange = (event) => {
     //   if (event.key === 'sesType') {
-    //     console.log('El valor de "sesType" ha cambiado a: ' + event.newValue);
+    //     
     //   }
     // };
     // window.addEventListener('storage', handleStorageChange);
@@ -499,7 +487,6 @@ export default function Header() {
     }
     return () => {
       // window.removeEventListener('storage', handleStorageChange);
-      //console.log("unmount");
       //setMapData(initialForm);
     };
   }, [linksUser, linksClient, linksAdmin]);
@@ -507,7 +494,6 @@ export default function Header() {
   useEffect(() => {
     btnCloseRef.current && btnCloseRef.current.click();
   }, [pathname]);
-  //console.log(pathname.includes("reports"));
   return (
     <>
       <header className={style.header}>

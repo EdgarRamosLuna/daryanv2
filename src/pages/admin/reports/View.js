@@ -1329,7 +1329,7 @@ const View = () => {
                         width: "95%",
                       }}
                       type="text"
-                      name="st3"
+                      name="cc5"
                       value={customerControl.cc5}
                       onChange={(e) =>
                         setCustomerControl({

@@ -6,20 +6,6 @@ import { MainContext } from "../../context/MainContext";
 export default function SecondTableCreate3({ divs, setDivs }) {
   const { numFilasReportByH } = useContext(MainContext);
 
-  function handleAddDiv() {
-    const newId = divs.length + 1;
-    const newValues = ["", "", "", "", "", "", "", "", "", "", "", "", "", ""];
-    setDivs([...divs, { id: newId, values: newValues }]);
-    const tableWrapper = document.querySelector(".c2");
-    const scrollHeight = tableWrapper.scrollHeight;
-    const clientHeight = tableWrapper.clientHeight;
-    if (scrollHeight > clientHeight) {
-      //tableWrapper.scrollTop = scrollHeight - clientHeight;
-      setTimeout(() => {
-        tableWrapper.scrollTo({ top: scrollHeight, behavior: "smooth" });
-      }, 100);
-    }
-  }
 
   function handleInputChange(divId, inputIndex, newValue) {
     setDivs((prevDivs) => {

@@ -108,13 +108,10 @@ export default function SubHeader() {
     activeTabReportInsp,
     setActiveTabReportInsp,
   } = useContext(MainContext);
-  console.log(dataSes);
-  //console.log(isAdmin);
-  //console.log(useParams());
+  
 
   //   const path = pathname.replaceAll('/', '');
   //   const name = path.replace('user', '');
-  //console.log(path.replace('user', ''));
 
   const handleClickModal = () => {
     setShowModalUser(true);
@@ -277,11 +274,8 @@ export default function SubHeader() {
   const p = useParams().id;
   const [params, setParams] = useState(p);
   if (typeof p !== "undefined") {
-    //console.log(dataSes);
   }
-  //console.log(useLocation())
   const navigate = useNavigate();
-  //console.log(pathname.slice(-1));
 
   const handleLink = (e) => {
     let idCreate = pathname.slice(-1);
@@ -528,7 +522,7 @@ export default function SubHeader() {
                   icon={<SendIcon />}
                   onClick={(e) => saveReport(e)}
                 >
-                  Enviar Reportef
+                  Enviar Reporte
                 </ButtonOutlined>
                 <ButtonOutlined
                   icon={<TableChartIcon />}

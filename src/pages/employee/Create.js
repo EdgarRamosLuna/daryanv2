@@ -74,13 +74,12 @@ const Create = () => {
     activeTabReportInsp,
     setActiveTabReportInsp,
     divsSamplingTableInsp,
-    setdivsSamplingTableInsp,
+    setDivsSamplingTableInsp,
   } = useContext(MainContext);
-  //console.log(suppliers);
   const [producedBy, setProducedBy] = useState("");
   const [checkedBy, setCheckedBy] = useState("");
   const [authorizedBy, setAuthorizedBy] = useState("");
-
+  const dataSes = localStorage.getItem("sesType");
   const [totalHours, setTotalHours] = useState(0);
 
   useEffect(() => {
@@ -92,7 +91,6 @@ const Create = () => {
     }
   }, [total1, data]);
 
-  //console.log(totalHours);
   const [divs2, setDivs2] = useState(() => {
     const filas = [];
     for (let i = 1; i <= numFilas; i++) {
@@ -176,7 +174,6 @@ const Create = () => {
 
   const [serviceType, setServiceType] = useState([]);
   const [customerControl, setCustomerControl] = useState([]);
-  //console.log(divs)
   useEffect(() => {
     setDivs2((prev) => {
       const filas = [];
@@ -229,7 +226,6 @@ const Create = () => {
   }, [numColumnas]);
 
   useEffect(() => {
-    //console.log()
     const newArray = [
       {
         data: data,
@@ -259,9 +255,9 @@ const Create = () => {
           i: total14,
         },
         incType: incType,
+        sampling_table:divsSamplingTableInsp
       },
     ];
-    //  console.log(newArray[0]['total']);
     setDataToSave(newArray);
   }, [
     data,
@@ -289,6 +285,7 @@ const Create = () => {
     total13,
     total14,
     incType,
+    divsSamplingTableInsp
   ]);
 
   const [dumpValue, setDumpValue] = useState("");
@@ -300,7 +297,7 @@ const Create = () => {
   };
   const inputRef = useRef();
   const dataListRef = useRef();
-  
+
   const getSelectedOptionLocation = () => {
     for (let i = 0; i < dataListRef.current.options.length; i++) {
       if (dataListRef.current.options[i].value === inputRef.current.value) {
@@ -315,19 +312,6 @@ const Create = () => {
         ...data,
         [e.target.dataset.name || e.target.name]: e.target.value,
       });
-      // const selectedOption = getSelectedOptionLocation();
-      // if (selectedOption === undefined) {
-
-      //   // console.log("option not included in the datalist");
-      // } else {
-      //   // console.log("holaa")
-      //   // const id_supplier = selectedOption.getAttribute("id");
-      //   // setData({
-      //   //   ...data,
-      //   //   id_supplier,
-      //   //   [e.target.dataset.name || e.target.name]: e.target.value,
-      //   // });
-      // }
     },
     [data]
   );
@@ -350,7 +334,6 @@ const Create = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     const currentInputValue = data[name];
-    console.log(value);
     setData((prevData) => {
       return {
         ...prevData,
@@ -358,8 +341,6 @@ const Create = () => {
       };
     });
   };
-  console.log(data);
-  console.log(serviceType);
   const tabContent = {
     1: {
       component: (
@@ -413,7 +394,6 @@ const Create = () => {
                     setData({
                       ...data,
                       id_supplier: newValue.id,
-                      
                     })
                   }
                 />
@@ -479,8 +459,6 @@ const Create = () => {
                     />
                   </DemoContainer>
                 </LocalizationProvider>
-
-           
               </div>
               <div className="form-container">
                 <TextField
@@ -1385,15 +1363,31 @@ const Create = () => {
                       colSpan={numColumnas / 3}
                       style={{ textAlign: "center" }}
                     >
-                      <div>
-                        AUTORIZO <span className="required">*</span>
-                      </div>
+                      <div>AUTORIZO</div>
                       <div className="firm">
                         <input
                           type="text"
                           name=""
+                          readOnly={
+                            ["admin"].includes(dataSes.toLowerCase())
+                              ? false
+                              : true
+                          }
+                          disabled={
+                            ["admin"].includes(dataSes.toLowerCase())
+                              ? false
+                              : true
+                          }
+                          onChange={
+                            ["admin"].includes(dataSes.toLowerCase())
+                              ? (e) => setAuthorizedBy(e.target.value)
+                              : () => {
+                                  return;
+                                }
+                          }
                           value={authorizedBy}
-                          onChange={(e) => setAuthorizedBy(e.target.value)}
+                          // value={authorizedBy}
+                          // onChange={(e) => setAuthorizedBy(e.target.value)}
                           className="firm-input"
                         />
                       </div>
@@ -1407,7 +1401,13 @@ const Create = () => {
       ),
     },
     2: {
-      component: <Create3 divs={divsSamplingTableInsp} setDivs={setdivsSamplingTableInsp}  />,
+      component: (
+        <Create3
+          divs={divsSamplingTableInsp}
+          setDivs={setDivsSamplingTableInsp}
+          reportType="insp"
+        />
+      ),
     },
   };
   return <>{tabContent[activeTabReportInsp]?.component}</>;

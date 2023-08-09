@@ -4,10 +4,9 @@ import { StyledForm, Table } from "../../styles/Styles";
 
 import SecondTableCreate from "./SecondTableCreate";
 import SecondTableCreate3 from "./SecondTableCreate3";
-const Create3 = ({divs, setDivs}) => {
-  const { data, setData, numFilasReportByH, } = useContext(MainContext);
-
-  console.log(divs)
+import SecondTableCreate4 from "./SecondTableCreate4";
+const Create3 = ({divs, setDivs, reportType}) => {
+  const { data, setData, numFilasReportByH,  } = useContext(MainContext);
   const handleSelect = (e, type) => {
     setData({
       ...data,
@@ -28,7 +27,9 @@ const Create3 = ({divs, setDivs}) => {
         
       </div>
       <div className="container c4">
-        <SecondTableCreate3 divs={divs} setDivs={setDivs} />
+        {reportType === "insp" && <SecondTableCreate3 divs={divs} setDivs={setDivs} />}
+        {reportType === "byh" && <SecondTableCreate4 divs={divs} setDivs={setDivs} />}
+        
       </div>
 
       

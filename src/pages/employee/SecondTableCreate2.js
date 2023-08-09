@@ -211,7 +211,7 @@ export default function SecondTableCreate2({
               </td>
               <td>
                 <input
-                  value={div.values[14]}
+                  defaultValue={div.values[14]}
                   readOnly
                   disabled
                   onChange={(e) => {
