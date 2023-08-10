@@ -77,10 +77,12 @@ const View = () => {
     incType,
     activeTabReportInsp,
     divsSamplingTableInsp,
-    setdivsSamplingTableInsp,
+    setDivsSamplingTableInsp,
     setActiveTabReportInsp,
     setNumFilas
   } = useContext(MainContext);
+
+
   const params = useParams();
   const idReport = params.id;
   //const [numFilas, setNumFilas] = useState(0);
@@ -90,7 +92,7 @@ const View = () => {
           (data) => Number(data.id) === Number(idReport)
         )[0]
       : data.filter((data) => Number(data.id) === Number(idReport))[0];
-
+  
   const [dataC, setDataC] = useState(eData);
   const [producedBy, setProducedBy] = useState(eData.made_by);
   const [checkedBy, setCheckedBy] = useState(eData.checked_by);
@@ -99,6 +101,35 @@ const View = () => {
   const newLength = 11 + clauses;
   const [numFilas2, setNumFilas2] = useState(Number(dataC.reports_cc.length));
   const [numColumnas2, setNumColumnas2] = useState(newLength);
+
+  useEffect(() => {
+
+      const reports_sample_table = eData.report_sata;
+      const newList = reports_sample_table.map(item => ({
+        id: parseInt(item.id_item),
+        values: [
+            item.id,
+            item.lot,
+            item.serial,
+            item.total_pieces_insp,
+            item.total_pieces_sampling,
+            item.hour,
+            item.signature,
+            
+        ]
+    }));
+
+    
+    
+    setDivsSamplingTableInsp(newList);
+
+    
+  
+    return () => {
+      
+    }
+  }, [])
+  
   const [divs, setDivs] = useState(() => {
     const filas = [];
     for (let i = 1; i <= numFilas2; i++) {
@@ -1945,7 +1976,8 @@ const View = () => {
       component: (
         <Create3
           divs={divsSamplingTableInsp}
-          setDivs={setdivsSamplingTableInsp}
+          setDivs={setDivsSamplingTableInsp}
+          reportType="insp"
         />
       ),
     },
