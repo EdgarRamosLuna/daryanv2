@@ -289,32 +289,7 @@ const Create = () => {
   ]);
 
   const [dumpValue, setDumpValue] = useState("");
-  const handleDate = (name, date) => {
-    setData({
-      ...data,
-      [name]: date,
-    });
-  };
-  const inputRef = useRef();
-  const dataListRef = useRef();
 
-  const getSelectedOptionLocation = () => {
-    for (let i = 0; i < dataListRef.current.options.length; i++) {
-      if (dataListRef.current.options[i].value === inputRef.current.value) {
-        return dataListRef.current.options[i];
-      }
-    }
-  };
-
-  const handleChange = useCallback(
-    (e, isProvedor) => {
-      setData({
-        ...data,
-        [e.target.dataset.name || e.target.name]: e.target.value,
-      });
-    },
-    [data]
-  );
 
   const optionClause = [
     {
@@ -398,40 +373,7 @@ const Create = () => {
                   }
                 />
 
-                {/* <input
-                  type="text"
-                  name="supplier"
-                  value={data.supplier}
-                  list="supplier"
-                  onChange={(e) => handleChange(e, true)}
-                  ref={inputRef}
-                  autoComplete="off"
-                /> */}
-                {/* <datalist id="supplier" ref={dataListRef}>
-                  {suppliers.map((item, indx) => {
-                    // Verificar si el navegador es Firefox, Safari o Edge
-                    const isFirefox =
-                      navigator.userAgent.indexOf("Firefox") !== -1;
-                    const isSafari =
-                      navigator.userAgent.indexOf("Safari") !== -1 ||
-                      navigator.userAgent.indexOf("AppleWebKit") !== -1;
-                    const isEdge = navigator.userAgent.indexOf("Edge") !== -1;
-
-                    // Crear etiqueta de opción
-                    const option = (
-                      <option
-                        value={item.fullname}
-                        id={item.id}
-                        key={item.id + "supplier"}
-                      >
-                        {isFirefox ? `${item.fullname}` : ""}
-                      </option>
-                    );
-
-                    // Devolver opción
-                    return option;
-                  })}
-                </datalist> */}
+             
               </div>
               <div
                 className="form-containers"
@@ -573,27 +515,7 @@ const Create = () => {
                     <MenuItem value={3}>3</MenuItem>
                   </Select>
                 </FormControl>
-                {/* <label htmlFor="data8">
-                  Turno <span className="required">*</span>
-                </label>
-                <select
-                  id="data8"
-                  name="shift"
-                  type="text"
-                  required
-                  value={`${data.shift}`}
-                  onChange={(e) =>
-                    setData({
-                      ...data,
-                      [ e.target.name]: e.target.value,
-                    })
-                  }
-                >
-                  <option value="0">Selecciona una opcion</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select> */}
+               
               </div>
               <Grid
                 sx={{
@@ -1185,14 +1107,7 @@ const Create = () => {
                                             data={optionClause}
                                             clause="A"
                                           />
-                                          {/* <input
-                                        placeholder="A"
-                                        readOnly
-                                        type="text"
-                                        style={{ textAlign: "center" }}
-                                        defaultValue={dumpValue}
-                                      /> */}
-
+                                  
                                           <br />
                                         </>
                                       )}
@@ -1202,25 +1117,13 @@ const Create = () => {
                                             data={optionClause}
                                             clause="B"
                                           />
-                                          {/* <input
-                                        placeholder="B"
-                                        readOnly
-                                        type="text"
-                                        style={{ textAlign: "center" }}
-                                        defaultValue={dumpValue}
-                                      /> */}
+                                       
                                           <br />
                                         </>
                                       )}
                                       {i === 10 && (
                                         <>
-                                          {/* <input
-                                        placeholder="C"
-                                        readOnly
-                                        type="text"
-                                        style={{ textAlign: "center" }}
-                                        defaultValue={dumpValue} 
-                                  />*/}
+                                       
                                           <SelectCustom
                                             data={optionClause}
                                             clause="C"
