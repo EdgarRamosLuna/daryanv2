@@ -1,71 +1,52 @@
-import React from "react";
+
+import React, { useContext, useEffect, useState } from "react";
+import i18n from 'i18next';
 import { SettingsStyle } from "../../styles/Styles";
-import { useContext } from "react";
 import { MainContext } from "../../context/MainContext";
-import { useState } from "react";
-import { set } from "react-hook-form";
+import { LanguageContext } from "../../context/LanguageContext";
+import { useTranslation } from 'react-i18next';
 import { Box, Button, Grid, MenuItem, Select } from "@mui/material";
 
 const Settings = () => {
-  const { langu, setLangu, btnCloseRef, toast } = useContext(MainContext);
-  const [langI, setLangI] = useState(localStorage.getItem("lang"));
+  const { btnCloseRef, toast } = useContext(MainContext);
+  const { lang: globalLang, changeLanguage } = useContext(LanguageContext);
+  const { t } = useTranslation();
 
-  console.log(localStorage.getItem("lang"));
-  const handleSubmit = (e) => {
+  // Local state for the selected language in the component
+  const [selectedLang, setSelectedLang] = useState(globalLang);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLangu(langI);
+    
+    // Change the language and wait for it to complete
+    await i18n.changeLanguage(selectedLang);
+    
     btnCloseRef.current && btnCloseRef.current.click();
-    toast.success(`${langI === "es"? "Idioma actualizado" : " Language updated"}`);
-    //console.log(langI);
-  };
+    
+};
+
   return (
     <SettingsStyle>
       <div className="my-account-cont">
         <div className="my-acc-title">
-          <h2>{langI === "es"? "Configuración" : "Settings"}</h2>
-        </div>
-        {/* <div className="my-acc-input">
-          <label>Nombre de usuario</label>
-          <input type="text" />
+          <h2>{t('settings')}</h2>
         </div>
         <div className="my-acc-input">
-          <label>Correo</label>
-          <input type="text" />
+          <label>{t('language')}</label>
+          <Box>
+            <Select
+              value={globalLang}
+              onChange={(e) => changeLanguage(e.target.value)}  // Updating the local state              
+              sx={{ width: "100%" }}
+            >
+              <MenuItem value="es">{t('spanish')}</MenuItem>
+              <MenuItem value="en">{t('english')}</MenuItem>
+            </Select>
+          </Box>        
         </div>
-        <div className="my-acc-input">
-          <label>Contraseña</label>
-          <input type="text" />
-        </div> */}
-
-
-        <div className="my-acc-input">
-
-        <Box>
-                    <Select
-                      value={langI}
-                      onChange={(e) => {
-                        setLangI(e.target.value);
-                      }}
-                      defaultValue={0}
-                      sx={{
-                        width: "100%",
-                      }}
-                    >
-                      <MenuItem value="0">{langI === "es" ? "Idioma" : "Language"}</MenuItem>
-                      <MenuItem value="es">
-                      {langI === "es" ? "Español" : "Spanish"}
-                        </MenuItem>
-                      <MenuItem value="es">
-                      {langI === "en" ? "English" : "Ingles"}
-                        </MenuItem>
-                    </Select>
-                  </Box>        
-        </div>
-        <Grid className="my-acc-input" sx={{
-          mt:'12px'
-        }}>
-          <Button variant="outlined" type="submit" children={`${langI === "es" ? "Guardar" : "Save"}`} onClick={handleSubmit} />
-        </Grid>
+        {/* <Grid className="my-acc-input" sx={{ mt:'12px' }}>
+          <Button variant="outlined" type="submit" children={t('save')} onClick={handleSubmit} />
+        </Grid> */}
       </div>
     </SettingsStyle>
   );

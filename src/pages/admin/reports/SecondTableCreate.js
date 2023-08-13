@@ -32,9 +32,11 @@ export default function SecondTableCreate({
     setTotal12,
     setTotal13,
     setTotal14,
+    setDivsSamplingTableInsp,
+    divsSamplingTableInsp,
   } = useContext(MainContext);
-
   const handleInputChange = (divId, inputIndex, newValue) => {
+    // 1. Actualizar divs basado en el cambio de entrada
     setDivs((prevDivs) => {
       const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
       const updatedDiv = { ...prevDivs[divToUpdateIndex] };
@@ -43,7 +45,25 @@ export default function SecondTableCreate({
       updatedDivs[divToUpdateIndex] = updatedDiv;
       return updatedDivs;
     });
+  
+    // 2. Sincronizar divsSamplingTableInsp con divs
+    const updatedSamplingTable = divs.map(divItem => {
+      // Obtiene el item correspondiente de divsSamplingTableInsp
+      const originalItem = divsSamplingTableInsp.find(item => item.id === divItem.id);
+      return {
+        id: divItem.id,
+        values: [
+          originalItem.values[0], // id se mantiene igual
+          divItem.values[3],      // lote se sincroniza desde divs
+          divItem.values[4],      // serial se sincroniza desde divs
+          divItem.values[5],      // total insp se sincroniza desde divs
+          ...originalItem.values.slice(4) // El resto de los valores se mantienen sin cambios
+        ]
+      };
+    });
+    setDivsSamplingTableInsp(updatedSamplingTable);
   };
+  
 
   useEffect(() => {
     let newValue1 = 0;

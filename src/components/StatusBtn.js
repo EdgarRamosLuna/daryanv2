@@ -1,23 +1,19 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { MainContext } from "../context/MainContext";
 import { StyledStatusBtn } from "../styles/Styles";
+import { useTranslation } from 'react-i18next';  // Importa el hook
 
 const StatusBtn = ({ status, id, table }) => {
-  const { handleStatus, } = useContext(MainContext);
-  /*useEffect(() => {
-    setData([...data]);
-  }, [data])*/
-  const changeStatus = () =>{
-    handleStatus(id, status, table)
-    // const index = data.findIndex(el => el.id === id);
-    // if(index !== -1){
-    //     const newStatus = [...data];
-    //     newStatus[index].status = status === 1 ? 2 : 1;
-    // }
+  const { handleStatus } = useContext(MainContext);
+  const { t } = useTranslation();  // Inicializa el hook
+
+  const changeStatus = () => {
+    handleStatus(id, status, table);
   }
+
   return (
     <StyledStatusBtn statusBtn={status} onClick={changeStatus}>
-      {status === 1 ? "Activo" : "Inactivo"}
+      {status === 1 ? t('status.active') : t('status.inactive')}
     </StyledStatusBtn>
   );
 };

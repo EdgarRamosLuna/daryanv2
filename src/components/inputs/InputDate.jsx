@@ -31,6 +31,9 @@ const InputDate = ({ setData, data, defaultValue }) => {
                     }}
                     value={dayjs(defaultValue)}
                     onChange={handleDateChange}
+                    inputProps={{
+                        readOnly:true
+                      }}
                 />
             </DemoContainer>
         </LocalizationProvider>

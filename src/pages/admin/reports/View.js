@@ -788,6 +788,7 @@ const View = () => {
           i: total14,
         },
         incType: incType,
+        sampling_table:divsSamplingTableInsp
       },
     ];
     setDataToSave(newArray);
@@ -818,6 +819,7 @@ const View = () => {
     total13,
     total14,
     incType,
+    divsSamplingTableInsp
   ]);
   
   const [keysTh, setKeysTh] = useState([]);

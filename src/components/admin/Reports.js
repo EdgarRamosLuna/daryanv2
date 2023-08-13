@@ -111,7 +111,6 @@ function ReportsTable({ data, dataReportByH }) {
         }
       })
       .catch((err) => {
-        console.log(err);
       });
   };
   useEffect(() => {
@@ -124,7 +123,6 @@ function ReportsTable({ data, dataReportByH }) {
           }
         })
         .catch((err) => {
-          console.log(err);
         });
     };
     clients();
@@ -135,7 +133,6 @@ function ReportsTable({ data, dataReportByH }) {
     return () => {};
   }, [activeTab]);
 
-  //console.log(clients);
   useEffect(() => {
     if (dateStart !== "") {
       const date = new Date(dateStart);
@@ -146,7 +143,6 @@ function ReportsTable({ data, dataReportByH }) {
       const minutes = ("0" + date.getMinutes()).slice(-2);
       const seconds = ("0" + date.getSeconds()).slice(-2);
       const formattedDateTime = `${year}-${month}-${day}`;
-      console.log(formatedDateEnd);
       setFormatedDateStart(formattedDateTime);
     }
     if (dateEnd !== "") {
@@ -262,8 +258,7 @@ function ReportsTable({ data, dataReportByH }) {
     let value = event.target.value.trim(); // Elimina espacios en blanco del valor
     //arr = arr.map(item => item.replace(/\n/g, ''));
     value = value.replace(/\n/g, "");
-    console.log(value);
-    console.log(uniqueSuppliers);
+
     if (value !== "" && uniqueSuppliers.includes(value)) {
       // Verifica que el valor no esté vacío y existe en uniquePart_number
       setLoader(true);
@@ -356,7 +351,6 @@ function ReportsTable({ data, dataReportByH }) {
   //         nameFilter &&
   //         fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
   //       ) {
-  //         //console.log(fullName.slice(3, 4));
   //         return false;
   //       }
   //       if (dateStart) {
@@ -421,7 +415,6 @@ function ReportsTable({ data, dataReportByH }) {
     }
   }, [nameFilter, clients]);
 
-  //console.log(uniqueClients);
 
   const filterData2 = useCallback(
     (data) => {
@@ -479,7 +472,6 @@ function ReportsTable({ data, dataReportByH }) {
       const filterSupplier = filtersSupplier;
       const temp = {};
       const temp2 = {};
-      //console.log(filterLot);
       // Definir las fechas del filtro
       const startDate = dateStart;
       const endDate = dateEnd;
@@ -618,7 +610,6 @@ function ReportsTable({ data, dataReportByH }) {
           temp2[dateString].total_scrap += total_scrap;
           temp2[dateString].total_A += total_A;
         } else {
-          //  console.log(partNumber);
           temp2[dateString] = {
             part_number: partNumber,
             total_inspected: total_inspected,
@@ -668,7 +659,6 @@ function ReportsTable({ data, dataReportByH }) {
           temp[partNumber].date += dateString;
           temp[partNumber].worked_h += worked_h;
         } else {
-          //  console.log(partNumber);
           temp[partNumber] = {
             part_number: partNumber,
             total_inspected: total_inspected,
@@ -735,7 +725,6 @@ function ReportsTable({ data, dataReportByH }) {
         });
       });
 
-      // console.log(JSON.stringify(groupedData));
       // const groupedData = Object.values(temp2).reduce((acc, curr) => {
       //   const {part_number, date, ...rest} = curr;
       //   if(!acc[date]) {
@@ -767,7 +756,6 @@ function ReportsTable({ data, dataReportByH }) {
       //   return acc;
       // }, {});
 
-      // console.log(JSON.stringify(groupedData));
 
       setDataToTable(summedData);
       const totalesArray = [];
@@ -808,7 +796,6 @@ function ReportsTable({ data, dataReportByH }) {
   //   if (data.length > 0) {
   //     const filterDate = new Date("2023-04-13");
 
-  //     console.log(filtersSupplier)
   //     //const filterLot = "30";
   //     const filterLot = filtersLot;
   //     const filterSerial = filtersSerial;
@@ -816,7 +803,6 @@ function ReportsTable({ data, dataReportByH }) {
   //     const filterSupplier = filtersSupplier;
   //     const temp = {};
   //     const temp2 = {};
-  //     //console.log(filterLot);
   //     // Definir las fechas del filtro
   //     const startDate = dateStart;
   //     const endDate = dateEnd;
@@ -954,7 +940,6 @@ function ReportsTable({ data, dataReportByH }) {
   //         temp[partNumber].date += dateString;
   //         temp[partNumber].worked_h += worked_h;
   //       } else {
-  //         //  console.log(partNumber);
   //         temp[partNumber] = {
   //           part_number: partNumber,
   //           total_inspected: total_inspected,
@@ -1109,7 +1094,6 @@ function ReportsTable({ data, dataReportByH }) {
       });
       setUniqueSuppliers([...new Set(res0)]);
       //}
-      //console.log(res1);
       //setUniqueLots(res1);
 
       const res1 = [];
@@ -1289,13 +1273,11 @@ function ReportsTable({ data, dataReportByH }) {
   //   });
   // };
 
-  //console.log(clientsToReport);
   const removeClient = (id) => {
     setClientsToReport((prev) => prev.filter((client) => client.id !== id));
   };
   const [showFIltersT, setShowFiltersT] = useState(false);
   const showFilterTable = () => {
-    console.log("showFilterTable");
     setShowFiltersT((prev) => !prev);
   };
   const inspectionReport = () => {};

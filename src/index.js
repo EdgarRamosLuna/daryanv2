@@ -5,13 +5,16 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { MainContextProvider } from "./context/MainContext";
 import GlobalStyle from "./styles/GobalStyles";
+import { LanguageProvider } from "./context/LanguageProvider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <MainContextProvider>
-      <GlobalStyle/>
-      <App />
+      <LanguageProvider>
+        <GlobalStyle />
+        <App />
+      </LanguageProvider>
     </MainContextProvider>
   </BrowserRouter>
 );
@@ -19,4 +22,3 @@ root.render(
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-

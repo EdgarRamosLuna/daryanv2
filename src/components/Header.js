@@ -10,6 +10,7 @@ import {
   faUsersBetweenLines,
   faUsersViewfinder,
 } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -17,6 +18,7 @@ import SubHeader from "./SubHeader";
 import { MainContext } from "../context/MainContext";
 import { useContext } from "react";
 import { checkClient, checkEmployee, checkUser } from "../api/daryan.api";
+import { LanguageContext } from "../context/LanguageContext";
 
 let val;
 if (typeof window !== "undefined") {
@@ -25,6 +27,10 @@ if (typeof window !== "undefined") {
   val = value;
 }
 export default function Header() {
+  const { t } = useTranslation();
+  const { lang, changeLanguage } = useContext(LanguageContext);
+
+  
   const {
     toast,
     btnCloseRef,
@@ -37,16 +43,15 @@ export default function Header() {
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
   const [mapData, setMapData] = useState([]);
-
   const initialForm = [
     {
-      label: `${langu === "es" ? "Reportes" : "Reports"}`,
+      label: t("button_texts.reports"),
       route: "/user/reports",
       ico: faFileLines,
       fun: (e) => {},
     },
     {
-      label: `${langu === "es" ? "Configuracion" : "Configuration"}`,
+      label: t("button_texts.myAccount"),
       route: "/user/my-account",
       ico: faGear,
       fun: (e) => {
@@ -54,7 +59,7 @@ export default function Header() {
       },
     },
     {
-      label: `${langu === "es" ? "Salir" : "Logout"}`,
+      label: t("button_texts.logout"),
       route: "/user/login",
       ico: faRightFromBracket,
       fun: (e) => {
@@ -64,23 +69,21 @@ export default function Header() {
   ];
   const [linksUser, setLinksUser] = useState(initialForm);
   useEffect(() => {
-    //language
     let val;
     if (typeof window !== "undefined") {
-      // This code will only be executed in the browser
       const value = localStorage.getItem("sesType");
       val = value;
     }
     if (val === "user") {
       setLinksUser([
         {
-          label: `${langu === "es" ? "Reportes" : "Reports"}`,
+          label: t("button_texts.reports"),
           route: "/user/reports",
           ico: faFileLines,
           fun: (e) => {},
         },
         {
-          label: `${langu === "es" ? "Configuracion" : "Configuration"}`,
+          label: t("button_texts.myAccount"),
           route: "/user/my-account",
           ico: faGear,
           fun: (e) => {
@@ -88,7 +91,7 @@ export default function Header() {
           },
         },
         {
-          label: `${langu === "es" ? "Salir" : "Logout"}`,
+          label: t("button_texts.logout"),
           route: "/user/login",
           ico: faRightFromBracket,
           fun: (e) => {
@@ -100,13 +103,13 @@ export default function Header() {
     if (val === "client") {
       setLinksClient([
         {
-          label: `${langu === "es" ? "Reportes" : "Reports"}`,
+          label: t("button_texts.reports"),
           route: "/client/reports",
           ico: faFileLines,
           fun: (e) => {},
         },
         {
-          label: `${langu === "es" ? "Configuracion" : "Configuration"}`,
+          label: t("button_texts.myAccount"),
           route: "/client/my-account",
           ico: faGear,
           fun: (e) => {
@@ -114,7 +117,7 @@ export default function Header() {
           },
         },
         {
-          label: `${langu === "es" ? "Salir" : "Logout"}`,
+          label: t("button_texts.logout"),
           route: "/client/login",
           ico: faRightFromBracket,
           fun: (e) => {
@@ -123,42 +126,42 @@ export default function Header() {
         },
       ]);
     }
+
     if (val === "admin") {
       if (isAdmin) {
         setLinksAdmin([
           {
-            label: `${langu === "es" ? "Reportes" : "Reports"}`,
+            label: t("button_texts.reports"),
             route: "/admin/reports",
             ico: faFileLines,
             fun: (e) => {},
           },
           {
-            //label: `${langu === "es" ? "Reportes" : "Reports"}`,
-            label: `${langu === "es" ? "Usuarios" : "Users"}`,
+            label: t("button_texts.users"),
             route: "/admin/users",
             ico: faUsers,
             fun: (e) => {},
           },
           {
-            label: `${langu === "es" ? "Empleados" : "Employees"}`,
+            label: t("button_texts.employees"),
             route: "/admin/employees",
             ico: faUsersGear,
             fun: (e) => {},
           },
           {
-            label: `${langu === "es" ? "Clientes" : "Clients"}`,
+            label: t("button_texts.clients"),
             route: "/admin/clients",
             ico: faUsersBetweenLines,
             fun: (e) => {},
           },
           {
-            label: `${langu === "es" ? "Proveedores" : "Suppliers"}`,
+            label: t("button_texts.suppliers"),
             route: "/admin/suppliers",
             ico: faUsersViewfinder,
             fun: (e) => {},
           },
           {
-            label: `${langu === "es" ? "Configuracion" : "Configuration"}`,
+            label: t("button_texts.myAccount"),
             route: "/admin/my-account",
             ico: faGear,
             fun: (e) => {
@@ -166,8 +169,7 @@ export default function Header() {
             },
           },
           {
-            label: `${langu === "es" ? "Salir" : "Logout"}`,
-
+            label: t("button_texts.logout"),
             route: "/admin/login",
             ico: faRightFromBracket,
             fun: (e) => {
@@ -178,13 +180,13 @@ export default function Header() {
       } else {
         setLinksAdmin([
           {
-            label: `${langu === "es" ? "Reportes" : "Reports"}`,
+            label: t("button_texts.reports"),
             route: "/admin/reports",
             ico: faFileLines,
             fun: (e) => {},
           },
           {
-            label: `${langu === "es" ? "Configuracion" : "Configuration"}`,
+            label: t("button_texts.myAccount"),
             route: "/admin/my-account",
             ico: faGear,
             fun: (e) => {
@@ -192,8 +194,7 @@ export default function Header() {
             },
           },
           {
-            label: `${langu === "es" ? "Salir" : "Logout"}`,
-
+            label: t("button_texts.logout"),
             route: "/admin/login",
             ico: faRightFromBracket,
             fun: (e) => {
@@ -203,19 +204,17 @@ export default function Header() {
         ]);
       }
     }
-    // setLinksAdmin(initialForm);
-    // setLinksClient(initialForm);
-  }, [langu, isAdmin]);
+  }, [lang, isAdmin]);
 
   const [linksClient, setLinksClient] = useState([
     {
-      label: `${langu === "es" ? "Reportes" : "Reports"}`,
+      label: t("button_texts.reports"),
       route: "/client/reports",
       ico: faFileLines,
       fun: (e) => {},
     },
     {
-      label: `${langu === "es" ? "Configuracion" : "Configuration"}`,
+      label: t("button_texts.myAccount"),
       route: "/client/my-account",
       ico: faGear,
       fun: (e) => {
@@ -223,7 +222,7 @@ export default function Header() {
       },
     },
     {
-      label: `${langu === "es" ? "Salir" : "Logout"}`,
+      label: t("button_texts.logout"),
       route: "/client/login",
       ico: faRightFromBracket,
       fun: (e) => {
@@ -234,7 +233,7 @@ export default function Header() {
 
   const [linksAdmin, setLinksAdmin] = useState([
     {
-      label: `${langu === "es" ? "Configuracion" : "Configuration"}`,
+      label: t("button_texts.myAccount"),
       route: "/admin/my-account",
       ico: faGear,
       fun: (e) => {
@@ -242,8 +241,7 @@ export default function Header() {
       },
     },
     {
-      label: `${langu === "es" ? "Salir" : "Logout"}`,
-
+      label: t("button_texts.logout"),
       route: "/admin/login",
       ico: faRightFromBracket,
       fun: (e) => {
@@ -251,16 +249,16 @@ export default function Header() {
       },
     },
   ]);
+
   useEffect(() => {
     // request to api to valida the token
     const token = localStorage.getItem("t");
     const handleStorageChange = (event) => {
-      if (event.key === 'sesType') {
-        
+      if (event.key === "sesType") {
       }
     };
-    window.addEventListener('storage', handleStorageChange);
-     const val = localStorage.getItem("sesType");
+    window.addEventListener("storage", handleStorageChange);
+    const val = localStorage.getItem("sesType");
 
     const validateUser = async (token) => {
       if (val === "admin") {
@@ -275,43 +273,42 @@ export default function Header() {
               navigate("/admin/login");
             } else {
               // get token from local storage
-              
+
               if (Number(datares.i) === 1) {
                 setIsAdmin(true);
                 setLinksAdmin([
                   {
-                    label: `${langu === "es" ? "Reportes" : "Reports"}`,
+                    label: t("button_texts.reports"),
                     route: "/admin/reports",
                     ico: faFileLines,
                     fun: (e) => {},
                   },
                   {
-                    //label: `${langu === "es" ? "Reportes" : "Reports"}`,
-                    label: `${langu === "es" ? "Usuarios" : "Users"}`,
+                    label: t("button_texts.users"),
                     route: "/admin/users",
                     ico: faUsers,
                     fun: (e) => {},
                   },
                   {
-                    label: `${langu === "es" ? "Empleados" : "Employees"}`,
+                    label: t("button_texts.employees"),
                     route: "/admin/employees",
                     ico: faUsersGear,
                     fun: (e) => {},
                   },
                   {
-                    label: `${langu === "es" ? "Clientes" : "Clients"}`,
+                    label: t("button_texts.clients"),
                     route: "/admin/clients",
                     ico: faUsersBetweenLines,
                     fun: (e) => {},
                   },
                   {
-                    label: `${langu === "es" ? "Proveedores" : "Suppliers"}`,
+                    label: t("button_texts.suppliers"),
                     route: "/admin/suppliers",
                     ico: faUsersViewfinder,
                     fun: (e) => {},
                   },
                   {
-                    label: `${langu === "es" ? "Configuracion" : "My Account"}`,
+                    label: t("button_texts.myAccount"),
                     route: "/admin/my-account",
                     ico: faGear,
                     fun: (e) => {
@@ -319,8 +316,7 @@ export default function Header() {
                     },
                   },
                   {
-                    label: `${langu === "es" ? "Salir" : "Logout"}`,
-
+                    label: t("button_texts.logout"),
                     route: "/admin/login",
                     ico: faRightFromBracket,
                     fun: (e) => {
@@ -328,17 +324,17 @@ export default function Header() {
                     },
                   },
                 ]);
-              }else{
+              } else {
                 setIsAdmin(false);
                 setLinksAdmin([
                   {
-                    label: `${langu === "es" ? "Reportes" : "Reports"}`,
+                    label: t("button_texts.reports"),
                     route: "/admin/reports",
                     ico: faFileLines,
                     fun: (e) => {},
-                  },                  
+                  },
                   {
-                    label: `${langu === "es" ? "Configuracion" : "My Account"}`,
+                    label: t("button_texts.myAccount"),
                     route: "/admin/my-account",
                     ico: faGear,
                     fun: (e) => {
@@ -346,8 +342,7 @@ export default function Header() {
                     },
                   },
                   {
-                    label: `${langu === "es" ? "Salir" : "Logout"}`,
-
+                    label: t("button_texts.logout"),
                     route: "/admin/login",
                     ico: faRightFromBracket,
                     fun: (e) => {
@@ -356,23 +351,6 @@ export default function Header() {
                   },
                 ]);
               }
-              //router.push('/user/reports');
-              //    window.location.replace("/user/reports");
-              //const { email, name, id_supplier, hour } = data;
-              //const { last_id } = datares;
-              // setDataClients((prev) => [
-              //   {
-              //     id: `${last_id}`,
-              //     id_supplier: `${id_supplier}`,
-              //     fullname: name,
-              //     email,
-              //     status: "1",
-              //     hour: Number(hour) === 1 ? true : false,
-              //   },
-              //   ...prev,
-              // ]);
-
-              // btnCloseRef.current.click();
             }
           })
           .catch((err) => {
@@ -391,26 +369,6 @@ export default function Header() {
               });
               localStorage.removeItem("sesType");
               navigate("/user/login");
-              //remove the sesType from local storage
-            } else {
-              //localStorage.setItem("sesType", "user");
-              // get token from local storage
-              //router.push('/user/reports');
-              //    window.location.replace("/user/reports");
-              //const { email, name, id_supplier, hour } = data;
-              //const { last_id } = datares;
-              // setDataClients((prev) => [
-              //   {
-              //     id: `${last_id}`,
-              //     id_supplier: `${id_supplier}`,
-              //     fullname: name,
-              //     email,
-              //     status: "1",
-              //     hour: Number(hour) === 1 ? true : false,
-              //   },
-              //   ...prev,
-              // ]);
-              // btnCloseRef.current.click();
             }
           })
           .catch((err) => {
@@ -429,25 +387,6 @@ export default function Header() {
               });
               localStorage.removeItem("sesType");
               navigate("/client/login");
-            } else {
-              //localStorage.setItem("sesType", "user");
-              // get token from local storage
-              //router.push('/user/reports');
-              //    window.location.replace("/user/reports");
-              //const { email, name, id_supplier, hour } = data;
-              //const { last_id } = datares;
-              // setDataClients((prev) => [
-              //   {
-              //     id: `${last_id}`,
-              //     id_supplier: `${id_supplier}`,
-              //     fullname: name,
-              //     email,
-              //     status: "1",
-              //     hour: Number(hour) === 1 ? true : false,
-              //   },
-              //   ...prev,
-              // ]);
-              // btnCloseRef.current.click();
             }
           })
           .catch((err) => {
@@ -459,19 +398,11 @@ export default function Header() {
     };
     validateUser(token);
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
     };
-  }, []);
-
-  //useEffect(() => {}, [val]);
+  }, [lang]);
 
   useEffect(() => {
-    // const handleStorageChange = (event) => {
-    //   if (event.key === 'sesType') {
-    //     
-    //   }
-    // };
-    // window.addEventListener('storage', handleStorageChange);
     const val = localStorage.getItem("sesType");
     if (val === null) {
       navigate("/");
@@ -485,10 +416,6 @@ export default function Header() {
     if (val === "admin") {
       setMapData(linksAdmin);
     }
-    return () => {
-      // window.removeEventListener('storage', handleStorageChange);
-      //setMapData(initialForm);
-    };
   }, [linksUser, linksClient, linksAdmin]);
 
   useEffect(() => {
@@ -511,7 +438,7 @@ export default function Header() {
                     to={
                       label === "Mi Cuenta" ||
                       label === "My Account" ||
-                      label === "Configuracion" ||
+                      label === "Configuración" ||
                       label === "Configuration"
                         ? "#"
                         : route
@@ -521,7 +448,7 @@ export default function Header() {
                         label === "Logout" ||
                         label === "Mi Cuenta" ||
                         label === "My Account" ||
-                        label === "Configuracion" ||
+                        label === "Configuración" ||
                         label === "Configuration") &&
                       fun(e)
                     }

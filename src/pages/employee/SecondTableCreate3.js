@@ -47,15 +47,17 @@ export default function SecondTableCreate3({ divs, setDivs }) {
 
               <td>
                 <input
-                  value={div.values[1]}
-                  onChange={(e) => handleInputChange(div.id, 1, e.target.value)}
+                  defaultValue={div.values[1]}
+                  readOnly
+                  //onChange={(e) => handleInputChange(div.id, 1, e.target.value)}
                   style={{ minWidth: "300px" }}
                 />
               </td>
               <td>
                 <input
-                  value={div.values[2]}
-                  onChange={(e) => handleInputChange(div.id, 2, e.target.value)}
+                  defaultValue={div.values[2]}
+                  readOnly
+                  //onChange={(e) => handleInputChange(div.id, 2, e.target.value)}
                 />
               </td>
               <td>

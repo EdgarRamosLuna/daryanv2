@@ -17,17 +17,14 @@ const Reports = () => {
        try {
          const response = await getReportsIns(token);
          const datares = response?.data;
-         console.log(datares);
          const { error } = datares;
          if (!error) {
            const datares = response?.data;
            const reportes = Object.values(datares);
-           console.log(reportes);
            localStorage.setItem("dataTable", JSON.stringify(reportes));
            setData(reportes);
          }
        } catch (error) {
-         //console.log(err);
          toast.error("error", {
            duration: 5000,
          });
@@ -43,7 +40,6 @@ const Reports = () => {
        try {
          const response = await getReportsByH(token);
          const datares = response?.data;
-         console.log(datares);
          const { error } = datares;
          if (!error) {
            const reportes = Object.values(datares);
@@ -51,7 +47,6 @@ const Reports = () => {
            setData2(reportes);
          }
        } catch (error) {
-         //console.log(err);
          toast.error("error", {
            duration: 5000,
          });

@@ -143,7 +143,6 @@ function ReportsTable({ data, dataReportByH }) {
       const minutes = ("0" + date.getMinutes()).slice(-2);
       const seconds = ("0" + date.getSeconds()).slice(-2);
       const formattedDateTime = `${year}-${month}-${day}`;
-      console.log(formatedDateEnd);
       setFormatedDateStart(formattedDateTime);
     }
     if (dateEnd !== "") {
@@ -727,7 +726,7 @@ function ReportsTable({ data, dataReportByH }) {
   const navigate = useNavigate();
   const singleView = (id) => {
     // window.location.href = `/admin/reports/${id}`;
-    navigate(`/admin/reports_insp/${id}`);
+    navigate(`/user/reports_insp/${id}`);
   };
   const singleView2 = (id) => {
     navigate(`/user/reports/2/${id}`);
@@ -1971,58 +1970,7 @@ function ReportsTable({ data, dataReportByH }) {
                   setDateStart={setDateStart}
                   setDateEnd={setDateEnd}
                 />
-                {/* <div className="filter-container">
-              <div className="filter-item-input input-date">
-                  <div className="range">
-                    <DatePicker
-                      id="fechaInicio"
-                      selected={dateStart}
-                      onChange={(date) => setDateStart(date)}
-                      locale="es"
-                      customInput={
-                        <CustomInputD>
-                          <p>
-                            Desde:{" "}
-                            <span
-                              style={{
-                                minWidth: "90px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {formatedDateStart !== ""
-                                ? formatedDateStart
-                                : ""}
-                            </span>
-                          </p>
-                        </CustomInputD>
-                      }
-                    />
-                  </div>
-                  <div className="range">
-                    <DatePicker
-                      id="fechaInicio"
-                      selected={dateEnd}
-                      onChange={(date) => setDateEnd(date)}
-                      locale="es"
-                      customInput={
-                        <CustomInputD>
-                          <p>
-                            Hasta:
-                            <span
-                              style={{
-                                minWidth: "90px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {formatedDateEnd !== "" ? formatedDateEnd : ""}
-                            </span>
-                          </p>
-                        </CustomInputD>
-                      }
-                    />
-                  </div>
-                </div>
-              </div> */}
+          
               </Grid>
             </form>
           </div>

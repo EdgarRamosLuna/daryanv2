@@ -31,26 +31,11 @@ export default function SecondTableCreate() {
     setTotal12,
     setTotal13,
     setTotal14,
+    divsSamplingTableInsp,
+    setDivsSamplingTableInsp
   } = useContext(MainContext);
 
-  //console.log(numColumnas);
-
-  //console.log(numColumnas);
-
-  /*function handleAddDiv() {
-    const newId = divs.length + 1;
-    const newValues = ["", "", "", "", "", "", "", "", "", "", "", "", "", ""];
-    setDivs([...divs, { id: newId, values: newValues }]);
-    const tableWrapper = document.querySelector(".c2");
-    const scrollHeight = tableWrapper.scrollHeight;
-    const clientHeight = tableWrapper.clientHeight;
-    if (scrollHeight > clientHeight) {
-      //tableWrapper.scrollTop = scrollHeight - clientHeight;
-      setTimeout(() => {
-        tableWrapper.scrollTo({ top: scrollHeight, behavior: "smooth" });
-      }, 100);
-    }
-  }*/
+  
   const handleInputChange = (divId, inputIndex, newValue) => {
     setDivs((prevDivs) => {
       const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
@@ -60,6 +45,24 @@ export default function SecondTableCreate() {
       updatedDivs[divToUpdateIndex] = updatedDiv;
       return updatedDivs;
     });
+    const updatedSamplingTable = divs.map((divItem) => {
+      // Obtiene el item correspondiente de divsSamplingTableInsp
+      const originalItem = divsSamplingTableInsp.find(
+        (item) => item.id === divItem.id
+      );
+      return {
+        id: divItem.id,
+        values: [
+          originalItem.values[0], // id se mantiene igual
+          divItem.values[3], // lote se sincroniza desde divs
+          divItem.values[4], // serial se sincroniza desde divs
+          divItem.values[5], // total insp se sincroniza desde divs
+          divItem.values[6], // nuevo valor se sincroniza desde divs
+          ...originalItem.values.slice(5), // El resto de los valores se mantienen sin cambios
+        ],
+      };
+    });
+    setDivsSamplingTableInsp(updatedSamplingTable);
   };
 
   useEffect(() => {

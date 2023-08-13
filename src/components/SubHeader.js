@@ -3,6 +3,9 @@ import style from "./styles.module.css";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useContext, useState } from "react";
 import { MainContext } from "../context/MainContext";
+import { useTranslation } from "react-i18next";
+import { LanguageContext } from "../context/LanguageContext";
+
 import Modal from "./Modal";
 import CreateUser from "../pages/admin/users/Create";
 import UpdateUser from "../pages/admin/users/Update";
@@ -49,6 +52,8 @@ if (typeof window !== "undefined") {
 }
 
 export default function SubHeader() {
+  const { t } = useTranslation();
+
   let pathname = useLocation().pathname;
 
   const {
@@ -108,7 +113,6 @@ export default function SubHeader() {
     activeTabReportInsp,
     setActiveTabReportInsp,
   } = useContext(MainContext);
-  
 
   //   const path = pathname.replaceAll('/', '');
   //   const name = path.replace('user', '');
@@ -188,24 +192,6 @@ export default function SubHeader() {
         .catch((err) => {
           console.log(err);
         });
-      // axios
-      //   .post(
-      //     `${serverUrl}/api/delete_supplier`,
-      //     {
-      //       id: id,
-      //     },
-      //     {
-      //       headers: {
-      //         Authorization: `Bearer 125465`,
-      //       },
-      //     }
-      //   )
-      //   .then((res) => {
-      //     //   console.log(res.data);
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
     }
     if (tableName === "clients") {
       await deleteClient({ id: id })
@@ -324,19 +310,14 @@ export default function SubHeader() {
       }
     } else {
       setPosition("top-right");
-      toast.error(
-        "Debes seleccionar almenos 1 reporte y 1 proveedor para poder asignar un cliente",
-        {
-          duration: 5000,
-        }
-      );
+      toast.error(t("selectReportAndProvider"), {
+        duration: 5000,
+      });
     }
   };
 
   const deleteAU = async (id) => {
-    const confirm = window.confirm(
-      "Estas seguro de borrar este usuario de la lista de autorizados?"
-    );
+    const confirm = window.confirm(t("confirmDeleteAuthorizedUser"));
     if (confirm) {
       await deleteAuthClient({ id }).then((res) => {
         const datares = res.data;
@@ -353,7 +334,11 @@ export default function SubHeader() {
       });
     }
   };
+  const getItemName = () => {
+    return t(`ui_dynamic_messages.items.${tableName}`);
+  };
 
+  const itemName = getItemName();
   return (
     <>
       {showModalAuth === true && (
@@ -421,14 +406,7 @@ export default function SubHeader() {
         <Modal callback={handleClose}>
           <div className="delete-confirm">
             <div className="delete-confirm-label">
-              ¿Estás seguro(a) que deseas borrar este
-              {tableName === "users" && " usuario"}
-              {tableName === "employees" && " empleado"}
-              {tableName === "clients" && " cliente"}
-              {tableName === "suppliers" && " proveedor"}
-              {tableName === "reports" && " reporte"}?
-              <br />
-              Esta acción no podrá deshacerse.
+              {t("ui_dynamic_messages.confirmDeletion", { item: itemName })}
             </div>
             <div className="delete-confirm-btns">
               <ButtonOutlined
@@ -436,14 +414,14 @@ export default function SubHeader() {
                 onClick={handleClose}
                 className="btn btn-danger"
               >
-                Cancelar
+                {t("cancel")}
               </ButtonOutlined>
               <ButtonOutlined
                 icon={<HowToRegIcon />}
                 onClick={() => callbackConfirm(idDelete)}
                 className="btn btn-success"
               >
-                Confirmar
+                {t("confirm")}
               </ButtonOutlined>
             </div>
           </div>
@@ -458,14 +436,14 @@ export default function SubHeader() {
                 icon={<AssignmentTurnedInOutlinedIcon />}
                 onClick={() => singleView("/user/reports/create/1")}
               >
-                <center>Reporte de inspeccion</center>
+                {t("button_texts.inspectionReport")}
               </ButtonOutlined>
               <ButtonOutlined
                 disableRipple={true}
                 icon={<PendingActionsIcon />}
                 onClick={() => singleView("/user/reports/create/2")}
               >
-                <center>Reporte por horas</center>
+                {t("button_texts.hourlyReport")}
               </ButtonOutlined>
             </>
           )}
@@ -477,7 +455,7 @@ export default function SubHeader() {
                   onClick={addClients}
                   className="auth-clientes"
                 >
-                  Autorizar Clientes
+                  {t("button_texts.authorizeClients")}
                 </ButtonOutlined>
               )}
               {activeTab === 3 && (
@@ -487,11 +465,9 @@ export default function SubHeader() {
                     className="chart-btn"
                     onClick={() => setShowCharts((prev) => !prev)}
                   >
-                    {showCharts === true ? "Ver graficas" : "Ocultar graficas"}
-                    {/* <FontAwesomeIcon
-                      icon={showCharts === true ? faEyeSlash : faEye}
-                    /> */}
-                    {/* <FontAwesomeIcon icon={faChartSimple} /> */}
+                    {showCharts === true
+                      ? t("button_texts.hideCharts")
+                      : t("button_texts.showCharts")}
                   </ButtonOutlined>
                 </div>
               )}
@@ -522,13 +498,13 @@ export default function SubHeader() {
                   icon={<SendIcon />}
                   onClick={(e) => saveReport(e)}
                 >
-                  Enviar Reporte
+                  {t("button_texts.sendReport")}
                 </ButtonOutlined>
                 <ButtonOutlined
                   icon={<TableChartIcon />}
                   onClick={(e) => setActiveTabReportInsp(2)}
                 >
-                  Tabla de muestreo
+                  {t("button_texts.samplingTable")}
                 </ButtonOutlined>
               </>
             )}
@@ -539,13 +515,13 @@ export default function SubHeader() {
                   icon={<SendIcon />}
                   onClick={(e) => saveReportH(e)}
                 >
-                  Enviar Reporte{" "}
+                  {t("button_texts.sendReport")}
                 </ButtonOutlined>
                 <ButtonOutlined
                   icon={<TableChartIcon />}
                   onClick={(e) => setActiveTabReportByH(2)}
                 >
-                  Tabla de muestreo
+                  {t("button_texts.samplingTable")}
                 </ButtonOutlined>
               </>
             )}
@@ -554,7 +530,7 @@ export default function SubHeader() {
               icon={<HowToRegIcon />}
               onClick={(e) => saveReport(e)}
             >
-              Guardar
+              {t("save")}
             </ButtonOutlined>
           )}
           {dataSes === "admin" &&
@@ -564,63 +540,65 @@ export default function SubHeader() {
                 {pathname.includes("reports_by_h") && (
                   <>
                     {activeTabReportByH === 1 ? (
-                      <ButtonOutlined
-                        icon={<CheckCircleIcon />}
-                        onClick={(e) => aproveReportH(e)}
-                      >
-                        Aprobar Reporte
-                      </ButtonOutlined>
+                      <>
+                        <ButtonOutlined
+                          icon={<CheckCircleIcon />}
+                          onClick={(e) => aproveReportH(e)}
+                        >
+                          {t("button_texts.approveReport")}
+                        </ButtonOutlined>
+                        <ButtonOutlined
+                          icon={<TableChartIcon />}
+                          onClick={(e) => setActiveTabReportByH(2)}
+                          disabled
+                        >
+                          {t("button_texts.samplingTable")}
+                        </ButtonOutlined>
+                      </>
                     ) : (
                       <>
                         <ButtonOutlined
                           iconStart={<ArrowBackIosIcon />}
                           onClick={(e) => setActiveTabReportByH(1)}
                         >
-                          Regresar
+                          {t("button_texts.goBack")}
                         </ButtonOutlined>
                       </>
                     )}
-                    <ButtonOutlined
-                      icon={<TableChartIcon />}
-                      onClick={(e) => setActiveTabReportByH(2)}
-                      disabled
-                    >
-                      Tabla de muestreo
-                    </ButtonOutlined>
                   </>
                 )}
                 {pathname.includes("reports_insp") && (
                   <>
                     {activeTabReportInsp === 1 ? (
-                      <ButtonOutlined
-                        icon={<CheckCircleIcon />}
-                        onClick={(e) => aproveReport(e)}
-                      >
-                        Aprobar Reporte
-                      </ButtonOutlined>
+                      <>
+                        <ButtonOutlined
+                          icon={<CheckCircleIcon />}
+                          onClick={(e) => aproveReport(e)}
+                        >
+                          {t("button_texts.approveReport")}
+                        </ButtonOutlined>
+                        <ButtonOutlined
+                          icon={<TableChartIcon />}
+                          onClick={(e) => setActiveTabReportInsp(2)}
+                          disabled
+                        >
+                          {t("button_texts.samplingTable")}
+                        </ButtonOutlined>
+                      </>
                     ) : (
                       <>
                         <ButtonOutlined
                           iconStart={<ArrowBackIosIcon />}
                           onClick={(e) => setActiveTabReportInsp(1)}
                         >
-                          Regresar
+                          {t("button_texts.goBack")}
                         </ButtonOutlined>
                       </>
                     )}
-
-                    <ButtonOutlined
-                      icon={<TableChartIcon />}
-                      onClick={(e) => setActiveTabReportInsp(2)}
-                      disabled
-                    >
-                      Tabla de muestreo
-                    </ButtonOutlined>
                   </>
                 )}
               </>
             )}
-
           {[2].includes(activeTabReportByH) && (
             <>
               {["/user/reports/create/2"].includes(pathname) && (
@@ -629,7 +607,7 @@ export default function SubHeader() {
                     iconStart={<ArrowBackIosIcon />}
                     onClick={(e) => setActiveTabReportByH(1)}
                   >
-                    Regresar
+                    {t("actions.return")}
                   </ButtonOutlined>
                 </>
               )}
@@ -644,7 +622,7 @@ export default function SubHeader() {
                     iconStart={<ArrowBackIosIcon />}
                     onClick={(e) => setActiveTabReportInsp(1)}
                   >
-                    Regresar
+                    {t("actions.return")}
                   </ButtonOutlined>
                 </>
               )}
@@ -657,7 +635,7 @@ export default function SubHeader() {
                 icon={<PersonAddAltIcon />}
                 onClick={handleClickModal}
               >
-                <center>Crear usuario</center>
+                <>{t("actions.createUser")}</>
               </ButtonOutlined>
             </>
           )}
@@ -667,7 +645,7 @@ export default function SubHeader() {
                 icon={<PersonAddAltIcon />}
                 onClick={handleClickModal2}
               >
-                <center>Crear empleado</center>
+                <>{t("actions.createEmployee")}</>
               </ButtonOutlined>
             </>
           )}
@@ -677,7 +655,7 @@ export default function SubHeader() {
                 icon={<PersonAddAltIcon />}
                 onClick={handleClickModal3}
               >
-                <center>Crear cliente</center>
+                <>{t("actions.createClient")}</>
               </ButtonOutlined>
             </>
           )}
@@ -687,7 +665,7 @@ export default function SubHeader() {
                 icon={<PersonAddAltIcon />}
                 onClick={handleClickModal4}
               >
-                <center>Crear proveedor</center>
+                <>{t("actions.createSupplier")}</>
               </ButtonOutlined>
             </>
           )}

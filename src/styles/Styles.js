@@ -117,7 +117,7 @@ export const Table = styled.div`
     color: #fff;
     position: sticky;
     top: 0px;
-    z-index: 999;
+    z-index: 998;
   }
   .react-datepicker {
   }

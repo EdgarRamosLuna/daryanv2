@@ -707,7 +707,9 @@ const Create = () => {
             ref={container1Ref}
             onScroll={handleScroll1}
           >
-            <SecondTableCreate />
+            <SecondTableCreate                      
+       
+            />
           </div>
 
           <div

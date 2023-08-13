@@ -1,0 +1,57 @@
+{
+    "status": {
+        "active": "Activo",
+        "inactive": "Inactivo"
+    },
+    "actions": {
+        "return": "Regresar",
+        "createUser": "Crear usuario",
+        "createEmployee": "Crear empleado",
+        "createClient": "Crear cliente",
+        "createSupplier": "Crear proveedor"
+    },
+    "ui_messages": {
+        "selectReportAndProvider": "Debes seleccionar almenos 1 reporte y 1 proveedor para poder asignar un cliente",
+        "confirmDeleteUser": "Estas seguro de borrar este usuario de la lista de autorizados?"
+    },
+    "ui_dynamic_messages": {
+        "confirmDeletion": "¿Estás seguro(a) que deseas borrar este {item}? Esta acción no podrá deshacerse.",
+        "items": {
+            "users": "usuario",
+            "employees": "empleado",
+            "clients": "cliente",
+            "suppliers": "proveedor",
+            "reports": "reporte"
+        }
+    },
+    "button_texts": {
+        "inspectionReport": "Reporte de inspeccion",
+        "hourlyReport": "Reporte por horas",
+        "authorizeClients": "Autorizar Clientes",
+        "hideCharts": "Ocultar graficas",
+        "showCharts": "Ver graficas",
+        "sendReport": "Enviar Reporte",
+        "samplingTable": "Tabla de muestreo",
+        "approveReport": "Aprobar Reporte",
+        "reports": "Reportes",
+        "users": "Usuarios",
+        "employees": "Empleados",
+        "clients": "Clientes",
+        "suppliers": "Proveedores",
+        "myAccount": "Configuración",
+        "logout": "Salir",
+        "goBack":"Regresar"
+    },
+    "settings": "Configuración",
+    "save": "Guardar",
+    "languageUpdated": "Idioma actualizado",
+    "spanish": "Español",
+    "english": "Inglés",
+    "selectReportAndProvider": "Debes seleccionar almenos 1 reporte y 1 proveedor para poder asignar un cliente",
+    "confirmDeleteAuthorizedUser": "Estas seguro de borrar este usuario de la lista de autorizados?",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "language": "Selecciona un idioma"
+
+
+}
