@@ -9,12 +9,16 @@ export const LanguageProvider = ({ children }) => {
 
   
   const [lang, setLang] = useState(localStorage.getItem('lang') || 'es');
-
+  const [firstTime, setFirstTime] = useState(true);
+  
   useEffect(() => {
     // Cambia el idioma de i18next cuando el estado lang cambie.
-    i18n.changeLanguage(lang);
-
-    toast.success(t('languageUpdated'));
+    i18n.changeLanguage(lang);    
+    if(firstTime){
+      setFirstTime(false);
+    }else{
+      toast.success(t('languageUpdated'));
+    }
     
   }, [lang]);
 

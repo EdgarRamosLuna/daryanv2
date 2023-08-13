@@ -1,19 +1,13 @@
 import React, {
   forwardRef,
   useCallback,
-  useContext,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
-import Loader from "../Loader";
-import Checkbox from "../Checkbox";
-import { Table } from "../../styles/Styles";
-import { MainContext } from "../../context/MainContext";
-import { Link, useNavigate } from "react-router-dom";
+
 registerLocale("es", es);
 const FilterSearch = ({ data }) => {
   const [nameFilter, setNameFilter] = useState("");
@@ -33,9 +27,7 @@ const FilterSearch = ({ data }) => {
       const year = date.getFullYear();
       const month = ("0" + (date.getMonth() + 1)).slice(-2);
       const day = ("0" + date.getDate()).slice(-2);
-      const hours = ("0" + date.getHours()).slice(-2);
-      const minutes = ("0" + date.getMinutes()).slice(-2);
-      const seconds = ("0" + date.getSeconds()).slice(-2);
+
       const formattedDateTime = `${year}-${month}-${day}`;
       setFormatedDateStart(formattedDateTime);
     }
@@ -44,9 +36,7 @@ const FilterSearch = ({ data }) => {
       const year = date.getFullYear();
       const month = ("0" + (date.getMonth() + 1)).slice(-2);
       const day = ("0" + date.getDate()).slice(-2);
-      const hours = ("0" + date.getHours()).slice(-2);
-      const minutes = ("0" + date.getMinutes()).slice(-2);
-      const seconds = ("0" + date.getSeconds()).slice(-2);
+
       const formattedDateTime = `${year}-${month}-${day}`;
       setFormatedDateEnd(formattedDateTime);
     }
@@ -199,7 +189,6 @@ const FilterSearch = ({ data }) => {
             <div className="filter-item">
               <label htmlFor="name-filter">Buscar:</label>
               <div className="filter-item-input">
-                {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
                 <input list="parts_number" id="part_number" name="part_number" />
 
                 <datalist id="parts_number">
@@ -211,20 +200,15 @@ const FilterSearch = ({ data }) => {
                     );
                   })}
                 </datalist>
-                {/*<input
-                type="text"
-                id="name-filter"
-                value={nameFilter}
-                onChange={handleNameFilterChange}
-              />*/}
+             
               </div>
             </div>
           )}
           {Number(filterOption) === 2 && (
             <div className="filter-item">
-              <label htmlFor="name-filter">Buscare:</label>
+              <label htmlFor="name-filter">Buscar:</label>
               <div className="filter-item-input">
-                {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
+                
                 <input list="lots" id="lot" name="lot" />
 
                 <datalist id="lots">
@@ -236,20 +220,15 @@ const FilterSearch = ({ data }) => {
                     );
                   })}
                 </datalist>
-                {/*<input
-                type="text"
-                id="name-filter"
-                value={nameFilter}
-                onChange={handleNameFilterChange}
-              />*/}
+          
               </div>
             </div>
           )}
           {Number(filterOption) === 3 && (
             <div className="filter-item">
-              <label htmlFor="name-filter">Buscare:</label>
+              <label htmlFor="name-filter">Buscar:</label>
               <div className="filter-item-input">
-                {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
+                
                 <input list="serials" id="serial" name="serial" />
 
                 <datalist id="serials">
@@ -261,12 +240,7 @@ const FilterSearch = ({ data }) => {
                     );
                   })}
                 </datalist>
-                {/*<input
-                type="text"
-                id="name-filter"
-                value={nameFilter}
-                onChange={handleNameFilterChange}
-              />*/}
+           
               </div>
             </div>
           )}

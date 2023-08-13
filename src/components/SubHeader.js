@@ -406,18 +406,23 @@ export default function SubHeader() {
         <Modal callback={handleClose}>
           <div className="delete-confirm">
             <div className="delete-confirm-label">
-              {t("ui_dynamic_messages.confirmDeletion", { item: itemName })}
+            {t("ui_dynamic_messages.confirmDeletion", { item: itemName })}
+
             </div>
             <div className="delete-confirm-btns">
               <ButtonOutlined
-                icon={<HowToRegIcon />}
+                icon={""}
                 onClick={handleClose}
                 className="btn btn-danger"
+                sx={{
+                  background:'red'
+                }}
+                
               >
                 {t("cancel")}
               </ButtonOutlined>
               <ButtonOutlined
-                icon={<HowToRegIcon />}
+                icon={<CheckCircleIcon />}
                 onClick={() => callbackConfirm(idDelete)}
                 className="btn btn-success"
               >
