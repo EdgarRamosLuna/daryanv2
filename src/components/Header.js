@@ -436,20 +436,24 @@ export default function Header() {
                 <li key={route}>
                   <Link
                     to={
-                      label === "Mi Cuenta" ||
-                      label === "My Account" ||
-                      label === "Configuración" ||
-                      label === "Configuration"
+                      ["Salir" ,
+                    "Logout" ,
+                    "Mi Cuenta",
+                    "My Account",
+                    "Configuración",
+                    "Configuration",
+                    "Settings"].includes(label)
                         ? "#"
                         : route
                     }
                     onClick={(e) =>
-                      (label === "Salir" ||
-                        label === "Logout" ||
-                        label === "Mi Cuenta" ||
-                        label === "My Account" ||
-                        label === "Configuración" ||
-                        label === "Configuration") &&
+                    ["Salir" ,
+                    "Logout" ,
+                    "Mi Cuenta",
+                    "My Account",
+                    "Configuración",
+                    "Configuration",
+                    "Settings"].includes(label) &&
                       fun(e)
                     }
                     className={pathname.includes(`${route}`) ? "active" : ""}

@@ -1,96 +1,115 @@
 {
-  "status": {
-    "active": "Active",
-    "inactive": "Inactive"
-  },
-  "actions": {
-    "return": "Return",
-    "createUser": "Create user",
-    "createEmployee": "Create employee",
-    "createClient": "Create client",
-    "createSupplier": "Create supplier"
-  },
-  "ui_messages": {
-    "selectReportAndProvider": "You must select at least 1 report and 1 provider to assign a client.",
-    "confirmDeleteUser": "Are you sure you want to delete this user from the authorized list?"
-  },
-  "ui_dynamic_messages": {
-    "confirmDeletion": "Are you sure you want to delete this {{item}}? This action cannot be undone.",
-    "items": {
-      "users": "user",
-      "employees": "employee",
-      "clients": "client",
-      "suppliers": "supplier",
-      "reports": "report"
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "actions": {
+      "return": "Return",
+      "createUser": "Create User",
+      "createEmployee": "Create Employee",
+      "createClient": "Create Client",
+      "createSupplier": "Create Supplier"
+    },
+    "ui_messages": {
+      "selectReportAndProvider": "You must select at least 1 report and 1 supplier to assign a client.",
+      "confirmDeleteUser": "Are you sure you want to remove this user from the authorized list?"
+    },
+    "ui_dynamic_messages": {
+      "confirmDeletion": "Are you sure you want to delete this {{item}}? This action cannot be undone.",
+      "items": {
+        "users": "user",
+        "employees": "employee",
+        "clients": "client",
+        "suppliers": "supplier",
+        "reports": "report"
+      }
+    },
+    "button_texts": {
+      "inspectionReport": "Inspection Report",
+      "hourlyReport": "Hourly Report",
+      "authorizeClients": "Authorize Clients",
+      "hideCharts": "Hide Charts",
+      "showCharts": "Show Charts",
+      "sendReport": "Send Report",
+      "samplingTable": "Sampling Table",
+      "approveReport": "Approve Report",
+      "reports": "Reports",
+      "users": "Users",
+      "employees": "Employees",
+      "clients": "Clients",
+      "suppliers": "Suppliers",
+      "myAccount": "Settings",
+      "logout": "Logout",
+      "goBack": "Go Back"
+    },
+    "settings": "Settings",
+    "save": "Save",
+    "languageUpdated": "Language Updated",
+    "spanish": "Spanish",
+    "english": "English",
+    "selectReportAndProvider": "You must select at least 1 report and 1 supplier to assign a client.",
+    "confirmDeleteAuthorizedUser": "Are you sure you want to remove this user from the authorized list?",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "language": "Select a language",
+    "reports": {
+      "inspection_reports": "Inspection Reports",
+      "hourly_reports": "Hourly Reports",
+      "total_inspection_reports": "Total Inspection Reports",
+      "search": "Search",
+      "supplier": "Supplier",
+      "part_number": "Part Number",
+      "batch": "Batch",
+      "series": "Serial",
+      "search_by_date": "Search by Date",
+      "no_data_in_database": "No data in the database",
+      "partNumber": "Part #Number",
+      "serialNumber": "Serial #Number",
+      "plant": "Plant",
+      "selectAClient": "Select a Client",
+      "date": "Date",
+      "status": "Status",
+      "notApproved": "Not Approved",
+      "approved": "Approved",
+      "actions": "Actions",
+      "noDatabaseInformation": "No data in the database",
+      "searchFor": "Search:",
+      "suppliers": "Suppliers",
+      "lot": "Lot #Number",
+      "searchByDate": "Search by Date:",
+      "total_inspected": "Total Inspected",
+      "total_ng_pieces": "Total NG",
+      "total_ok_pieces": "Total OK",
+      "total_re_work_parts": "Total Re-Worked",
+      "total_scrap": "Total Scrap",
+      "worked_h": "Total Worked Hours"
+    },
+    "dates": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "thisWeek": "This Week",
+      "lastWeek": "Last Week",
+      "thisMonth": "This Month",
+      "lastMonth": "Last Month",
+      "daysUpToToday": "days up to today",
+      "daysStartingToday": "days starting today"
+    },
+    "notifications": {
+      "selectAtLeastOneSupplier": "You must select at least 1 supplier to get the available part numbers.",
+      "selectAtLeastOnePartForLots": "You must select at least 1 part number to get the available batch numbers.",
+      "selectAtLeastOnePartForSerials": "You must select at least 1 part number to get the available serial numbers."
+    },
+    "table": {
+      "partNumber": "Part #",
+      "plant": "Plant",
+      "supplier": "Supplier",
+      "date": "Date",
+      "status": "Status",
+      "actions": "Actions",
+      "searchFor": "Search:",
+      "noDatabaseInformation": "No data in the database",
+      "approved": "Approved",
+      "notApproved": "Not Approved"
     }
-  },
-  "button_texts": {
-    "inspectionReport": "Inspection Report",
-    "hourlyReport": "Hourly Report",
-    "authorizeClients": "Authorize Clients",
-    "hideCharts": "Hide Charts",
-    "showCharts": "Show Charts",
-    "sendReport": "Send Report",
-    "samplingTable": "Sampling Table",
-    "approveReport": "Approve Report",
-    "reports": "Reports",
-    "users": "Users",
-    "employees": "Employees",
-    "clients": "Clients",
-    "suppliers": "Suppliers",
-    "myAccount": "My Account",
-    "logout": "Logout",
-    "goBack": "Go back"
-  },
-  "settings": "Settings",
-  "save": "Save",
-  "languageUpdated": "Language updated",
-  "spanish": "Spanish",
-  "english": "English",
-  "selectReportAndProvider": "You must select at least 1 report and 1 supplier to assign a client",
-  "confirmDeleteAuthorizedUser": "Are you sure you want to delete this user from the authorized list?",
-  "cancel": "Cancel",
-  "confirm": "Confirm",
-  "language": "Select Language",
-  "reports": {
-    "inspection_reports": "Inspection Reports",
-    "hourly_reports": "Hourly Reports",
-    "total_inspection_reports": "Total Inspection Reports",
-    "search": "Search",
-    "supplier": "Supplier",
-    "batch": "Batch",
-    "series": "Serial Number",
-    "search_by_date": "Search by Date",
-    "no_data_in_database": "No data available in the database",
-    "partNumber": "Part Number",
-    "serialNumber": "Serial Number",
-    "plant": "Plant",
-    "selectAClient": "Select a Client",
-    "date": "Date",
-    "status": "Status",
-    "notApproved": "Not Approved",
-    "approved": "Approved",
-    "actions": "Actions",
-    "noDatabaseInformation": "No information in the database",
-    "searchFor": "Search For:",
-    "suppliers": "Suppliers",
-    "lot": "Lot",
-    "searchByDate": "Search by Date",
-    "part_number": "Part Number"
-  },
-  "dates": {
-    "today": "Today",
-    "yesterday": "Yesterday",
-    "thisWeek": "This week",
-    "lastWeek": "Last week",
-    "thisMonth": "This month",
-    "lastMonth": "Last month",
-    "daysUpToToday": "days up to today",
-    "daysStartingToday": "days starting today"
-  },
-  "notifications": {
-    "selectAtLeastOneSupplier": "You must select at least 1 supplier to get the available part numbers",
-    "selectAtLeastOnePartForLots": "You must select at least 1 part number to get the available lot numbers",
-    "selectAtLeastOnePartForSerials": "You must select at least 1 part number to get the available serial numbers"
   }
-}
+  

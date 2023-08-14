@@ -3,8 +3,10 @@ import Loader from "../Loader";
 import { MainContext } from "../../context/MainContext";
 import ComponentPagination from "../ComponentPagination";
 import NoInfo from "../helpers/NoInfo";
+import { useTranslation } from "react-i18next";
 
 const TableComponent = ({ groupedData, loader }) => {
+  const { t } = useTranslation();
   // Add state for current page and rows per page
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(20);
@@ -64,37 +66,19 @@ const TableComponent = ({ groupedData, loader }) => {
   return (
     <>
       <table className="table-totals">
-        <thead>
-          <tr>
-            <th>{LANG.find((item) => item.lang === langu).part_nu}</th>
-            <th>{LANG.find((item) => item.lang === langu).date}</th>
-            {tableFilters[0].total_in === true && (
-              // if value exist in array LANG
-              <th>{LANG.find((item) => item.lang === langu).total_in}</th>
-            )}
-            {tableFilters[0].total_ng === true && (
-              // if value exist in array LANG
-              <th>{LANG.find((item) => item.lang === langu).total_ng}</th>
-            )}
-            {tableFilters[0].total_ok === true && (
-              // if value exist in array LANG
-              <th>{LANG.find((item) => item.lang === langu).total_ok}</th>
-            )}
-            {tableFilters[0].total_rw === true && (
-              // if value exist in array LANG
-              <th>{LANG.find((item) => item.lang === langu).total_rw}</th>
-            )}
-            {tableFilters[0].total_sc === true && (
-              // if value exist in array LANG
-              <th>{LANG.find((item) => item.lang === langu).total_sc}</th>
-            )}
-            {tableFilters[0].total_wh === true && (
-              // if value exist in array LANG
-              <th>{LANG.find((item) => item.lang === langu).total_wh}</th>
-            )}
-            <th></th>
-          </tr>
-        </thead>
+      <thead>
+    <tr>
+      <th>{t('reports.partNumber')}</th>
+      <th>{t('reports.date')}</th>
+      {tableFilters[0].total_in === true && <th>{t('reports.total_inspected')}</th>}
+      {tableFilters[0].total_ng === true && <th>{t('reports.total_ng_pieces')}</th>}
+      {tableFilters[0].total_ok === true && <th>{t('reports.total_ok_pieces')}</th>}
+      {tableFilters[0].total_rw === true && <th>{t('reports.total_re_work_parts')}</th>}
+      {tableFilters[0].total_sc === true && <th>{t('reports.total_scrap')}</th>}
+      {tableFilters[0].total_wh === true && <th>{t('reports.worked_h')}</th>}
+      <th></th>
+    </tr>
+  </thead>
         <tbody>
           <div className={loader === false ? "loaderContainer" : ""}>
             <Loader>

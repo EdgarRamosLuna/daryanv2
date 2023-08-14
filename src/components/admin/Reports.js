@@ -1366,100 +1366,100 @@ function ReportsTable({ data, dataReportByH }) {
       ),
       componenteMiddle: (
         <div className="table-body table-reports">
-          <table>
-            <thead>
+        <table>
+          <thead>
+            <tr>
+              <th>
+                <Checkbox
+                  type="all"
+                  id={0}
+                  callback={handleCheckBox}
+                  data={getPaginatedData()}
+                />
+              </th>
+              <th>{t('reports.part_number')}</th>
+              <th>{t('reports.plant')}</th>
+              <th>{t('reports.supplier')}</th>
+              <th>{t('reports.date')}</th>
+              <th>{t('reports.status')}</th>
+              <th>{t('reports.actions')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <div className={loader === false ? "loaderContainer" : ""}>
+              <Loader>
+                <img src="/assets/img/loading2.svg" alt="" />
+              </Loader>
+            </div>
+            {getPaginatedData().length === 0 ? (
               <tr>
-                <th>
-                  <Checkbox
-                    type="all"
-                    id={0}
-                    callback={handleCheckBox}
-                    data={getPaginatedData()}
-                  />
-                </th>
-                <th># Parte</th>
-                <th>Planta</th>
-                <th>Proveedor</th>
-                <th>Fecha</th>
-                <th>Status</th>
-                <th>Acciones</th>
+                <td
+                  colSpan="7"
+                  className="table-center"
+                  style={{ opacity: `${loader ? 0 : 1}` }}
+                >
+                  <h1>{t('reports.noDatabaseInformation')}</h1>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              <div className={loader === false ? "loaderContainer" : ""}>
-                <Loader>
-                  <img src="/assets/img/loading2.svg" alt="" />
-                </Loader>
-              </div>
-              {getPaginatedData().length === 0 ? (
-                <tr>
+            ) : (
+              getPaginatedData().map((item, index) => (
+                <tr key={index} onClick={(e) => singleView(item.id)}>
                   <td
-                    colSpan="7"
                     className="table-center"
-                    style={{ opacity: `${loader ? 0 : 1}` }}
+                    onClick={(e) => e.stopPropagation()}
+                    colSpan={1}
                   >
-                    <h1>No hay informacion en la base de datos</h1>
+                    <Checkbox
+                      type="single"
+                      id={item.id}
+                      callback={handleCheckBox}
+                      data={getPaginatedData()}
+                    />
+                  </td>
+                  <td className="table-center">{item.part_number}</td>
+                  <td className="table-center">{item.plant}</td>
+                  <td className="table-center">{item.supplier}</td>
+                  <td className="table-center">{item.date}</td>
+                  <td className="table-center">
+                    {Number(item.status) === 1 && t('reports.notApproved')} 
+                    {Number(item.status) === 3 && t('reports.approved')}
+                  </td>
+                  <td
+                    className="table-center"
+                    onClick={(e) => e.stopPropagation()}
+                    colSpan={1}
+                  >
+                    <div className="actions">
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        onClick={() => handleDel(item.id, "reports")}
+                      />
+                      <a
+                        href={`http://phpstack-1070657-3746640.cloudwaysapps.com/inspection-report/${item.id}`}
+                        target="_blank"
+                        className="btn-pdf"
+                        rel="noreferrer"
+                      >
+                        {!navigator.onLine ? (
+                          <FontAwesomeIcon icon={faFilePdf} />
+                        ) : (
+                          <i className="fa-solid fa-file-pdf"></i>
+                        )}
+                      </a>
+                      <FontAwesomeIcon
+                        icon={faUsers}
+                        color="green"
+                        onClick={() => authClientsC(item.id)}
+                      />
+                    </div>
                   </td>
                 </tr>
-              ) : (
-                getPaginatedData().map((item, index) => (
-                  <tr key={index} onClick={(e) => singleView(item.id)}>
-                    <td
-                      className="table-center"
-                      onClick={(e) => e.stopPropagation()}
-                      colSpan={1}
-                    >
-                      <Checkbox
-                        type="single"
-                        id={item.id}
-                        callback={handleCheckBox}
-                        data={getPaginatedData()}
-                      />
-                    </td>
-                    {/* <td className="table-center">{item.id}</td> */}
-                    <td className="table-center">{item.part_number}</td>
-                    <td className="table-center">{item.plant}</td>
-                    <td className="table-center">{item.supplier}</td>
-                    <td className="table-center">{item.date}</td>
-                    <td className="table-center">
-                      {Number(item.status) === 1 && "Sin aprobar"}{" "}
-                      {Number(item.status) === 3 && "Aprobado"}
-                    </td>
-                    <td
-                      className="table-center"
-                      onClick={(e) => e.stopPropagation()}
-                      colSpan={1}
-                    >
-                      <div className="actions">
-                        <FontAwesomeIcon
-                          icon={faTrash}
-                          onClick={() => handleDel(item.id, "reports")}
-                        />
-                        <a
-                          href={`http://phpstack-1070657-3746640.cloudwaysapps.com/reporte-inspeccion/${item.id}`}
-                          target="_blank"
-                          className="btn-pdf"
-                          rel="noreferrer"
-                        >
-                          {!navigator.onLine ? (
-                            <FontAwesomeIcon icon={faFilePdf} />
-                          ) : (
-                            <i className="fa-solid fa-file-pdf"></i>
-                          )}
-                        </a>
-                        <FontAwesomeIcon
-                          icon={faUsers}
-                          color="green"
-                          onClick={() => authClientsC(item.id)}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+      
       ),
       componenteBottom: (
         <ComponentPagination

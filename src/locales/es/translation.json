@@ -1,96 +1,115 @@
 {
-  "status": {
-    "active": "Activo",
-    "inactive": "Inactivo"
-  },
-  "actions": {
-    "return": "Regresar",
-    "createUser": "Crear usuario",
-    "createEmployee": "Crear empleado",
-    "createClient": "Crear cliente",
-    "createSupplier": "Crear proveedor"
-  },
-  "ui_messages": {
+    "status": {
+      "active": "Activo",
+      "inactive": "Inactivo"
+    },
+    "actions": {
+      "return": "Regresar",
+      "createUser": "Crear usuario",
+      "createEmployee": "Crear empleado",
+      "createClient": "Crear cliente",
+      "createSupplier": "Crear proveedor"
+    },
+    "ui_messages": {
+      "selectReportAndProvider": "Debes seleccionar almenos 1 reporte y 1 proveedor para poder asignar un cliente",
+      "confirmDeleteUser": "Estas seguro de borrar este usuario de la lista de autorizados?"
+    },
+    "ui_dynamic_messages": {
+      "confirmDeletion": "¿Estás seguro(a) que deseas borrar este {{item}}? Esta acción no podrá deshacerse.",
+      "items": {
+        "users": "usuario",
+        "employees": "empleado",
+        "clients": "cliente",
+        "suppliers": "proveedor",
+        "reports": "reporte"
+      }
+    },
+    "button_texts": {
+      "inspectionReport": "Reporte de inspeccion",
+      "hourlyReport": "Reporte por horas",
+      "authorizeClients": "Autorizar Clientes",
+      "hideCharts": "Ocultar graficas",
+      "showCharts": "Ver graficas",
+      "sendReport": "Enviar Reporte",
+      "samplingTable": "Tabla de muestreo",
+      "approveReport": "Aprobar Reporte",
+      "reports": "Reportes",
+      "users": "Usuarios",
+      "employees": "Empleados",
+      "clients": "Clientes",
+      "suppliers": "Proveedores",
+      "myAccount": "Configuración",
+      "logout": "Salir",
+      "goBack": "Regresar"
+    },
+    "settings": "Configuración",
+    "save": "Guardar",
+    "languageUpdated": "Idioma actualizado",
+    "spanish": "Español",
+    "english": "Inglés",
     "selectReportAndProvider": "Debes seleccionar almenos 1 reporte y 1 proveedor para poder asignar un cliente",
-    "confirmDeleteUser": "Estas seguro de borrar este usuario de la lista de autorizados?"
-  },
-  "ui_dynamic_messages": {
-    "confirmDeletion": "¿Estás seguro(a) que deseas borrar este {{item}}? Esta acción no podrá deshacerse.",
-    "items": {
-      "users": "usuario",
-      "employees": "empleado",
-      "clients": "cliente",
-      "suppliers": "proveedor",
-      "reports": "reporte"
+    "confirmDeleteAuthorizedUser": "Estas seguro de borrar este usuario de la lista de autorizados?",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "language": "Selecciona un idioma",
+    "reports": {
+      "inspection_reports": "Reportes de inspección",
+      "hourly_reports": "Reportes por hora",
+      "total_inspection_reports": "Totales reportes de inspección",
+      "search": "Buscar",
+      "supplier": "Proveedor",
+      "part_number": "Número de parte",
+      "batch": "Lote",
+      "series": "Serial",
+      "search_by_date": "Buscar por fecha",
+      "no_data_in_database": "No hay información en la base de datos",
+      "partNumber": "#Parte",
+      "serialNumber": "#Serial",
+      "plant": "Planta",
+      "selectAClient": "Selecciona un cliente",
+      "date": "Fecha",
+      "status": "Status",
+      "notApproved": "Sin aprobar",
+      "approved": "Aprobado",
+      "actions": "Acciones",
+      "noDatabaseInformation": "No hay informacion en la base de datos",
+      "searchFor": "Buscar:",
+      "suppliers": "Proveedores",
+      "lot": "Lote",
+      "searchByDate": "Buscar por Fecha:",
+      "total_inspected": "Total Inspeccionado",
+      "total_ng_pieces": "Total NG",
+      "total_ok_pieces": "Total OK",
+      "total_re_work_parts": "Total Re-Trabajadas",
+      "total_scrap": "Total Scrap",
+      "worked_h": "Total Horas Trabajadas"
+    },
+    "dates": {
+      "today": "Hoy",
+      "yesterday": "Ayer",
+      "thisWeek": "Esta semana",
+      "lastWeek": "Semana pasada",
+      "thisMonth": "Este mes",
+      "lastMonth": "El mes pasado",
+      "daysUpToToday": "días hasta hoy",
+      "daysStartingToday": "días a partir de hoy"
+    },
+    "notifications": {
+      "selectAtLeastOneSupplier": "Debes seleccionar almenos 1 proveedor para obtener los numeros de parte disponibles",
+      "selectAtLeastOnePartForLots": "Debes seleccionar almenos 1 numero de parte para obtener los numeros de lote disponibles",
+      "selectAtLeastOnePartForSerials": "Debes seleccionar almenos 1 numero de parte para obtener los numeros de serie disponibles"
+    },
+    "table": {
+      "partNumber": "# Parte",
+      "plant": "Planta",
+      "supplier": "Proveedor",
+      "date": "Fecha",
+      "status": "Estado",
+      "actions": "Acciones",
+      "searchFor": "Buscar:",
+      "noDatabaseInformation": "No hay información en la base de datos",
+      "approved": "Aprobado",
+      "notApproved": "Sin aprobar"
     }
-  },
-  "button_texts": {
-    "inspectionReport": "Reporte de inspeccion",
-    "hourlyReport": "Reporte por horas",
-    "authorizeClients": "Autorizar Clientes",
-    "hideCharts": "Ocultar graficas",
-    "showCharts": "Ver graficas",
-    "sendReport": "Enviar Reporte",
-    "samplingTable": "Tabla de muestreo",
-    "approveReport": "Aprobar Reporte",
-    "reports": "Reportes",
-    "users": "Usuarios",
-    "employees": "Empleados",
-    "clients": "Clientes",
-    "suppliers": "Proveedores",
-    "myAccount": "Configuración",
-    "logout": "Salir",
-    "goBack": "Regresar"
-  },
-  "settings": "Configuración",
-  "save": "Guardar",
-  "languageUpdated": "Idioma actualizado",
-  "spanish": "Español",
-  "english": "Inglés",
-  "selectReportAndProvider": "Debes seleccionar almenos 1 reporte y 1 proveedor para poder asignar un cliente",
-  "confirmDeleteAuthorizedUser": "Estas seguro de borrar este usuario de la lista de autorizados?",
-  "cancel": "Cancelar",
-  "confirm": "Confirmar",
-  "language": "Selecciona un idioma",
-  "reports": {
-    "inspection_reports": "Reportes de inspección",
-    "hourly_reports": "Reportes por hora",
-    "total_inspection_reports": "Totales reportes de inspección",
-    "search": "Buscar",
-    "supplier": "Proveedor",
-    "part_number": "Número de parte",
-    "batch": "Lote",
-    "series": "Serial",
-    "search_by_date": "Buscar por fecha",
-    "no_data_in_database": "No hay información en la base de datos",
-    "partNumber": "#Parte",
-    "serialNumber": "#Serial",
-    "plant": "#Planta",
-    "selectAClient": "Selecciona un cliente",
-    "date": "Fecha",
-    "status": "Status",
-    "notApproved": "Sin aprobar",
-    "approved": "Aprobado",
-    "actions": "Acciones",
-    "noDatabaseInformation": "No hay informacion en la base de datos",
-    "searchFor": "Buscar:",
-    "suppliers": "Proveedores",
-    "lot": "#Lote",
-    "searchByDate": "Buscar por Fecha:"
-  },
-  "dates": {
-    "today": "Hoy",
-    "yesterday": "Ayer",
-    "thisWeek": "Esta semana",
-    "lastWeek": "Semana pasada",
-    "thisMonth": "Este mes",
-    "lastMonth": "El mes pasado",
-    "daysUpToToday": "días hasta hoy",
-    "daysStartingToday": "días a partir de hoy"
-  },
-  "notifications": {
-    "selectAtLeastOneSupplier": "Debes seleccionar almenos 1 proveedor para obtener los numeros de parte disponibles",
-    "selectAtLeastOnePartForLots": "Debes seleccionar almenos 1 numero de parte para obtener los numeros de lote disponibles",
-    "selectAtLeastOnePartForSerials": "Debes seleccionar almenos 1 numero de parte para obtener los numeros de serie disponibles"
   }
-}
+  
