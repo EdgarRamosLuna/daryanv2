@@ -340,7 +340,7 @@ const Create = () => {
                   name="plant"
                   placeholder=""
                   value={data.plant}
-                  defaultValue=""
+                  
                   onChange={(e) =>
                     setData({
                       ...data,
@@ -361,7 +361,7 @@ const Create = () => {
                     <TextField
                       {...params}
                       required
-                      label="Proveedors"
+                      label="Proveedor"
                       name="id_supplier"
                     />
                   )}
@@ -411,7 +411,7 @@ const Create = () => {
                   name="report_number"
                   placeholder=""
                   required
-                  defaultValue=""
+                  
                   sx={{
                     width: "95%",
                   }}
@@ -436,7 +436,7 @@ const Create = () => {
                   name="part_name"
                   placeholder=""
                   required
-                  defaultValue=""
+                  
                   value={data.part_name}
                   onChange={(e) =>
                     setData({
@@ -448,6 +448,7 @@ const Create = () => {
               </div>
               <div className="form-container">
                 <TextField
+                  key={totalHours}
                   id="outlined-basic"
                   label="Horas Trabajadas"
                   variant="outlined"
@@ -455,7 +456,7 @@ const Create = () => {
                   name="worked_hours"
                   placeholder=""
                   required
-                  defaultValue=""
+                  
                   sx={{
                     width: "95%",
                   }}
@@ -484,7 +485,7 @@ const Create = () => {
                   name="rate"
                   placeholder=""
                   required
-                  defaultValue=""
+                  
                   value={data.rate}
                   onChange={handleInputChange}
                 />

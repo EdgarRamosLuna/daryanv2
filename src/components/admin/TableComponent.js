@@ -98,7 +98,7 @@ const TableComponent = ({ groupedData, loader }) => {
                     <td
                       className="table-center td-nh"
                       rowSpan={dates.length}
-                      onClick={() => showDetailsTable(partNumber)}
+                      
                     >
                       {partNumber}
                     </td>
@@ -133,9 +133,7 @@ const TableComponent = ({ groupedData, loader }) => {
                         cursor: "pointer",
                         color: "green",
                       }}
-                      onClick={() =>
-                        showExtraDetails(dateData.date, partNumber)
-                      }
+                      onClick={() => showDetailsTable(partNumber)}
                     />
                   </td>
                   {/* <td className="table-center">{dateData.total_A}</td> */}

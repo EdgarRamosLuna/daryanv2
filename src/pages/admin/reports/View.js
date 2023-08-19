@@ -1055,7 +1055,7 @@ const View = () => {
                     <TextField
                       {...params}
                       required
-                      label="Proveedors"
+                      label="Proveedor"
                       name="id_supplier"
                     />
                   )}

@@ -31,7 +31,7 @@ const SelectCustom = ({ data, clause, selected }) => {
           //dataC.map
           data.map((item, i) => {
             return (
-              <option value={item.value}>
+              <option value={item.value} key={item.value+i}>
                 {item.text}
               </option>
             );
