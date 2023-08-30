@@ -155,7 +155,7 @@ export const Table = styled.div`
   tbody > tr {
     cursor: pointer;
     position: relative;
-    z-index: 9;
+    //z-index: 8;
     &:hover {
       background-color: rgb(0 65 155 / 28%) !important;
     }
@@ -252,6 +252,7 @@ export const Table = styled.div`
     gap: 30px;
     flex-wrap: wrap-reverse;
     justify-content: center;
+    margin-bottom: 0;
   }
   .select-container {
     align-self: center;

@@ -26,8 +26,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import SelectCustom from "./Select";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 const Create = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState([]);
   const {
     numFilas,
@@ -322,7 +324,7 @@ const Create = () => {
         <>
           <div className="container">
             <div className="title">
-              <h3>REPORTE DE INSPECCION</h3>
+              <h3>{t('reports.inspection_report_title')}</h3>
               <br />
             </div>
 
@@ -331,7 +333,7 @@ const Create = () => {
                 <TextField
                   id="outlined-basic"
                   variant="outlined"
-                  label="Planta"
+                  label={t('table.plant')}
                   sx={{
                     width: "95%",
                   }}
@@ -361,7 +363,7 @@ const Create = () => {
                     <TextField
                       {...params}
                       required
-                      label="Proveedor"
+                      label={t('table.supplier')}
                       name="id_supplier"
                     />
                   )}
@@ -384,7 +386,7 @@ const Create = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker"]}>
                     <DatePicker
-                      label="Fecha *"
+                      label={`${t('table.date')}*`}
                       required
                       name="date"
                       sx={{
@@ -405,7 +407,7 @@ const Create = () => {
               <div className="form-container">
                 <TextField
                   id="outlined-basic"
-                  label="No. de Reporte"
+                  label={t('reports.report_number_label')}
                   variant="outlined"
                   type="text"
                   name="report_number"
@@ -427,7 +429,7 @@ const Create = () => {
               <div className="form-container">
                 <TextField
                   id="outlined-basic"
-                  label="Nombre de parte"
+                  label={t('reports.part_name_label')}
                   variant="outlined"
                   type="text"
                   sx={{
@@ -450,7 +452,7 @@ const Create = () => {
                 <TextField
                   key={totalHours}
                   id="outlined-basic"
-                  label="Horas Trabajadas"
+                  label={t('reports.worked_hours_label')}
                   variant="outlined"
                   type="text"
                   name="worked_hours"
@@ -500,7 +502,7 @@ const Create = () => {
                     type="text"
                     required
                     defaultValue={`${data.length > 0 ? data.shift : ""}`}
-                    label="Turno"
+                    label={t('reports.shift_label')}
                     sx={{
                       width: "95%",
                     }}
@@ -525,7 +527,7 @@ const Create = () => {
               >
                 <TextField
                   id="outlined-basic"
-                  label=" Numero de parte"
+                  label={t('reports.part_number_label')}
                   variant="outlined"
                   sx={{
                     width: "95%",
@@ -549,7 +551,7 @@ const Create = () => {
                 }}
               >
                 <label htmlFor="data8">
-                  Tipo de servicio <span className="required">*</span>
+                  {t('reports.service_type_label')} <span className="required">*</span>
                 </label>
 
                 <div className="container-checkbox">
@@ -565,7 +567,7 @@ const Create = () => {
                         })
                       }
                     />
-                    Selección
+                    {t('reports.selection_label')}
                   </label>
 
                   <label>
@@ -580,7 +582,7 @@ const Create = () => {
                         })
                       }
                     />
-                    Retrabajo
+                    {t('reports.rework_label')}
                   </label>
                   <label htmlFor=""> </label>
                   <label htmlFor=""> </label>
@@ -614,7 +616,7 @@ const Create = () => {
                 }}
               >
                 <label htmlFor="data8">
-                  Control para el cliente <span className="required">*</span>
+                  {t('reports.customer_control_label')} <span className="required">*</span>
                 </label>
 
                 <div className="container-checkbox">
@@ -631,7 +633,7 @@ const Create = () => {
                         })
                       }
                     />
-                    Fecha de produccion
+                    {t('reports.production_date_label')}
                   </label>
                   <label>
                     <input
@@ -646,7 +648,7 @@ const Create = () => {
                         })
                       }
                     />
-                    Fecha de aprobado
+                    {t('reports.approval_date_label')}
                   </label>
 
                   <label>
@@ -662,7 +664,7 @@ const Create = () => {
                         })
                       }
                     />
-                    Serie
+                    {t('reports.series_label')}
                   </label>
                   <label>
                     <input
@@ -677,7 +679,7 @@ const Create = () => {
                         })
                       }
                     />
-                    Lote
+                    {t('reports.batch_label')}
                   </label>
                   <div className="others-container">
                     <TextField
@@ -913,7 +915,7 @@ const Create = () => {
                       colSpan={numColumnas / 3}
                       style={{ textAlign: "center" }}
                     >
-                      <div>REALIZO</div>
+                      <div>{t('reports.performed_by_label')}</div>
                       {reportFooter.map(
                         (fila, i) =>
                           i < reportFooter.length - 1 && (
@@ -943,7 +945,7 @@ const Create = () => {
                       colSpan={numColumnas / 3}
                       style={{ textAlign: "center" }}
                     >
-                      <div>OBSERVACIONES</div>
+                      <div>{t('reports.observations_label')}</div>
                       {reportFooter2.map(
                         (fila, j) =>
                           j < reportFooter2.length - 1 && (
@@ -1200,7 +1202,7 @@ const Create = () => {
                       style={{ textAlign: "center" }}
                     >
                       <div>
-                        INCIDENTES <span className="required">*</span>
+                        {t('reports.incidents_label')} <span className="required">*</span>
                       </div>
                       {reportFooter3.map(
                         (fila, i) =>
@@ -1234,7 +1236,7 @@ const Create = () => {
                       style={{ textAlign: "center" }}
                     >
                       <div>
-                        ELABORO <span className="required">*</span>
+                      {t('reports.prepared_by_label')} <span className="required">*</span>
                       </div>
                       <div className="firm">
                         <input
@@ -1252,7 +1254,7 @@ const Create = () => {
                       style={{ textAlign: "center" }}
                     >
                       <div>
-                        REVISO <span className="required">*</span>
+                        {t('reports.reviewed_by_label')} <span className="required">*</span>
                       </div>
                       <div className="firm">
                         <input
@@ -1269,7 +1271,7 @@ const Create = () => {
                       colSpan={numColumnas / 3}
                       style={{ textAlign: "center" }}
                     >
-                      <div>AUTORIZO</div>
+                      <div>{t('reports.authorized_by_label')}</div>
                       <div className="firm">
                         <input
                           type="text"
@@ -1291,9 +1293,7 @@ const Create = () => {
                                   return;
                                 }
                           }
-                          value={authorizedBy}
-                          // value={authorizedBy}
-                          // onChange={(e) => setAuthorizedBy(e.target.value)}
+                          value={authorizedBy}           
                           className="firm-input"
                         />
                       </div>

@@ -30,8 +30,7 @@ import {
 import { ModalCard } from "../../styles/ModalCard";
 import FilterTable from "./FilterTable";
 registerLocale("es", es);
-function ReportsTable({ data }) {
-  console.log(data);
+function ReportsTable({ data }) {  
   const {
     handleDel,
     setSort,

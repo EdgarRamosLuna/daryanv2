@@ -82,7 +82,28 @@
       "total_ok_pieces": "Total OK",
       "total_re_work_parts": "Total Re-Worked",
       "total_scrap": "Total Scrap",
-      "worked_h": "Total Worked Hours"
+      "worked_h": "Total Worked Hours",
+      "inspection_report_title": "INSPECTION REPORT",
+      "report_number_label": "Report No.",
+      "part_name_label": "Part Name",
+      "worked_hours_label": "Worked Hours",
+      "shift_label": "Shift",
+      "part_number_label": "Part Number",
+      "service_type_label": "Service Type",
+      "selection_label": "Selection",
+      "rework_label": "Rework",
+      "customer_control_label": "Customer Control",
+      "production_date_label": "Production Date",
+      "approval_date_label": "Approval Date",
+      "series_label": "Series",
+      "batch_label": "Batch",
+      "performed_by_label": "PERFORMED BY",
+      "observations_label": "OBSERVATIONS",
+      "incidents_label": "INCIDENTS",
+      "prepared_by_label": "Prepared By",
+      "reviewed_by_label": "Reviewed By",
+      "authorized_by_label": "Authorized By",
+      "others_label": "Others"
     },
     "dates": {
       "today": "Today",
@@ -110,6 +131,13 @@
       "noDatabaseInformation": "No data in the database",
       "approved": "Approved",
       "notApproved": "Not Approved"
+    },
+    "pagination_options": {
+      "20": "20 rows per page",
+      "50": "50 rows per page",
+      "100": "100 rows per page",
+      "all": "All rows",
+      "pagination_info": "Page {{currentPage}} of {{totalPages}}"
     }
   }
   

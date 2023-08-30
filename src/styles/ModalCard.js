@@ -13,7 +13,7 @@ export const ModalCard = styled.div`
   padding: 10px 25px;
   position: absolute;
   top: 100%;
-  z-index: 9;
+  z-index: 9999;
   left: 33px;
   &:hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);

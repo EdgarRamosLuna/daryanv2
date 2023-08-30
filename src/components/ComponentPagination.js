@@ -1,10 +1,25 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
-const ComponentPagination = ({currentPage, totalPages, handleFirstPageClick, handlePageChange, handleLastPageClick, rowsPerPage, setRowsPerPage, totalEntries}) => {
+const ComponentPagination = ({
+  currentPage,
+  totalPages,
+  handleFirstPageClick,
+  handlePageChange,
+  handleLastPageClick,
+  rowsPerPage,
+  setRowsPerPage,
+  totalEntries,
+}) => {
+  const { t } = useTranslation();
+
   return (
     <div className="pagination">
       <span>
-        Página {currentPage} de {totalPages}
+        {t("pagination_options.pagination_info", {
+          currentPage: currentPage,
+          totalPages: totalPages,
+        })}
       </span>
 
       <button disabled={currentPage === 1} onClick={handleFirstPageClick}>
@@ -34,10 +49,10 @@ const ComponentPagination = ({currentPage, totalPages, handleFirstPageClick, han
         value={rowsPerPage}
         onChange={(event) => setRowsPerPage(parseInt(event.target.value))}
       >
-        <option value="20">20 filas por página</option>
-        <option value="50">50 filas por página</option>
-        <option value="100">100 filas por página</option>
-        <option value={`${totalEntries}`}>todas filas</option>
+        <option value="20">{t("pagination_options.20")}</option>
+        <option value="50">{t("pagination_options.50")}</option>
+        <option value="100">{t("pagination_options.100")}</option>
+        <option value={totalEntries}>{t("pagination_options.all")}</option>
       </select>
     </div>
   );

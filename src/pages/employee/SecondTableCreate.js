@@ -39,17 +39,46 @@ export default function SecondTableCreate() {
   const handleInputChange = (divId, inputIndex, newValue) => {
     setDivs((prevDivs) => {
       const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
+  
+      // Ensure that the div is found
+      if (divToUpdateIndex === -1) {
+        console.error('Div not found!');
+        return prevDivs; // Return the previous state
+      }
+  
       const updatedDiv = { ...prevDivs[divToUpdateIndex] };
+  
+      // Check if values exists on updatedDiv
+      if (!updatedDiv.values) {
+        console.error('Values property not found on div');
+        return prevDivs; // Return the previous state
+      }
+  
       updatedDiv.values[inputIndex] = newValue;
+  
       const updatedDivs = [...prevDivs];
       updatedDivs[divToUpdateIndex] = updatedDiv;
       return updatedDivs;
     });
+  
     const updatedSamplingTable = divs.map((divItem) => {
       // Obtiene el item correspondiente de divsSamplingTableInsp
       const originalItem = divsSamplingTableInsp.find(
         (item) => item.id === divItem.id
       );
+    
+      // Check if the originalItem exists and has the values property
+      if (!originalItem || !originalItem.values) {
+        console.error(`Original item not found or doesn't have values property for id: ${divItem.id}`);
+        return null; // or handle this differently based on your application's needs
+      }
+    
+      // Check if divItem has the values property
+      if (!divItem.values) {
+        console.error(`divItem doesn't have values property for id: ${divItem.id}`);
+        return null; // or handle this differently
+      }
+    
       return {
         id: divItem.id,
         values: [
@@ -62,7 +91,12 @@ export default function SecondTableCreate() {
         ],
       };
     });
-    setDivsSamplingTableInsp(updatedSamplingTable);
+    
+    // Filter out any nulls (or whatever you chose as the placeholder for problematic items)
+    const filteredUpdatedSamplingTable = updatedSamplingTable.filter(item => item !== null);
+    
+    setDivsSamplingTableInsp(filteredUpdatedSamplingTable);
+    
   };
 
   useEffect(() => {

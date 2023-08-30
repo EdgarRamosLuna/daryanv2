@@ -23,8 +23,11 @@ import {
 } from "@mui/material";
 import InputDate from "../../../components/inputs/InputDate";
 import Create3 from "../../employee/Create3";
+import { useTranslation } from "react-i18next";
 
 const View = () => {
+  const { t } = useTranslation();
+
   const {
     titulosColumnas,
     total1,
@@ -264,7 +267,7 @@ const View = () => {
         values: date
           ? Array.from({ length: numColumnas }, (v, i) => (i === 2 ? date : ""))
           : Array.from({ length: numColumnas }, () => ""),
-        // values: Array.from({ length: numColumnas }, () => ""),
+
       },
     ]);
     setNumFilas2((prev) => prev + 1);
@@ -272,7 +275,7 @@ const View = () => {
     const scrollHeight = tableWrapper.scrollHeight;
     const clientHeight = tableWrapper.clientHeight;
     if (scrollHeight > clientHeight) {
-      //tableWrapper.scrollTop = scrollHeight - clientHeight;
+
       setTimeout(() => {
         tableWrapper.scrollTo({ top: scrollHeight, behavior: "smooth" });
       }, 100);
@@ -316,8 +319,7 @@ const View = () => {
       });
       setNumColumnas((prev) => prev - 1);
     } else {
-      // The user clicked Cancel.
-      // Do something else.
+
       return false;
     }
   };
@@ -343,12 +345,10 @@ const View = () => {
     setTitulosColumnas((prevTitulos) => {
       const nextLetter = getNextLetter(prevTitulos);
       setDbColumns((prev) => [...prev, nextLetter]);
-      //   console.log(nextLetter);
+
       const newArr = [...prevTitulos, nextLetter];
       const arrayCopy = newArr.slice();
-      // const penultimate = arrayCopy.slice(-2, -1)[0];
-      // arrayCopy.splice(-2, 1);
-      // arrayCopy.push(penultimate);
+
       const tableWrapper = document.querySelectorAll(".scrollX");
       tableWrapper.forEach((element) => {
         const scrollWidth = element.scrollWidth;
@@ -432,11 +432,7 @@ const View = () => {
                 values[k] = dataC.reports_cc[j][keys[k + 1]];
                 break;
             }
-            // if (k === 0) {
-            //   //values[k] = dataC.reports_cc[j]['item']
-            //
-            //
-            // }
+         
           }
         }
       }
@@ -899,23 +895,7 @@ const View = () => {
     setNumColumnas(kLenght);
 
     console.log(titulosColumnas);
-    // if (lastKey !== "I") {
-    //   keys.push(
-    //     <>
-    //        <i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i>
-    //     </>
-    //   );
-
-    // } else {
-    //   keys.push(
-    //     <>
-    //       <i
-    //         className="fa-solid fa-trash"
-    //         onClick={() => eliminarColumna()}
-    //       ></i>
-    //     </>
-    //   );
-    // }
+  
     setTitulosColumnas(keys);
   }, []);
   useEffect(() => {
@@ -1007,8 +987,7 @@ const View = () => {
   const supplierValue = suppliers?.find(
     (supplier) => Number(supplier?.id) === Number(dataC?.id_supplier)
   );
-
-  console.log(supplierValue?.id);
+  
 
   const tabContent = {
     1: {
@@ -1016,7 +995,7 @@ const View = () => {
         <>
           <div className="container">
             <div className="title">
-              <h3>REPORTE DE INSPECCION</h3>
+              <h3>{t('reports.inspection_report_title')}</h3>
               <br />
             </div>
 

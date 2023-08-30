@@ -51,6 +51,7 @@ import {
 import { Close as CloseIcon } from "@mui/icons-material";
 import NoInfo from "../helpers/NoInfo";
 import { useTranslation } from "react-i18next";
+import FilterTable from "./FilterTable";
 registerLocale("es", es);
 function ReportsTable({ data, dataReportByH }) {
   const { t } = useTranslation();
@@ -331,63 +332,6 @@ function ReportsTable({ data, dataReportByH }) {
     [nameFilter, dateStart, dateEnd]
   );
 
-  // const filterDataReportsByH = useCallback(
-  //   (data) => {
-  //     let dataId = 0;
-  //     return data.filter((item, index) => {
-  //       const part_number = item.part_number;
-  //       const id = item.id.toLowerCase();
-  //       const id_supplier = item.id_supplier;
-  //       const suppliers = item.supplier.toLowerCase();
-  //       const planta = item.plant.toLowerCase();
-  //       const fullName = `${id}${id_supplier} ${part_number}${item.reports_cc
-  //         .map((cc) => cc.lot)
-  //         .join(", ")} ${item.reports_cc
-  //         .map((cc) => cc.serial)
-  //         .join(", ")} ${suppliers} ${planta} `; // combinamos name, id y lot en una sola variable
-  //       const date = new Date(item.date);
-  //       date.setHours(0, 0, 0, 0);
-
-  //       // const date = new Date(item.date);
-  //       // date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-  //       if (
-  //         nameFilter &&
-  //         fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
-  //       ) {
-  //         return false;
-  //       }
-  //       if (dateStart) {
-  //         const startDate = new Date(dateStart);
-  //         startDate.setHours(0, 0, 0, 0);
-  //         if (date < startDate) {
-  //           return false;
-  //         }
-  //       }
-
-  //       if (dateEnd) {
-  //         const endDate = new Date(dateEnd);
-  //         endDate.setHours(23, 59, 59, 999);
-  //         if (date > endDate) {
-  //           return false;
-  //         }
-  //       }
-
-  //       // if (dateStart && date < new Date(dateStart).setHours(0, 0, 0, 0)) {
-  //       //   return false;
-  //       // }
-  //       // if (dateEnd && date > new Date(dateEnd).setHours(23, 59, 59, 999)) {
-  //       //   return false;
-  //       // }
-  //       if (nameFilter.length > 3) {
-  //         dataId = id_supplier;
-  //         //setIdSupplier(id_supplier)
-  //       }
-  //       return true;
-  //     });
-  //   },
-  //   [nameFilterByH, dateStart, dateEnd]
-  // );
-  //const [idSupplier, setIdSupplier] = useState(0);
 
   useEffect(() => {
     const data = getPaginatedData();
@@ -466,8 +410,8 @@ function ReportsTable({ data, dataReportByH }) {
   const [totalGeneral, setTotalGeneral] = useState([]);
   useEffect(() => {
     if (data.length > 0) {
-      const filterDate = new Date("2023-04-13");
-      //const filterLot = "30";
+      
+      
       const filterLot = filtersLot;
       const filterSerial = filtersSerial;
       const filterPartNumber = filtersPartNumber;
@@ -477,8 +421,7 @@ function ReportsTable({ data, dataReportByH }) {
       // Definir las fechas del filtro
       const startDate = dateStart;
       const endDate = dateEnd;
-
-      //    let total_inspected = 0;
+      
       for (let i = 0; i < data.length; i++) {
         const date = new Date(data[i].date);
         const report_totals = data[i].report_totals;
@@ -572,7 +515,7 @@ function ReportsTable({ data, dataReportByH }) {
             )) ||
           (filterPartNumber.length && !filterPartNumber.includes(partNumber)) || // Nueva condición para el filtro de búsqueda de part_number
           (filterSupplier.length && !filterSupplier.includes(supplier)) ||
-          (filterDate && (date < adjustedStartDate || date > adjustedEndDate))
+          ((date < adjustedStartDate || date > adjustedEndDate))
         ) {
           continue; // Saltar a la siguiente iteración del loop
         }
@@ -584,45 +527,7 @@ function ReportsTable({ data, dataReportByH }) {
 
         const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
 
-        // temp[i] = {
-        //   part_number: partNumber,
-        //   total_inspected: total_inspected,
-        //   total_ng_pieces: total_ng_pieces,
-        //   total_ok_pieces: total_ok_pieces,
-        //   total_re_work_parts: total_re_work_parts,
-        //   total_scrap: total_scrap,
-        //   total_A: total_A,
-        // };
-        // temp[partNumber] = {
-        //   part_number: partNumber,
-        //   total_inspected: total_inspected,
-        //   total_ng_pieces: total_ng_pieces,
-        //   total_ok_pieces: total_ok_pieces,
-        //   total_re_work_parts: total_re_work_parts,
-        //   total_scrap: total_scrap,
-        //   total_A: total_A,
-        // };
-
-        /*  if (dateString in temp2) {
-          temp2[dateString].part_number = partNumber;
-          temp2[dateString].total_inspected += total_inspected;
-          temp2[dateString].total_ng_pieces += total_ng_pieces;
-          temp2[dateString].total_ok_pieces += total_ok_pieces;
-          temp2[dateString].total_re_work_parts += total_re_work_parts;
-          temp2[dateString].total_scrap += total_scrap;
-          temp2[dateString].total_A += total_A;
-        } else {
-          temp2[dateString] = {
-            part_number: partNumber,
-            total_inspected: total_inspected,
-            total_ng_pieces: total_ng_pieces,
-            total_ok_pieces: total_ok_pieces,
-            total_re_work_parts: total_re_work_parts,
-            total_scrap: total_scrap,
-            total_A: total_A,
-            date: dateString
-          };
-        }*/
+    
         temp2[i] = {
           part_number: partNumber,
           total_inspected: total_inspected,
@@ -683,23 +588,6 @@ function ReportsTable({ data, dataReportByH }) {
         }
       }
 
-      /* const groupedData = {};
-
-      for (const date in temp) {
-        const item = temp[date];
-        const partNumber = item.part_number;
-
-        if (!groupedData[partNumber]) {
-          groupedData[partNumber] = [];
-        }
-
-        const newItem = {
-          ...item,
-          date,
-        };
-
-        groupedData[partNumber].push(newItem);
-      }*/
       setTotalFiltered(temp);
       const groupedData = Object.values(temp2).reduce((acc, curr) => {
         const { part_number, date, ...rest } = curr;
@@ -727,36 +615,6 @@ function ReportsTable({ data, dataReportByH }) {
         });
       });
 
-      // const groupedData = Object.values(temp2).reduce((acc, curr) => {
-      //   const {part_number, date, ...rest} = curr;
-      //   if(!acc[date]) {
-      //     acc[date] = {};
-      //   }
-      //   if(!acc[date][part_number]) {
-      //     acc[date][part_number] = {...rest};
-      //   } else {
-      //     for(let key in rest) {
-      //       if(key !== 'part_number') {
-      //         acc[date][part_number][key] += rest[key];
-      //       }
-      //     }
-      //   }
-      //   return acc;
-      // }, {});
-
-      // const groupedData = Object.values(temp2).reduce((acc, curr) => {
-      //   const {part_number, ...rest} = curr;
-      //   if(!acc[part_number]) {
-      //     acc[part_number] = {};
-      //   }
-      //   const date = rest.date;
-      //   delete rest.date;
-      //   if(!acc[part_number][date]) {
-      //     acc[part_number][date] = [];
-      //   }
-      //   acc[part_number][date].push(rest);
-      //   return acc;
-      // }, {});
 
       setDataToTable(summedData);
       const totalesArray = [];
@@ -793,238 +651,7 @@ function ReportsTable({ data, dataReportByH }) {
     filtersSerial,
     filtersSupplier,
   ]);
-  // useEffect(() => {
-  //   if (data.length > 0) {
-  //     const filterDate = new Date("2023-04-13");
-
-  //     //const filterLot = "30";
-  //     const filterLot = filtersLot;
-  //     const filterSerial = filtersSerial;
-  //     const filterPartNumber = filtersPartNumber;
-  //     const filterSupplier = filtersSupplier;
-  //     const temp = {};
-  //     const temp2 = {};
-  //     // Definir las fechas del filtro
-  //     const startDate = dateStart;
-  //     const endDate = dateEnd;
-
-  //     //    let total_inspected = 0;
-  //     for (let i = 0; i < data.length; i++) {
-  //       const date = new Date(data[i].date);
-  //       const report_totals = data[i].report_totals;
-  //       const report_id = data[i].report_id;
-  //       const ng = parseInt(report_totals.ng) || 0;
-  //       const ok = parseInt(report_totals.ok) || 0;
-  //       const rework = parseInt(report_totals.rework) || 0;
-  //       const reports_cc = data[i].reports_cc;
-  //       const reports_in = data[i].reports_in;
-  //       let total_inspected = 0;
-  //       let total_ng_pieces = 0;
-  //       let total_ok_pieces = 0;
-  //       let total_re_work_parts = 0;
-  //       let total_scrap = 0;
-  //       let total_A = 0;
-  //       let total_B = 0;
-  //       let total_C = 0;
-  //       let total_D = 0;
-  //       let total_E = 0;
-  //       let total_F = 0;
-  //       let total_G = 0;
-  //       let total_H = 0;
-  //       let total_I = 0;
-  //       let partNumber = data[i].part_number; // Nuevo filtro de búsqueda
-  //       let worked_h = Number(data[i].worked_h);
-  //       let supplier = data[i].supplier;
-  //       // Calcular el total inspeccionado
-  //       const keyE = "E";
-  //       const keyF = "F";
-  //       const keyG = "G";
-  //       const keyH = "H";
-  //       const keyI = "I";
-
-  //       for (let j = 0; j < reports_cc.length; j++) {
-  //         const report_cc = reports_cc[j];
-  //         const isLotMatched =
-  //           !filterLot.length || filterLot.includes(report_cc.lot);
-  //         const isSerialMatched =
-  //           !filterSerial.length || filterSerial.includes(report_cc.serial);
-  //         const isSupplierMatched =
-  //           !filterSupplier.length || filterSupplier.includes(supplier);
-  //         if (isLotMatched && isSerialMatched) {
-  //           total_inspected += parseInt(report_cc.qt_inspected);
-  //           total_ng_pieces += parseInt(report_cc.ng_pieces);
-  //           total_ok_pieces += parseInt(report_cc.ok_pieces);
-  //           total_re_work_parts += parseInt(report_cc.re_work_parts);
-  //           total_scrap += parseInt(report_cc.scrap);
-  //           total_A += parseInt(report_cc["A"]);
-  //           total_B += parseInt(report_cc["B"]);
-  //           total_C += parseInt(report_cc["C"]);
-  //           total_D += parseInt(report_cc["D"]);
-  //           if (keyE in report_cc) {
-  //             total_E += parseInt(report_cc["E"]);
-  //           }
-  //           if (keyF in report_cc) {
-  //             total_F += parseInt(report_cc["F"]);
-  //           }
-  //           if (keyG in report_cc) {
-  //             total_G += parseInt(report_cc["G"]);
-  //           }
-  //           if (keyH in report_cc) {
-  //             total_H += parseInt(report_cc["H"]);
-  //           }
-  //           if (keyI in report_cc) {
-  //             total_I += parseInt(report_cc["I"]);
-  //           }
-  //         }
-  //       }
-  //       // Aplicar filtros para cada objeto en el data
-  //       date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-
-  //       const dateString = date.toISOString().slice(0, 10);
-  //       if (
-  //         (filterLot.length &&
-  //           !reports_cc.some((report) => filterLot.includes(report.lot))) ||
-  //         (filterSerial.length &&
-  //           !reports_cc.some((report) =>
-  //             filterSerial.includes(report.serial)
-  //           )) ||
-  //         (filterPartNumber.length && !filterPartNumber.includes(partNumber)) || // Nueva condición para el filtro de búsqueda de part_number
-  //         (filterSupplier.length && !filterSupplier.includes(supplier)) ||
-  //         (filterDate &&
-  //           (date < new Date(startDate).setHours(0, 0, 0, 0) ||
-  //             date > new Date(endDate).setHours(23, 59, 59, 999)))
-  //       ) {
-  //         continue; // Saltar a la siguiente iteración del loop
-  //       }
-
-  //       // Agregar los datos al objeto temporal
-
-  //       const min = 1000000;
-  //       const max = 9000000;
-
-  //       const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
-  //       temp2[i] = {
-  //         part_number: partNumber,
-  //         total_inspected: total_inspected,
-  //         total_ng_pieces: total_ng_pieces,
-  //         total_ok_pieces: total_ok_pieces,
-  //         total_re_work_parts: total_re_work_parts,
-  //         total_scrap: total_scrap,
-  //         total_A: total_A,
-  //         total_B: total_B,
-  //         total_C: total_C,
-  //         total_D: total_D,
-  //         total_E: total_E,
-  //         total_F: total_F,
-  //         total_G: total_G,
-  //         total_H: total_H,
-  //         total_I: total_I,
-  //         date: dateString,
-  //         worked_h: worked_h,
-  //       };
-  //       if (partNumber in temp) {
-  //         temp[partNumber].part_number = partNumber;
-  //         temp[partNumber].total_inspected += total_inspected;
-  //         temp[partNumber].total_ng_pieces += total_ng_pieces;
-  //         temp[partNumber].total_ok_pieces += total_ok_pieces;
-  //         temp[partNumber].total_re_work_parts += total_re_work_parts;
-  //         temp[partNumber].total_scrap += total_scrap;
-  //         temp[partNumber].total_A += total_A;
-  //         temp[partNumber].total_B += total_B;
-  //         temp[partNumber].total_C += total_C;
-  //         temp[partNumber].total_D += total_D;
-  //         temp[partNumber].total_E += total_E;
-  //         temp[partNumber].total_F += total_F;
-  //         temp[partNumber].total_G += total_G;
-  //         temp[partNumber].total_H += total_H;
-  //         temp[partNumber].total_I += total_I;
-  //         temp[partNumber].date += dateString;
-  //         temp[partNumber].worked_h += worked_h;
-  //       } else {
-  //         temp[partNumber] = {
-  //           part_number: partNumber,
-  //           total_inspected: total_inspected,
-  //           total_ng_pieces: total_ng_pieces,
-  //           total_ok_pieces: total_ok_pieces,
-  //           total_re_work_parts: total_re_work_parts,
-  //           total_scrap: total_scrap,
-  //           total_A: total_A,
-  //           total_B: total_B,
-  //           total_C: total_C,
-  //           total_D: total_D,
-  //           total_E: total_E,
-  //           total_F: total_F,
-  //           total_G: total_G,
-  //           total_H: total_H,
-  //           total_I: total_I,
-  //           date: dateString,
-  //           worked_h: worked_h,
-  //         };
-  //       }
-  //     }
-
-  //     setTotalFiltered(temp);
-  //     const groupedData = Object.values(temp2).reduce((acc, curr) => {
-  //       const { part_number, date, ...rest } = curr;
-  //       if (!acc[part_number]) {
-  //         acc[part_number] = {};
-  //       }
-  //       if (!acc[part_number][date]) {
-  //         acc[part_number][date] = { ...rest, date };
-  //       } else {
-  //         Object.entries(rest).forEach(([key, value]) => {
-  //           if (key === "date") {
-  //             return;
-  //           }
-  //           acc[part_number][date][key] += value;
-  //         });
-  //       }
-  //       return acc;
-  //     }, {});
-
-  //     const summedData = {};
-  //     Object.entries(groupedData).forEach(([part_number, dates]) => {
-  //       summedData[part_number] = [];
-  //       Object.entries(dates).forEach(([date, values]) => {
-  //         summedData[part_number].push(values);
-  //       });
-  //     });
-
-  //     setDataToTable(summedData);
-  //     const totalesArray = [];
-
-  //     for (const key in summedData) {
-  //       const elementos = summedData[key];
-  //       const total = elementos.reduce((acumulador, elemento) => {
-  //         for (const propiedad in elemento) {
-  //           if (propiedad !== "date") {
-  //             acumulador[propiedad] =
-  //               (acumulador[propiedad] || 0) + elemento[propiedad];
-  //           }
-  //         }
-  //         return acumulador;
-  //       }, {});
-  //       totalesArray.push(total);
-  //     }
-
-  //     const totalG = totalesArray.reduce((acumulador, elemento) => {
-  //       for (const propiedad in elemento) {
-  //         acumulador[propiedad] =
-  //           (acumulador[propiedad] || 0) + elemento[propiedad];
-  //       }
-  //       return acumulador;
-  //     }, {});
-  //     setTotalGeneral(totalG);
-  //   }
-  // }, [
-  //   data,
-  //   filtersPartNumber,
-  //   dateStart,
-  //   dateEnd,
-  //   filtersLot,
-  //   filtersSerial,
-  //   filtersSupplier,
-  // ]);
+ 
   const filteredData = filterData(data);
   const filteredData2 = filterData2(data);
 
@@ -1059,7 +686,6 @@ function ReportsTable({ data, dataReportByH }) {
     <div className="custom-input" onClick={onClick} ref={ref}>
       {children}
       <FontAwesomeIcon icon={faCalendarDays} />
-      {/* <i className="fa-solid fa-calendar-days"></i> */}
     </div>
   ));
   CustomInputD.displayName = "CustomInputD";
@@ -1094,8 +720,7 @@ function ReportsTable({ data, dataReportByH }) {
         }
       });
       setUniqueSuppliers([...new Set(res0)]);
-      //}
-      //setUniqueLots(res1);
+  
 
       const res1 = [];
       const seen = {};
@@ -1249,17 +874,6 @@ function ReportsTable({ data, dataReportByH }) {
     });
   };
 
-  // const addClientToList = (e) => {
-  //   const id = e.target.value;
-  //   setSelectedClient(id);
-  //   const clientName = e.target.selectedOptions[0].text;
-  //   setClientsToReport((prev) => {
-  //     if (!prev.some((client) => client.id === id) && id !== "0") {
-  //       return [...prev, { id, clientName }];
-  //     }
-  //     return prev;
-  //   });
-  // };
 
   const removeClient = (id) => {
     setClientsToReport((prev) => prev.filter((client) => client.id !== id));
@@ -1286,7 +900,7 @@ function ReportsTable({ data, dataReportByH }) {
     1: {
       componenteTitle: reportesComponents["insp"].p,
       componenteTop: (
-        <div className="header-container">
+        <div className="header-container">         
           <form autoComplete="off">
             <Grid
               sx={{
@@ -1435,7 +1049,7 @@ function ReportsTable({ data, dataReportByH }) {
                         onClick={() => handleDel(item.id, "reports")}
                       />
                       <a
-                        href={`http://phpstack-1070657-3746640.cloudwaysapps.com/inspection-report/${item.id}`}
+                        href={`http://phpstack-1070657-3746640.cloudwaysapps.com/reporte-inspeccion/${item.id}`}
                         target="_blank"
                         className="btn-pdf"
                         rel="noreferrer"
@@ -1490,7 +1104,7 @@ function ReportsTable({ data, dataReportByH }) {
                 <div className="filter-item">
                   <TextField
                     id="outlined-basic"
-                    label="Buscar"
+                    label={t("reports.search")}
                     variant="outlined"
                     autoComplete="off"
                     sx={{
@@ -1518,7 +1132,7 @@ function ReportsTable({ data, dataReportByH }) {
                           width: "90%",
                         }}
                       >
-                        <MenuItem value="0">Selecciona un cliente</MenuItem>
+                        <MenuItem value="0">{t("reports.selectAClient")}</MenuItem>
                         {uniqueClients.map((option) => (
                           <MenuItem key={option} value={option.id}>
                             {option.fullname}
@@ -1572,6 +1186,7 @@ function ReportsTable({ data, dataReportByH }) {
       componenteTitle: reportesComponents["total_insp"].p,
       componenteTop: (
         <div className="header-container2">
+           
           <form autoComplete="off">
             <Box
               className=""
@@ -1827,6 +1442,20 @@ function ReportsTable({ data, dataReportByH }) {
               setDateStart={setDateStart}
               setDateEnd={setDateEnd}
             />
+          
+          <div className="table-controlls">
+              {showFIltersT && (
+                <FilterTable />
+              )}
+              <div className="table-controlls-left">
+                <div
+                  className={`table-controlls-left-item ${showFIltersT ? "activeFilters" : ""}`}
+                  onClick={showFilterTable}
+                >
+                  <i className="fa-solid fa-filter"></i>
+                </div>
+              </div>
+            </div>
           </form>
           <div className={`charts ${showCharts === true && "smoothFadeIn"}`}>
             {showCharts === true && (
@@ -1856,6 +1485,7 @@ function ReportsTable({ data, dataReportByH }) {
               </>
             )}
           </div>
+          
         </div>
       ),
       componenteMiddle: (

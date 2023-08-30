@@ -42,15 +42,6 @@ const FilterSearch = ({ data }) => {
     }
     return () => {};
   }, [dateStart, dateEnd]);
-  const handleFirstPageClick = () => {
-    setCurrentPage(1);
-  };
-  const handleLastPageClick = () => {
-    setCurrentPage(Math.ceil(filteredData.length / rowsPerPage));
-  };
-  const handleNameFilterChange = (event) => {
-    setNameFilter(event.target.value);
-  };
 
   const filterData = useCallback(
     (data) => {

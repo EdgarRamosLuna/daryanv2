@@ -27,8 +27,7 @@ const SelectCustom = ({ data, clause, selected }) => {
   return (    
       <select value={dataC} onChange={handleChange}>
         <option value="0">Tipo</option>
-        {
-          //dataC.map
+        {          
           data.map((item, i) => {
             return (
               <option value={item.value} key={item.value+i}>

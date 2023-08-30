@@ -19,9 +19,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ComponentPagination from "../ComponentPagination";
 import DatePickerMUI2 from "../datepicker/DatePickerMUI2";
 import NoInfo from "../helpers/NoInfo";
+import { useTranslation } from "react-i18next";
 registerLocale("es", es);
 function ReportsByH({ data, dateStart, dateEnd, nameFilterByH, loader }) {
-  console.log(nameFilterByH);
+  const { t } = useTranslation();
 
 
   const { activeTab, setActiveTab, checkList, setCheckList, handleCheckBox } =
@@ -117,38 +118,7 @@ function ReportsByH({ data, dateStart, dateEnd, nameFilterByH, loader }) {
 
   return (
     <>
-     {/* <div className="header-container">
-          <form autoComplete="off">
-            <div className="filter-container">
-              <div className="filter-item">
-                <label htmlFor="date-filter" className="label-center">
-                  Buscar por Fecha:
-                </label>
-
-                <div className="filter-item-input input-date">
-                  <DatePickerMUI2
-                    setDateStart={setDateStart}
-                    setDateEnd={setDateEnd}
-                  />
-                </div>
-              </div>
-              <div className="filter-item">
-                <label htmlFor="name-filter" className="label-center">
-                  Buscar:
-                </label>
-                <div className="filter-item-input">
-                  <input
-                    type="text"
-                    id="name-filter"
-                    value={nameFilter}
-                    onChange={(e) => handleNameFilterChange(e)}
-                    placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
-                  />
-                </div>
-              </div>
-            </div>
-          </form>
-        </div> */}
+  
     <Table>
       <div className="table-container">
         <div className="table-body table-reports">
@@ -163,11 +133,11 @@ function ReportsByH({ data, dateStart, dateEnd, nameFilterByH, loader }) {
                     data={getPaginatedData()}
                   />
                 </th>
-                <th># Parte</th>
-                <th>Planta</th>
-                <th>Fecha</th>
-                <th>Status</th>
-                <th>Acciones</th>
+                <th>{t("table.partNumber")}</th>
+                <th>{t("table.plant")}</th>
+                <th>{t("table.date")}</th>
+                <th>{t("table.status")}</th>
+                <th>{t("table.actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -195,12 +165,11 @@ function ReportsByH({ data, dateStart, dateEnd, nameFilterByH, loader }) {
                       />
                     </td>
                     <td className="table-center">{item.part_number}</td>
-                    <td className="table-center">{item.plant}</td>
-                    {/* <td className="table-center">Proveedor</td> */}
+                    <td className="table-center">{item.plant}</td>                    
                     <td className="table-center">{item.date}</td>
                     <td className="table-center">
-                      {Number(item.status) === 1 && "Sin aprobar"}{" "}
-                      {Number(item.status) === 2 && "Aprobado"}
+                      {Number(item.status) === 1 && t('reports.notApproved')} 
+                      {Number(item.status) === 3 && t('reports.approved')}
                     </td>
                     <td
                       className="table-center"
