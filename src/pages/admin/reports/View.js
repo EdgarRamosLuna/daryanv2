@@ -1059,7 +1059,7 @@ const View = () => {
                   style={{ textAlign: "left", padding: "12px 20px" }}
                   defaultValue={dataC.date}
                   type="text"
-                  dataCDb={dataCDb}
+                  data={dataCDb}
                   setData={setDataCDb}
                 />
               </Box>

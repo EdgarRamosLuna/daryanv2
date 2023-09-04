@@ -1,13 +1,10 @@
 import React, { useContext, useState } from "react";
-import { MainContext } from "../../context/MainContext";
-import { StyledForm, Table } from "../../styles/Styles";
-
-import SecondTableCreate from "./SecondTableCreate";
 import SecondTableCreate2 from "./SecondTableCreate2";
 import { useEffect } from "react";
-import DatePickerInput from "../../components/DateInput";
+
 import Create3 from "./Create3";
 import {
+  Box,
   FormControl,
   InputLabel,
   MenuItem,
@@ -20,6 +17,13 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import SelectCustom from "./Select";
 import dayjs from "dayjs";
+
+import { MainContext } from "../../../../context/MainContext";
+import { StyledForm, Table } from "../../../../styles/Styles";
+import { useParams } from "react-router-dom";
+import { LanguageContext } from "../../../../context/LanguageContext";
+import InputDate from "../../../../components/inputs/InputDate";
+
 const Create2 = () => {
   const {
     dataReportH,
@@ -28,14 +32,20 @@ const Create2 = () => {
     activeTabReportByH,
     setActiveTabReportByH,
     divsSamplingTable,
+    dataTS2, data2, setData2, setDivsSamplingTable
   } = useContext(MainContext);
+  const params = useParams();
+  const idReport = params.id;
+
+  //console.log(data2);
+  const eData =
+    data2.length === 0
+      ? JSON.parse(dataTS2).filter(
+          (data2) => Number(data2.id) === Number(idReport)
+        )[0]
+      : data2.filter((data2) => Number(data2.id) === Number(idReport))[0];
+  const [dataC, setDataC] = useState(eData);  
   const [data, setData] = useState([]);
-  const handleSelect = (e, type) => {
-    setData({
-      ...data,
-      [e.target.dataset.name || e.target.name]: e.target.value,
-    });
-  };
   const [totalesDefectos, setTotalesDefectos] = useState([]);
   const [totalesD, setTotalesD] = useState([]);
   useEffect(() => {
@@ -44,13 +54,13 @@ const Create2 = () => {
     }
   }, [totalesDefectos]);
 
-  const [inspectors, setInspectors] = useState(Array(5).fill(""));
+  const [inspectors, setInspectors] = useState(dataC.reports_inspectors);
   const handleInputChangeInsp = (index, event) => {
     const newInspectors = [...inspectors];
     newInspectors[index] = event.target.value;
     setInspectors(newInspectors);
   };
-  const [comments, setComments] = useState(Array(5).fill(""));
+  const [comments, setComments] = useState(dataC.reports_comments);
   const handleInputChangeComm = (index, event) => {
     const newComments = [...comments];
     newComments[index] = event.target.value;
@@ -69,8 +79,8 @@ const Create2 = () => {
 
     setTotalPiecesInsp(newTotalPiecesInsp);
   };
-  const [inspectedBy, setInspectedBy] = useState("");
-  const [authorizedBy, setAuthorizedBy] = useState("");
+  const [inspectedBy, setInspectedBy] = useState(dataC.inspected_by);
+  const [authorizedBy, setAuthorizedBy] = useState(dataC.authorized_by);
   const [divsR4, setDivsR4] = useState([
     { id: 1, values: Array(15).fill("") },
     { id: 2, values: Array(15).fill("") },
@@ -78,16 +88,7 @@ const Create2 = () => {
     { id: 4, values: Array(15).fill("") },
     { id: 5, values: Array(15).fill("") },
   ]);
-  const [divs, setDivs] = useState(() => {
-    const filas = [];
-    for (let i = 1; i <= numFilasReportByH; i++) {
-      filas.push({
-        id: i,
-        values: Array.from({ length: 15 }, () => ""),
-      });
-    }
-    return filas;
-  });
+  const [divs, setDivs] = useState([]);
 
   const tabsObj = {
     1: {
@@ -117,14 +118,37 @@ const Create2 = () => {
           setTotalesDefectos={setTotalesDefectos}
           divsR4={divsR4} 
           setDivsR4={setDivsR4}
-          
+          setTotalPiecesInsp={setTotalPiecesInsp}
+          dataC={dataC}
+          setDataC={setDataC}
+          eData={eData}
+          setDivsSamplingTable={setDivsSamplingTable}
         />
       ),
     },
     2: {
-      component: <Create3 divs={divs} setDivs={setDivs} divsR4={divsR4} setDivsR4={setDivsR4}  reportType="byh" />,
+      component: <Create3 divs={divs} setDivs={setDivs} divsR4={divsSamplingTable} setDivsR4={setDivsSamplingTable}  reportType="byh" />,
     },
   };
+    
+  useEffect(() => {
+
+    const reports_sample_table = eData.report_sata;
+    const newList = reports_sample_table.map(item => ({
+      id: parseInt(item.id_item),
+      values: [
+          item?.id,
+          item?.lot,
+          item?.serial,
+          item?.total_pieces_insp,
+          item?.total_pieces_sampling,
+          item?.hour,
+          item?.signature,
+          
+      ]
+  }));
+  setDivsSamplingTable(newList);  
+  }, [])
   return <>{tabsObj[activeTabReportByH]?.component}</>;
 };
 
@@ -154,13 +178,22 @@ export const Create2FirstTable = ({
   totalPiecesInsp,
   setTotalesDefectos,
   divsR4, 
-  setDivsR4
-}) => {
+  setDivsR4,
+  setTotalPiecesInsp,
+  dataC,
+  setDataC,
+  eData,
+  setDivsSamplingTable
+}) => {  
+  const {t} = useContext(LanguageContext);
+  
+ 
   const dataSes = localStorage.getItem("sesType");
   useEffect(() => {
     const newArray = [
       {
-        reportP1: data,
+        report_id: dataC.id,
+        reportP1: dataC,
         reportP2: divs,
         inspectors,
         comments,
@@ -173,7 +206,7 @@ export const Create2FirstTable = ({
     ];
     setDataReportH(newArray);
   }, [
-    data,
+    dataC,
     inspectors,
     comments,
     inspectedBy,
@@ -181,15 +214,87 @@ export const Create2FirstTable = ({
     totalesD,
     divs,
     totalPiecesInsp,
-    divsSamplingTable,
+    divsSamplingTable
   ]);
-
   const handleDate = (name, date) => {
-    setData({
-      ...data,
+    setDataC({
+      ...dataC,
       [name]: date,
     });
   };
+
+  useEffect(() => {
+    dataC.reports_cc.forEach((element) => {
+      const newData = {
+        id: element.item,
+        values: [
+          element?.item,
+          element?.defect,
+          element?.h1,
+          element?.h2,
+          element?.h3,
+          element?.h4,
+          element?.h5,
+          element?.h6,
+          element?.h7,
+          element?.h8,
+          element?.h9,
+          element?.h10,
+          element?.h11,
+          element?.h12,
+          element?.total,
+        ],
+      };
+      setDivs([newData]);
+    });
+  }, []);
+  useEffect(() => {
+    dataC.report_total.forEach((element, index) => {
+      setTotalPiecesInsp((prev) => {
+        // Si el array ya tiene 12 elementos
+        if (prev.length >= 12) {
+          // Crear un nuevo array con los valores actualizados
+          const updatedArray = prev.map((item, itemIndex) => {
+            // Actualizar el valor, excluyendo el último elemento
+            if (itemIndex < prev.length - 1) {
+              return dataC.report_total[itemIndex]?.total || item;
+            }
+            // Mantener el último elemento (la suma total)
+            else {
+              return item;
+            }
+          });
+
+          // Reemplazar la última posición con la suma total
+          const totalSum = updatedArray
+            .slice(0, -1)
+            .reduce((a, b) => Number(a) + Number(b), 0);
+          updatedArray[updatedArray.length - 1] = totalSum;
+
+          return updatedArray;
+        }
+        // Si el array tiene menos de 12 elementos
+        else {
+          // Agregar el elemento al array
+          const newArray = [...prev, element.total];
+
+          // Si es el último elemento, agregar la suma total
+          if (index === dataC.report_total.length - 1) {
+            const totalSum = newArray.reduce(
+              (a, b) => Number(a) + Number(b),
+              0
+            );
+            return [...newArray, totalSum];
+          } else {
+            return newArray;
+          }
+        }
+      });
+    });
+
+  }, [dataC]);
+  
+
   return (
     <>
       <div className="container">
@@ -210,11 +315,11 @@ export const Create2FirstTable = ({
               name="plant"
               placeholder=""
               required
-              value={data.plant}
+              value={dataC.plant}
               onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
+                setDataC({
+                  ...dataC,
+                  [e.target.name]: e.target.value,
                 })
               }
             />
@@ -231,42 +336,31 @@ export const Create2FirstTable = ({
               name="part_number"
               placeholder=""
               required
-              value={data.part_number}
+              value={dataC.part_number}
               onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
+                setDataC({
+                  ...dataC,
+                  [e.target.name]: e.target.value,
                 })
               }
             />
           </div>
-          <div
-            className="form-containers"
-            style={{
-              width: "24%",
-            }}
-          >
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={["DatePicker"]}>
-                <DatePicker
-                  label="Fecha *"
-                  required
+          <Box
+                className="form-containers"
+                style={{
+                  width: "24%",
+                }}
+              >
+                <InputDate
+                  id="data3"
                   name="date"
-                  sx={{
-                    width: "95%",
-                  }}
-                  onChange={(newValue) =>
-                    setData({
-                      ...data,
-                      date: newValue
-                        ? dayjs(newValue).format("YYYY-MM-DD")
-                        : "",
-                    })
-                  }
+                  style={{ textAlign: "left", padding: "12px 20px" }}
+                  defaultValue={dataC.date}
+                  type="text"
+                  data={dataC}
+                  setData={setDataC}
                 />
-              </DemoContainer>
-            </LocalizationProvider>
-          </div>
+              </Box>
 
           <div className="form-container">
             <TextField
@@ -280,11 +374,11 @@ export const Create2FirstTable = ({
               name="report_number"
               placeholder=""
               required
-              value={data.report_number}
+              value={dataC.report_number}
               onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
+                setDataC({
+                  ...dataC,
+                  [e.target.name]: e.target.value,
                 })
               }
             />
@@ -301,11 +395,11 @@ export const Create2FirstTable = ({
               name="table"
               placeholder=""
               required
-              value={data.table}
+              value={dataC.table_info}
               onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
+                setDataC({
+                  ...dataC,
+                  [e.target.name]: e.target.value,
                 })
               }
             />
@@ -322,32 +416,32 @@ export const Create2FirstTable = ({
               name="part_name"
               placeholder=""
               required
-              value={data.part_name}
+              value={dataC.part_name}
               onChange={(e) =>
-                setData({
-                  ...data,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
+                setDataC({
+                  ...dataC,
+                  [e.target.name]: e.target.value,
                 })
               }
             />
           </div>
-          <div className="form-container">
+          <Box className="form-container">
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Turno *</InputLabel>
+            <InputLabel id="demo-simple-select-label">{t('reports.shift_label')}*</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 name="shift"
                 type="text"
                 required
-                defaultValue={`${data.length > 0 ? data.shift : ""}`}
+                defaultValue={dataC.shift}
                 label="Turno"
                 sx={{
                   width: "95%",
                 }}
                 onChange={(e) =>
-                  setData({
-                    ...data,
+                  setDataC({
+                    ...dataC,
                     [e.target.name]: e.target.value,
                   })
                 }
@@ -357,7 +451,7 @@ export const Create2FirstTable = ({
                 <MenuItem value={3}>3</MenuItem>
               </Select>
             </FormControl>
-          </div>
+          </Box>
         </StyledForm>
       </div>
       <div className="container c2">
@@ -504,11 +598,11 @@ export const Create2FirstTable = ({
               <tr>
                 <td colSpan={3} style={{ textAlign: "center" }}>
                   <div>INSPECTOR</div>
-                  {inspectors.map((inspector, index) => (
+                  {inspectors.map((insp, index) => (
                     <React.Fragment key={index}>
                       <input
                         type="text"
-                        value={inspector}
+                        value={insp.inspector}
                         onChange={(event) =>
                           handleInputChangeInsp(index, event)
                         }
@@ -519,11 +613,11 @@ export const Create2FirstTable = ({
                 </td>
                 <td colSpan={13} style={{ textAlign: "center" }}>
                   <div>COMENTARIOS</div>
-                  {comments.map((comment, index) => (
+                  {comments.map((com, index) => (
                     <React.Fragment key={index}>
                       <input
                         type="text"
-                        value={comment}
+                        value={com.comment}
                         onChange={(event) =>
                           handleInputChangeComm(index, event)
                         }

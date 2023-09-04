@@ -339,7 +339,22 @@ export const MainContextProvider = ({ children }) => {
   };
   const aproveReportH = async (e) => {
     await aproveReportHToDb({ dataReportH: dataReportH[0], token })
-      .then((res) => {})
+    .then((res) => {
+      const datares = res.data;
+      if (datares.error) {
+        toast.error(datares.message, {
+          duration: 5000,
+        });
+      } else {
+        toast.success(datares.message, {
+          duration: 4000,
+        });     
+        navigate(
+          `${
+            ["admin"].includes(dataSes.toLowerCase()) ? "admin" : "user"
+          }/reports`
+        ); 
+      }})
       .catch((err) => {});
   };
 

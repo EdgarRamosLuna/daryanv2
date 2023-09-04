@@ -480,17 +480,16 @@ export default function SubHeader() {
           )}
           {pathname === "/client/reports" && (
             <>
-              {activeTab === 3 && (
+                {activeTab === 3 && (
                 <div className="btn-charts">
                   <ButtonOutlined
                     icon={<BarChartIcon />}
                     className="chart-btn"
                     onClick={() => setShowCharts((prev) => !prev)}
                   >
-                    <FontAwesomeIcon
-                      icon={showCharts === true ? faEyeSlash : faEye}
-                    />
-                    <FontAwesomeIcon icon={faChartSimple} />
+                    {showCharts === true
+                      ? t("button_texts.hideCharts")
+                      : t("button_texts.showCharts")}
                   </ButtonOutlined>
                 </div>
               )}

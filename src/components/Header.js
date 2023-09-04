@@ -369,6 +369,31 @@ export default function Header() {
               });
               localStorage.removeItem("sesType");
               navigate("/user/login");
+            }else{
+              setLinksUser([
+                {
+                  label: t("button_texts.reports"),
+                  route: "/user/reports",
+                  ico: faFileLines,
+                  fun: (e) => {},
+                },
+                {
+                  label: t("button_texts.myAccount"),
+                  route: "/user/my-account",
+                  ico: faGear,
+                  fun: (e) => {
+                    setShowConfig((prev) => !prev);
+                  },
+                },
+                {
+                  label: t("button_texts.logout"),
+                  route: "/user/login",
+                  ico: faRightFromBracket,
+                  fun: (e) => {
+                    localStorage.removeItem("sesType");
+                  },
+                },
+              ]);
             }
           })
           .catch((err) => {
@@ -387,6 +412,31 @@ export default function Header() {
               });
               localStorage.removeItem("sesType");
               navigate("/client/login");
+            }else{
+              setLinksClient([
+                {
+                  label: t("button_texts.reports"),
+                  route: "/client/reports",
+                  ico: faFileLines,
+                  fun: (e) => {},
+                },
+                {
+                  label: t("button_texts.myAccount"),
+                  route: "/client/my-account",
+                  ico: faGear,
+                  fun: (e) => {
+                    setShowConfig(true);
+                  },
+                },
+                {
+                  label: t("button_texts.logout"),
+                  route: "/client/login",
+                  ico: faRightFromBracket,
+                  fun: (e) => {
+                    localStorage.removeItem("sesType");
+                  },
+                },
+              ]);
             }
           })
           .catch((err) => {
@@ -436,8 +486,7 @@ export default function Header() {
                 <li key={route}>
                   <Link
                     to={
-                      ["Salir" ,
-                    "Logout" ,
+                      [
                     "Mi Cuenta",
                     "My Account",
                     "Configuración",

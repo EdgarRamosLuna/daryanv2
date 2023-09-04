@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
-import { MainContext } from "../../context/MainContext";
-import { StyledForm, Table } from "../../styles/Styles";
 
-import SecondTableCreate from "./SecondTableCreate";
+
 import SecondTableCreate3 from "./SecondTableCreate3";
 import SecondTableCreate4 from "./SecondTableCreate4";
+import { MainContext } from "../../../../context/MainContext";
+
 const Create3 = ({divs, setDivs, reportType, divsR4, setDivsR4, setDivsSamplingTableInsp}) => {
   const { data, setData, numFilasReportByH,  } = useContext(MainContext);
   const handleSelect = (e, type) => {
@@ -13,7 +13,7 @@ const Create3 = ({divs, setDivs, reportType, divsR4, setDivsR4, setDivsSamplingT
       [e.target.dataset.name || e.target.name]: e.target.value,
     });
   };
-
+console.log(divsR4)
   
   return (
     <>

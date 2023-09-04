@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Table } from "../../styles/Styles";
+import { Table } from "../../../../styles/Styles";
 import { useContext } from "react";
-import { MainContext } from "../../context/MainContext";
+
 import { useEffect } from "react";
+import { MainContext } from "../../../../context/MainContext";
 
 export default function SecondTableCreate4({divs, setDivs}) {
   const { divsSamplingTable, setDivsSamplingTable } = useContext(MainContext);
@@ -37,6 +38,7 @@ export default function SecondTableCreate4({divs, setDivs}) {
   }
   useEffect(() => {
     if(divs.length > 0){      
+      console.log("que pedo")
       setDivsSamplingTable(divs)
 
     }    

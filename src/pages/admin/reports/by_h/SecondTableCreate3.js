@@ -1,27 +1,11 @@
 import React, { useState } from "react";
-import { Table } from "../../styles/Styles";
-import { useContext } from "react";
-import { MainContext } from "../../context/MainContext";
-import { useEffect } from "react";
+import { Table } from "../../../../styles/Styles";
 
-export default function SecondTableCreate4({divs, setDivs}) {
-  const { divsSamplingTable, setDivsSamplingTable } = useContext(MainContext);
 
- 
-  function handleAddDiv() {
-    const newId = divs.length + 1;
-    const newValues = ["", "", "", "", "", "", "", "", "", "", "", "", "", ""];
-    setDivs([...divs, { id: newId, values: newValues }]);
-    const tableWrapper = document.querySelector(".c2");
-    const scrollHeight = tableWrapper.scrollHeight;
-    const clientHeight = tableWrapper.clientHeight;
-    if (scrollHeight > clientHeight) {
-      //tableWrapper.scrollTop = scrollHeight - clientHeight;
-      setTimeout(() => {
-        tableWrapper.scrollTo({ top: scrollHeight, behavior: "smooth" });
-      }, 100);
-    }
-  }
+
+export default function SecondTableCreate3({ divs, setDivs }) {
+  
+
 
   function handleInputChange(divId, inputIndex, newValue) {
     setDivs((prevDivs) => {
@@ -32,16 +16,7 @@ export default function SecondTableCreate4({divs, setDivs}) {
       updatedDivs[divToUpdateIndex] = updatedDiv;
       return updatedDivs;
     });
-
-    
   }
-  useEffect(() => {
-    if(divs.length > 0){      
-      setDivsSamplingTable(divs)
-
-    }    
-  }, [divs])
-  
 
   return (
     <Table>
@@ -72,15 +47,17 @@ export default function SecondTableCreate4({divs, setDivs}) {
 
               <td>
                 <input
-                  value={div.values[1]}
-                  onChange={(e) => handleInputChange(div.id, 1, e.target.value)}
+                  defaultValue={div.values[1]}
+                  readOnly
+                  //onChange={(e) => handleInputChange(div.id, 1, e.target.value)}
                   style={{ minWidth: "300px" }}
                 />
               </td>
               <td>
                 <input
-                  value={div.values[2]}
-                  onChange={(e) => handleInputChange(div.id, 2, e.target.value)}
+                  defaultValue={div.values[2]}
+                  readOnly
+                  //onChange={(e) => handleInputChange(div.id, 2, e.target.value)}
                 />
               </td>
               <td>

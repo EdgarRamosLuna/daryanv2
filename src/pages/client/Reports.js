@@ -1,91 +1,64 @@
 import React, { useContext, useEffect, useState } from "react";
 import ReportsTable from "../../components/client/Reports";
-
+import ReportsTable2 from "../../components/other_user/Reports";
 import { MainContext } from "../../context/MainContext";
-import { getClientReports } from "../../api/daryan.api";
+import { getClientReports, getReportsIns } from "../../api/daryan.api";
+import ReportsByH from "../../components/admin/ReportsByH";
 
 const Reports = () => {
-  const { dataSes, dataT, dataTS, reportData, data, setData, setNumColumnas, toast } =
+  const { data, setData, isAdmin, activeTab, toast, data2, setData2 } =
     useContext(MainContext);
-  //console.log(dataT);
 
   useEffect(() => {
-    const token = localStorage.getItem("t");
-    const request = async () => {
-      await getClientReports(token)
-        .then((res) => {
-          const datares = res.data;
-
-          if(datares.error) {
-            // toast.error(datares.message, {
-            //   duration: 5000,
-            // });
-            return;
-          }
-          const reportes = Object.values(datares);
-          console.log(reportes);
-          localStorage.setItem("dataTable", JSON.stringify(reportes));
-          setData(reportes);
-          // toast.success(datares.message, {
-          //   duration: 4000,
-          // });
-          // setTimeout(() => {
-          //   navigate("/admin/reports");
-          // }, 5000);
-        })
-        .catch((err) => {
-          //console.log(err);
-          toast.error(err, {
-            duration: 5000,
-          });
-        });
-    };
-    request();
-  }, []);
-  /*
-  const [dataTa, setDataTa] = useState([]);
-  useEffect(() => {
-    const date = new Date();
-
-    let dateFormatter = new Intl.DateTimeFormat("es-MX", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-    let timeFormatter = new Intl.DateTimeFormat("es-MX", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-    let formattedDatef =
-      dateFormatter.format(date) + " " + timeFormatter.format(date);
-    //console.log(formattedDatef);
-    dataT.forEach((element, index) => {
-      console.log(index);
-      setDataTa((prev) => [
-        ...prev,
-        {
-          id: index + 1,
-          date: formattedDatef,
-          usuario: "Ramon Salazar",
-          actions: (
-            <div className="actions">
-              <FontAwesomeIcon icon={faPenToSquare} color="green" />
-              <a href="/assets/reporte.pdf" download>
-                <FontAwesomeIcon icon={faFilePdf} color="brown" />
-              </a>
-              <FontAwesomeIcon icon={faTrash} color="red" />
-            </div>
-          ),
-        },
-      ]);
-    });
-    return () => {};
-  }, [reportData]);
-  console.log(dataTa.sort((a, b) => b.id - a.id));*/
+   
+   const token = localStorage.getItem("t");
+   if (activeTab === 1) {
+     const request = async () => {
+       try {
+         const response = await getReportsIns(token);
+         const datares = response?.data;
+         const { error } = datares;
+         if (!error) {
+           const datares = response?.data;
+           const reportes = Object.values(datares);
+           localStorage.setItem("dataTable", JSON.stringify(reportes));
+           setData(reportes);
+         }
+       } catch (error) {
+         toast.error("error", {
+           duration: 5000,
+         });
+       }        
+  
+     };
+     if(isAdmin){
+       request();
+     }
+   }
+   if (activeTab === 2) {
+     const request = async () => {
+       try {
+         const response = await getClientReports(token);
+         const datares = response?.data;
+         const { error } = datares;
+         if (!error) {
+           const reportes = Object.values(datares);
+           localStorage.setItem("dataTable2", JSON.stringify(reportes));
+           setData2(reportes);
+         }
+       } catch (error) {
+         toast.error("error", {
+           duration: 5000,
+         });
+       }
+     };
+     request();
+   }
+  }, [isAdmin, activeTab]);
+  
   return (
     <div className="report-cointainer">
-      <ReportsTable data={data} />
+      <ReportsTable data={data} dataReportByH={data2} />
     </div>
   );
 };

@@ -15,6 +15,8 @@ import Checkbox from "../Checkbox";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import { Link, useNavigate } from "react-router-dom";
+import FilterSearch from "./FilterSearch";
+import TableTotals from "./TableTotals";
 import TableComponent from "./TableComponent";
 import Chart1 from "../Chart1";
 import Chart2 from "../Chart2";
@@ -27,10 +29,32 @@ import {
   faTrash,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
-import { ModalCard } from "../../styles/ModalCard";
+
+import ReportsByH from "./ReportsByH";
+import ComponentPagination from "../ComponentPagination";
+import TabContainer from "../tabs/TabContainer";
+
+import DatePickerRange from "../datepicker/DateRangePicker";
+
+import {
+  Box,
+  TextField,
+  Select,
+  MenuItem,
+  List,
+  ListItem,
+  IconButton,
+  Grid,
+  FormControlLabel,
+  Checkbox as CheckboxMUI,
+} from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
+import NoInfo from "../helpers/NoInfo";
+import { useTranslation } from "react-i18next";
 import FilterTable from "./FilterTable";
 registerLocale("es", es);
-function ReportsTable({ data }) {  
+function ReportsTable({ data, dataReportByH }) {
+  const { t } = useTranslation();
   const {
     handleDel,
     setSort,
@@ -49,17 +73,12 @@ function ReportsTable({ data }) {
     setAuthClientsT,
     showCharts,
     firstDayOfYear,
-    isLoading,
-    setIsLoading,
+    isAdmin,
+    handleCheckBox,
   } = useContext(MainContext);
-  useEffect(() => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-  }, [data, activeTab]);
   const [nameFilter, setNameFilter] = useState("");
   const [nameFilter2, setNameFilter2] = useState("");
+  const [nameFilterByH, setNameFilterByH] = useState("");
   const [lastnameFilter, setLastnameFilter] = useState("");
   const [idSupplier, setIdSupplier] = useState(0);
   const today = new Date();
@@ -77,7 +96,7 @@ function ReportsTable({ data }) {
   const [uniqueSerial, setUniqueSerial] = useState([]);
   const [uniqueSuppliers, setUniqueSuppliers] = useState([]);
   const [uniquePart_number, setUniquePart_number] = useState([]);
-  const [filterOption, setFilterOption] = useState(1);
+  const [filterOption, setFilterOption] = useState(0);
   const [clients, setClients] = useState([]);
   const authClientsC = async (id) => {
     //getAuthClients
@@ -93,9 +112,7 @@ function ReportsTable({ data }) {
           setShowModalAuth(true);
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
   useEffect(() => {
     const clients = async () => {
@@ -106,14 +123,16 @@ function ReportsTable({ data }) {
             //setUniqueSuppliers(res.data);
           }
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => {});
     };
     clients();
   }, []);
+  useEffect(() => {
+    setDateStart(firstDayOfYear);
+    setDateEnd(today);
+    return () => {};
+  }, [activeTab]);
 
-  //console.log(clients);
   useEffect(() => {
     if (dateStart !== "") {
       const date = new Date(dateStart);
@@ -152,7 +171,11 @@ function ReportsTable({ data }) {
   const [selectedClient, setSelectedClient] = useState("0");
   const handleNameFilterChange = (event) => {
     const value = event.target.value;
-    setNameFilter(value);
+    if (activeTab === 2) {
+      setNameFilterByH(value);
+    } else {
+      setNameFilter(value);
+    }
     //debounceSetNameFilter(value);
   };
 
@@ -206,31 +229,8 @@ function ReportsTable({ data }) {
       setLoader(false);
       //     }, 1000);
     }
-    /*setNameFilter2(event.target.value);
-    setFiltersLot(prev => {
-      if (prev.includes(event.target.value)) {
-        return prev.map(filter => {
-          if (filter === event.target.value) {
-            return event.target.value;
-          }
-          return filter;
-        });
-      } else {
-        return [...prev, event.target.value];
-      }
-    });*/
   };
 
-  /*const handleNameFilterChange4 = (event) => {
-    setNameFilter2(event.target.value);
-    setFiltersSerial((prev) => {
-      if (!prev.includes(event.target.value)) {
-        return [...prev, event.target.value];
-      }
-      return prev;
-    });
-  };*/
-  //console.log(filtersPartNumber);
   const handleNameFilterChange4 = (event) => {
     setNameFilter2(event.target.value);
     const value = event.target.value.trim(); // Elimina espacios en blanco del valor
@@ -251,12 +251,13 @@ function ReportsTable({ data }) {
         }
       });
       setLoader(false);
-      // }, 1000);
     }
   };
   const handleNameFilterChange5 = (event) => {
     setNameFilter2(event.target.value);
-    const value = event.target.value.trim(); // Elimina espacios en blanco del valor
+    let value = event.target.value.trim(); // Elimina espacios en blanco del valor
+    //arr = arr.map(item => item.replace(/\n/g, ''));
+    value = value.replace(/\n/g, "");
 
     if (value !== "" && uniqueSuppliers.includes(value)) {
       // Verifica que el valor no esté vacío y existe en uniquePart_number
@@ -292,32 +293,45 @@ function ReportsTable({ data }) {
           .map((cc) => cc.lot)
           .join(", ")} ${item.reports_cc
           .map((cc) => cc.serial)
-          .join(", ")} ${suppliers} ${planta} `; // combinamos name, id y lot en una sola variable
+          .join(", ")} ${suppliers} ${planta} `;
         const date = new Date(item.date);
+
+        // Ajusta la fecha 'date' para que solo tenga año, mes y día
+        date.setHours(0, 0, 0, 0);
+        // Luego ajusta para tener en cuenta el desplazamiento de la zona horaria
         date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+
+        const startDate = new Date(dateStart);
+        startDate.setHours(0, 0, 0, 0);
+        startDate.setMinutes(
+          startDate.getMinutes() + startDate.getTimezoneOffset()
+        );
+
+        const endDate = new Date(dateEnd);
+        endDate.setHours(23, 59, 59, 999);
+        endDate.setMinutes(endDate.getMinutes() + endDate.getTimezoneOffset());
+
         if (
           nameFilter &&
           fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
         ) {
-          //console.log(fullName.slice(3, 4));
           return false;
         }
-        if (dateStart && date < new Date(dateStart).setHours(0, 0, 0, 0)) {
+        if (dateStart && date < startDate) {
           return false;
         }
-        if (dateEnd && date > new Date(dateEnd).setHours(23, 59, 59, 999)) {
+        if (dateEnd && date > endDate) {
           return false;
         }
         if (nameFilter.length > 3) {
           dataId = id_supplier;
-          //setIdSupplier(id_supplier)
         }
         return true;
       });
     },
     [nameFilter, dateStart, dateEnd]
   );
-  //const [idSupplier, setIdSupplier] = useState(0);
+
 
   useEffect(() => {
     const data = getPaginatedData();
@@ -348,8 +362,6 @@ function ReportsTable({ data }) {
     }
   }, [nameFilter, clients]);
 
-  //console.log(uniqueClients);
-
   const filterData2 = useCallback(
     (data) => {
       return data.filter((item, index) => {
@@ -360,16 +372,31 @@ function ReportsTable({ data }) {
           .join(", ")} ${item.reports_cc.map((cc) => cc.serial).join(", ")}`; // combinamos name, id y lot en una sola variable
         const date = new Date(item.date);
         date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+
+        const startDate = new Date(dateStart);
+        const startDateOffset = startDate.getTimezoneOffset();
+        const currentOffset = new Date().getTimezoneOffset();
+        const startDateInCurrentOffset = new Date(startDate).setMinutes(
+          date.getMinutes() + currentOffset - startDateOffset
+        );
+
+        const endDate = new Date(dateEnd);
+        const endDateOffset = endDate.getTimezoneOffset();
+        const endDateInCurrentOffset = new Date(endDate).setMinutes(
+          date.getMinutes() + currentOffset - endDateOffset
+        );
+
         if (
           nameFilter &&
           fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
         ) {
           return false;
         }
-        if (dateStart && date < new Date(dateStart).setHours(0, 0, 0, 0)) {
+        if (dateStart && new Date(date) < new Date(startDateInCurrentOffset)) {
           return false;
         }
-        if (dateEnd && date > new Date(dateEnd).setHours(23, 59, 59, 999)) {
+
+        if (dateEnd && new Date(date) > new Date(endDateInCurrentOffset)) {
           return false;
         }
         return true;
@@ -377,25 +404,24 @@ function ReportsTable({ data }) {
     },
     [nameFilter, dateStart, dateEnd, data]
   );
+
   const [totalFiltered, setTotalFiltered] = useState([]);
   const [dataToTable, setDataToTable] = useState([]);
   const [totalGeneral, setTotalGeneral] = useState([]);
   useEffect(() => {
     if (data.length > 0) {
-      const filterDate = new Date("2023-04-13");
-      //const filterLot = "30";
+      
+      
       const filterLot = filtersLot;
       const filterSerial = filtersSerial;
       const filterPartNumber = filtersPartNumber;
       const filterSupplier = filtersSupplier;
       const temp = {};
       const temp2 = {};
-      //console.log(filterLot);
       // Definir las fechas del filtro
       const startDate = dateStart;
       const endDate = dateEnd;
-
-      //    let total_inspected = 0;
+      
       for (let i = 0; i < data.length; i++) {
         const date = new Date(data[i].date);
         const report_totals = data[i].report_totals;
@@ -465,9 +491,21 @@ function ReportsTable({ data }) {
           }
         }
         // Aplicar filtros para cada objeto en el data
-        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
 
         const dateString = date.toISOString().slice(0, 10);
+        // Ajusta la fecha 'date' para que solo tenga año, mes y día
+        date.setHours(0, 0, 0, 0);
+
+        // Luego ajusta para tener en cuenta el desplazamiento de la zona horaria
+        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+
+        // Ajusta las fechas 'startDate' y 'endDate' para que solo tengan año, mes y día
+        const adjustedStartDate = new Date(startDate);
+        adjustedStartDate.setHours(0, 0, 0, 0);
+
+        const adjustedEndDate = new Date(endDate);
+        adjustedEndDate.setHours(23, 59, 59, 999);
+
         if (
           (filterLot.length &&
             !reports_cc.some((report) => filterLot.includes(report.lot))) ||
@@ -477,9 +515,7 @@ function ReportsTable({ data }) {
             )) ||
           (filterPartNumber.length && !filterPartNumber.includes(partNumber)) || // Nueva condición para el filtro de búsqueda de part_number
           (filterSupplier.length && !filterSupplier.includes(supplier)) ||
-          (filterDate &&
-            (date < new Date(startDate).setHours(0, 0, 0, 0) ||
-              date > new Date(endDate).setHours(23, 59, 59, 999)))
+          ((date < adjustedStartDate || date > adjustedEndDate))
         ) {
           continue; // Saltar a la siguiente iteración del loop
         }
@@ -491,46 +527,7 @@ function ReportsTable({ data }) {
 
         const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
 
-        // temp[i] = {
-        //   part_number: partNumber,
-        //   total_inspected: total_inspected,
-        //   total_ng_pieces: total_ng_pieces,
-        //   total_ok_pieces: total_ok_pieces,
-        //   total_re_work_parts: total_re_work_parts,
-        //   total_scrap: total_scrap,
-        //   total_A: total_A,
-        // };
-        // temp[partNumber] = {
-        //   part_number: partNumber,
-        //   total_inspected: total_inspected,
-        //   total_ng_pieces: total_ng_pieces,
-        //   total_ok_pieces: total_ok_pieces,
-        //   total_re_work_parts: total_re_work_parts,
-        //   total_scrap: total_scrap,
-        //   total_A: total_A,
-        // };
-
-        /*  if (dateString in temp2) {
-          temp2[dateString].part_number = partNumber;
-          temp2[dateString].total_inspected += total_inspected;
-          temp2[dateString].total_ng_pieces += total_ng_pieces;
-          temp2[dateString].total_ok_pieces += total_ok_pieces;
-          temp2[dateString].total_re_work_parts += total_re_work_parts;
-          temp2[dateString].total_scrap += total_scrap;
-          temp2[dateString].total_A += total_A;
-        } else {
-          //  console.log(partNumber);
-          temp2[dateString] = {
-            part_number: partNumber,
-            total_inspected: total_inspected,
-            total_ng_pieces: total_ng_pieces,
-            total_ok_pieces: total_ok_pieces,
-            total_re_work_parts: total_re_work_parts,
-            total_scrap: total_scrap,
-            total_A: total_A,
-            date: dateString
-          };
-        }*/
+    
         temp2[i] = {
           part_number: partNumber,
           total_inspected: total_inspected,
@@ -569,7 +566,6 @@ function ReportsTable({ data }) {
           temp[partNumber].date += dateString;
           temp[partNumber].worked_h += worked_h;
         } else {
-          //  console.log(partNumber);
           temp[partNumber] = {
             part_number: partNumber,
             total_inspected: total_inspected,
@@ -592,23 +588,6 @@ function ReportsTable({ data }) {
         }
       }
 
-      /* const groupedData = {};
-
-      for (const date in temp) {
-        const item = temp[date];
-        const partNumber = item.part_number;
-
-        if (!groupedData[partNumber]) {
-          groupedData[partNumber] = [];
-        }
-
-        const newItem = {
-          ...item,
-          date,
-        };
-
-        groupedData[partNumber].push(newItem);
-      }*/
       setTotalFiltered(temp);
       const groupedData = Object.values(temp2).reduce((acc, curr) => {
         const { part_number, date, ...rest } = curr;
@@ -636,39 +615,6 @@ function ReportsTable({ data }) {
         });
       });
 
-      // console.log(JSON.stringify(groupedData));
-      // const groupedData = Object.values(temp2).reduce((acc, curr) => {
-      //   const {part_number, date, ...rest} = curr;
-      //   if(!acc[date]) {
-      //     acc[date] = {};
-      //   }
-      //   if(!acc[date][part_number]) {
-      //     acc[date][part_number] = {...rest};
-      //   } else {
-      //     for(let key in rest) {
-      //       if(key !== 'part_number') {
-      //         acc[date][part_number][key] += rest[key];
-      //       }
-      //     }
-      //   }
-      //   return acc;
-      // }, {});
-
-      // const groupedData = Object.values(temp2).reduce((acc, curr) => {
-      //   const {part_number, ...rest} = curr;
-      //   if(!acc[part_number]) {
-      //     acc[part_number] = {};
-      //   }
-      //   const date = rest.date;
-      //   delete rest.date;
-      //   if(!acc[part_number][date]) {
-      //     acc[part_number][date] = [];
-      //   }
-      //   acc[part_number][date].push(rest);
-      //   return acc;
-      // }, {});
-
-      // console.log(JSON.stringify(groupedData));
 
       setDataToTable(summedData);
       const totalesArray = [];
@@ -705,6 +651,7 @@ function ReportsTable({ data }) {
     filtersSerial,
     filtersSupplier,
   ]);
+ 
   const filteredData = filterData(data);
   const filteredData2 = filterData2(data);
 
@@ -739,86 +686,14 @@ function ReportsTable({ data }) {
     <div className="custom-input" onClick={onClick} ref={ref}>
       {children}
       <FontAwesomeIcon icon={faCalendarDays} />
-      {/* <i className="fa-solid fa-calendar-days"></i> */}
     </div>
   ));
   CustomInputD.displayName = "CustomInputD";
 
-  const handleCheckBox = (e, type, id) => {
-    //   console.log(type, id);
-    const allCheckBox = document.querySelectorAll('input[type="checkbox"]');
-    const idM = getPaginatedData().map((data) => data.id);
-    const classCheckbox = e.target.classList;
-
-    //console.log(e.target.checked)
-    //console.log(classCheckbox);
-
-    if (type === "all") {
-      if (e.target.checked === false) {
-        setCheckList([]);
-        //classCheckbox.remove("ucSingle");
-        //console.log('entre')
-        allCheckBox.forEach((checkbox) => {
-          checkbox.checked = false;
-          //console.log(checkbox.classList)
-          checkbox.classList.remove("ucSingle");
-        });
-      }
-      if (classCheckbox.length > 1) {
-        const clsName = e.target.classList[1];
-        if (clsName === "ucAll") {
-          setCheckList([]);
-          classCheckbox.remove("ucAll");
-
-          allCheckBox.forEach((checkbox) => {
-            checkbox.checked = false;
-          });
-        } else {
-          //console.log(id);
-          setCheckList(idM);
-          allCheckBox.forEach((checkbox) => {
-            checkbox.checked = true;
-          });
-          classCheckbox.add("ucAll");
-        }
-      } else {
-        //console.log(idM);
-        setCheckList(idM);
-        allCheckBox.forEach((checkbox, index) => {
-          checkbox.checked = true;
-          if (index !== 0) {
-            checkbox.classList.add("ucSingle");
-          }
-        });
-        classCheckbox.add("ucAll");
-      }
-    }
-    if (type === "single") {
-      if (classCheckbox.length > 1) {
-        const clsName = e.target.classList[1];
-        if (clsName === "ucSingle") {
-          //console.log(clsName);
-
-          setCheckList((prev) => prev.filter((data) => data !== id));
-
-          classCheckbox.remove("ucSingle");
-          // console.log(classCheckbox);
-        } else {
-          setCheckList((prev) => [...prev, id]);
-          classCheckbox.add("ucSingle");
-        }
-      } else {
-        setCheckList((prev) => [...prev, id]);
-        classCheckbox.add("ucSingle");
-      }
-    }
-    //console.log("Check");
-  };
-  //console.log(checkList);
   const navigate = useNavigate();
   const singleView = (id) => {
     // window.location.href = `/admin/reports/${id}`;
-    navigate(`/client/reports/${id}`);
+    navigate(`/admin/reports_insp/${id}`);
   };
   const singleView2 = (id) => {
     navigate(`/user/reports/2/${id}`);
@@ -834,59 +709,64 @@ function ReportsTable({ data }) {
 
   useEffect(() => {
     if (data.length !== 0) {
+      const res0 = [];
+      const seen0 = {};
+
+      data.forEach((item) => {
+        if (!seen0[item.supplier]) {
+          seen0[item.supplier] = true;
+          let item_supplier = item.supplier.replace(/\n/g, "");
+          res0.push(item_supplier);
+        }
+      });
+      setUniqueSuppliers([...new Set(res0)]);
+  
+
       const res1 = [];
       const seen = {};
 
       data.forEach((item) => {
         if (filtersPartNumber.includes(item.part_number)) {
           item.reports_cc.forEach((report) => {
-            if (filtersSerial.length > 0) {
-              if (filtersSerial.includes(report.serial)) {
+            if (filtersSupplier.includes(item.supplier)) {
+              if (filtersSerial.length > 0) {
+                if (filtersSerial.includes(report.serial)) {
+                  if (!seen[report.lot]) {
+                    seen[report.lot] = true;
+                    res1.push(report.lot);
+                  }
+                }
+              } else {
                 if (!seen[report.lot]) {
                   seen[report.lot] = true;
                   res1.push(report.lot);
                 }
               }
-            } else {
-              if (!seen[report.lot]) {
-                seen[report.lot] = true;
-                res1.push(report.lot);
-              }
             }
           });
         }
       });
-      //console.log(res1);
-      //setUniqueLots(res1);
       setUniqueLots([...new Set(res1)]);
 
       const res2 = [];
       const seen2 = {};
 
       data.forEach((item) => {
-        // if (filtersPartNumber.includes(item.part_number)) {
-        //   item.reports_cc.forEach((report) => {
-        //     if (!seen2[report.serial]) {
-        //       seen2[report.serial] = true;
-        //       res2.push(report.serial);
-        //     }
-        //   });
-        // }
         if (filtersPartNumber.includes(item.part_number)) {
           item.reports_cc.forEach((report) => {
-            if (filtersLot.length > 0) {
-              if (filtersLot.includes(report.lot)) {
+            if (filtersSupplier.includes(item.supplier)) {
+              if (filtersLot.length > 0) {
+                if (filtersLot.includes(report.lot)) {
+                  if (!seen2[report.serial]) {
+                    seen2[report.serial] = true;
+                    res2.push(report.serial);
+                  }
+                }
+              } else {
                 if (!seen2[report.serial]) {
                   seen2[report.serial] = true;
                   res2.push(report.serial);
-                  //  setFiltersSerial(prev => prev.filter(f => f.serial === report.serial))
-                  // console.log(report.serial);
                 }
-              }
-            } else {
-              if (!seen2[report.serial]) {
-                seen2[report.serial] = true;
-                res2.push(report.serial);
               }
             }
           });
@@ -894,70 +774,56 @@ function ReportsTable({ data }) {
       });
       setUniqueSerial([...new Set(res2)]);
 
-      /*data.forEach((item) => {
-        item.reports_cc.forEach((report) => {
-          if (!seen2[report.serial]) {
-            seen2[report.serial] = true;
-            res2.push(report.serial);
-          }
-        });
-      });*/
       const res3 = [];
       const seen3 = {};
 
       data.forEach((item) => {
-        if (!seen3[item.part_number]) {
-          seen3[item.part_number] = true;
-          res3.push(item.part_number);
+        if (filtersSupplier.includes(item.supplier)) {
+          if (!seen3[item.part_number]) {
+            seen3[item.part_number] = true;
+            res3.push(item.part_number);
+          }
+        } else {
         }
       });
+
       setUniquePart_number(res3);
     }
 
     return () => {};
-  }, [data, filtersPartNumber, filterOption, filtersSerial, filtersLot]);
-  //console.log(uniqueSuppliers);
-  /*useCallback(() => {
-    
-    uniqueLots.forEach(element => {
-        //console.log(element)
-       setFiltersSerial(prev => prev.filter(f => f === element))
-    });
-    //setFiltersSerial(prev => prev.filter(f => f.serial === report.serial))
-  }, [uniqueLots]);*/
+  }, [
+    data,
+    filtersPartNumber,
+    filterOption,
+    filtersSerial,
+    filtersLot,
+    filtersSupplier,
+  ]);
+
   useEffect(() => {
     const cleanFilters = () => {
       setFiltersLot([]);
       setFiltersPartNumber([]);
     };
-    // if (filterOption === "1" && filtersSupplier.length === 0) {
-    //   toast.error(
-    //     "Debes seleccionar almenos 1 proveedor para obtener los numeros de parte disponibles",
-    //     {
-    //       duration: 5000,
-    //     }
-    //   );
-    //   setFilterOption(0);
-    //   cleanFilters();
-    // } else {
-    //   const inputsWithDataList = document.querySelectorAll("input[list]");
-    //   inputsWithDataList.forEach((input) => {
-    //     if (input !== null) {
-    //       input.focus();
-    //       input.select();
-    //       // Simular presionado de la tecla space
-    //       //    const event = new KeyboardEvent("keydown", { key: " " });
-    //       //  input.dispatchEvent(event);
-    //     }
-    //   });
-    // }
-    if (filterOption === "2" && filtersPartNumber.length === 0) {
-      toast.error(
-        "Debes seleccionar almenos 1 numero de parte para obtener los numeros de lote disponibles",
-        {
-          duration: 5000,
+    if (filterOption === "1" && filtersSupplier.length === 0) {
+      toast.error(t("notifications.selectAtLeastOneSupplier"), {
+        duration: 5000,
+      });
+      setFilterOption(0);
+      cleanFilters();
+    } else {
+      const inputsWithDataList = document.querySelectorAll("input[list]");
+      inputsWithDataList.forEach((input) => {
+        if (input !== null) {
+          input.focus();
+          input.select();
         }
-      );
+      });
+    }
+    if (filterOption === "2" && filtersPartNumber.length === 0) {
+      toast.error(t("notifications.selectAtLeastOnePartForLots"), {
+        duration: 5000,
+      });
       setFilterOption(1);
       cleanFilters();
     } else {
@@ -966,19 +832,13 @@ function ReportsTable({ data }) {
         if (input !== null) {
           input.focus();
           input.select();
-          // Simular presionado de la tecla space
-          //    const event = new KeyboardEvent("keydown", { key: " " });
-          //  input.dispatchEvent(event);
         }
       });
     }
     if (filterOption === "3" && filtersPartNumber.length === 0) {
-      toast.error(
-        "Debes seleccionar almenos 1 numero de parte para obtener los numeros de serie disponibles",
-        {
-          duration: 5000,
-        }
-      );
+      toast.error(t("notifications.selectAtLeastOnePartForSerials"), {
+        duration: 5000,
+      });
       cleanFilters();
       setFilterOption(1);
     } else {
@@ -988,18 +848,24 @@ function ReportsTable({ data }) {
           input.focus();
           //setNameFilter('2')
           input.select();
-          // Simular presionado de la tecla space
-          //  const event = new KeyboardEvent("keydown", { key: " " });
-          // input.dispatchEvent(event);
         }
       });
     }
   }, [filterOption, filtersPartNumber, filtersSupplier, toast]);
 
+  // Convert your array of clients to an object for easy lookup
+  const clientsById = uniqueClients.reduce((obj, client) => {
+    obj[client.id] = client;
+    return obj;
+  }, {});
+
   const addClientToList = (e) => {
     const id = e.target.value;
     setSelectedClient(id);
-    const clientName = e.target.selectedOptions[0].text;
+
+    // Look up the client name by id
+    const clientName = clientsById[id].fullname;
+
     setClientsToReport((prev) => {
       if (!prev.some((client) => client.id === id) && id !== "0") {
         return [...prev, { id, clientName }];
@@ -1008,1058 +874,319 @@ function ReportsTable({ data }) {
     });
   };
 
-  //console.log(clientsToReport);
+
   const removeClient = (id) => {
     setClientsToReport((prev) => prev.filter((client) => client.id !== id));
   };
   const [showFIltersT, setShowFiltersT] = useState(false);
   const showFilterTable = () => {
-    console.log("showFilterTable");
     setShowFiltersT((prev) => !prev);
   };
+  const inspectionReport = () => {};
 
+  const reportesComponents = {
+    insp: {
+      p: <p>{t("reports.inspection_reports")}</p>,
+    },
+    // byh: {
+    //   p: <p>{t("reports.hourly_reports")}</p>,
+    // },
+
+  };
+
+  const tabContent = {
+    1: {
+      componenteTitle: reportesComponents["insp"].p,
+      componenteTop: (
+        <div className="header-container">         
+          <form autoComplete="off">
+            <Grid
+              sx={{
+                marginTop: "15px",
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+              }}
+            >
+              <div className="filter-item">
+                <TextField
+                  id="outlined-basic"
+                  label={t("reports.search")}
+                  variant="outlined"
+                  autoComplete="off"
+                  sx={{
+                    width: "90%",
+                  }}
+                  type="text"
+                  name="buscar"
+                  value={nameFilter}
+                  onChange={(e) => handleNameFilterChange(e)}
+                  placeholder={t("reports.search_by_date")}
+                />
+              </div>
+              <div className="filter-item">
+                <Box
+                  sx={{
+                    visibility: uniqueClients.length > 0 ? "visible" : "hidden",
+                  }}
+                >
+                  <Box>
+                    <Select
+                      value={selectedClient}
+                      onChange={addClientToList}
+                      sx={{
+                        width: "90%",
+                      }}
+                    >
+                      <MenuItem value="0">
+                        {t("reports.selectAClient")}
+                      </MenuItem>
+                      {uniqueClients.map((option) => (
+                        <MenuItem key={option} value={option.id}>
+                          {option.fullname}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Box>
+                  <Box>
+                    <List
+                      sx={{
+                        display: `${
+                          clientsToReport.length > 0 ? "flex" : "none"
+                        }`,
+                        flexDirection: "column",
+                      }}
+                    >
+                      {clientsToReport.map((client, ind) => (
+                        <ListItem key={ind}>
+                          <span>{client.clientName}</span>
+                          <IconButton onClick={() => removeClient(client.id)}>
+                            <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
+                          </IconButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                </Box>
+              </div>
+              <DatePickerRange
+                setDateStart={setDateStart}
+                setDateEnd={setDateEnd}
+              />
+            </Grid>
+          </form>
+        </div>
+      ),
+      componenteMiddle: (
+        <div className="table-body table-reports">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                <Checkbox
+                  type="all"
+                  id={0}
+                  callback={handleCheckBox}
+                  data={getPaginatedData()}
+                />
+              </th>
+              <th>{t('reports.part_number')}</th>
+              <th>{t('reports.plant')}</th>
+              <th>{t('reports.supplier')}</th>
+              <th>{t('reports.date')}</th>
+              <th>{t('reports.status')}</th>
+              <th>{t('reports.actions')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <div className={loader === false ? "loaderContainer" : ""}>
+              <Loader>
+                <img src="/assets/img/loading2.svg" alt="" />
+              </Loader>
+            </div>
+            {getPaginatedData().length === 0 ? (
+              <tr>
+                <td
+                  colSpan="7"
+                  className="table-center"
+                  style={{ opacity: `${loader ? 0 : 1}` }}
+                >
+                  <h1>{t('reports.noDatabaseInformation')}</h1>
+                </td>
+              </tr>
+            ) : (
+              getPaginatedData().map((item, index) => (
+                <tr key={index} onClick={(e) => singleView(item.id)}>
+                  <td
+                    className="table-center"
+                    onClick={(e) => e.stopPropagation()}
+                    colSpan={1}
+                  >
+                    <Checkbox
+                      type="single"
+                      id={item.id}
+                      callback={handleCheckBox}
+                      data={getPaginatedData()}
+                    />
+                  </td>
+                  <td className="table-center">{item.part_number}</td>
+                  <td className="table-center">{item.plant}</td>
+                  <td className="table-center">{item.supplier}</td>
+                  <td className="table-center">{item.date}</td>
+                  <td className="table-center">
+                    {Number(item.status) === 1 && t('reports.notApproved')} 
+                    {Number(item.status) === 3 && t('reports.approved')}
+                  </td>
+                  <td
+                    className="table-center"
+                    onClick={(e) => e.stopPropagation()}
+                    colSpan={1}
+                  >
+                    <div className="actions">
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        onClick={() => handleDel(item.id, "reports")}
+                      />
+                      <a
+                        href={`http://phpstack-1070657-3746640.cloudwaysapps.com/reporte-inspeccion/${item.id}`}
+                        target="_blank"
+                        className="btn-pdf"
+                        rel="noreferrer"
+                      >
+                        {!navigator.onLine ? (
+                          <FontAwesomeIcon icon={faFilePdf} />
+                        ) : (
+                          <i className="fa-solid fa-file-pdf"></i>
+                        )}
+                      </a>
+                      <FontAwesomeIcon
+                        icon={faUsers}
+                        color="green"
+                        onClick={() => authClientsC(item.id)}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+      
+      ),
+      componenteBottom: (
+        <ComponentPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          handleFirstPageClick={handleFirstPageClick}
+          handlePageChange={handlePageChange}
+          handleLastPageClick={handleLastPageClick}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
+          data={data.length}
+        />
+      ),
+    },
+    // 2: {
+    //   componenteTitle: reportesComponents["byh"].p,
+    //   componenteTop: (
+    //     <>
+    //       <div className="header-container">
+    //         <form autoComplete="off">
+    //           <Grid
+    //             sx={{
+    //               marginTop: "15px",
+    //               display: "grid",
+    //               gridTemplateColumns: "repeat(3, 1fr)",
+    //             }}
+    //           >
+    //             <div className="filter-item">
+    //               <TextField
+    //                 id="outlined-basic"
+    //                 label={t("reports.search")}
+    //                 variant="outlined"
+    //                 autoComplete="off"
+    //                 sx={{
+    //                   width: "90%",
+    //                 }}
+    //                 type="text"
+    //                 name="buscar"
+    //                 value={nameFilterByH}
+    //                 onChange={(e) => handleNameFilterChange(e)}
+    //                 placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
+    //               />
+    //             </div>
+    //             <div className="filter-item">
+    //               <Box
+    //                 sx={{
+    //                   visibility:
+    //                     uniqueClients.length > 0 ? "visible" : "hidden",
+    //                 }}
+    //               >
+    //                 <Box>
+    //                   <Select
+    //                     value={selectedClient}
+    //                     onChange={addClientToList}
+    //                     sx={{
+    //                       width: "90%",
+    //                     }}
+    //                   >
+    //                     <MenuItem value="0">{t("reports.selectAClient")}</MenuItem>
+    //                     {uniqueClients.map((option) => (
+    //                       <MenuItem key={option} value={option.id}>
+    //                         {option.fullname}
+    //                       </MenuItem>
+    //                     ))}
+    //                   </Select>
+    //                 </Box>
+    //                 <Box>
+    //                   <List
+    //                     sx={{
+    //                       display: `${
+    //                         clientsToReport.length > 0 ? "flex" : "none"
+    //                       }`,
+    //                       flexDirection: "column",
+    //                     }}
+    //                   >
+    //                     {clientsToReport.map((client, ind) => (
+    //                       <ListItem key={ind}>
+    //                         <span>{client.clientName}</span>
+    //                         <IconButton onClick={() => removeClient(client.id)}>
+    //                           <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
+    //                         </IconButton>
+    //                       </ListItem>
+    //                     ))}
+    //                   </List>
+    //                 </Box>
+    //               </Box>
+    //             </div>
+    //             <DatePickerRange
+    //               setDateStart={setDateStart}
+    //               setDateEnd={setDateEnd}
+    //             />
+    //           </Grid>
+    //         </form>
+    //       </div>
+    //     </>
+    //   ),
+    //   componenteMiddle: (
+    //     <ReportsByH
+    //       data={dataReportByH}
+    //       dateStart={dateStart}
+    //       dateEnd={dateEnd}
+    //       setDateStart={setDateStart}
+    //       setDateEnd={setDateEnd}
+    //       nameFilterByH={nameFilterByH}
+    //       loader={loader}
+    //     />
+    //   ),
+    // },
+   
+  };
   return (
     <>
       <Table>
         <div className="table-container mb-5">
-          {activeTab === 1 && (
-            <div className="header-container">
-              <form autoComplete="off">
-                <div className="filter-container">
-                  <div className="filter-item">
-                    <label htmlFor="date-filter" className="label-center">
-                      Buscar por Fecha:
-                    </label>
-
-                    <div className="filter-item-input input-date">
-                      <div className="range">
-                        <DatePicker
-                          id="fechaInicio"
-                          selected={dateStart}
-                          onChange={(date) => setDateStart(date)}
-                          locale="es"
-                          /*showTimeSelect
-                      timeFormat="h:mm aa"
-                      timeIntervals={60}
-                      timeCaption="Hora"
-                      dateFormat="yyyy-MM-dd h:mm aa"*/
-                          customInput={
-                            <CustomInputD>
-                              <p>
-                                Desde:{" "}
-                                <span
-                                  style={{
-                                    minWidth: "90px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {formatedDateStart !== ""
-                                    ? formatedDateStart
-                                    : ""}
-                                </span>
-                              </p>
-                            </CustomInputD>
-                          }
-                        />
-                      </div>
-                      <div className="range">
-                        <DatePicker
-                          id="fechaInicio"
-                          selected={dateEnd}
-                          onChange={(date) => setDateEnd(date)}
-                          locale="es"
-                          /*showTimeSelect
-                      timeFormat="h:mm aa"
-                      timeIntervals={60}
-                      timeCaption="Hora"
-                      dateFormat="yyyy-MM-dd h:mm aa"*/
-                          customInput={
-                            <CustomInputD>
-                              <p>
-                                Hasta:
-                                <span
-                                  style={{
-                                    minWidth: "90px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {formatedDateEnd !== ""
-                                    ? formatedDateEnd
-                                    : ""}
-                                </span>
-                              </p>
-                            </CustomInputD>
-                          }
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="filter-item">
-                    <label htmlFor="name-filter" className="label-center">
-                      Buscar:
-                    </label>
-                    <div className="filter-item-input">
-                      <input
-                        type="text"
-                        id="name-filter"
-                        value={nameFilter}
-                        onChange={(e) => handleNameFilterChange(e)}
-                        placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
-                      />
-                    </div>
-                    {/* <select onChange={(e) => setIdSupplier(e.target.value)}>
-                    {getPaginatedData()
-                      .reduce((uniqueOptions, item) => {
-                        if (
-                          !uniqueOptions.find(
-                            (option) => option.value === item.id_supplier
-                          )
-                        ) {
-                          uniqueOptions.push({
-                            value: item.id_supplier,
-                            label: item.id_supplier,
-                          });
-                        }
-                        return uniqueOptions;
-                      }, [])
-                      .map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                  </select> */}
-                  </div>
-                </div>
-              </form>
-            </div>
-          )}
-          {activeTab === 3 && (
-            <div className="header-container2">
-              <form autoComplete="off">
-                <div className="filter-options">
-                  <div className="filter-items">
-                    {/* <div className="filter-item-checkbox">
-                      <div className="filter-item-in">
-                        <label htmlFor="supplier">Proveedor</label>
-                        <input
-                          type="checkbox"
-                          value={0}
-                          onChange={(e) => setFilterOption(e.target.value)}
-                          checked={Number(filterOption) === 0 ? true : false}
-                          id="supplier"
-                        />
-                      </div>
-                      <div className="item-list">
-                        <ul
-                          style={{
-                            display: `${
-                              filtersSupplier.length > 0 ? "flex" : "none"
-                            }`,
-                          }}
-                        >
-                          {filtersSupplier.map((filterSupplier, ind) => (
-                            <li key={ind}>
-                              <span>{filterSupplier}</span>{" "}
-                              <span>
-                                <FontAwesomeIcon
-                                  icon={faTimes}
-                                  color="rgb(87, 0, 0)"
-                                  onClick={(e) =>
-                                    setFiltersSupplier((prev) =>
-                                      prev.filter(
-                                        (pre) => pre !== filterSupplier
-                                      )
-                                    )
-                                  }
-                                />
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div> */}
-                    <div className="filter-item-checkbox">
-                      <div className="filter-item-in">
-                        <label htmlFor="part_n">Numero de parte</label>
-                        <input
-                          type="checkbox"
-                          value={1}
-                          onChange={(e) => setFilterOption(e.target.value)}
-                          checked={Number(filterOption) === 1 ? true : false}
-                          id="part_n"
-                        />
-                      </div>
-                      <div className="item-list">
-                        <ul
-                          style={{
-                            display: `${
-                              filtersPartNumber.length > 0 ? "flex" : "none"
-                            }`,
-                          }}
-                        >
-                          {filtersPartNumber.map((filterPartNumber, ind) => (
-                            <li key={ind}>
-                              <span>{filterPartNumber}</span>{" "}
-                              <span>
-                                <i
-                                  className="fa-solid fa-times"
-                                  onClick={(e) =>
-                                    setFiltersPartNumber((prev) =>
-                                      prev.filter(
-                                        (pre) => pre !== filterPartNumber
-                                      )
-                                    )
-                                  }
-                                ></i>
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="filter-item-checkbox">
-                      <div className="filter-item-in">
-                        <label htmlFor="lote">Lote</label>
-                        <input
-                          type="checkbox"
-                          value={2}
-                          onChange={(e) => setFilterOption(e.target.value)}
-                          checked={Number(filterOption) === 2 ? true : false}
-                          id="lote"
-                        />
-                      </div>
-                      <div className="item-list">
-                        <ul
-                          style={{
-                            display: `${
-                              filtersLot.length > 0 ? "flex" : "none"
-                            }`,
-                          }}
-                        >
-                          {filtersLot.map((filterLot, ind) => (
-                            <li key={ind}>
-                              <span>{filterLot}</span>{" "}
-                              <span>
-                                <i
-                                  className="fa-solid fa-times"
-                                  onClick={(e) =>
-                                    setFiltersLot((prev) =>
-                                      prev.filter((pre) => pre !== filterLot)
-                                    )
-                                  }
-                                ></i>
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="filter-item-checkbox">
-                      <div className="filter-item-in">
-                        <label htmlFor="serie">Series</label>
-                        <input
-                          type="checkbox"
-                          value={3}
-                          onChange={(e) => setFilterOption(e.target.value)}
-                          checked={Number(filterOption) === 3 ? true : false}
-                          id="serie"
-                        />
-                      </div>
-                      <div className="item-list">
-                        <ul
-                          style={{
-                            display: `${
-                              filtersSerial.length > 0 ? "flex" : "none"
-                            }`,
-                          }}
-                        >
-                          {filtersSerial.map((filterSerial, ind) => (
-                            <li key={ind}>
-                              <span>{filterSerial}</span>{" "}
-                              <span>
-                                <i
-                                  className="fa-solid fa-times"
-                                  onClick={(e) =>
-                                    setFiltersSerial((prev) =>
-                                      prev.filter((pre) => pre !== filterSerial)
-                                    )
-                                  }
-                                ></i>
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="filter-container">
-                  {Number(filterOption) === 1 && (
-                    <div className="filter-item">
-                      <label htmlFor="name-filter">Buscar:</label>
-                      <div className="filter-item-input">
-                        {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
-                        <input
-                          list="parts_number"
-                          id="part_number"
-                          name="part_number"
-                          value={nameFilter2}
-                          onChange={handleNameFilterChange2}
-                      //    disabled={filtersSupplier.length === 0 ? true : false}
-                        />
-
-                        <datalist id="parts_number">
-                          {uniquePart_number.map((part_number, indx) => {
-                            // Verificar si el navegador es Firefox, Safari o Edge
-                            const isFirefox =
-                              navigator.userAgent.indexOf("Firefox") !== -1;
-                            const isSafari =
-                              navigator.userAgent.indexOf("Safari") !== -1 ||
-                              navigator.userAgent.indexOf("AppleWebKit") !== -1;
-                            const isEdge =
-                              navigator.userAgent.indexOf("Edge") !== -1;
-
-                            // Crear etiqueta de opción
-                            const option = (
-                              <option value={part_number}>
-                                {isFirefox
-                                  ? `Parte #${part_number}`
-                                  : "# Parte"}
-                              </option>
-                            );
-
-                            // Devolver opción
-                            return option;
-                          })}
-                        </datalist>
-
-                        {/*<input
-                     type="text"
-                     id="name-filter"
-                     value={nameFilter}
-                     onChange={handleNameFilterChange}
-                   />*/}
-                      </div>
-                    </div>
-                  )}
-                  {Number(filterOption) === 2 && (
-                    <div className="filter-item">
-                      <label htmlFor="name-filter">Buscar:</label>
-                      <div className="filter-item-input">
-                        {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
-                        <input
-                          list="lots"
-                          id="lot"
-                          name="lot"
-                          value={nameFilter2}
-                          onChange={handleNameFilterChange3}
-                          disabled={
-                            filtersPartNumber.length === 0 ? true : false
-                          }
-                        />
-
-                        <datalist id="lots">
-                          {uniqueLots.map((lot, indx) => {
-                            // Verificar si el navegador es Firefox, Safari o Edge
-                            const isFirefox =
-                              navigator.userAgent.indexOf("Firefox") !== -1;
-                            const isSafari =
-                              navigator.userAgent.indexOf("Safari") !== -1 ||
-                              navigator.userAgent.indexOf("AppleWebKit") !== -1;
-                            const isEdge =
-                              navigator.userAgent.indexOf("Edge") !== -1;
-
-                            // Crear etiqueta de opción
-                            const option = (
-                              <option value={lot}>
-                                {isFirefox ? `Lote #${lot}` : "# Lote"}
-                              </option>
-                            );
-
-                            // Devolver opción
-                            return option;
-                          })}
-                        </datalist>
-
-                        {/*<input
-                     type="text"
-                     id="name-filter"
-                     value={nameFilter}
-                     onChange={handleNameFilterChange}
-                   />*/}
-                      </div>
-                    </div>
-                  )}
-                  {Number(filterOption) === 3 && (
-                    <div className="filter-item">
-                      <label htmlFor="name-filter">Buscar:</label>
-                      <div className="filter-item-input">
-                        {/*<label for="ice-cream-choice">Choose a flavor:</label>*/}
-                        <input
-                          list="serials"
-                          id="serial"
-                          name="serial"
-                          value={nameFilter2}
-                          onChange={handleNameFilterChange4}
-                          disabled={
-                            filtersPartNumber.length === 0 ? true : false
-                          }
-                        />
-
-                        <datalist id="serials">
-                          {uniqueSerial.map((serial, indx) => {
-                            // Verificar si el navegador es Firefox, Safari o Edge
-                            const isFirefox =
-                              navigator.userAgent.indexOf("Firefox") !== -1;
-                            const isSafari =
-                              navigator.userAgent.indexOf("Safari") !== -1 ||
-                              navigator.userAgent.indexOf("AppleWebKit") !== -1;
-                            const isEdge =
-                              navigator.userAgent.indexOf("Edge") !== -1;
-
-                            // Crear etiqueta de opción
-                            const option = (
-                              <option value={serial}>
-                                {isFirefox ? `Serial #${serial}` : "# Serial"}
-                              </option>
-                            );
-
-                            // Devolver opción
-                            return option;
-                          })}
-                        </datalist>
-
-                        {/*<input
-                     type="text"
-                     id="name-filter"
-                     value={nameFilter}
-                     onChange={handleNameFilterChange}
-                   />*/}
-                      </div>
-                    </div>
-                  )}
-                  {/* {Number(filterOption) === 0 && (
-                    <div className="filter-item">
-                      <label htmlFor="name-filter">Buscar:</label>
-                      <div className="filter-item-input">
-                        {/*<label for="ice-cream-choice">Choose a flavor:</label>/}
-                        <input
-                          list="suppliers"
-                          id="serial"
-                          name="serial"
-                          value={nameFilter2}
-                          onChange={handleNameFilterChange5}
-                          //disabled={filtersPartNumber.length === 0 ? true : false}
-                        />
-
-                        <datalist id="suppliers">
-                          {uniqueSuppliers.map((serial, indx) => {
-                            // Verificar si el navegador es Firefox, Safari o Edge
-                            const isFirefox =
-                              navigator.userAgent.indexOf("Firefox") !== -1;
-                            const isSafari =
-                              navigator.userAgent.indexOf("Safari") !== -1 ||
-                              navigator.userAgent.indexOf("AppleWebKit") !== -1;
-                            const isEdge =
-                              navigator.userAgent.indexOf("Edge") !== -1;
-
-                            // Crear etiqueta de opción
-                            const option = (
-                              <option value={serial}>
-                                {isFirefox ? `${serial}` : ""}
-                              </option>
-                            );
-
-                            // Devolver opción
-                            return option;
-                          })}
-                        </datalist>
-
-                        {/*<input
-                     type="text"
-                     id="name-filter"
-                     value={nameFilter}
-                     onChange={handleNameFilterChange}
-                   />}
-                      </div>
-                    </div>
-                  )} */}
-                  <div className="filter-item">
-                    <label htmlFor="date-filter" className="label-center">
-                      Buscar por Fecha:
-                    </label>
-
-                    <div className="filter-item-input input-date">
-                      <div className="range">
-                        <DatePicker
-                          id="fechaInicio"
-                          selected={dateStart}
-                          onChange={(date) => setDateStart(date)}
-                          locale="es"
-                          customInput={
-                            <CustomInputD>
-                              <p>
-                                Desde:{" "}
-                                <span
-                                  style={{
-                                    minWidth: "90px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {formatedDateStart !== ""
-                                    ? formatedDateStart
-                                    : ""}
-                                </span>
-                              </p>
-                            </CustomInputD>
-                          }
-                        />
-                      </div>
-                      <div className="range">
-                        <DatePicker
-                          id="fechaInicio"
-                          selected={dateEnd}
-                          onChange={(date) => setDateEnd(date)}
-                          locale="es"
-                          /*showTimeSelect
-                 timeFormat="h:mm aa"
-                 timeIntervals={60}
-                 timeCaption="Hora"
-                 dateFormat="yyyy-MM-dd h:mm aa"*/
-                          customInput={
-                            <CustomInputD>
-                              <p>
-                                Hasta:
-                                <span
-                                  style={{
-                                    minWidth: "90px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {formatedDateEnd !== ""
-                                    ? formatedDateEnd
-                                    : ""}
-                                </span>
-                              </p>
-                            </CustomInputD>
-                          }
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </form>
-              <div
-                className={`charts ${showCharts === true && "smoothFadeIn"}`}
-              >
-                {showCharts === true && (
-                  <>
-                    <Chart1
-                      totalG={totalGeneral}
-                      colorScale={[
-                        "tomato",
-                        "orange",
-                        "gold",
-                        "gold",
-                        "gold",
-                        "gold",
-                      ]}
-                    />
-                    <Chart2
-                      totalG={totalGeneral}
-                      colorScale={[
-                        "tomato",
-                        "orange",
-                        "gold",
-                        "gold",
-                        "gold",
-                        "gold",
-                      ]}
-                    />
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-          {activeTab === 2 && (
-            <div className="header-container">
-              <form autoComplete="off">
-                <div className="filter-container">
-                  <div className="filter-item">
-                    <label htmlFor="date-filter" className="label-center">
-                      Buscar por Fecha:
-                    </label>
-
-                    <div className="filter-item-input input-date">
-                      <div className="range">
-                        <DatePicker
-                          id="fechaInicio"
-                          selected={dateStart}
-                          onChange={(date) => setDateStart(date)}
-                          locale="es"
-                          /*showTimeSelect
-                    timeFormat="h:mm aa"
-                    timeIntervals={60}
-                    timeCaption="Hora"
-                    dateFormat="yyyy-MM-dd h:mm aa"*/
-                          customInput={
-                            <CustomInputD>
-                              <p>
-                                Desde:{" "}
-                                <span
-                                  style={{
-                                    minWidth: "90px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {formatedDateStart !== ""
-                                    ? formatedDateStart
-                                    : ""}
-                                </span>
-                              </p>
-                            </CustomInputD>
-                          }
-                        />
-                      </div>
-                      <div className="range">
-                        <DatePicker
-                          id="fechaInicio"
-                          selected={dateEnd}
-                          onChange={(date) => setDateEnd(date)}
-                          locale="es"
-                          /*showTimeSelect
-                    timeFormat="h:mm aa"
-                    timeIntervals={60}
-                    timeCaption="Hora"
-                    dateFormat="yyyy-MM-dd h:mm aa"*/
-                          customInput={
-                            <CustomInputD>
-                              <p>
-                                Hasta:
-                                <span
-                                  style={{
-                                    minWidth: "90px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {formatedDateEnd !== ""
-                                    ? formatedDateEnd
-                                    : ""}
-                                </span>
-                              </p>
-                            </CustomInputD>
-                          }
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="filter-item">
-                    <label htmlFor="name-filter" className="label-center">
-                      Buscar:
-                    </label>
-                    <div className="filter-item-input">
-                      <input
-                        type="text"
-                        id="name-filter"
-                        value={nameFilter}
-                        onChange={(e) => handleNameFilterChange(e)}
-                        placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
-                      />
-                    </div>
-                    {/* <select onChange={(e) => setIdSupplier(e.target.value)}>
-                  {getPaginatedData()
-                    .reduce((uniqueOptions, item) => {
-                      if (
-                        !uniqueOptions.find(
-                          (option) => option.value === item.id_supplier
-                        )
-                      ) {
-                        uniqueOptions.push({
-                          value: item.id_supplier,
-                          label: item.id_supplier,
-                        });
-                      }
-                      return uniqueOptions;
-                    }, [])
-                    .map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                </select> */}
-                  </div>
-                </div>
-              </form>
-              <div
-                className="clients-container"
-                style={{
-                  visibility: uniqueClients.length > 0 ? "visible" : "hidden",
-                }}
-              >
-                <div className="select-container">
-                  <select value={selectedClient} onChange={addClientToList}>
-                    <option value="0" selected>
-                      Selecciona un cliente
-                    </option>
-                    {uniqueClients.map((option) => (
-                      <option key={option} value={option.id}>
-                        {option.fullname}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="list-container">
-                  <div className="item-list">
-                    <ul
-                      style={{
-                        display: `${
-                          clientsToReport.length > 0 ? "flex" : "none"
-                        }`,
-                      }}
-                    >
-                      {clientsToReport.map((client, ind) => (
-                        <li key={ind}>
-                          <span>{client.clientName}</span>
-                          <span onClick={() => removeClient(client.id)}>
-                            <FontAwesomeIcon
-                              icon={faTimes}
-                              color="rgb(87, 0, 0)"
-                            />
-                            {/* <i className="fa-solid fa-times"></i> */}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-          {activeTab === 3 && (
-            <div className="table-controlls">
-              {showFIltersT && <FilterTable />}
-              <div className="table-controlls-left">
-                <div
-                  className={`table-controlls-left-item ${
-                    showFIltersT ? "activeFilters" : ""
-                  }`}
-                  onClick={showFilterTable}
-                >
-                  <i className="fa-solid fa-filter"></i>
-                </div>
-              </div>
-            </div>
-          )}
-          <div className="tab-container">
-            <div className="tab-items">
-              <div
-                className={`tab-item ${activeTab === 1 ? "active" : ""}`}
-                onClick={() => tabSwitch(1)}
-              >
-                <p>Reportes de inspeccion</p>
-              </div>
-              <div
-                className={`tab-item ${activeTab === 2 ? "active" : ""}`}
-                onClick={() => tabSwitch(2)}
-              >
-                <p>Reportes por hora</p>
-              </div>
-              <div
-                className={`tab-item ${activeTab === 3 ? "active" : ""}`}
-                onClick={() => tabSwitch(3)}
-              >
-                <p>Totales reportes de inspeccion</p>
-              </div>
-            </div>
-          </div>
-          {activeTab === 1 && (
-            <div className="table-body table-reports">
-              <table>
-                <thead>
-                  <tr>
-                    {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
-                    <th># Parte</th>
-                    <th>Planta</th>
-                    <th>Proveedor</th>
-                    <th>Fecha</th>
-                    <th>Status</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <div className={isLoading === false ? "loaderContainer" : ""}>
-                    <Loader>
-                      <img src="/assets/img/loading2.svg" alt="" />
-                    </Loader>
-                  </div>
-                  {getPaginatedData().length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan="100%"
-                        className="table-center"
-                        style={{ opacity: `${isLoading ? 0 : 1}` }}
-                      >
-                        <h1>No hay informacion en la base de datos</h1>
-                      </td>
-                    </tr>
-                  ) : (
-                    getPaginatedData().map((item, index) => (
-                      <tr 
-                      className={isLoading === false ? "tr-h rloaderContainer" : "tr-hd"}
-                      key={index} onClick={(e) => singleView(item.id)}>
-                        {/* <td className="table-center">{item.id}</td> */}
-                        <td className="table-center">{item.part_number}</td>
-                        <td className="table-center">{item.plant}</td>
-                        <td className="table-center">{item.supplier}</td>
-                        <td className="table-center">{item.date}</td>
-                        <td className="table-center">
-                          {Number(item.status) === 1 && "Sin aprobar"}{" "}
-                          {Number(item.status) === 3 && "Aprobado"}
-                        </td>
-                        <td
-                          className="table-center"
-                          onClick={(e) => e.stopPropagation()}
-                          colSpan={1}
-                        >
-                          <div className="actions">
-                            {/* <Link
-                            to={`/admin/reports/${item.id}`}
-                            style={{ color: "green" }}
-                          >
-                            <i className="fa-solid fa-eye"></i>
-                          </Link> */}
-
-                            {!navigator.onLine ? (
-                              <FontAwesomeIcon icon={faFilePdf} />
-                            ) : (
-                              <i className="fa-solid fa-file-pdf"></i>
-                            )}
-                            <FontAwesomeIcon
-                              icon={faUsers}
-                              color="green"
-                              onClick={() => authClientsC(item.id)}
-                            />
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
-          {activeTab === 2 && (
-            <div className="table-body table-reports">
-              <table>
-                <thead>
-                  <tr>
-                    {/* <th onClick={(e) => setSort((prev) => !prev)}># Reporte</th> */}
-                    <th># Parte</th>
-                    <th>Planta</th>
-                    <th>Proveedor</th>
-                    <th>Fecha</th>
-                    <th>Status</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <div className={isLoading === false ? "loaderContainer" : ""}>
-                    <Loader>
-                      <img src="/assets/img/loading2.svg" alt="" />
-                    </Loader>
-                  </div>
-                  {getPaginatedData().length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan="100%"
-                        className="table-center"
-                        style={{ opacity: `${isLoading ? 0 : 1}` }}
-                      >
-                        <h1>No hay informacion en la base de datos</h1>
-                      </td>
-                    </tr>
-                  ) : (
-                    getPaginatedData().map((item, index) => (
-                      <tr
-                        key={index + "tabl2"}
-                        className={isLoading === false ? "tr-h rloaderContainer" : "tr-hd"}
-                        onClick={(e) => singleView(item.id)}
-                      >
-                        {/* <td className="table-center">{item.id}</td> */}
-                        <td className="table-center">{item.part_number}</td>
-                        <td className="table-center">{item.plant}</td>
-                        <td className="table-center">{item.supplier}</td>
-                        <td className="table-center">{item.date}</td>
-                        <td className="table-center">
-                          {Number(item.status) === 1 && "Sin aprobar"}{" "}
-                          {Number(item.status) === 3 && "Aprobado"}
-                        </td>
-                        <td
-                          className="table-center"
-                          onClick={(e) => e.stopPropagation()}
-                          colSpan={1}
-                        >
-                          <div className="actions">
-                            {/* <Link
-                           to={`/admin/reports/${item.id}`}
-                           style={{ color: "green" }}
-                         >
-                           <i className="fa-solid fa-eye"></i>
-                         </Link> */}
-                            <FontAwesomeIcon icon={faFilePdf} />
-                            {/* <i className="fa-solid fa-file-pdf"></i> */}
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
-          {activeTab === 3 && (
-            <div className="table-body table-reports">
-              {/* <TableTotals data={totalFiltered} /> */}
-              <TableComponent groupedData={dataToTable} loader={loader} />
-              {/* <table>
-              <thead>
-                <tr>
-                  
-                  <th>Numero de parte</th>
-                  <th>Fecha</th>
-                  <th>Total Inspeccionado</th>
-                  <th>Total Piezas Ng</th>
-                  <th>Total Piezas Ok</th>
-                  <th>Total Piezas Retrabajadas</th>
-                  <th>Total Scrap</th>
-                </tr>
-              </thead>
-              <tbody>
-              {Object.entries(totalFiltered).map(([date, values]) => {
-                  return (
-                    <tr>
-                      <td className="table-center">{values.part_number}</td>
-                      <td className="table-center">{date}</td>
-                      <td className="table-center">{values.total_inspected}</td>
-                      <td className="table-center">{values.total_ng_pieces}</td>
-                      <td className="table-center">{values.total_ok_pieces}</td>
-                      <td className="table-center">
-                        {values.total_re_work_parts}
-                      </td>
-                      <td className="table-center">{values.total_scrap}</td>
-                    </tr>
-                  );
-                })}
-
-                {/* {Object.entries(totalFiltered).map(([partNumber, values]) => {
-                  return values.map((item) => {
-                    return (
-                      <tr>
-                        <td className="table-center">{partNumber}</td>
-                        <td className="table-center">{item.date}</td>
-                        <td className="table-center">{item.total_inspected}</td>
-                        <td className="table-center">{item.total_ng_pieces}</td>
-                        <td className="table-center">{item.total_ok_pieces}</td>
-                        <td className="table-center">
-                          {item.total_re_work_parts}
-                        </td>
-                        <td className="table-center">{item.total_scrap}</td>
-                      </tr>
-                    );
-                  });
-                })} */}
-
-              {/*getPaginatedData2().length === 0 ? (
-                  <Loader>
-                    <img src="/assets/img/loading2.svg" alt="" />
-                  </Loader>
-                ) : (
-                  getPaginatedData2().map((item, index) => (
-                    <tr key={index} onClick={(e) => singleView(item.id)}>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                        colSpan={1}
-                      >
-                        <Checkbox
-                          type="single"
-                          id={item.id}
-                          callback={handleCheckBox}
-                        />
-                      </td>
-                      <td className="table-center">{item.id}</td>
-                      <td className="table-center">{item.part_number}</td>
-                      <td className="table-center">{item.plant}</td>
-                      <td className="table-center">Proveedor</td>
-                      <td className="table-center">{item.date}</td>
-                      <td className="table-center">
-                        {Number(item.status) === 1 && "Sin aprobar"}{" "}
-                        {Number(item.status) === 2 && "Aprobado"}
-                      </td>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                        colSpan={1}
-                      >
-                        <div className="actions">
-                          <i
-                            className="fa-solid fa-trash"
-                            onClick={() => handleDel(item.id)}
-                          ></i>
-                          <Link
-                            to={`/admin/reports/${item.id}`}
-                            style={{ color: "green" }}
-                          >
-                            <i className="fa-solid fa-eye"></i>
-                          </Link>
-                          <i className="fa-solid fa-file-pdf"></i>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}}
-              </tbody>
-            </table>  */}
-            </div>
-          )}
-          <div className="pagination">
-            <span>
-              Página {currentPage} de {totalPages}
-            </span>
-
-            <button disabled={currentPage === 1} onClick={handleFirstPageClick}>
-              <i className="fa-solid fa-backward-step"></i>
-            </button>
-            <button
-              disabled={currentPage === 1}
-              onClick={() => handlePageChange(currentPage - 1)}
-            >
-              <i className="fa-solid fa-chevron-left"></i>
-            </button>
-
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => handlePageChange(currentPage + 1)}
-            >
-              <i className="fa-solid fa-chevron-right"></i>
-            </button>
-            <button
-              disabled={currentPage === totalPages}
-              onClick={handleLastPageClick}
-            >
-              <i className="fa-solid fa-forward-step"></i>
-            </button>
-
-            <select
-              value={rowsPerPage}
-              onChange={(event) => setRowsPerPage(parseInt(event.target.value))}
-            >
-              <option value="20">20 filas por página</option>
-              <option value="50">50 filas por página</option>
-              <option value="100">100 filas por página</option>
-              <option value={`${data.length}`}>todas filas</option>
-            </select>
-          </div>
+          <TabContainer tabContent={tabContent} />
         </div>
       </Table>
     </>

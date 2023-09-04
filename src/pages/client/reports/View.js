@@ -12,8 +12,22 @@ import SecondTableCreate from "./SecondTableCreate";
 import DatePickerInputU from "../../../components/DateInputUpdate";
 import { deleteReportIn, deleteReportItem } from "../../../api/daryan.api";
 import Select from "../../employee/Select";
+import {
+  Autocomplete,
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select as SelectMUI,
+  TextField,
+} from "@mui/material";
+import InputDate from "../../../components/inputs/InputDate";
+import Create3 from "../../employee/Create3";
+import { useTranslation } from "react-i18next";
 
 const View = () => {
+  const { t } = useTranslation();
+
   const {
     titulosColumnas,
     total1,
@@ -64,7 +78,14 @@ const View = () => {
     toast,
     isAdmin,
     incType,
+    activeTabReportInsp,
+    divsSamplingTableInsp,
+    setDivsSamplingTableInsp,
+    setActiveTabReportInsp,
+    setNumFilas
   } = useContext(MainContext);
+
+
   const params = useParams();
   const idReport = params.id;
   //const [numFilas, setNumFilas] = useState(0);
@@ -74,7 +95,7 @@ const View = () => {
           (data) => Number(data.id) === Number(idReport)
         )[0]
       : data.filter((data) => Number(data.id) === Number(idReport))[0];
-
+  
   const [dataC, setDataC] = useState(eData);
   const [producedBy, setProducedBy] = useState(eData.made_by);
   const [checkedBy, setCheckedBy] = useState(eData.checked_by);
@@ -83,6 +104,35 @@ const View = () => {
   const newLength = 11 + clauses;
   const [numFilas2, setNumFilas2] = useState(Number(dataC.reports_cc.length));
   const [numColumnas2, setNumColumnas2] = useState(newLength);
+
+  useEffect(() => {
+
+      const reports_sample_table = eData.report_sata;
+      const newList = reports_sample_table.map(item => ({
+        id: parseInt(item.id_item),
+        values: [
+            item.id,
+            item.lot,
+            item.serial,
+            item.total_pieces_insp,
+            item.total_pieces_sampling,
+            item.hour,
+            item.signature,
+            
+        ]
+    }));
+
+    
+    
+    setDivsSamplingTableInsp(newList);
+
+    
+  
+    return () => {
+      
+    }
+  }, [])
+  
   const [divs, setDivs] = useState(() => {
     const filas = [];
     for (let i = 1; i <= numFilas2; i++) {
@@ -163,13 +213,21 @@ const View = () => {
     }
     return filas;
   });
-
+  useEffect(() => {
+    
+    setNumFilas(numFilas2)
+    return () => {
+      
+    }
+  }, [numFilas2])
+  
   const updateData = useCallback((data) => {
     setDataC(data);
   }, []);
   useEffect(() => {
     setNumColumnas2(numColumnas);
-    // setNumFilas2(numFilas);
+
+    
   }, [numColumnas]);
 
   const eliminarFila = async (itemId, idDb) => {
@@ -209,7 +267,7 @@ const View = () => {
         values: date
           ? Array.from({ length: numColumnas }, (v, i) => (i === 2 ? date : ""))
           : Array.from({ length: numColumnas }, () => ""),
-        // values: Array.from({ length: numColumnas }, () => ""),
+
       },
     ]);
     setNumFilas2((prev) => prev + 1);
@@ -217,7 +275,7 @@ const View = () => {
     const scrollHeight = tableWrapper.scrollHeight;
     const clientHeight = tableWrapper.clientHeight;
     if (scrollHeight > clientHeight) {
-      //tableWrapper.scrollTop = scrollHeight - clientHeight;
+
       setTimeout(() => {
         tableWrapper.scrollTo({ top: scrollHeight, behavior: "smooth" });
       }, 100);
@@ -261,8 +319,7 @@ const View = () => {
       });
       setNumColumnas((prev) => prev - 1);
     } else {
-      // The user clicked Cancel.
-      // Do something else.
+
       return false;
     }
   };
@@ -270,6 +327,7 @@ const View = () => {
   useEffect(() => {
     setNumColumnas2(numColumnas);
   }, [numColumnas]);
+ 
 
   const [divs2, setDivs2] = useState(() => {
     const filas = [];
@@ -287,12 +345,10 @@ const View = () => {
     setTitulosColumnas((prevTitulos) => {
       const nextLetter = getNextLetter(prevTitulos);
       setDbColumns((prev) => [...prev, nextLetter]);
-      //   console.log(nextLetter);
+
       const newArr = [...prevTitulos, nextLetter];
       const arrayCopy = newArr.slice();
-      // const penultimate = arrayCopy.slice(-2, -1)[0];
-      // arrayCopy.splice(-2, 1);
-      // arrayCopy.push(penultimate);
+
       const tableWrapper = document.querySelectorAll(".scrollX");
       tableWrapper.forEach((element) => {
         const scrollWidth = element.scrollWidth;
@@ -376,6 +432,7 @@ const View = () => {
                 values[k] = dataC.reports_cc[j][keys[k + 1]];
                 break;
             }
+         
           }
         }
       }
@@ -482,6 +539,8 @@ const View = () => {
           const type = dataInfo[i2]["type"];
           inc.push({ incidents, id, type });
         } else {
+          //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
+          // );
         }
         i2++;
       }
@@ -503,6 +562,7 @@ const View = () => {
 
     return filas;
   });
+
   const handleUpdate = (hanldeId = 1, divId, inputIndex, newValue) => {
     if (hanldeId === 1) {
       setReportFooter((prevDivs) => {
@@ -580,6 +640,8 @@ const View = () => {
             const id = dataInfo[i2]["id"];
             rby.push({ realized_by, id });
           } else {
+            //   "dataInfo[i2] no es un objeto válido o no contiene la clave 'id'"
+            // );
           }
           i2++;
         }
@@ -722,6 +784,7 @@ const View = () => {
           i: total14,
         },
         incType: incType,
+        sampling_table:divsSamplingTableInsp
       },
     ];
     setDataToSave(newArray);
@@ -752,10 +815,12 @@ const View = () => {
     total13,
     total14,
     incType,
+    divsSamplingTableInsp
   ]);
-
+  
   const [keysTh, setKeysTh] = useState([]);
   useEffect(() => {
+    
     const date = new Date();
     const year = date.getFullYear();
     const month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -830,6 +895,7 @@ const View = () => {
     setNumColumnas(kLenght);
 
     console.log(titulosColumnas);
+  
     setTitulosColumnas(keys);
   }, []);
   useEffect(() => {
@@ -863,7 +929,7 @@ const View = () => {
       ...dataC,
       [e.target.dataset.name || e.target.name]: e.target.value,
     });
-    if (selectedOption == undefined) {
+    if (selectedOption === undefined) {
       setDataCDb({
         ...dataCDb,
         [e.target.dataset.name || e.target.name]: e.target.value,
@@ -917,926 +983,988 @@ const View = () => {
       [name]: value,
     });
   };
-  return (
-    <>
-      <div className="container">
-        <div className="title">
-          <h3>REPORTE DE INSPECCION</h3>
-          <br />
-        </div>
 
-        <StyledForm>
-          <div className="form-container">
-            <label htmlFor="data">
-              Planta <span className="required">*</span>
-            </label>
-            <input
-              type="text"
-              id="data"
-              name="plant"
-              placeholder=""
-              required
-              defaultValue={dataC.plant}
-              onChange={(e) =>
-                setDataCDb({
-                  ...dataCDb,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
-              readOnly
-            />
-          </div>
-          <div className="form-container">
-            <label htmlFor="data2">
-              Proveedor <span className="required">*</span>
-            </label>
-            <input
-              name="supplier"
-              value={dataC.supplier}
-              type="text"
-              list="supplier"
-              onChange={handleChange}
-              ref={inputRef}
-              autoComplete="off"
-              readOnly
-            />
-            <datalist id="supplier" ref={dataListRef}>
-              {suppliers.map((item, indx) => {
-                // Verificar si el navegador es Firefox, Safari o Edge
-                const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
-                const isSafari =
-                  navigator.userAgent.indexOf("Safari") !== -1 ||
-                  navigator.userAgent.indexOf("AppleWebKit") !== -1;
-                const isEdge = navigator.userAgent.indexOf("Edge") !== -1;
+  const supplierValue = suppliers?.find(
+    (supplier) => Number(supplier?.id) === Number(dataC?.id_supplier)
+  );
+  
 
-                const option = (
-                  <option value={item.fullname} data-id={item.id}>
+  const tabContent = {
+    1: {
+      component: (
+        <>
+          <div className="container">
+            <div className="title">
+              <h3>{t('reports.inspection_report_title')}</h3>
+              <br />
+            </div>
+
+            <StyledForm>
+              <Box className="form-container">
+                <TextField
+                  id="outlined-basic"
+                  label="Planta"
+                  required
+                  variant="outlined"
+                  sx={{
+                    width: "95%",
+                  }}
+                  type="text"
+                  name="plant"
+                  placeholder=""
+                  defaultValue={dataC.plant}
+                  onChange={(e) =>
+                    setDataCDb({
+                      ...dataCDb,
+                      [e.target.name]: e.target.value,
+                    })
+                  }
+                />
+              </Box>
+              <Box className="form-container">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  name="id_supplier"
+                  options={suppliers}
+                  getOptionLabel={(option) => option.fullname}
+                  sx={{ width: "95%" }}
+                  value={supplierValue ? supplierValue : null}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      required
+                      label="Proveedor"
+                      name="id_supplier"
+                    />
+                  )}
+                  onChange={(e, newValue) =>
+                    setDataCDb({
+                      ...dataCDb,
+                      id_supplier: newValue ? newValue.id : null,
+                    })
+                  }
+                />
+
+              </Box>
+              <Box
+                className="form-containers"
+                style={{
+                  width: "24%",
+                }}
+              >
+                <InputDate
+                  id="data3"
+                  name="date"
+                  style={{ textAlign: "left", padding: "12px 20px" }}
+                  defaultValue={dataC.date}
+                  type="text"
+                  data={dataCDb}
+                  setData={setDataCDb}
+                />
+              </Box>
+              <Box className="form-container">
+                <TextField
+                  id="outlined-basic"
+                  label="No. de Reporte"
+                  variant="outlined"
+                  type="text"
+                  name="report_number"
+                  placeholder=""
+                  required
+                  sx={{
+                    width: "95%",
+                  }}
+                  defaultValue={dataC.report_number}
+                  onChange={(e) =>
+                    setDataCDb({
+                      ...dataCDb,
+                      [e.target.name]: e.target.value,
+                    })
+                  }
+                />
+              </Box>
+              <Box className="form-container">
+                <TextField
+                  id="outlined-basic"
+                  label="Nombre de parte "
+                  variant="outlined"
+                  type="text"
+                  name="part_name"
+                  placeholder=""
+                  required
+                  sx={{
+                    width: "95%",
+                  }}
+                  defaultValue={dataC.report_number}
+                  onChange={(e) =>
+                    setDataCDb({
+                      ...dataCDb,
+                      [e.target.name]: e.target.value,
+                    })
+                  }
+                />
+              </Box>
+              <Box className="form-container">
+                <TextField
+                  id="outlined-basic"
+                  label="Horas Trabajadas"
+                  variant="outlined"
+                  type="text"
+                  name="worked_hours"
+                  placeholder=""
+                  required
+                  sx={{
+                    width: "95%",
+                  }}
+                  defaultValue={dataC.report_number}
+                  value={
+                    totalHours > 0 && typeof totalHours === "number"
+                      ? totalHours
+                      : dataCDb.worked_hours
+                  }
+                  onChange={(e) =>
+                    setDataCDb({
+                      ...dataCDb,
+                      [e.target.name]: e.target.value,
+                    })
+                  }
+                />
+              </Box>
+              <Box className="form-container">
+                <TextField
+                  id="outlined-basic"
+                  label="Rate"
+                  variant="outlined"
+                  sx={{
+                    width: "95%",
+                  }}
+                  type="text"
+                  name="rate"
+                  placeholder=""
+                  required
+                  defaultValue=""
+                  value={dataCDb.rate}
+                  onChange={handleInputChange}
+                />
+              </Box>
+              <Box className="form-container">
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Turno *</InputLabel>
+                  <SelectMUI
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    name="shift"
                     type="text"
-                    {isFirefox ? `${item.fullname}` : ""}
-                  </option>
-                );
-
-                return option;
-              })}
-            </datalist>
-          </div>
-          <div className="form-container">
-            <label htmlFor="data3">
-              Fecha <span className="required">*</span>
-            </label>
-            <DatePickerInputU
-              id="data3"
-              name="date"
-              style={{ textAlign: "left", padding: "12px 20px" }}
-              value={dataC.date}
-              type="text"
-              dataCDb={dataCDb}
-              readOnly
-            />
-          </div>
-          <div className="form-container">
-            <label htmlFor="data4">
-              No. de Reporte <span className="required">*</span>
-            </label>
-            <input
-              type="text"
-              id="data4"
-              name="report_number"
-              placeholder=""
-              required
-              defaultValue={dataC.report_number}
-              onChange={(e) =>
-                setDataCDb({
-                  ...dataCDb,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
-              readOnly
-            />
-          </div>
-          <div className="form-container">
-            <label htmlFor="data5">
-              Nombre de parte <span className="required">*</span>
-            </label>
-            <input
-              id="data5"
-              name="part_name"
-              placeholder=""
-              required
-              type="text"
-              defaultValue={dataC.part_name}
-              onChange={(e) =>
-                setDataCDb({
-                  ...dataCDb,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
-              readOnly
-            />
-          </div>
-          <div className="form-container">
-            <label htmlFor="data6">
-              Horas Trabajadas <span className="required">*</span>
-            </label>
-            <input
-              id="data6"
-              name="worked_hours"
-              placeholder=""
-              required
-              value={
-                totalHours > 0 && typeof totalHours === "number"
-                  ? totalHours
-                  : dataCDb.worked_hours
-              }
-              type="text"
-              onChange={(e) =>
-                setDataCDb({
-                  ...dataCDb,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
-              readOnly
-            />
-          </div>
-          <div className="form-container">
-            <label htmlFor="data7">
-              Rate <span className="required">*</span>
-            </label>
-            <input
-              type="text"
-              id="data7"
-              name="rate"
-              placeholder=""
-              required
-              value={dataCDb.rate}
-              onChange={(e) => handleInputChange(e)}
-              readOnly
-            />
-          </div>
-          <div className="form-container">
-            <label htmlFor="data8">
-              Turno <span className="required">*</span>
-            </label>
-            <select
-              id="data8"
-              name="shift"
-              required
-              defaultValue={dataC.shift}
-              type="text"
-              onChange={(e) =>
-                setDataCDb({
-                  ...dataCDb,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
-              disabled
-            >
-              <option value="0">Selecciona una opcion</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-          </div>
-          <div className="form-container">
-            <label htmlFor="data10">
-              Numero de parte <span className="required">*</span>
-            </label>
-            <input
-              type="text"
-              id="data10"
-              name="part_number"
-              placeholder=""
-              required
-              defaultValue={dataC.part_number}
-              onChange={(e) =>
-                setDataCDb({
-                  ...dataCDb,
-                  [e.target.dataset.name || e.target.name]: e.target.value,
-                })
-              }
-              readOnly
-            />
-          </div>
-          <div className="form-container">
-            <label htmlFor="data8">
-              Tipo de servicio <span className="required">*</span>
-            </label>
-
-            <div className="container-checkbox">
-              <label>
-                <input
-                  type="checkbox"
-                  name="st1"
-                  checked={serviceType.st1}
-                  onChange={(e) =>
-                    setServiceType({
-                      ...serviceType,
-                      [e.target.dataset.name || e.target.name]:
-                        e.target.checked,
-                    })
-                  }
-                  disabled
-                />
-                Selección
-              </label>
-
-              <label>
-                <input
-                  type="checkbox"
-                  name="st2"
-                  checked={serviceType.st2}
-                  onChange={(e) =>
-                    setServiceType({
-                      ...serviceType,
-                      [e.target.dataset.name || e.target.name]:
-                        e.target.checked,
-                    })
-                  }
-                  disabled
-                />
-                Retrabajo
-              </label>
-              <label htmlFor=""> </label>
-              <label htmlFor=""> </label>
-              <label htmlFor=""> </label>
-              <div className="others-container">
-                <label>Otros</label>
-                <input
+                    required
+                    defaultValue={dataC.shift}
+                    label="Turno"
+                    sx={{
+                      width: "95%",
+                    }}
+                    onChange={(e) =>
+                      setDataCDb({
+                        ...dataCDb,
+                        [e.target.name]: e.target.value,
+                      })
+                    }
+                  >
+                    <MenuItem value={1}>1</MenuItem>
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                  </SelectMUI>
+                </FormControl>
+              </Box>
+              <Box
+                sx={{
+                  width: "24%",
+                }}
+              >
+                <TextField
+                  id="outlined-basic"
+                  label=" Numero de parte"
+                  variant="outlined"
+                  sx={{
+                    width: "95%",
+                  }}
                   type="text"
-                  name="st3"
-                  value={serviceType.st3}
+                  name="part_number"
+                  placeholder=""
+                  required
+                  value={dataC.part_number}
                   onChange={(e) =>
-                    setServiceType({
-                      ...serviceType,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
+                    setDataCDb({
+                      ...dataCDb,
+                      [e.target.name]: e.target.value,
                     })
                   }
-                  disabled
                 />
-              </div>
-            </div>
+              </Box>
+          
+              <Box
+                sx={{
+                  width: "24%",
+                }}
+              >
+                <label htmlFor="data8">
+                  Tipo de servicio <span className="required">*</span>
+                </label>
+
+                <div className="container-checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="st1"
+                      checked={serviceType.st1}
+                      onChange={(e) =>
+                        setServiceType({
+                          ...serviceType,
+                          [e.target.name]: e.target.checked,
+                        })
+                      }
+                    />
+                    Selección
+                  </label>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="st2"
+                      checked={serviceType.st2}
+                      onChange={(e) =>
+                        setServiceType({
+                          ...serviceType,
+                          [e.target.name]: e.target.checked,
+                        })
+                      }
+                    />
+                    Retrabajo
+                  </label>
+                  <label htmlFor=""> </label>
+                  <label htmlFor=""> </label>
+                  <label htmlFor=""> </label>
+                  <div className="others-container">
+                    <TextField
+                      id="outlined-basic"
+                      label="Otros"
+                      variant="outlined"
+                      sx={{
+                        width: "95%",
+                      }}
+                      type="text"
+                      name="st3"
+                      value={serviceType.st3}
+                      onChange={(e) =>
+                        setServiceType({
+                          ...serviceType,
+                          [e.target.name]: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              </Box>
+              <Box
+                sx={{
+                  width: "24%",
+                }}
+              >
+                <label htmlFor="data8">
+                  Control para el cliente <span className="required">*</span>
+                </label>
+
+                <div className="container-checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="cc1"
+                      checked={customerControl.cc1}
+                      onChange={(e) =>
+                        setCustomerControl({
+                          ...customerControl,
+                          [e.target.name]: e.target.checked,
+                        })
+                      }
+                    />
+                    Fecha de produccion
+                  </label>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="cc2"
+                      checked={customerControl.cc2}
+                      onChange={(e) =>
+                        setCustomerControl({
+                          ...customerControl,
+                          [e.target.name]: e.target.checked,
+                        })
+                      }
+                    />
+                    Fecha de aprobado
+                  </label>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="cc3"
+                      checked={customerControl.cc3}
+                      onChange={(e) =>
+                        setCustomerControl({
+                          ...customerControl,
+                          [e.target.name]: e.target.checked,
+                        })
+                      }
+                    />
+                    Serie
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="cc4"
+                      checked={customerControl.cc4}
+                      onChange={(e) =>
+                        setCustomerControl({
+                          ...customerControl,
+                          [e.target.name]: e.target.checked,
+                        })
+                      }
+                    />
+                    Lote
+                  </label>
+                  <div className="others-container">
+                    <TextField
+                      id="outlined-basic"
+                      label="Otros"
+                      variant="outlined"
+                      sx={{
+                        width: "95%",
+                      }}
+                      type="text"
+                      name="cc5"
+                      value={customerControl.cc5}
+                      onChange={(e) =>
+                        setCustomerControl({
+                          ...customerControl,
+                          [e.target.name]: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              </Box>
+
+        
+            </StyledForm>
+          </div>
+          <div
+            className="container c2 scrollX"
+            ref={container1Ref}
+            onScroll={handleScroll1}
+          >
+            <SecondTableCreate
+              dataC={dataC}
+              eliminarColumna2={eliminarColumna2}
+              agregarColumna={agregarColumna}
+              divs={divs}
+              setDivs={setDivs}
+              agregarFila={agregarFila}
+              eliminarFila={eliminarFila}
+              numFilas2={numFilas2}
+              numColumnas2={numColumnas2}
+            />
           </div>
 
-          <div className="form-container">
-            <label htmlFor="data8">
-              Control para el cliente <span className="required">*</span>
-            </label>
-
-            <div className="container-checkbox">
-              <label>
-                <input
-                  type="checkbox"
-                  name="cc1"
-                  checked={customerControl.cc1}
-                  onChange={(e) =>
-                    setCustomerControl({
-                      ...customerControl,
-                      [e.target.dataset.name || e.target.name]:
-                        e.target.checked,
-                    })
-                  }
-                  disabled
-                />
-                Fecha de produccion
-              </label>
-
-              <label>
-                <input
-                  type="checkbox"
-                  name="cc2"
-                  checked={customerControl.cc2}
-                  onChange={(e) =>
-                    setCustomerControl({
-                      ...customerControl,
-                      [e.target.dataset.name || e.target.name]:
-                        e.target.checked,
-                    })
-                  }
-                  disabled
-                />
-                Fecha de aprobado
-              </label>
-
-              <label>
-                <input
-                  type="checkbox"
-                  name="cc3"
-                  checked={customerControl.cc3}
-                  onChange={(e) =>
-                    setCustomerControl({
-                      ...customerControl,
-                      [e.target.dataset.name || e.target.name]:
-                        e.target.checked,
-                    })
-                  }
-                  disabled
-                />
-                Serie
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="cc4"
-                  checked={customerControl.cc4}
-                  onChange={(e) =>
-                    setCustomerControl({
-                      ...customerControl,
-                      [e.target.dataset.name || e.target.name]:
-                        e.target.checked,
-                    })
-                  }
-                  disabled
-                />
-                Lote
-              </label>
-              <div className="others-container">
-                <label>Otros</label>
-                <input
-                  type="text"
-                  name="cc5"
-                  value={customerControl.cc5}
-                  onChange={(e) =>
-                    setCustomerControl({
-                      ...customerControl,
-                      [e.target.dataset.name || e.target.name]: e.target.value,
-                    })
-                  }
-                  disabled
-                />
-              </div>
-            </div>
-          </div>
-        </StyledForm>
-      </div>
-      <div
-        className="container c2 scrollX"
-        ref={container1Ref}
-        onScroll={handleScroll1}
-      >
-        <SecondTableCreate
-          dataC={dataC}
-          eliminarColumna2={eliminarColumna2}
-          agregarColumna={agregarColumna}
-          divs={divs}
-          setDivs={setDivs}
-          agregarFila={agregarFila}
-          eliminarFila={eliminarFila}
-          numFilas2={numFilas2}
-          numColumnas2={numColumnas2}
-        />
-      </div>
-
-      <div
-        className="container scrollX c2"
-        ref={container2Ref}
-        onScroll={handleScroll2}
-        style={{ overflow: "scroll", height: "auto" }}
-      >
-        <Table>
-          <table>
-            <thead className="no-sticky">
-              <tr>
-                {titulosColumnas.map((titulo, i) =>
-                  i === 0 || i === titulosColumnas.length - 1 ? (
-                    <th key={i}>
-                      <i
-                        className="fa-solid fa-circle-plus"
-                        style={{ color: "transparent" }}
-                      ></i>
-                    </th>
-                  ) : (
-                    <th key={i}>{titulo}</th>
-                  )
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {divs.map(
-                (fila, i) =>
-                  i === 0 && (
-                    <tr key={fila.id} className="hidden">
-                      {fila.values.map((valor, i) => (
-                        <>
-                          {i <= 1 || i === fila.values.length - 1 ? (
-                            <td key={i} className="table-center">
-                               
-                            </td>
-                          ) : (
-                            <td key={i} className="table-center">
-                              <input
-                                name=""
-                                value={dumpValue}
-                                type="text"
-                                onChange={() => setDumpValue("")}
-                              />
-                            </td>
-                          )}
-                        </>
-                      ))}
-                    </tr>
-                  )
-              )}
-            </tbody>
-            <tfoot className="tfooter">
-              {divs2.map(
-                (fila, i) =>
-                  i === 0 && (
-                    <tr key={fila.id}>
-                      {fila.values.map((valor, i) => (
-                        <>
-                          {i === 0 ||
-                          i === 1 ||
-                          i === fila.values.length - 1 ? (
+          <div
+            className="container scrollX c2"
+            ref={container2Ref}
+            onScroll={handleScroll2}
+            style={{ overflow: "scroll", height: "auto" }}
+          >
+            <Table>
+              <table>
+                <thead className="no-sticky">
+                  <tr>
+                    {titulosColumnas.map((titulo, i) =>
+                      i === 0 || i === titulosColumnas.length - 1 ? (
+                        <th key={i}>
+                          <i
+                            className="fa-solid fa-circle-plus"
+                            style={{ color: "transparent" }}
+                          ></i>
+                        </th>
+                      ) : (
+                        <th key={i}>{titulo}</th>
+                      )
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {divs.map(
+                    (fila, i) =>
+                      i === 0 && (
+                        <tr key={fila.id} className="hidden">
+                          {fila.values.map((valor, i) => (
                             <>
-                              {i === 1 && (
-                                <td
-                                  key={i}
-                                  className="table-center"
-                                  colSpan={5}
-                                >
-                                  Totales
+                              {i <= 1 || i === fila.values.length - 1 ? (
+                                <td key={i} className="table-center">
+                                   
+                                </td>
+                              ) : (
+                                <td key={i} className="table-center">
+                                  <input
+                                    name=""
+                                    value={dumpValue}
+                                    type="text"
+                                    onChange={() => setDumpValue("")}
+                                  />
                                 </td>
                               )}
-                              {i === 0 && <></>}
                             </>
-                          ) : (
-                            <td key={i} className="table-center">
-                              {i === 2 && (
-                                <input
-                                  value={total1}
-                                  type="text"
-                                  onChange={(e) => setTotal1(e.target.value)}
-                                  disabled
-                                />
-                              )}
-                              {i === 3 && (
-                                <input
-                                  value={total2}
-                                  type="text"
-                                  onChange={(e) => setTotal2(e.target.value)}
-                                  disabled
-                                />
-                              )}
-                              {i === 4 && (
-                                <input
-                                  value={total3}
-                                  type="text"
-                                  onChange={(e) => setTotal3(e.target.value)}
-                                  disabled
-                                />
-                              )}
-                              {i === 5 && (
-                                <input
-                                  value={total4}
-                                  type="text"
-                                  onChange={(e) => setTotal4(e.target.value)}
-                                  disabled
-                                />
-                              )}
-                              {i === 6 && (
-                                <input
-                                  value={total5}
-                                  type="text"
-                                  onChange={(e) => setTotal5(e.target.value)}
-                                  disabled
-                                />
-                              )}
-                              {i === 7 && (
-                                <input
-                                  value={total6}
-                                  type="text"
-                                  onChange={(e) => setTotal6(e.target.value)}
-                                  disabled
-                                />
-                              )}
-                              {i === 8 && (
-                                <input
-                                  value={total7}
-                                  type="text"
-                                  onChange={(e) => setTotal7(e.target.value)}
-                                  disabled
-                                />
-                              )}
-                              {i === 9 && (
-                                <input
-                                  value={total8}
-                                  type="text"
-                                  onChange={(e) => setTotal8(e.target.value)}
-                                  disabled
-                                />
-                              )}
-                              {i === 10 && (
-                                <input
-                                  value={total9}
-                                  type="text"
-                                  onChange={(e) => setTotal9(e.target.value)}
-                                  disabled
-                                />
-                              )}
-                              {i === 11 && (
-                                <input
-                                  value={isNaN(total10) ? 0 : total10}
-                                  type="text"
-                                  onChange={(e) => setTotal10(e.target.value)}
-                                  disabled
-                                />
-                              )}
-                              {i === 12 && (
-                                <input
-                                  value={isNaN(total11) ? 0 : total11}
-                                  type="text"
-                                  onChange={(e) => setTotal11(e.target.value)}
-                                  disabled
-                                />
-                              )}
-                              {i === 13 && (
-                                <input
-                                  value={isNaN(total12) ? 0 : total12}
-                                  type="text"
-                                  onChange={(e) => setTotal12(e.target.value)}
-                                  disabled
-                                />
-                              )}
-                              {i === 14 && (
-                                <input
-                                  value={isNaN(total13) ? 0 : total13}
-                                  type="text"
-                                  onChange={(e) => setTotal13(e.target.value)}
-                                  disabled
-                                />
-                              )}
-                              {i === 15 && (
-                                <input
-                                  value={isNaN(total14) ? 0 : total14}
-                                  type="text"
-                                  onChange={(e) => setTotal14(e.target.value)}
-                                  disabled
-                                />
-                              )}
-                            </td>
-                          )}
-                        </>
-                      ))}
-                    </tr>
-                  )
-              )}
-              <tr>
-                <td colSpan={numColumnas2 / 3} style={{ textAlign: "center" }}>
-                  <div>REALIZO</div>
-                  {reportFooter.map(
-                    (fila, i) =>
-                      i < reportFooter.length &&
-                      fila.values.map((valor, i) => (
-                        <>
-                          <input
-                            value={valor}
-                            type="text"
-                            onChange={(e) =>
-                              handleUpdate(1, fila.id, i, e.target.value)
-                            }
-                            key={i}
-                            disabled
-                          />{" "}
-                          <br />
-                        </>
-                      ))
-                  )}
-                </td>
-                <td colSpan={numColumnas2 / 3} style={{ textAlign: "center" }}>
-                  <div>OBSERVACIONES</div>
-                  {reportFooter2.map(
-                    (fila, j) =>
-                      j < reportFooter2.length &&
-                      fila.values.map((valor, i) => (
-                        <>
-                          <input
-                            value={valor}
-                            type="text"
-                            onChange={(e) =>
-                              handleUpdate(2, fila.id, i, e.target.value)
-                            }
-                            key={i}
-                            disabled
-                          />
-                          <br />
-                        </>
-                      ))
-                  )}
-                </td>
-                <td colSpan={1} style={{ textAlign: "center" }}>
-                  <div> </div>
-                  {divs2.map(
-                    (fila, i) =>
-                      i === 0 &&
-                      fila.values.map(
-                        (valor, i) =>
-                          i > 6 && (
-                            <>
-                              {i === 8 && (
-                                <>
-                                  <input
-                                    placeholder="A"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    type="text"
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 9 && (
-                                <>
-                                  <input
-                                    placeholder="B"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    type="text"
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 10 && (
-                                <>
-                                  <input
-                                    placeholder="C"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    type="text"
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 11 && (
-                                <>
-                                  <input
-                                    placeholder="D"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    type="text"
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 12 && (
-                                <>
-                                  <input
-                                    placeholder="E"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    type="text"
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 13 && (
-                                <>
-                                  <input
-                                    placeholder="F"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    type="text"
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 14 && (
-                                <>
-                                  <input
-                                    placeholder="G"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    type="text"
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 15 && (
-                                <>
-                                  <input
-                                    placeholder="H"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    type="text"
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                              {i === 16 && (
-                                <>
-                                  <input
-                                    placeholder="I"
-                                    readOnly
-                                    style={{ textAlign: "center" }}
-                                    key={i}
-                                    value={dumpValue}
-                                    type="text"
-                                    onChange={() => setDumpValue("")}
-                                  />{" "}
-                                  <br />{" "}
-                                </>
-                              )}
-                            </>
-                          )
+                          ))}
+                        </tr>
                       )
                   )}
-                </td>
-                <td colSpan={1} style={{ textAlign: "center" }}>
-                  <div> </div>
-                  {reportFooter3.map(
+                </tbody>
+                <tfoot className="tfooter">
+                  {divs2.map(
                     (fila, i) =>
-                      i < reportFooter3.length &&
-                      fila.values.map((valor, i2) => (
-                        <>
-                          <div key={i + "clause"}>
-                            {i === 0 && (
-                              <>
-                                <Select
-                                  data={optionClause}
-                                  clause="A"
-                                  selected={fila.type}
-                                />
-                                <br />
-                              </>
-                            )}
-                            {i === 1 && (
-                              <>
-                                <Select
-                                  data={optionClause}
-                                  clause="B"
-                                  selected={fila.type}
-                                />
-                                <br />
-                              </>
-                            )}
-                            {i === 2 && (
-                              <>
-                                <Select
-                                  data={optionClause}
-                                  clause="C"
-                                  selected={fila.type}
-                                />
-                                <br />
-                              </>
-                            )}
-                            {i === 3 && (
-                              <>
-                                <Select
-                                  data={optionClause}
-                                  clause="D"
-                                  selected={fila.type}
-                                />
-                                <br />
-                              </>
-                            )}
-                            {i === 4 && (
-                              <>
-                                <Select
-                                  data={optionClause}
-                                  clause="E"
-                                  selected={fila.type}
-                                />
-                                <br />
-                              </>
-                            )}
-                            {i === 5 && (
-                              <>
-                                <Select
-                                  data={optionClause}
-                                  clause="F"
-                                  selected={fila.type}
-                                />
-                                <br />
-                              </>
-                            )}
-                            {i === 6 && (
-                              <>
-                                <Select
-                                  data={optionClause}
-                                  clause="G"
-                                  selected={fila.type}
-                                />
-                                <br />
-                              </>
-                            )}
-                            {i === 7 && (
-                              <>
-                                <Select
-                                  data={optionClause}
-                                  clause="H"
-                                  selected={fila.type}
-                                />
-                                <br />
-                              </>
-                            )}
-                            {i === 8 && (
-                              <>
-                                <Select
-                                  data={optionClause}
-                                  clause="I"
-                                  selected={fila.type}
-                                />
-                                <br />
-                              </>
-                            )}
-                          </div>
-                        </>
-                      ))
+                      i === 0 && (
+                        <tr key={fila.id}>
+                          {fila.values.map((valor, i) => (
+                            <>
+                              {i === 0 ||
+                              i === 1 ||
+                              i === fila.values.length - 1 ? (
+                                <>
+                                  {i === 1 && (
+                                    <td
+                                      key={i}
+                                      className="table-center"
+                                      colSpan={5}
+                                    >
+                                      Totales
+                                    </td>
+                                  )}
+                                  {i === 0 && <></>}
+                                </>
+                              ) : (
+                                <td key={i} className="table-center">
+                                  {i === 2 && (
+                                    <input
+                                      value={total1}
+                                      type="text"
+                                      onChange={(e) =>
+                                        setTotal1(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 3 && (
+                                    <input
+                                      value={total2}
+                                      type="text"
+                                      onChange={(e) =>
+                                        setTotal2(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 4 && (
+                                    <input
+                                      value={total3}
+                                      type="text"
+                                      onChange={(e) =>
+                                        setTotal3(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 5 && (
+                                    <input
+                                      value={total4}
+                                      type="text"
+                                      onChange={(e) =>
+                                        setTotal4(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 6 && (
+                                    <input
+                                      value={total5}
+                                      type="text"
+                                      onChange={(e) =>
+                                        setTotal5(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 7 && (
+                                    <input
+                                      value={total6}
+                                      type="text"
+                                      onChange={(e) =>
+                                        setTotal6(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 8 && (
+                                    <input
+                                      value={total7}
+                                      type="text"
+                                      onChange={(e) =>
+                                        setTotal7(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 9 && (
+                                    <input
+                                      value={total8}
+                                      type="text"
+                                      onChange={(e) =>
+                                        setTotal8(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 10 && (
+                                    <input
+                                      value={total9}
+                                      type="text"
+                                      onChange={(e) =>
+                                        setTotal9(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 11 && (
+                                    <input
+                                      value={isNaN(total10) ? 0 : total10}
+                                      type="text"
+                                      onChange={(e) =>
+                                        setTotal10(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 12 && (
+                                    <input
+                                      value={isNaN(total11) ? 0 : total11}
+                                      type="text"
+                                      onChange={(e) =>
+                                        setTotal11(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 13 && (
+                                    <input
+                                      value={isNaN(total12) ? 0 : total12}
+                                      type="text"
+                                      onChange={(e) =>
+                                        setTotal12(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 14 && (
+                                    <input
+                                      value={isNaN(total13) ? 0 : total13}
+                                      type="text"
+                                      onChange={(e) =>
+                                        setTotal13(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                  {i === 15 && (
+                                    <input
+                                      value={isNaN(total14) ? 0 : total14}
+                                      type="text"
+                                      onChange={(e) =>
+                                        setTotal14(e.target.value)
+                                      }
+                                    />
+                                  )}
+                                </td>
+                              )}
+                            </>
+                          ))}
+                        </tr>
+                      )
                   )}
-                </td>
-                <td
-      colSpan={numColumnas2 > 15 ? numColumnas2 / 3 : 3}
-      style={{ textAlign: "center" }}
-    >
-      <div>INCIDENTES</div>
-      {reportFooter3.map(
-        (fila, i) =>
-          i < reportFooter3.length &&
-          fila.values.map((valor, i) => (
-            <>
-              <input
-                value={valor}
-                type="text"                
-                key={i}
-                disabled
-              />{" "}
-              <br />
-            </>
-          ))
-      )}
-    </td>
-              </tr>
-              <tr>
-                <td colSpan={numColumnas2 / 3} style={{ textAlign: "center" }}>
-                  <div>ELABORO</div>
-                  <div className="firm">
-                    <input
-                      name=""
-                      value={producedBy}
-                      type="text"
-                      onChange={(e) => setProducedBy(e.target.value)}
-                      className="firm-input"
-                      disabled
-                    />
-                  </div>
-                </td>
+                  <tr>
+                    <td
+                      colSpan={numColumnas2 / 3}
+                      style={{ textAlign: "center" }}
+                    >
+                      <div>REALIZO</div>
+                      {reportFooter.map(
+                        (fila, i) =>
+                          i < reportFooter.length &&
+                          fila.values.map((valor, i) => (
+                            <>
+                              <input
+                                value={valor}
+                                type="text"
+                                onChange={(e) =>
+                                  handleUpdate(1, fila.id, i, e.target.value)
+                                }
+                                key={i}
+                              />{" "}
+                              <br />
+                            </>
+                          ))
+                      )}
+                    </td>
+                    <td
+                      colSpan={numColumnas2 / 3}
+                      style={{ textAlign: "center" }}
+                    >
+                      <div>OBSERVACIONES</div>
+                      {reportFooter2.map(
+                        (fila, j) =>
+                          j < reportFooter2.length &&
+                          fila.values.map((valor, i) => (
+                            <>
+                              <input
+                                value={valor}
+                                type="text"
+                                onChange={(e) =>
+                                  handleUpdate(2, fila.id, i, e.target.value)
+                                }
+                                key={i}
+                              />
+                              <br />
+                            </>
+                          ))
+                      )}
+                    </td>
+                    <td colSpan={1} style={{ textAlign: "center" }}>
+                      <div> </div>
+                      {divs2.map(
+                        (fila, i) =>
+                          i === 0 &&
+                          fila.values.map(
+                            (valor, i) =>
+                              i > 6 && (
+                                <>
+                                  {i === 8 && (
+                                    <>
+                                      <input
+                                        placeholder="A"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        key={i}
+                                        value={dumpValue}
+                                        type="text"
+                                        onChange={() => setDumpValue("")}
+                                      />{" "}
+                                      <br />{" "}
+                                    </>
+                                  )}
+                                  {i === 9 && (
+                                    <>
+                                      <input
+                                        placeholder="B"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        key={i}
+                                        value={dumpValue}
+                                        type="text"
+                                        onChange={() => setDumpValue("")}
+                                      />{" "}
+                                      <br />{" "}
+                                    </>
+                                  )}
+                                  {i === 10 && (
+                                    <>
+                                      <input
+                                        placeholder="C"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        key={i}
+                                        value={dumpValue}
+                                        type="text"
+                                        onChange={() => setDumpValue("")}
+                                      />{" "}
+                                      <br />{" "}
+                                    </>
+                                  )}
+                                  {i === 11 && (
+                                    <>
+                                      <input
+                                        placeholder="D"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        key={i}
+                                        value={dumpValue}
+                                        type="text"
+                                        onChange={() => setDumpValue("")}
+                                      />{" "}
+                                      <br />{" "}
+                                    </>
+                                  )}
+                                  {i === 12 && (
+                                    <>
+                                      <input
+                                        placeholder="E"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        key={i}
+                                        value={dumpValue}
+                                        type="text"
+                                        onChange={() => setDumpValue("")}
+                                      />{" "}
+                                      <br />{" "}
+                                    </>
+                                  )}
+                                  {i === 13 && (
+                                    <>
+                                      <input
+                                        placeholder="F"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        key={i}
+                                        value={dumpValue}
+                                        type="text"
+                                        onChange={() => setDumpValue("")}
+                                      />{" "}
+                                      <br />{" "}
+                                    </>
+                                  )}
+                                  {i === 14 && (
+                                    <>
+                                      <input
+                                        placeholder="G"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        key={i}
+                                        value={dumpValue}
+                                        type="text"
+                                        onChange={() => setDumpValue("")}
+                                      />{" "}
+                                      <br />{" "}
+                                    </>
+                                  )}
+                                  {i === 15 && (
+                                    <>
+                                      <input
+                                        placeholder="H"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        key={i}
+                                        value={dumpValue}
+                                        type="text"
+                                        onChange={() => setDumpValue("")}
+                                      />{" "}
+                                      <br />{" "}
+                                    </>
+                                  )}
+                                  {i === 16 && (
+                                    <>
+                                      <input
+                                        placeholder="I"
+                                        readOnly
+                                        style={{ textAlign: "center" }}
+                                        key={i}
+                                        value={dumpValue}
+                                        type="text"
+                                        onChange={() => setDumpValue("")}
+                                      />{" "}
+                                      <br />{" "}
+                                    </>
+                                  )}
+                                </>
+                              )
+                          )
+                      )}
+                    </td>
+                    <td colSpan={1} style={{ textAlign: "center" }}>
+                      <div> </div>
+                      {reportFooter3.map(
+                        (fila, i) =>
+                          i < reportFooter3.length &&
+                          fila.values.map((valor, i2) => (
+                            <>
+                              <div key={i + "clause"}>
+                                {i === 0 && (
+                                  <>
+                                    <Select
+                                      data={optionClause}
+                                      clause="A"
+                                      selected={fila.type}
+                                    />
+                                    <br />
+                                  </>
+                                )}
+                                {i === 1 && (
+                                  <>
+                                    <Select
+                                      data={optionClause}
+                                      clause="B"
+                                      selected={fila.type}
+                                    />
+                                    <br />
+                                  </>
+                                )}
+                                {i === 2 && (
+                                  <>
+                                    <Select
+                                      data={optionClause}
+                                      clause="C"
+                                      selected={fila.type}
+                                    />
+                                    <br />
+                                  </>
+                                )}
+                                {i === 3 && (
+                                  <>
+                                    <Select
+                                      data={optionClause}
+                                      clause="D"
+                                      selected={fila.type}
+                                    />
+                                    <br />
+                                  </>
+                                )}
+                                {i === 4 && (
+                                  <>
+                                    <Select
+                                      data={optionClause}
+                                      clause="E"
+                                      selected={fila.type}
+                                    />
+                                    <br />
+                                  </>
+                                )}
+                                {i === 5 && (
+                                  <>
+                                    <Select
+                                      data={optionClause}
+                                      clause="F"
+                                      selected={fila.type}
+                                    />
+                                    <br />
+                                  </>
+                                )}
+                                {i === 6 && (
+                                  <>
+                                    <Select
+                                      data={optionClause}
+                                      clause="G"
+                                      selected={fila.type}
+                                    />
+                                    <br />
+                                  </>
+                                )}
+                                {i === 7 && (
+                                  <>
+                                    <Select
+                                      data={optionClause}
+                                      clause="H"
+                                      selected={fila.type}
+                                    />
+                                    <br />
+                                  </>
+                                )}
+                                {i === 8 && (
+                                  <>
+                                    <Select
+                                      data={optionClause}
+                                      clause="I"
+                                      selected={fila.type}
+                                    />
+                                    <br />
+                                  </>
+                                )}
+                              </div>
+                            </>
+                          ))
+                      )}
+                    </td>
+                    <td
+                      colSpan={numColumnas2 > 15 ? numColumnas2 / 3 : 3}
+                      style={{ textAlign: "center" }}
+                    >
+                      <div>INCIDENTES</div>
+                      {reportFooter3.map(
+                        (fila, i) =>
+                          i < reportFooter3.length &&
+                          fila.values.map((valor, i) => (
+                            <>
+                              <input
+                                value={valor}
+                                type="text"
+                                onChange={(e) =>
+                                  handleUpdate(3, fila.id, i, e.target.value)
+                                }
+                                key={i}
+                              />{" "}
+                              <br />
+                            </>
+                          ))
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      colSpan={numColumnas2 / 3}
+                      style={{ textAlign: "center" }}
+                    >
+                      <div>ELABORO</div>
+                      <div className="firm">
+                        <input
+                          name=""
+                          value={producedBy}
+                          type="text"
+                          onChange={(e) => setProducedBy(e.target.value)}
+                          className="firm-input"
+                        />
+                      </div>
+                    </td>
 
-                <td colSpan={numColumnas2 / 3} style={{ textAlign: "center" }}>
-                  <div>REVISO</div>
-                  <div className="firm">
-                    <input
-                      name=""
-                      value={checkedBy}
-                      type="text"
-                      onChange={(e) => setCheckedBy(e.target.value)}
-                      className="firm-input"
-                      disabled
-                    />
-                  </div>
-                </td>
+                    <td
+                      colSpan={numColumnas2 / 3}
+                      style={{ textAlign: "center" }}
+                    >
+                      <div>REVISO</div>
+                      <div className="firm">
+                        <input
+                          name=""
+                          value={checkedBy}
+                          type="text"
+                          onChange={(e) => setCheckedBy(e.target.value)}
+                          className="firm-input"
+                        />
+                      </div>
+                    </td>
 
-                <td colSpan={numColumnas2 / 3} style={{ textAlign: "center" }}>
-                  <div>AUTORIZO</div>
-                  <div className="firm">
-                    <input
-                      name=""
-                      value={authorizedBy}
-                      type="text"
-                      onChange={(e) => setAuthorizedBy(e.target.value)}
-                      className="firm-input"
-                      disabled
-                    />
-                  </div>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        </Table>
-      </div>
-    </>
-  );
+                    <td
+                      colSpan={numColumnas2 / 3}
+                      style={{ textAlign: "center" }}
+                    >
+                      <div>AUTORIZO</div>
+                      <div className="firm">
+                        <input
+                          name=""
+                          value={authorizedBy}
+                          type="text"
+                          onChange={(e) => setAuthorizedBy(e.target.value)}
+                          className="firm-input"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </Table>
+          </div>
+        </>
+      ),
+    },
+    2: {
+      component: (
+        <Create3
+          divs={divsSamplingTableInsp}
+          setDivs={setDivsSamplingTableInsp}
+          reportType="insp"
+        />
+      ),
+    },
+  };
+
+  return <>{tabContent[activeTabReportInsp]?.component}</>;
 };
 
 export default View;

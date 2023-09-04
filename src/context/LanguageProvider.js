@@ -1,34 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import i18n from './i18n'; // tu configuración de i18next
-import { LanguageContext } from './LanguageContext';
-import { toast } from 'sonner';
-import { t } from 'i18next';
+import React, { useState, useEffect } from "react";
+import i18n from "./i18n"; // tu configuración de i18next
+import { LanguageContext } from "./LanguageContext";
+import { toast } from "sonner";
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
+import dayjs from "dayjs";
 export const LanguageProvider = ({ children }) => {
   // Inicializa el estado con el valor del localStorage o 'es' si no hay ningún valor guardado.
 
-  
-  const [lang, setLang] = useState(localStorage.getItem('lang') || 'es');
+  const [lang, setLang] = useState(localStorage.getItem("lang") || "es");
   const [firstTime, setFirstTime] = useState(true);
-  
+
   useEffect(() => {
     // Cambia el idioma de i18next cuando el estado lang cambie.
-    i18n.changeLanguage(lang);    
-    if(firstTime){
+    i18n.changeLanguage(lang);
+    if (firstTime) {
       setFirstTime(false);
-    }else{
-      toast.success(t('languageUpdated'));
+    } else {
+      toast.success(t("languageUpdated"));
     }
-    
   }, [lang]);
 
   const changeLanguage = (language) => {
     setLang(language);
-    localStorage.setItem('lang', language); // Guarda el idioma en el localStorage.
+    localStorage.setItem("lang", language); // Guarda el idioma en el localStorage.
   };
-
+  const { t } = useTranslation();
   return (
-    <LanguageContext.Provider value={{ lang, changeLanguage }}>
+    <LanguageContext.Provider
+      value={{
+        lang,
+        changeLanguage,
+        t,
+        dayjs
+      }}
+    >
       {children}
     </LanguageContext.Provider>
   );

@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Table } from "../../../styles/Styles";
+import { useContext } from "react";
+import { Table } from "../../../../styles/Styles";
+import { MainContext } from "../../../../context/MainContext";
 
 export default function SecondTableCreate2({
   setTotalesDefectos,
   divs,
   setDivs,
 }) {
+  const { setNumFilasReportByH } = useContext(MainContext);
   function handleAddDiv() {
     const newId = divs.length + 1;
+    setNumFilasReportByH((prev) => prev + 1);
     const newValues = Array(15).fill("");
     setDivs([...divs, { id: newId, values: newValues }]);
     const tableWrapper = document.querySelector(".c2");
@@ -21,9 +25,9 @@ export default function SecondTableCreate2({
     }
   }
   const handleDeleteRow = (index) => {
-    setDivs(prev => prev.filter((d, i) => i !== index));
+    setNumFilasReportByH((prev) => prev - 1);
+    setDivs((prev) => prev.filter((d, i) => i !== index));
   };
-
 
   function handleInputChange(divId, inputIndex, newValue) {
     setDivs((prevDivs) => {
@@ -77,7 +81,22 @@ export default function SecondTableCreate2({
         <thead>
           <tr>
             <th>
-              <i className="fa-solid fa-circle-plus" onClick={handleAddDiv}></i>
+              <span className="btn-table-cont">
+                <i
+                  className="fa-solid fa-trash"
+                  onClick={
+                    divs.length - 1 !== 0
+                      ? () => handleDeleteRow(divs.length - 1)
+                      : () => {
+                          return;
+                        }
+                  }
+                ></i>
+                <i
+                  className="fa-solid fa-circle-plus"
+                  onClick={handleAddDiv}
+                ></i>
+              </span>
             </th>
             <th>Item</th>
             <th>Defecto</th>
@@ -99,14 +118,7 @@ export default function SecondTableCreate2({
         <tbody>
           {divs.map((div, i) => (
             <tr key={div.id}>
-              <td>                
-                {i !== 0 && (
-                  <i
-                    className="fa-solid fa-trash"
-                    onClick={() => handleDeleteRow(i)}
-                  ></i>
-                )}
-              </td>
+              <td></td>
 
               <td>{div.id}</td>
 
@@ -199,7 +211,7 @@ export default function SecondTableCreate2({
               </td>
               <td>
                 <input
-                  value={div.values[14]}
+                  defaultValue={div.values[14]}
                   readOnly
                   disabled
                   onChange={(e) => {
