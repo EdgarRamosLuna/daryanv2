@@ -166,12 +166,16 @@ export const delReport = (id) =>
     },
   });
 export const getReportsByPartNumber = ({ partNumber, token }) =>
-  serverApi.post("/reports/grbpn/", partNumber, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
+  serverApi.post(
+    "/reports/grbpn/",
+    { partNumber: partNumber },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
 export const getReportsByPartNumberClient = ({ partNumber, token }) =>
   serverApi.post("/reports/grbpnc/", partNumber, {
     headers: {

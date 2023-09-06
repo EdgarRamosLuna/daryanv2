@@ -285,28 +285,7 @@ const TotalByPartNumber = () => {
     };
   }, [rDetailsData, showDetails, partNumber]);
 
-  //console.log(tableData);
-  // const getDetails = (type) => {
-  //   const filteredData = originalTableData.filter(
-  //     (t) => Number(t.type) === type
-  //   );
-
-  //   const groupedData = filteredData.reduce((acc, item) => {
-  //     // Si el report_id no existe en el objeto acumulador, inicialízalo con un objeto vacío.
-  //     if (!acc[item.report_id]) {
-  //       acc[item.report_id] = {
-  //         report_id: item.report_id,
-  //       };
-  //     }
-
-  //     // Añade la cláusula y la cantidad al objeto del report_id correspondiente.
-  //     acc[item.report_id][item.clause] = item.cant;
-
-  //     return acc;
-  //   }, {});
-
-  //   setTableData(Object.values(groupedData));
-  // };
+  
 
   const [typeData, setTypeData] = useState(0);
   const getDetails = (type) => {
@@ -317,48 +296,7 @@ const TotalByPartNumber = () => {
     } else {
       setShowDetails(true);
     }
-    //getAllDetails();
-    // let filteredData = originalTableData.filter((t) => Number(t.type) === type);
-
-    // // Convertir "total_cant" a número
-    // filteredData = filteredData.map((item) => ({
-    //   ...item,
-    //   total_cant: parseInt(item.total_cant),
-    // }));
-
-    // // Agrupar y sumar
-    // let groupedData = filteredData.reduce((acc, val) => {
-    //   // Si el report_id no existe en el acumulador, lo creamos
-    //   if (!acc[val.report_id]) {
-    //     acc[val.report_id] = {};
-    //   }
-
-    //   // Si la cláusula no existe en el report_id, la creamos con valor 0
-    //   if (!acc[val.report_id][val.clause]) {
-    //     acc[val.report_id][val.clause] = 0;
-    //   }
-
-    //   // Sumamos el valor de total_cant a la cláusula correspondiente
-    //   acc[val.report_id][val.clause] += val.total_cant;
-
-    //   return acc;
-    // }, {});
-
-    // // Convertir los datos agrupados a formato de array para usar en la tabla
-    // let tableData = [];
-    // for (let report_id in groupedData) {
-    //   for (let clause in groupedData[report_id]) {
-    //     tableData.push({
-    //       report_id: report_id,
-    //       clause: clause,
-    //       total_cant: groupedData[report_id][clause],
-    //     });
-    //   }
-    // }
-
-    // // Actualizar los datos de la tabla
-    // setTableData(tableData);
-    // console.log(tableData);
+  
   };
 
   // definir estilos como objeto JavaScript
@@ -426,68 +364,7 @@ const TotalByPartNumber = () => {
                     <td colSpan="7">
                       <div style={tableContainerStyle}>
                         <DynamicTable data={tableData} type={typeData} />
-                        {/* <table>
-                          <thead>
-                            <tr>
-                              {tableData[0] &&
-                                Object.keys(tableData[0])
-                                  .filter(
-                                    (key) =>
-                                      key !== "incident" && key !== "type"
-                                  ) // Filtrar las claves que no sean "incident" ni "anotherKey"
-                                  .map((key, index) => (
-                                    <th key={index}>{key === "clause" ? "inciso": key}</th>
-                                  ))}
-                            </tr>
-                          </thead>
-
-                          <tbody>
-                            {isLoading ? (
-                              <TaLoader colspan={4} />
-                            ) : (
-                              tableData.map((row, index) => (
-                                <tr key={index}>
-                                {Object.entries(row)
-                                  .filter(([key]) => key !== "incident" && key !== "type") // Filtrar las entradas cuya clave no sea "incident" ni "anotherKey"
-                                  .map(([key, value], cellIndex) => (
-                                    <td
-                                      key={cellIndex}
-                                      className="table-center"
-                                      onClick={(e) => handleCellClick(e, row.incident)}
-                                    >
-                                      {key === "type" ? (
-                                        <>
-                                          {Number(value) === 1 && "NG"}
-                                          {Number(value) === 2 && "RT"}
-                                          {Number(value) === 3 && "SC"}
-                                        </>
-                                      ) : (
-                                        value
-                                      )}
-                                    </td>
-                                  ))}
-                              </tr>
-
-                              ))
-                            )}
-                          </tbody>
-
-                          {tooltip.show && (
-                            <div
-                              style={{
-                                position: "fixed",
-                                left: tooltip.x,
-                                top: tooltip.y,
-                                backgroundColor: "white",
-                                border: "1px solid black",
-                                padding: "5px",
-                                zIndex: 100,
-                              }}
-                            >
-                              {tooltip.text}
-                            </div>
-                          )}
-                        </table> */}
+                       
                       </div>
                     </td>
                   </tr>

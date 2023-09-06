@@ -7,9 +7,7 @@ import React, {
 } from "react";
 import { MainContext } from "../../context/MainContext";
 import { StyledForm, Table } from "../../styles/Styles";
-import DatePickerInput from "../../components/DateInput";
 import SecondTableCreate from "./SecondTableCreate";
-import ScrollBar from "../../components/ScrollBar";
 import Create3 from "./Create3";
 import {
   Autocomplete,
@@ -257,7 +255,7 @@ const Create = () => {
           i: total14,
         },
         incType: incType,
-        sampling_table:divsSamplingTableInsp
+        sampling_table: divsSamplingTableInsp,
       },
     ];
     setDataToSave(newArray);
@@ -287,11 +285,10 @@ const Create = () => {
     total13,
     total14,
     incType,
-    divsSamplingTableInsp
+    divsSamplingTableInsp,
   ]);
 
   const [dumpValue, setDumpValue] = useState("");
-
 
   const optionClause = [
     {
@@ -324,7 +321,7 @@ const Create = () => {
         <>
           <div className="container">
             <div className="title">
-              <h3>{t('reports.inspection_report_title')}</h3>
+              <h3>{t("reports.inspection_report_title")}</h3>
               <br />
             </div>
 
@@ -333,7 +330,7 @@ const Create = () => {
                 <TextField
                   id="outlined-basic"
                   variant="outlined"
-                  label={t('table.plant')}
+                  label={t("table.plant")}
                   sx={{
                     width: "95%",
                   }}
@@ -342,7 +339,6 @@ const Create = () => {
                   name="plant"
                   placeholder=""
                   value={data.plant}
-                  
                   onChange={(e) =>
                     setData({
                       ...data,
@@ -357,25 +353,28 @@ const Create = () => {
                   id="combo-box-demo"
                   name="id_supplier"
                   options={suppliers}
+                  value={
+                    suppliers.find(
+                      (supplier) => supplier.id === data.id_supplier
+                    ) || null
+                  } // Aquí estableces el valor
                   getOptionLabel={(option) => option.fullname}
                   sx={{ width: "95%" }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       required
-                      label={t('table.supplier')}
+                      label={t("table.supplier")}
                       name="id_supplier"
                     />
                   )}
                   onChange={(e, newValue) =>
                     setData({
                       ...data,
-                      id_supplier: newValue.id,
+                      id_supplier: newValue ? newValue.id : null,
                     })
                   }
                 />
-
-             
               </div>
               <div
                 className="form-containers"
@@ -386,9 +385,10 @@ const Create = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker"]}>
                     <DatePicker
-                      label={`${t('table.date')}*`}
+                      label={`${t("table.date")}*`}
                       required
                       name="date"
+                      value={data.date ? dayjs(data.date) : null} // establece el valor aquí
                       sx={{
                         width: "95%",
                       }}
@@ -407,13 +407,12 @@ const Create = () => {
               <div className="form-container">
                 <TextField
                   id="outlined-basic"
-                  label={t('reports.report_number_label')}
+                  label={t("reports.report_number_label")}
                   variant="outlined"
                   type="text"
                   name="report_number"
                   placeholder=""
                   required
-                  
                   sx={{
                     width: "95%",
                   }}
@@ -429,7 +428,7 @@ const Create = () => {
               <div className="form-container">
                 <TextField
                   id="outlined-basic"
-                  label={t('reports.part_name_label')}
+                  label={t("reports.part_name_label")}
                   variant="outlined"
                   type="text"
                   sx={{
@@ -438,7 +437,6 @@ const Create = () => {
                   name="part_name"
                   placeholder=""
                   required
-                  
                   value={data.part_name}
                   onChange={(e) =>
                     setData({
@@ -452,13 +450,12 @@ const Create = () => {
                 <TextField
                   key={totalHours}
                   id="outlined-basic"
-                  label={t('reports.worked_hours_label')}
+                  label={t("reports.worked_hours_label")}
                   variant="outlined"
                   type="text"
                   name="worked_hours"
                   placeholder=""
                   required
-                  
                   sx={{
                     width: "95%",
                   }}
@@ -487,7 +484,6 @@ const Create = () => {
                   name="rate"
                   placeholder=""
                   required
-                  
                   value={data.rate}
                   onChange={handleInputChange}
                 />
@@ -501,8 +497,8 @@ const Create = () => {
                     name="shift"
                     type="text"
                     required
-                    defaultValue={`${data.length > 0 ? data.shift : ""}`}
-                    label={t('reports.shift_label')}
+                    value={data.shift || ""} // Usa "value" en lugar de "defaultValue"
+                    label={t("reports.shift_label")}
                     sx={{
                       width: "95%",
                     }}
@@ -518,7 +514,6 @@ const Create = () => {
                     <MenuItem value={3}>3</MenuItem>
                   </Select>
                 </FormControl>
-               
               </div>
               <Grid
                 sx={{
@@ -527,7 +522,7 @@ const Create = () => {
               >
                 <TextField
                   id="outlined-basic"
-                  label={t('reports.part_number_label')}
+                  label={t("reports.part_number_label")}
                   variant="outlined"
                   sx={{
                     width: "95%",
@@ -551,7 +546,8 @@ const Create = () => {
                 }}
               >
                 <label htmlFor="data8">
-                  {t('reports.service_type_label')} <span className="required">*</span>
+                  {t("reports.service_type_label")}{" "}
+                  <span className="required">*</span>
                 </label>
 
                 <div className="container-checkbox">
@@ -567,7 +563,7 @@ const Create = () => {
                         })
                       }
                     />
-                    {t('reports.selection_label')}
+                    {t("reports.selection_label")}
                   </label>
 
                   <label>
@@ -582,7 +578,7 @@ const Create = () => {
                         })
                       }
                     />
-                    {t('reports.rework_label')}
+                    {t("reports.rework_label")}
                   </label>
                   <label htmlFor=""> </label>
                   <label htmlFor=""> </label>
@@ -616,7 +612,8 @@ const Create = () => {
                 }}
               >
                 <label htmlFor="data8">
-                  {t('reports.customer_control_label')} <span className="required">*</span>
+                  {t("reports.customer_control_label")}{" "}
+                  <span className="required">*</span>
                 </label>
 
                 <div className="container-checkbox">
@@ -633,7 +630,7 @@ const Create = () => {
                         })
                       }
                     />
-                    {t('reports.production_date_label')}
+                    {t("reports.production_date_label")}
                   </label>
                   <label>
                     <input
@@ -648,7 +645,7 @@ const Create = () => {
                         })
                       }
                     />
-                    {t('reports.approval_date_label')}
+                    {t("reports.approval_date_label")}
                   </label>
 
                   <label>
@@ -664,7 +661,7 @@ const Create = () => {
                         })
                       }
                     />
-                    {t('reports.series_label')}
+                    {t("reports.series_label")}
                   </label>
                   <label>
                     <input
@@ -679,7 +676,7 @@ const Create = () => {
                         })
                       }
                     />
-                    {t('reports.batch_label')}
+                    {t("reports.batch_label")}
                   </label>
                   <div className="others-container">
                     <TextField
@@ -710,9 +707,7 @@ const Create = () => {
             ref={container1Ref}
             onScroll={handleScroll1}
           >
-            <SecondTableCreate                      
-       
-            />
+            <SecondTableCreate />
           </div>
 
           <div
@@ -915,7 +910,7 @@ const Create = () => {
                       colSpan={numColumnas / 3}
                       style={{ textAlign: "center" }}
                     >
-                      <div>{t('reports.performed_by_label')}</div>
+                      <div>{t("reports.performed_by_label")}</div>
                       {reportFooter.map(
                         (fila, i) =>
                           i < reportFooter.length - 1 && (
@@ -945,7 +940,7 @@ const Create = () => {
                       colSpan={numColumnas / 3}
                       style={{ textAlign: "center" }}
                     >
-                      <div>{t('reports.observations_label')}</div>
+                      <div>{t("reports.observations_label")}</div>
                       {reportFooter2.map(
                         (fila, j) =>
                           j < reportFooter2.length - 1 && (
@@ -1112,7 +1107,7 @@ const Create = () => {
                                             data={optionClause}
                                             clause="A"
                                           />
-                                  
+
                                           <br />
                                         </>
                                       )}
@@ -1122,13 +1117,12 @@ const Create = () => {
                                             data={optionClause}
                                             clause="B"
                                           />
-                                       
+
                                           <br />
                                         </>
                                       )}
                                       {i === 10 && (
                                         <>
-                                       
                                           <SelectCustom
                                             data={optionClause}
                                             clause="C"
@@ -1202,7 +1196,8 @@ const Create = () => {
                       style={{ textAlign: "center" }}
                     >
                       <div>
-                        {t('reports.incidents_label')} <span className="required">*</span>
+                        {t("reports.incidents_label")}{" "}
+                        <span className="required">*</span>
                       </div>
                       {reportFooter3.map(
                         (fila, i) =>
@@ -1236,7 +1231,8 @@ const Create = () => {
                       style={{ textAlign: "center" }}
                     >
                       <div>
-                      {t('reports.prepared_by_label')} <span className="required">*</span>
+                        {t("reports.prepared_by_label")}{" "}
+                        <span className="required">*</span>
                       </div>
                       <div className="firm">
                         <input
@@ -1254,7 +1250,8 @@ const Create = () => {
                       style={{ textAlign: "center" }}
                     >
                       <div>
-                        {t('reports.reviewed_by_label')} <span className="required">*</span>
+                        {t("reports.reviewed_by_label")}{" "}
+                        <span className="required">*</span>
                       </div>
                       <div className="firm">
                         <input
@@ -1271,7 +1268,7 @@ const Create = () => {
                       colSpan={numColumnas / 3}
                       style={{ textAlign: "center" }}
                     >
-                      <div>{t('reports.authorized_by_label')}</div>
+                      <div>{t("reports.authorized_by_label")}</div>
                       <div className="firm">
                         <input
                           type="text"
@@ -1293,7 +1290,7 @@ const Create = () => {
                                   return;
                                 }
                           }
-                          value={authorizedBy}           
+                          value={authorizedBy}
                           className="firm-input"
                         />
                       </div>

@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 const SelectCustom = ({ data, clause, selected }) => {
 
-    const {setIncType} = useContext(MainContext);    
+    const {setIncType, incType} = useContext(MainContext);    
     useEffect(() => {
       
       if(selected){
@@ -22,7 +22,7 @@ const SelectCustom = ({ data, clause, selected }) => {
         setIncType(prev => [...prev, {type, clause}])
         setDataC(type);
     }
-
+console.log(incType)
     
   return (    
       <select value={dataC} onChange={handleChange}>
