@@ -22,7 +22,7 @@ const SelectCustom = ({ data, clause, selected }) => {
         setIncType(prev => [...prev, {type, clause}])
         setDataC(type);
     }
-console.log(incType)
+
     
   return (    
       <select value={dataC} onChange={handleChange}>

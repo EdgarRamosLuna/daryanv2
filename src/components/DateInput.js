@@ -26,6 +26,7 @@ const DatePickerInput = ({ value, setDate, name, id, index, style, handleDate })
       const month = ("0" + (date.getMonth() + 1)).slice(-2);
       const day = ("0" + date.getDate()).slice(-2);
       const formattedDateTime = `${year}-${month}-${day}`;
+
       setDate(name, formattedDateTime, id, index);
       setFormatedDateStart(formattedDateTime);
     }
@@ -42,14 +43,18 @@ const DatePickerInput = ({ value, setDate, name, id, index, style, handleDate })
     //setDate(e);
   //  setDate('date', date);
   };*/
-  //console.log(formatedDateStart);
+  
   return (
     <Table>
       <div className="">
         <DatePicker
           id="fechaInicio"
           selected={dateStart}
-          onChange={(date) => setDateStart(date)}
+          onChange={(date) => {
+            console.log("changing")
+            setDateStart(date)
+          
+          }}
           locale="es"
           /*
           showTimeSelect
@@ -62,9 +67,10 @@ const DatePickerInput = ({ value, setDate, name, id, index, style, handleDate })
               <InputDate
                 type="text"
                 name=""
-                defaultValue={value !== "" ?  value :(value === '' ? '' : formatedDateStart )}
-                style={style}
-                onChange={() => {}}
+                defaultValue={value !== "" ?  value :(value === '' ? '' : formatedDateStart )}                
+                style={style}           
+                value={formatedDateStart}
+                
               />
             </CustomInputD>
           }

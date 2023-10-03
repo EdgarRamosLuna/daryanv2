@@ -81,15 +81,34 @@ const Create = () => {
   const [authorizedBy, setAuthorizedBy] = useState("");
   const dataSes = localStorage.getItem("sesType");
   const [totalHours, setTotalHours] = useState(0);
-
+  const onlyNumbers = /^\d+$/;
   useEffect(() => {
     if (Object.keys(data).length > 0) {
       const totalInsp = Number(total1);
       const rate = data.rate;
-      const totalHours = Number(totalInsp) / Number(rate);
-      setTotalHours(totalHours);
+      
+        if (onlyNumbers.test(rate)) {
+            
+            const totalHours = Number(totalInsp) / Number(rate);
+            setTotalHours(totalHours);            
+        } else {
+            
+        }
+      
     }
   }, [total1, data]);
+  useEffect(() => {
+    if(totalHours > 0){
+
+      setData({
+        ...data,
+        ['worked_hours']: totalHours,
+      })
+    }
+    
+  }, [totalHours])
+  
+  
 
   const [divs2, setDivs2] = useState(() => {
     const filas = [];
@@ -314,7 +333,7 @@ const Create = () => {
         rate: value,
       };
     });
-  };
+  };  
   const tabContent = {
     1: {
       component: (
@@ -460,7 +479,7 @@ const Create = () => {
                     width: "95%",
                   }}
                   value={
-                    totalHours > 0 && typeof totalHours === "number"
+                    (totalHours > 0 && typeof totalHours === "number") && (onlyNumbers.test(data.rate))
                       ? totalHours
                       : data.worked_hours
                   }
@@ -490,7 +509,7 @@ const Create = () => {
               </div>
               <div className="form-container">
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Turno *</InputLabel>
+                  <InputLabel id="demo-simple-select-label">{t("reports.shift_label")} *</InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"

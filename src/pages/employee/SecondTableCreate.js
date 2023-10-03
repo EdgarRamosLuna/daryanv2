@@ -38,8 +38,7 @@ export default function SecondTableCreate() {
   
   const handleInputChange = (divId, inputIndex, newValue) => {
     setDivs((prevDivs) => {
-      const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
-  
+      const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);      
       // Ensure that the div is found
       if (divToUpdateIndex === -1) {
         console.error('Div not found!');
@@ -214,17 +213,12 @@ export default function SecondTableCreate() {
       });
     });
   }, [divs]);
-  //console.log(total1);
-  //const [first, setfirst] = useState(second)
-  const [data, setData] = useState([]);
+
+
   const handleDate = (name, date, id, index) => {
     handleInputChange(id, index, date);
   };
-  const currentDateInSeconds = Math.floor(Date.now() / 1000);
-  const min = 1000000;
-  const max = 9000000;
 
-  const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
   const handleDeleteRow = (index) => {
     setNumFilas((prev) => prev - 1);
     setDivs((prev) => prev.filter((d, i) => i !== index));
@@ -268,37 +262,7 @@ export default function SecondTableCreate() {
             ) : (
               <th></th>
             )}
-            {/* {titulosColumnas.map((titulo, i) =>
-              i === 0 ? (
-                <th>
-                  <i
-                    className="fa-solid fa-circle-plus"
-                    onClick={() => agregarFila(numColumnas)}
-                  ></i>
-                </th>
-              ) : (
-                <th key={i}>{titulo}</th>
-              )
-            )} */}
-            {/*<th>
-              <i className="fa-solid fa-circle-plus" onClick={handleAddDiv}></i>
-            </th>
-            <th>Item</th>
-            <th>Fecha</th>
-            <th>Lote</th>
-            <th>Serie</th>
-            <th>Cantidad Inspeccionada</th>
-            <th>Piezas NG:</th>
-            <th>Piezas Ok:</th>
-            <th>Piezas Retrabajadas:</th>
-            <th>Scrap:</th>
-            <th>A </th>
-            <th>B </th>
-            <th>C </th>
-            <th>D </th>
-            <th>E </th>
-            <th><i className="fa-solid fa-circle-plus" onClick={agregarColumna}></i></th>
-            */}
+          
           </tr>
         </thead>
         <tbody>
@@ -329,6 +293,9 @@ export default function SecondTableCreate() {
                 ) : (
                   <td key={i + "tbody"}>
                     {i === 2 ? (
+
+                      <>
+                      
                       <DatePickerInput
                         id={fila.id}
                         name=""
@@ -336,6 +303,7 @@ export default function SecondTableCreate() {
                         value={valor}
                         setDate={handleDate}
                       />
+                      </>
                     ) : (
                       <>
                         {i >= 3 && i <= 4 ? (
@@ -347,6 +315,7 @@ export default function SecondTableCreate() {
                           />
                         ) : (
                           <input
+                          defaultValue={0}
                             value={valor}
                             onChange={(e) =>
                               handleInputChange(fila.id, i, e.target.value)

@@ -289,7 +289,7 @@ export const MainContextProvider = ({ children }) => {
   const [showModalAuth, setShowModalAuth] = useState(false);
   const [updateId, setUpdateId] = useState(false);
   const [delType, setDelType] = useState(0);
-  const [numFilas, setNumFilas] = useState(20);
+  const [numFilas, setNumFilas] = useState(2);
   const [divsSamplingTableInsp, setDivsSamplingTableInsp] = useState(() =>
     generateRows(numFilas)
   );
@@ -548,8 +548,8 @@ export const MainContextProvider = ({ children }) => {
     for (let i = 1; i <= numFilas; i++) {
       filas.push({
         id: i,
-        values: Array.from({ length: numColumnas }, () => ""),
-      });
+        values: Array.from({ length: numColumnas }, (_, index) => index < 6 ? "" : 0),
+      });      
     }
     return filas;
   });
