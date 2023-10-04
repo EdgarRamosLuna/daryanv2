@@ -10,52 +10,52 @@ const Reports = () => {
     useContext(MainContext);
 
   useEffect(() => {
-   
-   const token = localStorage.getItem("t");
-   if (activeTab === 1) {
-     const request = async () => {
-       try {
-         const response = await getReportsIns(token);
-         const datares = response?.data;
-         const { error } = datares;
-         if (!error) {
-           const datares = response?.data;
-           const reportes = Object.values(datares);
-           localStorage.setItem("dataTable", JSON.stringify(reportes));
-           setData(reportes);
-         }
-       } catch (error) {
-         toast.error("error", {
-           duration: 5000,
-         });
-       }        
-  
-     };
-     if(isAdmin){
-       request();
-     }
-   }
-   if (activeTab === 2) {
-     const request = async () => {
-       try {
-         const response = await getReportsByH(token);
-         const datares = response?.data;
-         const { error } = datares;
-         if (!error) {
-           const reportes = Object.values(datares);
-           localStorage.setItem("dataTable2", JSON.stringify(reportes));
-           setData2(reportes);
-         }
-       } catch (error) {
-         toast.error("error", {
-           duration: 5000,
-         });
-       }
-     };
-     request();
-   }
+    const token = localStorage.getItem("t");
+    if (activeTab === 1) {
+      const request = async () => {
+        try {
+          const response = await getReportsIns(token);
+          const datares = response?.data.result;
+          const { error } = datares;
+          if (!error) {
+            const { result, last_report_id } = response?.data;
+            const datares = result;
+            const reportes = Object.values(datares);
+            localStorage.setItem("dataTable", JSON.stringify(reportes));
+            localStorage.setItem("last_report_id", last_report_id);
+            setData(reportes);
+          }
+        } catch (error) {
+          toast.error("error", {
+            duration: 5000,
+          });
+        }
+      };
+      if (isAdmin) {
+        request();
+      }
+    }
+    if (activeTab === 2) {
+      const request = async () => {
+        try {
+          const response = await getReportsByH(token);
+          const datares = response?.data.result;
+          const { error } = datares;
+          if (!error) {
+            const reportes = Object.values(datares);
+            localStorage.setItem("dataTable2", JSON.stringify(reportes));
+            setData2(reportes);
+          }
+        } catch (error) {
+          toast.error("error", {
+            duration: 5000,
+          });
+        }
+      };
+      request();
+    }
   }, [isAdmin, activeTab]);
-  
+
   return (
     <div className="report-cointainer">
       <ReportsTable data={data} dataReportByH={data2} />

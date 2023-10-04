@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
+import { registerLocale } from "react-datepicker";
 import { debounce } from "lodash";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
@@ -15,8 +15,6 @@ import Checkbox from "../Checkbox";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import { Link, useNavigate } from "react-router-dom";
-import FilterSearch from "./FilterSearch";
-import TableTotals from "./TableTotals";
 import TableComponent from "./TableComponent";
 import Chart1 from "../Chart1";
 import Chart2 from "../Chart2";
@@ -57,23 +55,18 @@ function ReportsTable({ data, dataReportByH }) {
   const { t } = useTranslation();
   const {
     handleDel,
-    setSort,
     toast,
     activeTab,
     setActiveTab,
-    checkList,
     setCheckList,
     uniqueClients,
     setUniqueClients,
     clientsToReport,
     setClientsToReport,
-    showModalAuth,
     setShowModalAuth,
-    authClientsT,
     setAuthClientsT,
     showCharts,
     firstDayOfYear,
-    isAdmin,
     handleCheckBox,
   } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
@@ -335,7 +328,7 @@ function ReportsTable({ data, dataReportByH }) {
 
   useEffect(() => {
     const data = getPaginatedData();
-
+    console.log()
     if (data.length > 0) {
       const uniqueValues = Array.from(
         new Set(data.map((item) => item.id_supplier))

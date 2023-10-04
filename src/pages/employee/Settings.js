@@ -8,8 +8,7 @@ import { set } from "react-hook-form";
 const Settings = () => {
   const { langu, setLangu } = useContext(MainContext);
   const [langI, setLangI] = useState(localStorage.getItem("lang"));
-
-  console.log(localStorage.getItem("lang"));
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     setLangu(langI);
@@ -39,6 +38,7 @@ const Settings = () => {
             value={langI}
             onChange={(e) => {
               setLangI(e.target.value);
+              setLangu(e.target.value);
             }}
           >
             <option value="es">{langI === "es" ? "Español" : "Spanish"}</option>

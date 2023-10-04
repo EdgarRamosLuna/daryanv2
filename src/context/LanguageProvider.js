@@ -18,6 +18,7 @@ export const LanguageProvider = ({ children }) => {
     if (firstTime) {
       setFirstTime(false);
     } else {
+      console.log(lang)
       toast.success(t("languageUpdated"));
     }
   }, [lang]);

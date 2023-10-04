@@ -5,10 +5,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/es';
 import { DatePicker } from '@mui/x-date-pickers-pro';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { useTranslation } from "react-i18next";
 
 dayjs.locale('es');
 
+
 const InputDate = ({ setData, data, defaultValue }) => {
+    const { t } = useTranslation();
     const [selectedDate, setSelectedDate] = React.useState(defaultValue);
 
     const handleDateChange = (newValue) => {
@@ -23,7 +26,7 @@ const InputDate = ({ setData, data, defaultValue }) => {
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
             <DemoContainer components={['DatePicker']}>
                 <DatePicker
-                    label="Fecha *"
+                    label={t("reports.date")}
                     required
                     name="date"
                     sx={{

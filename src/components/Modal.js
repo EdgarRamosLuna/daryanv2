@@ -7,7 +7,6 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 const Modal = ({ children, callback, width }) => {
   const { btnCloseRef } = useContext(MainContext);
 
-  console.log(width)
   return (
     <StyledModal width={width}>
       <div className="modal-container">

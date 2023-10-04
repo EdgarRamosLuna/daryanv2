@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { MainContext } from "../../context/MainContext";
 import { Table } from "../../styles/Styles";
 import DatePickerInput from "../../components/DateInput";
+import CustomInput from "./utils/CustomInput";
 
 export default function SecondTableCreate() {
   const {
@@ -32,52 +33,55 @@ export default function SecondTableCreate() {
     setTotal13,
     setTotal14,
     divsSamplingTableInsp,
-    setDivsSamplingTableInsp
+    setDivsSamplingTableInsp,
   } = useContext(MainContext);
 
-  
   const handleInputChange = (divId, inputIndex, newValue) => {
     setDivs((prevDivs) => {
-      const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);      
+      const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
       // Ensure that the div is found
       if (divToUpdateIndex === -1) {
-        console.error('Div not found!');
+        console.error("Div not found!");
         return prevDivs; // Return the previous state
       }
-  
+
       const updatedDiv = { ...prevDivs[divToUpdateIndex] };
-  
+
       // Check if values exists on updatedDiv
       if (!updatedDiv.values) {
-        console.error('Values property not found on div');
+        console.error("Values property not found on div");
         return prevDivs; // Return the previous state
       }
-  
+
       updatedDiv.values[inputIndex] = newValue;
-  
+
       const updatedDivs = [...prevDivs];
       updatedDivs[divToUpdateIndex] = updatedDiv;
       return updatedDivs;
     });
-  
+
     const updatedSamplingTable = divs.map((divItem) => {
       // Obtiene el item correspondiente de divsSamplingTableInsp
       const originalItem = divsSamplingTableInsp.find(
         (item) => item.id === divItem.id
       );
-    
+
       // Check if the originalItem exists and has the values property
       if (!originalItem || !originalItem.values) {
-        console.error(`Original item not found or doesn't have values property for id: ${divItem.id}`);
+        console.error(
+          `Original item not found or doesn't have values property for id: ${divItem.id}`
+        );
         return null; // or handle this differently based on your application's needs
       }
-    
+
       // Check if divItem has the values property
       if (!divItem.values) {
-        console.error(`divItem doesn't have values property for id: ${divItem.id}`);
+        console.error(
+          `divItem doesn't have values property for id: ${divItem.id}`
+        );
         return null; // or handle this differently
       }
-    
+
       return {
         id: divItem.id,
         values: [
@@ -90,12 +94,13 @@ export default function SecondTableCreate() {
         ],
       };
     });
-    
+
     // Filter out any nulls (or whatever you chose as the placeholder for problematic items)
-    const filteredUpdatedSamplingTable = updatedSamplingTable.filter(item => item !== null);
-    
+    const filteredUpdatedSamplingTable = updatedSamplingTable.filter(
+      (item) => item !== null
+    );
+
     setDivsSamplingTableInsp(filteredUpdatedSamplingTable);
-    
   };
 
   useEffect(() => {
@@ -214,7 +219,6 @@ export default function SecondTableCreate() {
     });
   }, [divs]);
 
-
   const handleDate = (name, date, id, index) => {
     handleInputChange(id, index, date);
   };
@@ -223,6 +227,14 @@ export default function SecondTableCreate() {
     setNumFilas((prev) => prev - 1);
     setDivs((prev) => prev.filter((d, i) => i !== index));
   };
+
+  const handleEnter = useCallback((filaId, currentIndex) => {
+    const nextInput = document.getElementById(
+      `input-${filaId + 1}-${3}`
+    );
+    nextInput && nextInput.focus();
+  }, []);
+
   return (
     <Table>
       <table>
@@ -262,7 +274,6 @@ export default function SecondTableCreate() {
             ) : (
               <th></th>
             )}
-          
           </tr>
         </thead>
         <tbody>
@@ -273,11 +284,7 @@ export default function SecondTableCreate() {
                   <td key={i + "stTbody"}>
                     {i === 0 &&
                       fila.id !== 1 &&
-                      indexFilas === divs.length - 1 && (
-                        <>
-                        
-                        </>
-                      )}
+                      indexFilas === divs.length - 1 && <></>}
                     {i === fila.values.length - 1 &&
                       fila.values.length > 15 && (
                         <i
@@ -293,33 +300,36 @@ export default function SecondTableCreate() {
                 ) : (
                   <td key={i + "tbody"}>
                     {i === 2 ? (
-
                       <>
-                      
-                      <DatePickerInput
-                        id={fila.id}
-                        name=""
-                        index={i}
-                        value={valor}
-                        setDate={handleDate}
-                      />
+                        <DatePickerInput
+                          id={fila.id}
+                          name=""
+                          index={i}
+                          value={valor}
+                          setDate={handleDate}
+                        />
                       </>
                     ) : (
                       <>
                         {i >= 3 && i <= 4 ? (
-                          <input
+                          <CustomInput
                             value={valor}
-                            onChange={(e) =>
-                              handleInputChange(fila.id, i, e.target.value)
-                            }
+                            onChange={handleInputChange}
+                            onEnter={handleEnter} // Pasar el id de la fila y el índice del input a handleEnter
+                            id={`input-${fila.id}-${i}`}
+                            key={i} // Añadir una key prop es importante cuando se mapea un array a elementos JSX
+                            filaId={fila.id}
+                            index={i}
                           />
                         ) : (
-                          <input
-                          defaultValue={0}
+                          <CustomInput
                             value={valor}
-                            onChange={(e) =>
-                              handleInputChange(fila.id, i, e.target.value)
-                            }
+                            onChange={handleInputChange}
+                            onEnter={handleEnter} // Pasar el id de la fila y el índice del input a handleEnter
+                            id={`input-${fila.id}-${i}`}
+                            filaId={fila.id}
+                            index={i}
+                            key={i} // Añadir una key prop es importante cuando se mapea un array a elementos JSX
                           />
                         )}
                       </>
@@ -329,7 +339,6 @@ export default function SecondTableCreate() {
               )}
             </tr>
           ))}
-    
         </tbody>
       </table>
     </Table>

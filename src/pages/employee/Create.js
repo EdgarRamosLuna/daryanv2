@@ -82,33 +82,34 @@ const Create = () => {
   const dataSes = localStorage.getItem("sesType");
   const [totalHours, setTotalHours] = useState(0);
   const onlyNumbers = /^\d+$/;
+  const last_report_id = localStorage.getItem("last_report_id");
+  useEffect(() => {
+    setData({
+      ...data,
+      ["report_number"]: Number(last_report_id) + 1,
+    });  
+  }, [last_report_id]);
+
   useEffect(() => {
     if (Object.keys(data).length > 0) {
       const totalInsp = Number(total1);
       const rate = data.rate;
-      
-        if (onlyNumbers.test(rate)) {
-            
-            const totalHours = Number(totalInsp) / Number(rate);
-            setTotalHours(totalHours);            
-        } else {
-            
-        }
-      
+
+      if (onlyNumbers.test(rate)) {
+        const totalHours = Number(totalInsp) / Number(rate);
+        setTotalHours(totalHours);
+      } else {
+      }
     }
   }, [total1, data]);
   useEffect(() => {
-    if(totalHours > 0){
-
+    if (totalHours > 0) {
       setData({
         ...data,
-        ['worked_hours']: totalHours,
-      })
+        ["worked_hours"]: totalHours,
+      });
     }
-    
-  }, [totalHours])
-  
-  
+  }, [totalHours]);
 
   const [divs2, setDivs2] = useState(() => {
     const filas = [];
@@ -333,7 +334,7 @@ const Create = () => {
         rate: value,
       };
     });
-  };  
+  };
   const tabContent = {
     1: {
       component: (
@@ -479,8 +480,10 @@ const Create = () => {
                     width: "95%",
                   }}
                   value={
-                    (totalHours > 0 && typeof totalHours === "number") && (onlyNumbers.test(data.rate))
-                      ? totalHours
+                    totalHours > 0 &&
+                    typeof totalHours === "number" &&
+                    onlyNumbers.test(data.rate)
+                      ? totalHours.toFixed(2)
                       : data.worked_hours
                   }
                   onChange={(e) =>
@@ -509,7 +512,9 @@ const Create = () => {
               </div>
               <div className="form-container">
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">{t("reports.shift_label")} *</InputLabel>
+                  <InputLabel id="demo-simple-select-label">
+                    {t("reports.shift_label")} *
+                  </InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"

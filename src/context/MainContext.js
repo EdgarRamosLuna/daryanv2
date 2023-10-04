@@ -665,8 +665,8 @@ export const MainContextProvider = ({ children }) => {
       {
         id: prevDatos.length + 1,
         values: date
-          ? Array.from({ length: numColumnas }, (v, i) => (i === 2 ? date : ""))
-          : Array.from({ length: numColumnas }, () => ""),
+          ? Array.from({ length: numColumnas }, (v, i) => (i === 2 ? date : i < 6 ? "" : 0))
+          : Array.from({ length: numColumnas }, (_, i) => i < 6 ? "" : 0),
         // values: Array.from({ length: numColumnas }, () => ""),
       },
     ]);
