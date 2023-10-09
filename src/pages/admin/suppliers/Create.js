@@ -1,22 +1,20 @@
-import React, { useContext} from "react";
+import React, { useContext } from "react";
 import { CreateForm } from "../../../styles/Styles";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { createSupplier,} from "../../../api/daryan.api";
+import { createSupplier } from "../../../api/daryan.api";
 import { MainContext } from "../../../context/MainContext";
+import { useTranslation } from "react-i18next";
 const CreateSupplier = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { btnCloseRef, toast, setDataSuppliers } =
-    useContext(MainContext);
+  const { btnCloseRef, toast, setDataSuppliers } = useContext(MainContext);
   const [saving, setSaving] = useState(false);
-
-  
-  //console.log(dataSupplier);
-  const onSubmmit = handleSubmit(async (data) => {
+  const { t } = useTranslation();
+  const onSubmit = handleSubmit(async (data) => {
     setSaving(true);
     await createSupplier(data)
       .then((res) => {
@@ -29,13 +27,14 @@ const CreateSupplier = () => {
           toast.success(datares.message, {
             duration: 4000,
           });
-          const { email, name } = data;
+          const { name, address, phone } = data;
           const { last_id } = datares;
           setDataSuppliers((prev) => [
             {
               id: `${last_id}`,
               fullname: name,
-              email,
+              address,
+              phone,
               status: "1",
             },
             ...prev,
@@ -45,71 +44,62 @@ const CreateSupplier = () => {
         }
       })
       .catch((err) => {
-        //console.log(err);
         toast.error(err, {
           duration: 5000,
         });
       });
-
-    //console.log(res);
 
     setSaving(false);
   });
 
   return (
     <CreateForm>
-      <p>Crear Proveedor</p>
-      <form autoComplete="off" onSubmit={onSubmmit}>
-        <div className="item-from-container">
-          <label htmlFor="name">Nombre</label>
+      <p>{t("suppliers_section.createProvider")}</p>
+      <form autoComplete="off" onSubmit={onSubmit}>
+        <div className="item-form-container">
+          <label htmlFor="name">{t("suppliers_section.name")}</label>
           <input
             type="text"
             id="name"
             name="name"
             {...register("name", { required: true })}
           />
-          {errors.name && <span className="error">Informacion requerida</span>}
+          {errors.name && (
+            <span className="error">{t("suppliers_section.requiredInfo")}</span>
+          )}
         </div>
-        {/* <div className="item-from-container">
-          <label htmlFor="user">Usuario</label>
+        <div className="item-form-container">
+          <label htmlFor="phone">{t("suppliers_section.phone")}</label>
           <input
             type="text"
-            id="user"
-            name="user"
-            {...register("user", { required: true })}
+            id="phone"
+            name="phone"
+            {...register("phone", { required: true })}
           />
-          {errors.user && <span className="error">Informacion requerida</span>}
-        </div> */}
-        <div className="item-from-container">
-          <label htmlFor="email">Correo</label>
-          <input
-            {...register("email", {
-              required: "Informacion requerida",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Ingresa un correo valido",
-              }
-            })}
-          />
-          {errors.email && (
-            <span className="error">{errors.email.message}</span>
+          {errors.phone && (
+            <span className="error">{t("suppliers_section.requiredInfo")}</span>
           )}
         </div>
-        <div className="item-from-container">
-          {/* <label htmlFor="password">Contraseña</label>
+        <div className="item-form-container">
+          <label htmlFor="address">{t("suppliers_section.address")}</label>
           <input
-            type="password"
-            id="password"
-            name="password"
-            {...register("password", { required: true })}
+            type="text"
+            id="address"
+            name="address"
+            {...register("address", { required: true })}
           />
-          {errors.password && (
-            <span className="error">Informacion requerida</span>
+          {errors.address && (
+            <span className="error">{t("suppliers_section.requiredInfo")}</span>
           )}
-           */}
-           <br />
+        </div>
+        <div className="item-form-container">
+          <br />
           <button type="submit" disabled={saving === true ? true : false}>
-            {saving ? <img src="/assets/img/loading.svg" alt="" /> : "Guardar"}
+            {saving ? (
+              <img src="/assets/img/loading.svg" alt="" />
+            ) : (
+              t("suppliers_section.save")
+            )}
           </button>
         </div>
       </form>

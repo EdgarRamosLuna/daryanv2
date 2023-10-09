@@ -142,6 +142,40 @@
       "100": "100 filas por página",
       "all": "Todas filas",
       "pagination_info": "Página {{currentPage}} de {{totalPages}}"
+    },
+    "suppliers_section": {
+      "createProvider": "Crear Proveedor",
+      "name": "Nombre",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "requiredInfo": "Información requerida",
+      "save": "Guardar",
+      "updateProviderInfo": "Actualizar información del proveedor",
+      "table": {
+          "searchProvider": "Buscar proveedor:",
+          "placeholder": "Nombre, Teléfono, Dirección",
+          "name": "Nombre",
+          "phone": "Teléfono",
+          "address": "Dirección",
+          "status": "Estado",
+          "actions": "Acciones"
+      }
+    },
+    "clients_section": {
+        "searchClient": "Buscar cliente:",
+        "username": "Usuario",
+        "email": "Correo",
+        "status": "Estado",
+        "actions": "Acciones",
+        "noData": "No hay información en la base de datos",
+        "supplier": "Proveedor",
+        "selectSupplier": "Selecciona un proveedor",
+        "clientName": "Nombre del cliente",
+        "hourlyReport": "Reporte por hora",
+        "password": "Contraseña",
+        "requiredInfo": "Información requerida",
+        "validEmail": "Ingresa un correo válido",
+        "save": "Guardar"
     }
   }
   

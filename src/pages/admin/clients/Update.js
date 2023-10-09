@@ -4,8 +4,9 @@ import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { updateClient, getSuppliers, getUser } from "../../../api/daryan.api";
-import { useNavigate, useParams } from "react-router-dom";
 import { MainContext } from "../../../context/MainContext";
+import { MenuItem, Select } from "@mui/material";
+import { useTranslation } from "react-i18next";
 const UpdateClient = () => {
   const {
     register,
@@ -19,13 +20,11 @@ const UpdateClient = () => {
     dataClients,
     setDataClients,
     updateId,
-    setUpdateId,
     suppliers,
-    setSuppliers,
   } = useContext(MainContext);
   const [saving, setSaving] = useState(false);
-  const navigate = useNavigate();
-  const params = useParams();
+  const { t } = useTranslation();
+  const [supplierId, setSupplierId] = useState(0);
   useEffect(() => {
     if (updateId !== 0) {
       dataClients.map((item) => {
@@ -35,16 +34,11 @@ const UpdateClient = () => {
           setValue("email", email);
           setValue("id_supplier", id_supplier);
           setValue("hour", hour === "1" ? true : false);
+          setSupplierId(id_supplier)
         }
       });
     }
-    //        const res = await getUser(updateId);
-    //      const { name, user, email, id_supplier } = res.data;
-    // console.log(title, description);
-    // setValue("title", title);
-    // setValue("description", description);
   }, []);
-  //console.log(dataSupplier);
   const onSubmmit = handleSubmit(async (data) => {
     setSaving(true);
     data.id = updateId;
@@ -66,7 +60,7 @@ const UpdateClient = () => {
                 return {
                   id: `${updateId}`,
                   id_supplier: `${id_supplier}`,
-                  fullname: name,                  
+                  fullname: name,
                   email,
                   status: "1",
                   hour: hour === 1 ? true : false,
@@ -82,13 +76,10 @@ const UpdateClient = () => {
         }
       })
       .catch((err) => {
-        //console.log(err);
         toast.error(err, {
           duration: 5000,
         });
       });
-
-    //console.log(res);
 
     setSaving(false);
   });
@@ -98,49 +89,29 @@ const UpdateClient = () => {
       <p>Actualizar Informacion del cliente</p>
       <form autoComplete="off" onSubmit={onSubmmit}>
         <div className="item-from-container">
-          <label htmlFor="name">Proveedor</label>
-          <select
+          <label id="" sx={{ margin: "0 !important" }}>
+            {t("clients_section.supplier")}
+          </label>
+
+          <Select
             name="id_supplier"
+            labelId=""
             {...register("id_supplier", {
               validate: (value) => value !== "0" && value !== "",
             })}
+            value={supplierId}
+            onChange={(event) => {
+              const selectedValue = event.target.value;
+              setSupplierId(selectedValue);  // O cualquier acción que desees realizar
+            }}
           >
-            <option value="0">Selecciona un proveedor</option>
+            <MenuItem value="0">{t("clients_section.selectSupplier")}</MenuItem>
             {suppliers.map((supplier, indx) => (
-              <option value={supplier.id}>{supplier.fullname}</option>
+              <MenuItem key={indx} value={supplier.id}>
+                {supplier.fullname}
+              </MenuItem>
             ))}
-          </select>
-
-          {/* <input
-            list="supplier"
-            name="supplier"
-            {...register("id_supplier", { required: true })}
-
-            //   required
-            //   onFocus={(e) => e.target.select()}
-            // //  value={dataToSave.name}
-          />
-          <datalist id="supplier">
-            <option value="1" key="">Test</option>
-            {/* {uniquePart_number.map((part_number, indx) => {
-              // Verificar si el navegador es Firefox, Safari o Edge
-              const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
-              const isSafari =
-                navigator.userAgent.indexOf("Safari") !== -1 ||
-                navigator.userAgent.indexOf("AppleWebKit") !== -1;
-              const isEdge = navigator.userAgent.indexOf("Edge") !== -1;
-
-              // Crear etiqueta de opción
-              const option = (
-                <option value={part_number}>
-                  {isFirefox ? `Parte #${part_number}` : "# Parte"}
-                </option>
-              );
-
-              // Devolver opción
-              return option;
-            })} }
-          </datalist> */}
+          </Select>
           {errors.id_supplier && (
             <span className="error">Informacion requerida</span>
           )}

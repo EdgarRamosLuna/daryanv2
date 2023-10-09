@@ -339,22 +339,23 @@ export const MainContextProvider = ({ children }) => {
   };
   const aproveReportH = async (e) => {
     await aproveReportHToDb({ dataReportH: dataReportH[0], token })
-    .then((res) => {
-      const datares = res.data;
-      if (datares.error) {
-        toast.error(datares.message, {
-          duration: 5000,
-        });
-      } else {
-        toast.success(datares.message, {
-          duration: 4000,
-        });     
-        navigate(
-          `${
-            ["admin"].includes(dataSes.toLowerCase()) ? "admin" : "user"
-          }/reports`
-        ); 
-      }})
+      .then((res) => {
+        const datares = res.data;
+        if (datares.error) {
+          toast.error(datares.message, {
+            duration: 5000,
+          });
+        } else {
+          toast.success(datares.message, {
+            duration: 4000,
+          });
+          navigate(
+            `${
+              ["admin"].includes(dataSes.toLowerCase()) ? "admin" : "user"
+            }/reports`
+          );
+        }
+      })
       .catch((err) => {});
   };
 
@@ -494,7 +495,14 @@ export const MainContextProvider = ({ children }) => {
     setConfirm(false);
   };
   const location = useLocation();
-
+  const {pathname} = location;
+  
+  useEffect(() => {
+    
+    setActiveTab(1);
+    
+  }, [pathname])
+  
   const [numColumnas, setNumColumnas] = useState(15);
   const [dbColumns, setDbColumns] = useState(["A", "B", "C", "D"]);
   const ABECEDARIO = [
@@ -548,8 +556,10 @@ export const MainContextProvider = ({ children }) => {
     for (let i = 1; i <= numFilas; i++) {
       filas.push({
         id: i,
-        values: Array.from({ length: numColumnas }, (_, index) => index < 6 ? "" : 0),
-      });      
+        values: Array.from({ length: numColumnas }, (_, index) =>
+          index < 6 ? "" : 0
+        ),
+      });
     }
     return filas;
   });
@@ -665,8 +675,10 @@ export const MainContextProvider = ({ children }) => {
       {
         id: prevDatos.length + 1,
         values: date
-          ? Array.from({ length: numColumnas }, (v, i) => (i === 2 ? date : i < 6 ? "" : 0))
-          : Array.from({ length: numColumnas }, (_, i) => i < 6 ? "" : 0),
+          ? Array.from({ length: numColumnas }, (v, i) =>
+              i === 2 ? date : i < 6 ? "" : 0
+            )
+          : Array.from({ length: numColumnas }, (_, i) => (i < 6 ? "" : 0)),
         // values: Array.from({ length: numColumnas }, () => ""),
       },
     ]);
@@ -918,183 +930,183 @@ export const MainContextProvider = ({ children }) => {
 
   const [incType, setIncType] = useState([]);
 
+  const onlyNumbers = /^\d+$/;
+  const PROPS = {
+    dataSes,
+    dataT,
+    data,
+    setData,
+    data2,
+    setData2,
+    saveReport,
+    aproveReport,
+    dataToSave,
+    setDataToSave,
+    dataTS,
+    dataTS2,
+    reportData,
+    confirm,
+    setConfirm,
+    handleDel,
+    handleStatus,
+    idDelete,
+    setIdDelete,
+    handleConfirm,
+    showModalU,
+    setShowModalU,
+    updateId,
+    setUpdateId,
+    showModalE,
+    setShowModalE,
+    showModalS,
+    setShowModalS,
+    showModalC,
+    setShowModalC,
+    delType,
+    setDelType,
+    numFilas,
+    setNumFilas,
+    numFilasReportByH,
+    numColumnas,
+    setNumColumnas,
+    titulosColumnas,
+    setTitulosColumnas,
+    titulosColumnas2,
+    setTitulosColumnas2,
+    agregarColumna,
+    agregarColumna2,
+    agregarFila,
+    eliminarColumna,
+    eliminarFila,
+    divs,
+    setDivs,
+    total1,
+    setTotal1,
+    total2,
+    setTotal2,
+    total3,
+    setTotal3,
+    total4,
+    setTotal4,
+    total5,
+    setTotal5,
+    total6,
+    setTotal6,
+    total7,
+    setTotal7,
+    total8,
+    setTotal8,
+    total9,
+    setTotal9,
+    total10,
+    setTotal10,
+    total11,
+    setTotal11,
+    total12,
+    setTotal12,
+    total13,
+    setTotal13,
+    total14,
+    setTotal14,
+    dbColumns,
+    setDbColumns,
+    container1Ref,
+    container2Ref,
+    handleScroll1,
+    handleScroll2,
+    sort,
+    setSort,
+    toast,
+    isLoading,
+    setIsLoading,
+    formattedDate,
+    getNextLetter,
+    dataUsers,
+    setDataUsers,
+    dataEmployees,
+    setDataEmployees,
+    dataClients,
+    setDataClients,
+    dataSuppliers,
+    setDataSuppliers,
+    serverUrl,
+    tableName,
+    setTableName,
+    dataCDb,
+    setDataCDb,
+    btnCloseRef,
+    dbChanges,
+    setDbChanges,
+    showModalClient,
+    setShowModalClient,
+    showModalEmployee,
+    setShowModalEmployee,
+    showModalUser,
+    setShowModalUser,
+    showModalSupplier,
+    setShowModalSupplier,
+    suppliers,
+    setSuppliers,
+    eliminarColumna2,
+    deletingInc,
+    setDeletingInc,
+    activeTab,
+    setActiveTab,
+    checkList,
+    setCheckList,
+    uniqueClients,
+    setUniqueClients,
+    clientsToReport,
+    setClientsToReport,
+    showModalAuth,
+    setShowModalAuth,
+    authClientsT,
+    setAuthClientsT,
+    setPosition,
+    showCharts,
+    setShowCharts,
+    showDtable,
+    setShowDtable,
+    rDetailsData,
+    setRDetailsData,
+    partNumber,
+    setPartNumber,
+    showDEtable,
+    setShowDEtable,
+    tableFilters,
+    setTableFilters,
+    tableFilters2,
+    setTableFilters2,
+    LANG,
+    langu,
+    setLangu,
+    showConfig,
+    setShowConfig,
+    firstDayOfYear,
+    isAdmin,
+    setIsAdmin,
+    token,
+    incType,
+    setIncType,
+    dataReportH,
+    setDataReportH,
+    saveReportH,
+    aproveReportH,
+    activeTabReportByH,
+    setActiveTabReportByH,
+    activeTabReportInsp,
+    setActiveTabReportInsp,
+    setNumFilasReportByH,
+    divsSamplingTable,
+    setDivsSamplingTable,
+    handleCheckBox,
+    divsSamplingTableInsp,
+    setDivsSamplingTableInsp,
+    onlyNumbers, // Regex solo numeros
+  };
   return (
-    <MainContext.Provider
-      value={{
-        dataSes,
-        dataT,
-        data,
-        setData,
-        data2,
-        setData2,
-        saveReport,
-        aproveReport,
-        dataToSave,
-        setDataToSave,
-        dataTS,
-        dataTS2,
-        reportData,
-        confirm,
-        setConfirm,
-        handleDel,
-        handleStatus,
-        idDelete,
-        setIdDelete,
-        handleConfirm,
-        showModalU,
-        setShowModalU,
-        updateId,
-        setUpdateId,
-        showModalE,
-        setShowModalE,
-        showModalS,
-        setShowModalS,
-        showModalC,
-        setShowModalC,
-        delType,
-        setDelType,
-        numFilas,
-        setNumFilas,
-        numFilasReportByH,
-        numColumnas,
-        setNumColumnas,
-        titulosColumnas,
-        setTitulosColumnas,
-        titulosColumnas2,
-        setTitulosColumnas2,
-        agregarColumna,
-        agregarColumna2,
-        agregarFila,
-        eliminarColumna,
-        eliminarFila,
-        divs,
-        setDivs,
-        total1,
-        setTotal1,
-        total2,
-        setTotal2,
-        total3,
-        setTotal3,
-        total4,
-        setTotal4,
-        total5,
-        setTotal5,
-        total6,
-        setTotal6,
-        total7,
-        setTotal7,
-        total8,
-        setTotal8,
-        total9,
-        setTotal9,
-        total10,
-        setTotal10,
-        total11,
-        setTotal11,
-        total12,
-        setTotal12,
-        total13,
-        setTotal13,
-        total14,
-        setTotal14,
-        dbColumns,
-        setDbColumns,
-        container1Ref,
-        container2Ref,
-        handleScroll1,
-        handleScroll2,
-        sort,
-        setSort,
-        toast,
-        isLoading,
-        setIsLoading,
-        formattedDate,
-        getNextLetter,
-        dataUsers,
-        setDataUsers,
-        dataEmployees,
-        setDataEmployees,
-        dataClients,
-        setDataClients,
-        dataSuppliers,
-        setDataSuppliers,
-        serverUrl,
-        tableName,
-        setTableName,
-        dataCDb,
-        setDataCDb,
-        btnCloseRef,
-        dbChanges,
-        setDbChanges,
-        showModalClient,
-        setShowModalClient,
-        showModalEmployee,
-        setShowModalEmployee,
-        showModalUser,
-        setShowModalUser,
-        showModalSupplier,
-        setShowModalSupplier,
-        suppliers,
-        setSuppliers,
-        eliminarColumna2,
-        deletingInc,
-        setDeletingInc,
-        activeTab,
-        setActiveTab,
-        checkList,
-        setCheckList,
-        uniqueClients,
-        setUniqueClients,
-        clientsToReport,
-        setClientsToReport,
-        showModalAuth,
-        setShowModalAuth,
-        authClientsT,
-        setAuthClientsT,
-        setPosition,
-        showCharts,
-        setShowCharts,
-        showDtable,
-        setShowDtable,
-        rDetailsData,
-        setRDetailsData,
-        partNumber,
-        setPartNumber,
-        showDEtable,
-        setShowDEtable,
-        tableFilters,
-        setTableFilters,
-        tableFilters2,
-        setTableFilters2,
-        LANG,
-        langu,
-        setLangu,
-        showConfig,
-        setShowConfig,
-        firstDayOfYear,
-        isAdmin,
-        setIsAdmin,
-        token,
-        incType,
-        setIncType,
-        dataReportH,
-        setDataReportH,
-        saveReportH,
-        aproveReportH,
-        activeTabReportByH,
-        setActiveTabReportByH,
-        activeTabReportInsp,
-        setActiveTabReportInsp,
-        setNumFilasReportByH,
-        divsSamplingTable,
-        setDivsSamplingTable,
-        handleCheckBox,
-        divsSamplingTableInsp,
-        setDivsSamplingTableInsp,
-      }}
-    >
+    <MainContext.Provider value={PROPS}>
       <Toaster richColors position={position} closeButton />
-
       <SpanishApp>{children}</SpanishApp>
     </MainContext.Provider>
   );

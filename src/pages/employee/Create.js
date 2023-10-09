@@ -75,13 +75,14 @@ const Create = () => {
     setActiveTabReportInsp,
     divsSamplingTableInsp,
     setDivsSamplingTableInsp,
+    onlyNumbers
   } = useContext(MainContext);
   const [producedBy, setProducedBy] = useState("");
   const [checkedBy, setCheckedBy] = useState("");
   const [authorizedBy, setAuthorizedBy] = useState("");
   const dataSes = localStorage.getItem("sesType");
   const [totalHours, setTotalHours] = useState(0);
-  const onlyNumbers = /^\d+$/;
+  
   const last_report_id = localStorage.getItem("last_report_id");
   useEffect(() => {
     setData({

@@ -641,7 +641,7 @@ export const CreateForm = styled.div`
     font-weight: 600;
     color: #1976d2;
   }
-  .item-from-container {
+  .item-from-container, .item-form-container {
     width: 100%;
     display: flex;
     flex-direction: column;

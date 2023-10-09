@@ -59,7 +59,6 @@ const View = () => {
     setTotal13,
     total14,
     setTotal14,
-    dataToSave,
     setDataToSave,
     container1Ref,
     container2Ref,
@@ -82,15 +81,13 @@ const View = () => {
     activeTabReportInsp,
     divsSamplingTableInsp,
     setDivsSamplingTableInsp,
-    setActiveTabReportInsp,
     setNumFilas,
-    langu
+    onlyNumbers
   } = useContext(MainContext);
   const {lang} = useContext(LanguageContext)
   
   const params = useParams();
   const idReport = params.id;
-  //const [numFilas, setNumFilas] = useState(0);
   const eData =
     data.length === 0
       ? JSON.parse(dataTS).filter(
@@ -870,7 +867,6 @@ const View = () => {
     const kLenght = keys.length + 1;
     setNumColumnas(kLenght);
 
-      console.log(lang)
     setTitulosColumnas(keys);
     setDataCDb({
       plant: dataC.plant,
@@ -889,13 +885,7 @@ const View = () => {
   const [dumpValue, setDumpValue] = useState("");
   const inputRef = useRef();
   const dataListRef = useRef();
-  const getSelectedOptionLocation = () => {
-    for (let i = 0; i < dataListRef.current.options.length; i++) {
-      if (dataListRef.current.options[i].value === inputRef.current.value) {
-        return dataListRef.current.options[i];
-      }
-    }
-  };
+
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -921,6 +911,8 @@ const View = () => {
   ];
   const [totalHours, setTotalHours] = useState(0);
 
+
+
   useEffect(() => {
     if (Object.keys(dataCDb).length > 0) {
       const totalInsp = Number(total1);
@@ -941,6 +933,34 @@ const View = () => {
   const supplierValue = suppliers?.find(
     (supplier) => Number(supplier?.id) === Number(dataC?.id_supplier)
   );
+
+  useEffect(() => {
+    if (Object.keys(dataCDb).length > 0) {
+      const totalInsp = Number(total1);
+      const rate = dataCDb.rate;
+      
+      if (onlyNumbers.test(rate)) {
+        const totalHours = Number(totalInsp) / Number(rate);
+        setTotalHours(totalHours);
+      } else {
+        setTotalHours(0)
+      }
+    }
+  }, [total1, dataCDb]);
+  useEffect(() => {
+    if (totalHours > 0) {
+      setDataCDb({
+        ...dataCDb,
+        ["worked_hours"]: totalHours,
+      });
+    }
+    if(totalHours === 0){
+      setDataCDb({
+        ...dataCDb,
+        ["worked_hours"]: '',
+      });
+    }
+  }, [totalHours]);
   const tabContent = {
     1: {
       component: (
@@ -1065,9 +1085,16 @@ const View = () => {
                     width: "95%",
                   }}
                   defaultValue={dataC.report_number}
+                  // value={
+                  //   totalHours > 0 && typeof totalHours === "number"
+                  //     ? totalHours
+                  //     : dataCDb.worked_hours
+                  // }
                   value={
-                    totalHours > 0 && typeof totalHours === "number"
-                      ? totalHours
+                    totalHours > 0 &&
+                    typeof totalHours === "number" &&
+                    onlyNumbers.test(dataCDb.rate)
+                      ? totalHours.toFixed(2)
                       : dataCDb.worked_hours
                   }
                   onChange={(e) =>

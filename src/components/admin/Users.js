@@ -15,6 +15,7 @@ import { MainContext } from "../../context/MainContext";
 import StatusBtn from "../StatusBtn";
 import TaLoader from "./TaLoader";
 import NoInfo from "../helpers/NoInfo";
+import ComponentPagination from "../ComponentPagination";
 
 registerLocale("es", es);
 function UsersTable({ data }) {
@@ -269,44 +270,16 @@ function UsersTable({ data }) {
               </tbody>
             </table>
           </div>
-          <div className="pagination">
-            <span>
-              Página {currentPage} de {totalPages}
-            </span>
-
-            <button disabled={currentPage === 1} onClick={handleFirstPageClick}>
-              <i className="fa-solid fa-backward-step"></i>
-            </button>
-            <button
-              disabled={currentPage === 1}
-              onClick={() => handlePageChange(currentPage - 1)}
-            >
-              <i className="fa-solid fa-chevron-left"></i>
-            </button>
-
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => handlePageChange(currentPage + 1)}
-            >
-              <i className="fa-solid fa-chevron-right"></i>
-            </button>
-            <button
-              disabled={currentPage === totalPages}
-              onClick={handleLastPageClick}
-            >
-              <i className="fa-solid fa-forward-step"></i>
-            </button>
-
-            <select
-              value={rowsPerPage}
-              onChange={(event) => setRowsPerPage(parseInt(event.target.value))}
-            >
-              <option value="20">20 filas por página</option>
-              <option value="50">50 filas por página</option>
-              <option value="100">100 filas por página</option>
-              <option value={`${data.length}`}>todas filas</option>
-            </select>
-          </div>
+          <ComponentPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            handleFirstPageClick={handleFirstPageClick}
+            handlePageChange={handlePageChange}
+            handleLastPageClick={handleLastPageClick}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+            data={data.length}
+          />
         </div>
       </Table>
     </>

@@ -30,7 +30,6 @@ const Settings = () => {
       <div className="my-account-cont">
         <div className="my-acc-title">
           <h2>{t('settings')}</h2>
-          aa
         </div>
         <div className="my-acc-input">
           <label>{t('language')}</label>

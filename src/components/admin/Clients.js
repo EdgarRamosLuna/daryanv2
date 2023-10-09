@@ -3,31 +3,24 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from "react";
-import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
+import { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import Loader from "../Loader";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import StatusBtn from "../StatusBtn";
-import TaLoader from "./TaLoader";
+import ComponentPagination from "../ComponentPagination";
+import { useTranslation } from "react-i18next";
 
 registerLocale("es", es);
 function ClientsTable({ data }) {
-  // console.log(data);
-  const {
-    handleDel,
-    setShowModalC,
-    updateId,
-    setUpdateId,
-    isLoading,
-    setIsLoading,
-  } = useContext(MainContext);
+  const { handleDel, setShowModalC, setUpdateId, isLoading, setIsLoading } =
+    useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
-  const [lastnameFilter, setLastnameFilter] = useState("");
+  const { t } = useTranslation();
   const today = new Date();
   const sixDaysLater = new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000);
   const sixDaysBefore = new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000);
@@ -83,25 +76,12 @@ function ClientsTable({ data }) {
       const name = item.fullname.toLowerCase();
       //const user = item.username.toLowerCase();
       const email = item.email.toLowerCase();
-      const id = item.id.toLowerCase();
       const fullName = `${name} ${email}`; // combinamos name y id en una sola variable
-      const date = new Date(item.date).getTime();
 
       if (nameFilter && fullName.indexOf(nameFilter.toLowerCase()) === -1) {
         // buscamos dentro de fullName
         return false;
       }
-
-      // if (
-      //   (dateStart && date < new Date(dateStart).getTime() && dateEnd) ||
-      //   date > new Date(dateEnd).getTime()
-      // ) {
-      //   return false;
-      // }
-      /*
-      if () {
-        return false;
-      }*/
 
       return true;
     });
@@ -134,61 +114,6 @@ function ClientsTable({ data }) {
     </div>
   ));
   CustomInputD.displayName = "CustomInputD";
-  const [checkList, setCheckList] = useState([]);
-  const handleCheckBox = (e, type, id) => {
-    console.log(type, id);
-    const allCheckBox = document.querySelectorAll('input[type="checkbox"]');
-    const idM = getPaginatedData().map((data) => data.id);
-    const classCheckbox = e.target.classList;
-    if (type === "all") {
-      if (classCheckbox.length > 1) {
-        const clsName = e.target.classList[1];
-        if (clsName === "ucAll") {
-          setCheckList([]);
-          classCheckbox.remove("ucAll");
-
-          allCheckBox.forEach((checkbox) => {
-            checkbox.checked = false;
-          });
-        } else {
-          //console.log(id);
-          setCheckList(idM);
-          allCheckBox.forEach((checkbox) => {
-            checkbox.checked = true;
-          });
-          classCheckbox.add("ucAll");
-        }
-      } else {
-        //console.log(idM);
-        setCheckList(idM);
-        allCheckBox.forEach((checkbox, index) => {
-          checkbox.checked = true;
-          if (index !== 0) {
-            checkbox.classList.add("ucSingle");
-          }
-        });
-        classCheckbox.add("ucAll");
-      }
-    }
-    if (type === "single") {
-      if (classCheckbox.length > 1) {
-        const clsName = e.target.classList[1];
-        if (clsName === "ucSingle") {
-          setCheckList((prev) => prev.filter((data) => data !== id));
-
-          classCheckbox.remove("ucSingle");
-        } else {
-          setCheckList((prev) => [...prev, id]);
-          classCheckbox.add("ucSingle");
-        }
-      } else {
-        setCheckList((prev) => [...prev, id]);
-        classCheckbox.add("ucSingle");
-      }
-    }
-    //console.log("Check");
-  };
-  //console.log(checkList);
 
   const updateUser = (id_user) => {
     setUpdateId(id_user);
@@ -202,7 +127,9 @@ function ClientsTable({ data }) {
             <form autoComplete="off">
               <div className="filter-container">
                 <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar cliente:</label>
+                  <label htmlFor="name-filter">
+                    {t("clients_section.searchClient")}
+                  </label>
                   <div className="filter-item-input">
                     <input
                       type="text"
@@ -219,10 +146,10 @@ function ClientsTable({ data }) {
             <table>
               <thead>
                 <tr>
-                  <th>Usuario</th>
-                  <th>Correo</th>
-                  <th>Status</th>
-                  <th>Acciones</th>
+                  <th>{t("clients_section.username")}</th>
+                  <th>{t("clients_section.email")}</th>
+                  <th>{t("clients_section.status")}</th>
+                  <th>{t("clients_section.actions")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -233,8 +160,12 @@ function ClientsTable({ data }) {
                 </div>
                 {getPaginatedData().length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="table-center" style={{opacity:`${isLoading ? 0 : 1}`}}>
-                      <h1>No hay informacion en la base de datos</h1>
+                    <td
+                      colSpan="4"
+                      className="table-center"
+                      style={{ opacity: `${isLoading ? 0 : 1}` }}
+                    >
+                      <h1>{t("reports.no_data_in_database")}</h1>
                     </td>
                   </tr>
                 ) : (
@@ -247,8 +178,11 @@ function ClientsTable({ data }) {
                     >
                       <td className="table-center">{item.fullname}</td>
                       <td className="table-center">{item.email}</td>
-                      <td className="table-center" style={{width:120, padding:'0 25px'}}>
-                        <StatusBtn 
+                      <td
+                        className="table-center"
+                        style={{ width: 120, padding: "0 25px" }}
+                      >
+                        <StatusBtn
                           status={Number(item.status)}
                           id={item.id}
                           table="clients"
@@ -272,44 +206,16 @@ function ClientsTable({ data }) {
               </tbody>
             </table>
           </div>
-          <div className="pagination">
-            <span>
-              Página {currentPage} de {totalPages}
-            </span>
-
-            <button disabled={currentPage === 1} onClick={handleFirstPageClick}>
-              <i className="fa-solid fa-backward-step"></i>
-            </button>
-            <button
-              disabled={currentPage === 1}
-              onClick={() => handlePageChange(currentPage - 1)}
-            >
-              <i className="fa-solid fa-chevron-left"></i>
-            </button>
-
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => handlePageChange(currentPage + 1)}
-            >
-              <i className="fa-solid fa-chevron-right"></i>
-            </button>
-            <button
-              disabled={currentPage === totalPages}
-              onClick={handleLastPageClick}
-            >
-              <i className="fa-solid fa-forward-step"></i>
-            </button>
-
-            <select
-              value={rowsPerPage}
-              onChange={(event) => setRowsPerPage(parseInt(event.target.value))}
-            >
-              <option value="20">20 filas por página</option>
-              <option value="50">50 filas por página</option>
-              <option value="100">100 filas por página</option>
-              <option value={`${data.length}`}>todas filas</option>
-            </select>
-          </div>
+          <ComponentPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            handleFirstPageClick={handleFirstPageClick}
+            handlePageChange={handlePageChange}
+            handleLastPageClick={handleLastPageClick}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+            data={data.length}
+          />
         </div>
       </Table>
     </>

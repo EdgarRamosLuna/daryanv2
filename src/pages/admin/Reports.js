@@ -1,9 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import ReportsTable from "../../components/admin/Reports";
-import ReportsTable2 from "../../components/other_user/Reports";
 import { MainContext } from "../../context/MainContext";
 import { getReportsByH, getReportsIns } from "../../api/daryan.api";
-import ReportsByH from "../../components/admin/ReportsByH";
 
 const Reports = () => {
   const { data, setData, isAdmin, activeTab, toast, data2, setData2 } =
@@ -55,6 +53,8 @@ const Reports = () => {
       request();
     }
   }, [isAdmin, activeTab]);
+
+  
 
   return (
     <div className="report-cointainer">

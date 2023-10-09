@@ -852,19 +852,22 @@ function ReportsTable({ data, dataReportByH }) {
     return obj;
   }, {});
 
+
+  //Añade un cliente a la lista para autorizar
   const addClientToList = (e) => {
     const id = e.target.value;
-    setSelectedClient(id);
-
+      
     // Look up the client name by id
-    const clientName = clientsById[id].fullname;
-
-    setClientsToReport((prev) => {
-      if (!prev.some((client) => client.id === id) && id !== "0") {
-        return [...prev, { id, clientName }];
-      }
-      return prev;
-    });
+    const clientName = clientsById[id]?.fullname ? clientsById[id].fullname : '';
+    setSelectedClient(id);
+    if(clientName !== ''){      
+      setClientsToReport((prev) => {
+        if (!prev.some((client) => (client.id === id) && (Number(id) !== 0))) {        
+          return [...prev, { id, clientName }];
+        }
+        return prev;
+      });
+    }
   };
 
 
