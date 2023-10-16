@@ -1,9 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import ReportsTable from "../../components/employee/Reports";
-import ReportsTable2 from "../../components/other_user/Reports";
 import { MainContext } from "../../context/MainContext";
 import { getEmployReportsByH, getEmployReports } from "../../api/daryan.api";
-import ReportsByH from "../../components/admin/ReportsByH";
 
 const Reports = () => {
   const {
@@ -29,7 +27,6 @@ const Reports = () => {
             setData(reportes);
           })
           .catch((err) => {
-            //console.log(err);
             toast.error(err, {
               duration: 5000,
             });
@@ -48,7 +45,6 @@ const Reports = () => {
             setData2(reportes);
           })
           .catch((err) => {
-            //console.log(err);
             toast.error(err, {
               duration: 5000,
             });
@@ -67,43 +63,3 @@ const Reports = () => {
 
 export default Reports;
 
-
-
-// if(activeTab === 1){
-//   const request = async () => {
-//     await getEmployReports(token)
-//       .then((res) => {
-//         const datares = res.data;
-//         const reportes = Object.values(datares);
-//         console.log(reportes);
-//         localStorage.setItem("dataTable", JSON.stringify(reportes));
-//         setData(reportes);
-//       })
-//       .catch((err) => {
-//         //console.log(err);
-//         toast.error(err, {
-//           duration: 5000,
-//         });
-//       });
-//   };
-//   request();
-// }
-// if(activeTab === 2){
-//   const request = async () => {
-//     await getEmployReportsByH(token)
-//       .then((res) => {
-//         const datares = res.data;
-//         const reportes = Object.values(datares);
-//         console.log(reportes);
-//         localStorage.setItem("dataTable2", JSON.stringify(reportes));
-//         setData2(reportes);
-//       })
-//       .catch((err) => {
-//         //console.log(err);
-//         toast.error(err, {
-//           duration: 5000,
-//         });
-//       });
-//   };
-//   request();
-// }

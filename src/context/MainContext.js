@@ -79,19 +79,6 @@ export const MainContextProvider = ({ children }) => {
       }
     }
   };
-  /* const data = [
-    {
-      id: 1,
-      date: "14/02/2023 11:29 a. m.",
-    },
-    {
-      id: 2,
-      date: "14/02/2023 10:50 a. m.",
-    },
-  ];*/
-  //localStorage.setItem('dataTable', JSON.stringify(data));
-  // const dataTS = localStorage.getItem("dataTable");
-  //JSON.parse(dataTS)
 
   const [idDelete, setIdDelete] = useState("");
   const [tableName, setTableName] = useState("");
@@ -105,7 +92,7 @@ export const MainContextProvider = ({ children }) => {
   const dataTS2 = localStorage.getItem("dataTable2");
   const [activeTabReportByH, setActiveTabReportByH] = useState(1);
   const [activeTabReportInsp, setActiveTabReportInsp] = useState(1);
-  //
+
   const [reportData, setReportData] = useState(
     dataTS === "" || dataTS === null ? [] : JSON.parse(dataTS)
   );
@@ -175,8 +162,7 @@ export const MainContextProvider = ({ children }) => {
   const navigate = useNavigate();
   const token = localStorage.getItem("t");
   const saveReport = async (e) => {
-    const dT = dataToSave[0];
-    //
+  const dT = dataToSave[0];
 
     if (
       dT.data.length < 9 ||
@@ -382,8 +368,7 @@ export const MainContextProvider = ({ children }) => {
             toast.success(datares.message, {
               duration: 4000,
             });
-            //setDataClients((data) => data.filter((data) => data.id !== `${id}`));
-            //Update status from dataClient by id
+
             const newData = dataClients.map((item) => {
               if (item.id === id) {
                 item.status = status === 1 ? 0 : 1;
@@ -407,8 +392,7 @@ export const MainContextProvider = ({ children }) => {
             toast.success(datares.message, {
               duration: 4000,
             });
-            //setDataClients((data) => data.filter((data) => data.id !== `${id}`));
-            //Update status from dataClient by id
+
             const newData = authClientsT.map((item) => {
               if (Number(item.id) === Number(id)) {
                 item.status = status === 1 ? 0 : 1;
@@ -495,14 +479,12 @@ export const MainContextProvider = ({ children }) => {
     setConfirm(false);
   };
   const location = useLocation();
-  const {pathname} = location;
-  
+  const { pathname } = location;
+
   useEffect(() => {
-    
     setActiveTab(1);
-    
-  }, [pathname])
-  
+  }, [pathname]);
+
   const [numColumnas, setNumColumnas] = useState(15);
   const [dbColumns, setDbColumns] = useState(["A", "B", "C", "D"]);
   const ABECEDARIO = [
@@ -601,8 +583,7 @@ export const MainContextProvider = ({ children }) => {
       });
       setNumColumnas((prev) => prev - 1);
     } else {
-      // The user clicked Cancel.
-      // Do something else.
+
       return false;
     }
   };
@@ -625,9 +606,7 @@ export const MainContextProvider = ({ children }) => {
       //
       const newArr = [...prevTitulos, nextLetter];
       const arrayCopy = newArr.slice();
-      // const penultimate = arrayCopy.slice(-2, -1)[0];
-      // arrayCopy.splice(-2, 1);
-      // arrayCopy.push(penultimate);
+
       const tableWrapper = document.querySelectorAll(".scrollX");
 
       tableWrapper.forEach((element) => {
@@ -931,6 +910,8 @@ export const MainContextProvider = ({ children }) => {
   const [incType, setIncType] = useState([]);
 
   const onlyNumbers = /^\d+$/;
+  const [openModalIncident, setOpenModalIncident] = useState(false);
+  const [reportIncidents, setReportIncidents] = useState([]);  
   const PROPS = {
     dataSes,
     dataT,
@@ -1103,6 +1084,9 @@ export const MainContextProvider = ({ children }) => {
     divsSamplingTableInsp,
     setDivsSamplingTableInsp,
     onlyNumbers, // Regex solo numeros
+    openModalIncident, 
+    setOpenModalIncident,
+    reportIncidents, setReportIncidents
   };
   return (
     <MainContext.Provider value={PROPS}>

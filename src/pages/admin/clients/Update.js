@@ -1,9 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import { CreateForm } from "../../../styles/Styles";
-import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { updateClient, getSuppliers, getUser } from "../../../api/daryan.api";
+import { updateClient } from "../../../api/daryan.api";
 import { MainContext } from "../../../context/MainContext";
 import { MenuItem, Select } from "@mui/material";
 import { useTranslation } from "react-i18next";
@@ -123,32 +122,10 @@ const UpdateClient = () => {
             id="name"
             name="name"
             {...register("name", { required: true })}
-
-            //   required
-            //   onFocus={(e) => e.target.select()}
-            // //  value={dataToSave.name}
           />
           {errors.name && <span className="error">Informacion requerida</span>}
         </div>
-        {/* <div className="item-from-container">
-          <label htmlFor="user">Usuario</label>
-          <input
-            type="text"
-            id="user"
-            name="user"
-            {...register("user", { required: true })}
-            // required
-            // onFocus={(e) => e.target.select()}
-            // value={dataToSave.user}
-            // onChange={(e) =>
-            //   setDataToSave({
-            //     ...dataToSave,
-            //     [e.target.dataset.name || e.target.name]: e.target.value,
-            //   })
-            // }
-          />
-          {errors.user && <span className="error">Informacion requerida</span>}
-        </div> */}
+
         <div className="item-from-container">
           <label htmlFor="email">Correo</label>
           <input
@@ -158,10 +135,7 @@ const UpdateClient = () => {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                 message: "Ingresa un correo valido",
               },
-              // minLength: {
-              //   value: 11,
-              //   message: "This input must exceed 10 characters",
-              // },
+
             })}
           />
           {errors.email && (
@@ -171,15 +145,7 @@ const UpdateClient = () => {
         <div className="item-from-container">
           <label htmlFor="name">Reporte por hora</label>
           <div className="checkbox-contain">
-            {/* <div className="checkbox-item">
-              <input
-                type="checkbox"
-                id="insp"
-                name="insp"
-                {...register("insp", { required: false })}
-              />
-              <label htmlFor="insp">Inspeccion</label>
-            </div> */}
+     
             <div className="checkbox-item">
               <input
                 type="checkbox"
@@ -187,11 +153,9 @@ const UpdateClient = () => {
                 name="hour"
                 {...register("hour", { required: false })}
               />
-              {/* <label htmlFor="hour">Por Hora</label> */}
             </div>
           </div>
         </div>
-        {/* {errors.insp && errors.hour && <span className="error">Debes seleccionar una opción para continuar</span>} */}
         <div className="item-from-container">
           <label htmlFor="password">Contraseña</label>
           <input
@@ -199,9 +163,7 @@ const UpdateClient = () => {
             id="password"
             name="password"
             {...register("password", { required: false })}
-            // required
-            // onFocus={(e) => e.target.select()}
-            // value={dataToSave.password}
+   
           />
           {errors.password && (
             <span className="error">Informacion requerida</span>
@@ -212,11 +174,7 @@ const UpdateClient = () => {
           </button>
         </div>
       </form>
-      {/*  <button type="submit">Create Account</button>
 
-        <p>
-          Already have an account? <a href="#">Sign in</a>
-  </p>*/}
     </CreateForm>
   );
 };

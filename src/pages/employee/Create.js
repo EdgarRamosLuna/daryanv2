@@ -25,6 +25,9 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import SelectCustom from "./Select";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
+import AutocompleteInput from "../../components/inputs/AutocompleteInput";
+import useReports from "../../hooks/useReports";
+import SelectIncidents from "./SelectIncidents";
 
 const Create = () => {
   const { t } = useTranslation();
@@ -75,20 +78,31 @@ const Create = () => {
     setActiveTabReportInsp,
     divsSamplingTableInsp,
     setDivsSamplingTableInsp,
-    onlyNumbers
+    onlyNumbers,
   } = useContext(MainContext);
+
+  const { reportIncidents } = useReports();
+  useEffect(() => {
+    console.log(reportIncidents);
+    
+  
+    return () => {
+      
+    }
+  }, [reportIncidents])
+  
   const [producedBy, setProducedBy] = useState("");
   const [checkedBy, setCheckedBy] = useState("");
   const [authorizedBy, setAuthorizedBy] = useState("");
   const dataSes = localStorage.getItem("sesType");
   const [totalHours, setTotalHours] = useState(0);
-  
+
   const last_report_id = localStorage.getItem("last_report_id");
   useEffect(() => {
     setData({
       ...data,
       ["report_number"]: Number(last_report_id) + 1,
-    });  
+    });
   }, [last_report_id]);
 
   useEffect(() => {
@@ -159,7 +173,6 @@ const Create = () => {
     }
     return filas;
   });
-
   const handleUpdate = (hanldeId = 1, divId, inputIndex, newValue) => {
     if (hanldeId === 1) {
       setReportFooter((prevDivs) => {
@@ -369,7 +382,26 @@ const Create = () => {
                 />
               </div>
               <div className="form-container">
-                <Autocomplete
+                <AutocompleteInput
+                  id="combo-box-demo"
+                  name="id_supplier"
+                  options={suppliers}
+                  value={
+                    suppliers.find(
+                      (supplier) => supplier.id === data.id_supplier
+                    ) || null
+                  }
+                  label={t("table.supplier")}
+                  getOptionLabel={(option) => option.fullname}
+                  onChange={(e, newValue) =>
+                    setData({
+                      ...data,
+                      id_supplier: newValue ? newValue.id : null,
+                    })
+                  }
+                />
+
+                {/* <Autocomplete
                   disablePortal
                   id="combo-box-demo"
                   name="id_supplier"
@@ -395,7 +427,7 @@ const Create = () => {
                       id_supplier: newValue ? newValue.id : null,
                     })
                   }
-                />
+                /> */}
               </div>
               <div
                 className="form-containers"
@@ -1230,7 +1262,40 @@ const Create = () => {
                             <div key={i + "incidentes"}>
                               {fila.values.map((valor, i) => (
                                 <div key={i + "incidente"}>
-                                  <input
+                                   <select value={valor} onChange={(e) => handleUpdate(3, fila.id, i, e.target.value)}>
+                                    <option value="0">Incidente</option>
+                                    {          
+                                      reportIncidents.map((item, i) => {
+                                        return (
+                                          <option value={item.id_incident} key={item.value+i}>
+                                            {item.code} - {item.incident}
+                                          </option>
+                                        );
+                                      })
+                                    }
+                                  </select>    
+                                  {/* <AutocompleteInput
+                                    id="combo-box-demo"
+                                    name="id_supplier"
+                                    options={reportIncidents}
+                                    value={
+                                      reportIncidents.find(
+                                        (incident) =>
+                                          incident.id_incident === valor
+                                      ) || null
+                                    }
+                                    label="Supplier"
+                                    getOptionLabel={(option) => option.incident}
+                                    onChange={
+                                      (e, newValue) =>
+                                        handleUpdate(3, fila.id, i, newValue)
+                                      // setData({
+                                      //   ...data,
+                                      //   id_incident: newValue ? newValue.id_incident : null,
+                                      // })
+                                    }
+                                  /> */}
+                                  {/* <input
                                     value={valor}
                                     type="text"
                                     onChange={(e) =>
@@ -1241,7 +1306,7 @@ const Create = () => {
                                         e.target.value
                                       )
                                     }
-                                  />
+                                  /> */}
                                   <br />
                                 </div>
                               ))}

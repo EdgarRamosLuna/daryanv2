@@ -30,10 +30,6 @@ import {
   deleteUser,
 } from "../api/daryan.api";
 import AuthUsers from "./admin/AuthUsers";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChartSimple, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { faEye } from "@fortawesome/free-regular-svg-icons";
-import { Table } from "../styles/Styles";
 import TotalByPartNumber from "./admin/TotalByPartNumber";
 import TotalByPartNumberClient from "./client/TotalByPartNumber";
 import ReportDetails from "./admin/ReportDetails";
@@ -44,6 +40,11 @@ import SendIcon from "@mui/icons-material/Send";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurnedInOutlined";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
+import ModalMui from "./modal/ModalMui";
+import InfoIcon from "@mui/icons-material/Info";
+import IncidentForm from "./employee/Incident";
+import useReports from "../hooks/useReports";
+
 let val;
 if (typeof window !== "undefined") {
   // This code will only be executed in the browser
@@ -337,10 +338,18 @@ export default function SubHeader() {
   const getItemName = () => {
     return t(`ui_dynamic_messages.items.${tableName}`);
   };
-
+  
+  const {openModalIncident, setOpenModalIncident} = useReports();
   const itemName = getItemName();
   return (
     <>
+      <ModalMui
+        open={openModalIncident}
+        onClose={() => setOpenModalIncident(false)}
+        title={t("incidents.create_incident")}
+      >
+        <IncidentForm />
+      </ModalMui>
       {showModalAuth === true && (
         <Modal callback={handleClose}>
           <AuthUsers data={authClientsT} deleteAU={deleteAU} />
@@ -406,8 +415,7 @@ export default function SubHeader() {
         <Modal callback={handleClose}>
           <div className="delete-confirm">
             <div className="delete-confirm-label">
-            {t("ui_dynamic_messages.confirmDeletion", { item: itemName })}
-
+              {t("ui_dynamic_messages.confirmDeletion", { item: itemName })}
             </div>
             <div className="delete-confirm-btns">
               <ButtonOutlined
@@ -415,9 +423,8 @@ export default function SubHeader() {
                 onClick={handleClose}
                 className="btn btn-danger"
                 sx={{
-                  background:'red'
+                  background: "red",
                 }}
-                
               >
                 {t("cancel")}
               </ButtonOutlined>
@@ -480,7 +487,7 @@ export default function SubHeader() {
           )}
           {pathname === "/client/reports" && (
             <>
-                {activeTab === 3 && (
+              {activeTab === 3 && (
                 <div className="btn-charts">
                   <ButtonOutlined
                     icon={<BarChartIcon />}
@@ -509,6 +516,12 @@ export default function SubHeader() {
                   onClick={(e) => setActiveTabReportInsp(2)}
                 >
                   {t("button_texts.samplingTable")}
+                </ButtonOutlined>
+                <ButtonOutlined
+                  icon={<InfoIcon />}
+                  onClick={(e) => setOpenModalIncident(true)}
+                >
+                  {t("button_texts.createIncident")}
                 </ButtonOutlined>
               </>
             )}

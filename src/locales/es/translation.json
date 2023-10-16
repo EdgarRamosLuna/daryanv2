@@ -40,10 +40,12 @@
       "suppliers": "Proveedores",
       "myAccount": "Configuración",
       "logout": "Salir",
-      "goBack": "Regresar"
+      "goBack": "Regresar",
+      "createIncident":"Crear incidente"
     },
     "settings": "Configuración",
     "save": "Guardar",
+    "close": "Cerrar",
     "languageUpdated": "Idioma actualizado",
     "spanish": "Español",
     "english": "Inglés",
@@ -176,6 +178,12 @@
         "requiredInfo": "Información requerida",
         "validEmail": "Ingresa un correo válido",
         "save": "Guardar"
+    },
+    "incidents":{
+      "code_incident":"Código",
+      "name_incident":"Nombre de la incidencia",
+      "create_incident":"Crear incidencia",
+      "requiredInfo": "Información requerida"
     }
   }
   

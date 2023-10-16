@@ -40,10 +40,12 @@
     "suppliers": "Suppliers",
     "myAccount": "Settings",
     "logout": "Logout",
-    "goBack": "Go Back"
+    "goBack": "Go Back",
+    "createIncident":"Create incident"
   },
   "settings": "Settings",
   "save": "Save",
+  "close": "Close",
   "languageUpdated": "Language Updated",
   "spanish": "Spanish",
   "english": "English",
@@ -176,5 +178,11 @@
     "requiredInfo": "Required information",
     "validEmail": "Enter a valid email",
     "save": "Save"
+  },
+  "incidents":{
+    "code_incident":"Code",
+    "name_incident":"Incident name",
+    "create_incident":"Create incident",
+    "requiredInfo": "Required information"
   }
 }

@@ -6,6 +6,13 @@ const serverApi = axios.create({
 });
 //User API
 export const getUser = (id) => serverApi.post("/get_user/", id);
+export const createIncident = (data, token) =>
+serverApi.post("/create_incident/", data, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+ //serverApi.post("/create_incident/", data);
 export const createUser = (data) => serverApi.post("/create_user/", data);
 export const updateUser = (data) => serverApi.post("/update_user/", data);
 export const deleteUser = (id) =>
@@ -213,6 +220,12 @@ export const getReportsIns = (token) =>
   });
 export const getReportsByH = (token) =>
   serverApi.get("/get_rh", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+export const getReportIncidents= (token) =>
+  serverApi.get("/getReportIncidents", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
