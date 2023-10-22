@@ -9,7 +9,7 @@ import { MainContext } from "../../../context/MainContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { StyledForm, Table } from "../../../styles/Styles";
 import SecondTableCreate from "./SecondTableCreate";
-import DatePickerInputU from "../../../components/DateInputUpdate";
+
 import { deleteReportIn, deleteReportItem } from "../../../api/daryan.api";
 import Select from "../../employee/Select";
 import {
@@ -24,6 +24,7 @@ import {
 import InputDate from "../../../components/inputs/InputDate";
 import Create3 from "../../employee/Create3";
 import { useTranslation } from "react-i18next";
+import { LanguageContext } from "../../../context/LanguageContext";
 
 const View = () => {
   const { t } = useTranslation();
@@ -58,7 +59,6 @@ const View = () => {
     setTotal13,
     total14,
     setTotal14,
-    dataToSave,
     setDataToSave,
     container1Ref,
     container2Ref,
@@ -81,21 +81,20 @@ const View = () => {
     activeTabReportInsp,
     divsSamplingTableInsp,
     setDivsSamplingTableInsp,
-    setActiveTabReportInsp,
-    setNumFilas
+    setNumFilas,
+    onlyNumbers
   } = useContext(MainContext);
-
-
+  const {lang} = useContext(LanguageContext)
+  
   const params = useParams();
   const idReport = params.id;
-  //const [numFilas, setNumFilas] = useState(0);
   const eData =
     data.length === 0
       ? JSON.parse(dataTS).filter(
           (data) => Number(data.id) === Number(idReport)
         )[0]
       : data.filter((data) => Number(data.id) === Number(idReport))[0];
-  
+
   const [dataC, setDataC] = useState(eData);
   const [producedBy, setProducedBy] = useState(eData.made_by);
   const [checkedBy, setCheckedBy] = useState(eData.checked_by);
@@ -106,33 +105,25 @@ const View = () => {
   const [numColumnas2, setNumColumnas2] = useState(newLength);
 
   useEffect(() => {
-
-      const reports_sample_table = eData.report_sata;
-      const newList = reports_sample_table.map(item => ({
-        id: parseInt(item.id_item),
-        values: [
-            item.id,
-            item.lot,
-            item.serial,
-            item.total_pieces_insp,
-            item.total_pieces_sampling,
-            item.hour,
-            item.signature,
-            
-        ]
+    const reports_sample_table = eData.report_sata;
+    const newList = reports_sample_table.map((item) => ({
+      id: parseInt(item.id_item),
+      values: [
+        item.id,
+        item.lot,
+        item.serial,
+        item.total_pieces_insp,
+        item.total_pieces_sampling,
+        item.hour,
+        item.signature,
+      ],
     }));
 
-    
-    
     setDivsSamplingTableInsp(newList);
 
-    
-  
-    return () => {
-      
-    }
-  }, [])
-  
+    return () => {};
+  }, []);
+
   const [divs, setDivs] = useState(() => {
     const filas = [];
     for (let i = 1; i <= numFilas2; i++) {
@@ -214,20 +205,15 @@ const View = () => {
     return filas;
   });
   useEffect(() => {
-    
-    setNumFilas(numFilas2)
-    return () => {
-      
-    }
-  }, [numFilas2])
-  
+    setNumFilas(numFilas2);
+    return () => {};
+  }, [numFilas2]);
+
   const updateData = useCallback((data) => {
     setDataC(data);
   }, []);
   useEffect(() => {
     setNumColumnas2(numColumnas);
-
-    
   }, [numColumnas]);
 
   const eliminarFila = async (itemId, idDb) => {
@@ -265,9 +251,10 @@ const View = () => {
       {
         id: prevDatos.length + 1,
         values: date
-          ? Array.from({ length: numColumnas }, (v, i) => (i === 2 ? date : ""))
+          ? Array.from({ length: numColumnas }, (v, i) =>
+              i === 2 ? date : i < 6 ? "" : 0
+            )
           : Array.from({ length: numColumnas }, () => ""),
-
       },
     ]);
     setNumFilas2((prev) => prev + 1);
@@ -275,7 +262,6 @@ const View = () => {
     const scrollHeight = tableWrapper.scrollHeight;
     const clientHeight = tableWrapper.clientHeight;
     if (scrollHeight > clientHeight) {
-
       setTimeout(() => {
         tableWrapper.scrollTo({ top: scrollHeight, behavior: "smooth" });
       }, 100);
@@ -319,7 +305,6 @@ const View = () => {
       });
       setNumColumnas((prev) => prev - 1);
     } else {
-
       return false;
     }
   };
@@ -327,7 +312,6 @@ const View = () => {
   useEffect(() => {
     setNumColumnas2(numColumnas);
   }, [numColumnas]);
- 
 
   const [divs2, setDivs2] = useState(() => {
     const filas = [];
@@ -432,7 +416,6 @@ const View = () => {
                 values[k] = dataC.reports_cc[j][keys[k + 1]];
                 break;
             }
-         
           }
         }
       }
@@ -784,7 +767,7 @@ const View = () => {
           i: total14,
         },
         incType: incType,
-        sampling_table:divsSamplingTableInsp
+        sampling_table: divsSamplingTableInsp,
       },
     ];
     setDataToSave(newArray);
@@ -815,70 +798,60 @@ const View = () => {
     total13,
     total14,
     incType,
-    divsSamplingTableInsp
+    divsSamplingTableInsp,
   ]);
-  
-  const [keysTh, setKeysTh] = useState([]);
+
   useEffect(() => {
-    
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = ("0" + (date.getMonth() + 1)).slice(-2);
-    const day = ("0" + date.getDate()).slice(-2);
-    const hours = ("0" + date.getHours()).slice(-2);
-    const minutes = ("0" + date.getMinutes()).slice(-2);
-    const seconds = ("0" + date.getSeconds()).slice(-2);
-    const formattedDateTime = `${year}-${month}-${day}`;
+
     const keys = Object.keys(dataC.reports_cc[0]);
-    const numCol = keys.length;
     keys.splice(1, 1); // Elimina el elemento en la posición 1 (id_report)
     keys[0] = "";
     keys[2] = (
       <>
         <div className="th-title">
-          fecha <span className="required">*</span>
+          {t("reports.date")} <span className="required">*</span>
         </div>
       </>
     );
     keys[3] = (
       <>
         <div className="th-title">
-          lote <span className="required">*</span>
+        {t("reports.batch")} <span className="required">*</span>
         </div>
       </>
     );
     keys[4] = (
       <>
         <div className="th-title">
-          serial <span className="required">*</span>
+        {t("reports.series")} <span className="required">*</span>
         </div>
       </>
     );
     keys[5] = (
       <>
         <div className="th-title">
-          cant insp <span className="required">*</span>
+        {t("reports.qntInsp")} <span className="required">*</span>
         </div>
       </>
     );
     keys[6] = (
       <>
         <div className="th-title">
-          pzas ng <span className="required">*</span>
+          {t("reports.picesNg")} <span className="required">*</span>
         </div>
       </>
     );
     keys[7] = (
       <>
         <div className="th-title">
-          pzas ok <span className="required">*</span>
+          {t("reports.picesOk")} <span className="required">*</span>
         </div>
       </>
     );
     keys[8] = (
       <>
         <div className="th-title">
-          pzas rt <span className="required">*</span>
+          {t("reports.picesRt")} <span className="required">*</span>
         </div>
       </>
     );
@@ -894,11 +867,7 @@ const View = () => {
     const kLenght = keys.length + 1;
     setNumColumnas(kLenght);
 
-    console.log(titulosColumnas);
-  
     setTitulosColumnas(keys);
-  }, []);
-  useEffect(() => {
     setDataCDb({
       plant: dataC.plant,
       supplier: dataC.supplier,
@@ -911,37 +880,13 @@ const View = () => {
       part_number: dataC.part_number,
       id_supplier: dataC.id_supplier,
     });
-  }, []);
+  }, [t]);
+
   const [dumpValue, setDumpValue] = useState("");
   const inputRef = useRef();
   const dataListRef = useRef();
-  const getSelectedOptionLocation = () => {
-    for (let i = 0; i < dataListRef.current.options.length; i++) {
-      if (dataListRef.current.options[i].value === inputRef.current.value) {
-        return dataListRef.current.options[i];
-      }
-    }
-  };
 
-  const handleChange = (e) => {
-    const selectedOption = getSelectedOptionLocation();
-    setDataC({
-      ...dataC,
-      [e.target.dataset.name || e.target.name]: e.target.value,
-    });
-    if (selectedOption === undefined) {
-      setDataCDb({
-        ...dataCDb,
-        [e.target.dataset.name || e.target.name]: e.target.value,
-      });
-    } else {
-      const id_supplier = selectedOption.getAttribute("data-id");
-      setDataCDb({
-        ...dataCDb,
-        id_supplier,
-      });
-    }
-  };
+
   const navigate = useNavigate();
   useEffect(() => {
     if (isAdmin !== null) {
@@ -966,6 +911,8 @@ const View = () => {
   ];
   const [totalHours, setTotalHours] = useState(0);
 
+
+
   useEffect(() => {
     if (Object.keys(dataCDb).length > 0) {
       const totalInsp = Number(total1);
@@ -976,7 +923,6 @@ const View = () => {
   }, [total1, dataCDb]);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    const currentInputValue = dataCDb[name];
 
     setDataCDb({
       ...dataCDb,
@@ -987,15 +933,41 @@ const View = () => {
   const supplierValue = suppliers?.find(
     (supplier) => Number(supplier?.id) === Number(dataC?.id_supplier)
   );
-  
 
+  useEffect(() => {
+    if (Object.keys(dataCDb).length > 0) {
+      const totalInsp = Number(total1);
+      const rate = dataCDb.rate;
+      
+      if (onlyNumbers.test(rate)) {
+        const totalHours = Number(totalInsp) / Number(rate);
+        setTotalHours(totalHours);
+      } else {
+        setTotalHours(0)
+      }
+    }
+  }, [total1, dataCDb]);
+  useEffect(() => {
+    if (totalHours > 0) {
+      setDataCDb({
+        ...dataCDb,
+        ["worked_hours"]: totalHours,
+      });
+    }
+    if(totalHours === 0){
+      setDataCDb({
+        ...dataCDb,
+        ["worked_hours"]: '',
+      });
+    }
+  }, [totalHours]);
   const tabContent = {
     1: {
       component: (
         <>
           <div className="container">
             <div className="title">
-              <h3>{t('reports.inspection_report_title')}</h3>
+              <h3>{t("reports.inspection_report_title")}</h3>
               <br />
             </div>
 
@@ -1003,7 +975,7 @@ const View = () => {
               <Box className="form-container">
                 <TextField
                   id="outlined-basic"
-                  label="Planta"
+                  label={t("table.plant")}
                   required
                   variant="outlined"
                   sx={{
@@ -1034,7 +1006,7 @@ const View = () => {
                     <TextField
                       {...params}
                       required
-                      label="Proveedor"
+                      label={t("table.supplier")}
                       name="id_supplier"
                     />
                   )}
@@ -1045,8 +1017,7 @@ const View = () => {
                     })
                   }
                 />
-
-              </Box>
+              </Box>            
               <Box
                 className="form-containers"
                 style={{
@@ -1066,7 +1037,7 @@ const View = () => {
               <Box className="form-container">
                 <TextField
                   id="outlined-basic"
-                  label="No. de Reporte"
+                  label={t("reports.report_number_label")}
                   variant="outlined"
                   type="text"
                   name="report_number"
@@ -1075,19 +1046,15 @@ const View = () => {
                   sx={{
                     width: "95%",
                   }}
+                  disabled
                   defaultValue={dataC.report_number}
-                  onChange={(e) =>
-                    setDataCDb({
-                      ...dataCDb,
-                      [e.target.name]: e.target.value,
-                    })
-                  }
+                  
                 />
-              </Box>
+              </Box>            
               <Box className="form-container">
                 <TextField
                   id="outlined-basic"
-                  label="Nombre de parte "
+                  label={t("reports.part_name_label")}
                   variant="outlined"
                   type="text"
                   name="part_name"
@@ -1096,7 +1063,7 @@ const View = () => {
                   sx={{
                     width: "95%",
                   }}
-                  defaultValue={dataC.report_number}
+                  defaultValue={dataC.part_name}
                   onChange={(e) =>
                     setDataCDb({
                       ...dataCDb,
@@ -1108,7 +1075,7 @@ const View = () => {
               <Box className="form-container">
                 <TextField
                   id="outlined-basic"
-                  label="Horas Trabajadas"
+                  label={t("reports.worked_hours_label")}
                   variant="outlined"
                   type="text"
                   name="worked_hours"
@@ -1118,9 +1085,16 @@ const View = () => {
                     width: "95%",
                   }}
                   defaultValue={dataC.report_number}
+                  // value={
+                  //   totalHours > 0 && typeof totalHours === "number"
+                  //     ? totalHours
+                  //     : dataCDb.worked_hours
+                  // }
                   value={
-                    totalHours > 0 && typeof totalHours === "number"
-                      ? totalHours
+                    totalHours > 0 &&
+                    typeof totalHours === "number" &&
+                    onlyNumbers.test(dataCDb.rate)
+                      ? totalHours.toFixed(2)
                       : dataCDb.worked_hours
                   }
                   onChange={(e) =>
@@ -1130,7 +1104,7 @@ const View = () => {
                     })
                   }
                 />
-              </Box>
+              </Box>                          
               <Box className="form-container">
                 <TextField
                   id="outlined-basic"
@@ -1150,7 +1124,7 @@ const View = () => {
               </Box>
               <Box className="form-container">
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Turno *</InputLabel>
+                  <InputLabel id="demo-simple-select-label">{t("reports.shift_label")}</InputLabel>
                   <SelectMUI
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
@@ -1182,7 +1156,7 @@ const View = () => {
               >
                 <TextField
                   id="outlined-basic"
-                  label=" Numero de parte"
+                  label={t("reports.part_number_label")}
                   variant="outlined"
                   sx={{
                     width: "95%",
@@ -1200,14 +1174,15 @@ const View = () => {
                   }
                 />
               </Box>
-          
+
               <Box
                 sx={{
                   width: "24%",
                 }}
               >
                 <label htmlFor="data8">
-                  Tipo de servicio <span className="required">*</span>
+                  {t("reports.service_type_label")}{" "}
+                  <span className="required">*</span>
                 </label>
 
                 <div className="container-checkbox">
@@ -1223,7 +1198,7 @@ const View = () => {
                         })
                       }
                     />
-                    Selección
+                    {t("reports.selection_label")}
                   </label>
 
                   <label>
@@ -1238,7 +1213,7 @@ const View = () => {
                         })
                       }
                     />
-                    Retrabajo
+                    {t("reports.rework_label")}
                   </label>
                   <label htmlFor=""> </label>
                   <label htmlFor=""> </label>
@@ -1270,7 +1245,7 @@ const View = () => {
                 }}
               >
                 <label htmlFor="data8">
-                  Control para el cliente <span className="required">*</span>
+                  {t("reports.customer_control_label")}{" "}
                 </label>
 
                 <div className="container-checkbox">
@@ -1286,7 +1261,7 @@ const View = () => {
                         })
                       }
                     />
-                    Fecha de produccion
+                    {t("reports.production_date_label")}
                   </label>
 
                   <label>
@@ -1301,7 +1276,7 @@ const View = () => {
                         })
                       }
                     />
-                    Fecha de aprobado
+                    {t("reports.approval_date_label")}
                   </label>
 
                   <label>
@@ -1316,7 +1291,7 @@ const View = () => {
                         })
                       }
                     />
-                    Serie
+                    {t("reports.series_label")}
                   </label>
                   <label>
                     <input
@@ -1330,7 +1305,7 @@ const View = () => {
                         })
                       }
                     />
-                    Lote
+                    {t("reports.batch_label")}
                   </label>
                   <div className="others-container">
                     <TextField
@@ -1353,8 +1328,6 @@ const View = () => {
                   </div>
                 </div>
               </Box>
-
-        
             </StyledForm>
           </div>
           <div

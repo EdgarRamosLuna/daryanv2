@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useRef } from "react";
 import { Toaster, toast } from "sonner";
+import InfoIcon from "@mui/icons-material/Info";
 import {
   aproveReportHToDb,
   getSuppliers,
@@ -16,9 +17,10 @@ import {
 } from "../api/daryan.api";
 import SpanishApp from "../components/datepicker/AdapterDates";
 export const MainContext = createContext();
+
 export const MainContextProvider = ({ children }) => {
   const dataSes = localStorage.getItem("sesType");
-
+  
   const handleCheckBox = (e, type, id, data) => {
     const allCheckBox = document.querySelectorAll('input[type="checkbox"]');
     const idM = data.map((data) => data.id);
@@ -912,6 +914,7 @@ export const MainContextProvider = ({ children }) => {
   const onlyNumbers = /^\d+$/;
   const [openModalIncident, setOpenModalIncident] = useState(false);
   const [reportIncidents, setReportIncidents] = useState([]);  
+
   const PROPS = {
     dataSes,
     dataT,
@@ -1086,7 +1089,10 @@ export const MainContextProvider = ({ children }) => {
     onlyNumbers, // Regex solo numeros
     openModalIncident, 
     setOpenModalIncident,
-    reportIncidents, setReportIncidents
+    reportIncidents, 
+    setReportIncidents,
+    InfoIcon,
+    ABECEDARIO
   };
   return (
     <MainContext.Provider value={PROPS}>

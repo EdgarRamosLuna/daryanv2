@@ -5,6 +5,7 @@ import { Table } from "../../../styles/Styles";
 import { useRef } from "react";
 import DatePickerInputU from "../../../components/DateInputUpdate";
 import useThClick from "./useThClick";
+import CustomInput from "../../employee/utils/CustomInput";
 
 export default function SecondTableCreate({
   dataC,
@@ -45,25 +46,26 @@ export default function SecondTableCreate({
       updatedDivs[divToUpdateIndex] = updatedDiv;
       return updatedDivs;
     });
-  
+
     // 2. Sincronizar divsSamplingTableInsp con divs
-    const updatedSamplingTable = divs.map(divItem => {
+    const updatedSamplingTable = divs.map((divItem) => {
       // Obtiene el item correspondiente de divsSamplingTableInsp
-      const originalItem = divsSamplingTableInsp.find(item => item.id === divItem.id);
+      const originalItem = divsSamplingTableInsp.find(
+        (item) => item.id === divItem.id
+      );
       return {
         id: divItem.id,
         values: [
           originalItem.values[0], // id se mantiene igual
-          divItem.values[3],      // lote se sincroniza desde divs
-          divItem.values[4],      // serial se sincroniza desde divs
-          divItem.values[5],      // total insp se sincroniza desde divs
-          ...originalItem.values.slice(4) // El resto de los valores se mantienen sin cambios
-        ]
+          divItem.values[3], // lote se sincroniza desde divs
+          divItem.values[4], // serial se sincroniza desde divs
+          divItem.values[5], // total insp se sincroniza desde divs
+          ...originalItem.values.slice(4), // El resto de los valores se mantienen sin cambios
+        ],
       };
     });
     setDivsSamplingTableInsp(updatedSamplingTable);
   };
-  
 
   useEffect(() => {
     let newValue1 = 0;
@@ -199,7 +201,10 @@ export default function SecondTableCreate({
   const btnDelIncRef = useRef(null);
   const [currentThText, previousThText, handleClick] =
     useThClick(eliminarColumna2);
-
+  const handleEnter = useCallback((filaId, currentIndex) => {
+    const nextInput = document.getElementById(`input-${filaId + 1}-${3}`);
+    nextInput && nextInput.focus();
+  }, []);
   //console.log(previousThText);
   return (
     <Table>
@@ -280,112 +285,35 @@ export default function SecondTableCreate({
                         ""
                       )
                     ) : (
-                      <input
-                        value={valor}
-                        onChange={(e) =>
-                          handleInputChange(fila.id, i, e.target.value)
-                        }
-                      />
+                      <>
+                        {i >= 3 && i <= 4 ? (
+                          <CustomInput
+                          value={valor}
+                          onChange={handleInputChange}
+                          onEnter={handleEnter} // Pasar el id de la fila y el índice del input a handleEnter
+                          id={`input-${fila.id}-${i}`}
+                          key={i} // Añadir una key prop es importante cuando se mapea un array a elementos JSX
+                          filaId={fila.id}
+                          index={i}
+                        />
+                        ) : (
+                          <CustomInput
+                            value={valor}
+                            onChange={handleInputChange}
+                            onEnter={handleEnter} // Pasar el id de la fila y el índice del input a handleEnter
+                            id={`input-${fila.id}-${i}`}
+                            filaId={fila.id}
+                            index={i}
+                            key={i} // Añadir una key prop es importante cuando se mapea un array a elementos JSX
+                          />
+                        )}
+                      </>
                     )}
                   </td>
                 )
               )}
             </tr>
-          ))}
-          {/*divs.map((div) => (
-            <tr key={div.id}>
-              <td></td>
-
-              <td>{div.id}</td>
-
-              <td>
-                <input
-                  value={div.values[1]}
-                  onChange={(e) => handleInputChange(div.id, 1, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[2]}
-                  onChange={(e) => handleInputChange(div.id, 2, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[3]}
-                  onChange={(e) => handleInputChange(div.id, 3, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[4]}
-                  onChange={(e) => handleInputChange(div.id, 4, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[5]}
-                  onChange={(e) => handleInputChange(div.id, 5, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[6]}
-                  onChange={(e) => handleInputChange(div.id, 6, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[7]}
-                  onChange={(e) => handleInputChange(div.id, 7, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[8]}
-                  onChange={(e) => handleInputChange(div.id, 8, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[9]}
-                  onChange={(e) => handleInputChange(div.id, 9, e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[10]}
-                  onChange={(e) =>
-                    handleInputChange(div.id, 10, e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[11]}
-                  onChange={(e) =>
-                    handleInputChange(div.id, 11, e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[12]}
-                  onChange={(e) =>
-                    handleInputChange(div.id, 12, e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  value={div.values[13]}
-                  onChange={(e) =>
-                    handleInputChange(div.id, 12, e.target.value)
-                  }
-                />
-              </td>
-            </tr>
-          ))*/}
+          ))}       
         </tbody>
       </table>
     </Table>

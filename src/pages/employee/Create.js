@@ -22,12 +22,11 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import SelectCustom from "./Select";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import AutocompleteInput from "../../components/inputs/AutocompleteInput";
 import useReports from "../../hooks/useReports";
-import SelectIncidents from "./SelectIncidents";
+import Incidents from "./Incidents";
 
 const Create = () => {
   const { t } = useTranslation();
@@ -82,15 +81,7 @@ const Create = () => {
   } = useContext(MainContext);
 
   const { reportIncidents } = useReports();
-  useEffect(() => {
-    console.log(reportIncidents);
-    
-  
-    return () => {
-      
-    }
-  }, [reportIncidents])
-  
+
   const [producedBy, setProducedBy] = useState("");
   const [checkedBy, setCheckedBy] = useState("");
   const [authorizedBy, setAuthorizedBy] = useState("");
@@ -400,34 +391,6 @@ const Create = () => {
                     })
                   }
                 />
-
-                {/* <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  name="id_supplier"
-                  options={suppliers}
-                  value={
-                    suppliers.find(
-                      (supplier) => supplier.id === data.id_supplier
-                    ) || null
-                  } // Aquí estableces el valor
-                  getOptionLabel={(option) => option.fullname}
-                  sx={{ width: "95%" }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      required
-                      label={t("table.supplier")}
-                      name="id_supplier"
-                    />
-                  )}
-                  onChange={(e, newValue) =>
-                    setData({
-                      ...data,
-                      id_supplier: newValue ? newValue.id : null,
-                    })
-                  }
-                /> */}
               </div>
               <div
                 className="form-containers"
@@ -1023,297 +986,15 @@ const Create = () => {
                           )
                       )}
                     </td>
-                    <td colSpan={1} style={{ textAlign: "center" }}>
-                      <div> </div>
-                      {divs2.map(
-                        (fila, i) =>
-                          i === 0 && (
-                            <div key={i + "clauses"}>
-                              {fila.values.map(
-                                (valor, i) =>
-                                  i > 6 && (
-                                    <div key={i + "clause"}>
-                                      {i === 8 && (
-                                        <>
-                                          <input
-                                            placeholder="A"
-                                            readOnly
-                                            type="text"
-                                            style={{ textAlign: "center" }}
-                                            defaultValue={dumpValue}
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 9 && (
-                                        <>
-                                          <input
-                                            placeholder="B"
-                                            readOnly
-                                            type="text"
-                                            style={{ textAlign: "center" }}
-                                            defaultValue={dumpValue}
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 10 && (
-                                        <>
-                                          <input
-                                            placeholder="C"
-                                            readOnly
-                                            type="text"
-                                            style={{ textAlign: "center" }}
-                                            defaultValue={dumpValue}
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 11 && (
-                                        <>
-                                          <input
-                                            placeholder="D"
-                                            readOnly
-                                            type="text"
-                                            style={{ textAlign: "center" }}
-                                            defaultValue={dumpValue}
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 12 && (
-                                        <>
-                                          <input
-                                            placeholder="E"
-                                            readOnly
-                                            type="text"
-                                            style={{ textAlign: "center" }}
-                                            defaultValue={dumpValue}
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 13 && (
-                                        <>
-                                          <input
-                                            placeholder="F"
-                                            readOnly
-                                            type="text"
-                                            style={{ textAlign: "center" }}
-                                            defaultValue={dumpValue}
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 14 && (
-                                        <>
-                                          <input
-                                            placeholder="G"
-                                            readOnly
-                                            type="text"
-                                            style={{ textAlign: "center" }}
-                                            defaultValue={dumpValue}
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 15 && (
-                                        <>
-                                          <input
-                                            placeholder="H"
-                                            readOnly
-                                            type="text"
-                                            style={{ textAlign: "center" }}
-                                            defaultValue={dumpValue}
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 16 && (
-                                        <>
-                                          <input
-                                            placeholder="I"
-                                            readOnly
-                                            type="text"
-                                            style={{ textAlign: "center" }}
-                                            defaultValue={dumpValue}
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                    </div>
-                                  )
-                              )}
-                            </div>
-                          )
-                      )}
-                    </td>
-                    <td colSpan={1} style={{ textAlign: "center" }}>
-                      <div> </div>
-                      {divs2.map(
-                        (fila, i) =>
-                          i === 0 && (
-                            <div key={i + "clauses"}>
-                              {fila.values.map(
-                                (valor, i) =>
-                                  i > 6 && (
-                                    <div key={i + "clause"}>
-                                      {i === 8 && (
-                                        <>
-                                          <SelectCustom
-                                            data={optionClause}
-                                            clause="A"
-                                          />
-
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 9 && (
-                                        <>
-                                          <SelectCustom
-                                            data={optionClause}
-                                            clause="B"
-                                          />
-
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 10 && (
-                                        <>
-                                          <SelectCustom
-                                            data={optionClause}
-                                            clause="C"
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 11 && (
-                                        <>
-                                          <SelectCustom
-                                            data={optionClause}
-                                            clause="D"
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 12 && (
-                                        <>
-                                          <SelectCustom
-                                            data={optionClause}
-                                            clause="E"
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 13 && (
-                                        <>
-                                          <SelectCustom
-                                            data={optionClause}
-                                            clause="F"
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 14 && (
-                                        <>
-                                          <SelectCustom
-                                            data={optionClause}
-                                            clause="G"
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 15 && (
-                                        <>
-                                          <SelectCustom
-                                            data={optionClause}
-                                            clause="H"
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                      {i === 16 && (
-                                        <>
-                                          <SelectCustom
-                                            data={optionClause}
-                                            clause="I"
-                                          />
-                                          <br />
-                                        </>
-                                      )}
-                                    </div>
-                                  )
-                              )}
-                            </div>
-                          )
-                      )}
-                    </td>
-                    <td
-                      colSpan={numColumnas > 15 ? numColumnas / 4 : 3}
-                      style={{ textAlign: "center" }}
-                    >
-                      <div>
-                        {t("reports.incidents_label")}{" "}
-                        <span className="required">*</span>
-                      </div>
-                      {reportFooter3.map(
-                        (fila, i) =>
-                          i < reportFooter3.length - 1 && (
-                            <div key={i + "incidentes"}>
-                              {fila.values.map((valor, i) => (
-                                <div key={i + "incidente"}>
-                                   <select value={valor} onChange={(e) => handleUpdate(3, fila.id, i, e.target.value)}>
-                                    <option value="0">Incidente</option>
-                                    {          
-                                      reportIncidents.map((item, i) => {
-                                        return (
-                                          <option value={item.id_incident} key={item.value+i}>
-                                            {item.code} - {item.incident}
-                                          </option>
-                                        );
-                                      })
-                                    }
-                                  </select>    
-                                  {/* <AutocompleteInput
-                                    id="combo-box-demo"
-                                    name="id_supplier"
-                                    options={reportIncidents}
-                                    value={
-                                      reportIncidents.find(
-                                        (incident) =>
-                                          incident.id_incident === valor
-                                      ) || null
-                                    }
-                                    label="Supplier"
-                                    getOptionLabel={(option) => option.incident}
-                                    onChange={
-                                      (e, newValue) =>
-                                        handleUpdate(3, fila.id, i, newValue)
-                                      // setData({
-                                      //   ...data,
-                                      //   id_incident: newValue ? newValue.id_incident : null,
-                                      // })
-                                    }
-                                  /> */}
-                                  {/* <input
-                                    value={valor}
-                                    type="text"
-                                    onChange={(e) =>
-                                      handleUpdate(
-                                        3,
-                                        fila.id,
-                                        i,
-                                        e.target.value
-                                      )
-                                    }
-                                  /> */}
-                                  <br />
-                                </div>
-                              ))}
-                            </div>
-                          )
-                      )}
-                    </td>
+                    <Incidents
+                      divs2={divs2}
+                      dumpValue={dumpValue}
+                      optionClause={optionClause}
+                      numColumnas={numColumnas}
+                      reportFooter3={reportFooter3}
+                      handleUpdate={handleUpdate}
+                      reportIncidents={reportIncidents}
+                    />
                   </tr>
                   <tr>
                     <td

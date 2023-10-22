@@ -41,7 +41,7 @@ import TableChartIcon from "@mui/icons-material/TableChart";
 import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurnedInOutlined";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import ModalMui from "./modal/ModalMui";
-import InfoIcon from "@mui/icons-material/Info";
+
 import IncidentForm from "./employee/Incident";
 import useReports from "../hooks/useReports";
 
@@ -113,6 +113,7 @@ export default function SubHeader() {
     setActiveTabReportByH,
     activeTabReportInsp,
     setActiveTabReportInsp,
+    InfoIcon
   } = useContext(MainContext);
 
   //   const path = pathname.replaceAll('/', '');
