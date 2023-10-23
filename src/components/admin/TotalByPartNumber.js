@@ -1,17 +1,11 @@
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-} from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import { getReportsByPartNumber } from "../../api/daryan.api";
-import TaLoader from "./TaLoader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import FilterTable from "./FilterTable";
+import { Chip, Tooltip, Typography } from "@mui/material";
 
 export const DynamicTable = ({ data, type }) => {
   const [groupedData, setGroupedData] = useState([]);
@@ -69,7 +63,7 @@ export const DynamicTable = ({ data, type }) => {
 
       setGroupedData2(groupedByReportIdAndClause);
       setGroupedData(groupedData);
-      console.log(groupedData)
+      console.log(groupedData);
     }
   }, [type]);
 
@@ -94,20 +88,20 @@ export const DynamicTable = ({ data, type }) => {
     text: "",
   });
 
-  const handleCellClick = (e, text, cant) => {
-    e.target.children[0].classList.add("span-btn-hover");
+  // const handleCellClick = (e, text, cant) => {
+  //   e.target.children[0].classList.add("span-btn-hover");
 
-    if (cant === 0) return;
-    console.log("Clicked text:", text); // Agrega esta línea
-    const rect = e.target.children[0].getBoundingClientRect();
-    setTooltip({
-      x: rect.x - 180,
-      y: rect.y,
-      show: true,
-      text: text,
-    });
-    console.log(rect);
-  };
+  //   if (cant === 0) return;
+  //   console.log("Clicked text:", text); // Agrega esta línea
+  //   const rect = e.target.children[0].getBoundingClientRect();
+  //   setTooltip({
+  //     x: rect.x - 180,
+  //     y: rect.y,
+  //     show: true,
+  //     text: text,
+  //   });
+  //   console.log(rect);
+  // };
   const spanRef = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -125,20 +119,18 @@ export const DynamicTable = ({ data, type }) => {
     }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (!e.target.className.includes("table-center")) {
-        setTooltip({ ...tooltip, show: false });
-      }
-    };
-    document.addEventListener("click", handleClickOutside);
+  // useEffect(() => {
+  //   const handleClickOutside = (e) => {
+  //     if (!e.target.className.includes("table-center")) {
+  //       setTooltip({ ...tooltip, show: false });
+  //     }
+  //   };
+  //   document.addEventListener("click", handleClickOutside);
 
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [tooltip]);
-
-  //  console.log(groupedData2[4])
+  //   return () => {
+  //     document.removeEventListener("click", handleClickOutside);
+  //   };
+  // }, [tooltip]);
 
   return (
     <>
@@ -159,34 +151,51 @@ export const DynamicTable = ({ data, type }) => {
                 <td
                   className="table-center"
                   key={index}
-                  onClick={(e) =>
-                    handleCellClick(
-                      e,
-                      groupedData2[reportId][clause] &&
-                        groupedData2[reportId][clause].type,
-                      groupedData[reportId][clause]
-                    )
-                  }
+                  // onClick={(e) =>
+                  //   handleCellClick(
+                  //     e,
+                  //     groupedData2[reportId][clause] &&
+                  //       groupedData2[reportId][clause].type,
+                  //     groupedData[reportId][clause]
+                  //   )
+                  // }
                   onBlur={handleBlur}
                   onFocus={handleFocus}
                   tabIndex="0"
                 >
-                  <span
-                    ref={spanRef}
-                    className={`${
-                      groupedData[reportId][clause] !== 0 && "span-btn-clause"
-                    } ${isFocused ? "removable" : ""}`}
-                    style={{ pointerEvents: "none" }}
-                  >
-
-                    {groupedData[reportId][clause]}
-                  </span>
+                  <>
+                    <Tooltip
+                      title={
+                        <>
+                          <b>Incidencia: </b>
+                          {groupedData2[reportId][clause].comment}
+                        </>
+                      }
+                      placement="left"
+                      arrow
+                    >
+                      <Chip label={groupedData[reportId][clause]} color="primary" variant="outlined" />
+                      {/* <Typography>
+                      
+                      </Typography> */}
+                      {/* <span
+                        ref={spanRef}
+                        className={`${
+                          groupedData[reportId][clause] !== 0 &&
+                          "span-btn-clause"
+                        } ${isFocused ? "removable" : ""}`}
+                        style={{ pointerEvents: "none" }}
+                      >
+                   
+                      </span> */}
+                    </Tooltip>
+                  </>
                 </td>
               ))}
             </tr>
           ))}
         </tbody>
-        {tooltip.show && (
+        {/* {tooltip.show && (
           <div
             style={{
               position: "fixed",
@@ -201,7 +210,7 @@ export const DynamicTable = ({ data, type }) => {
             <b>Incidencia: </b>
             {tooltip.text}
           </div>
-        )}
+        )} */}
       </table>
     </>
   );
@@ -230,7 +239,7 @@ const TotalByPartNumber = () => {
       setIsLoading(true); // Comienza la carga
       try {
         const res = await getReportsByPartNumber({ partNumber, token });
-        const data = res?.data;        
+        const data = res?.data;
         setColumnTitles(data?.column_names || []);
         setTableData(data?.column_values || []);
         setOriginalTableData(data?.column_values || []); // Aquí se establecen los datos originales
@@ -295,21 +304,18 @@ const TotalByPartNumber = () => {
     };
   }, [rDetailsData, showDetails, partNumber]);
 
-
-
   const [typeData, setTypeData] = useState(0);
   const getDetails = (type) => {
-    setTypeData(type);    
-    if(tableData.length > 0){
+    setTypeData(type);
+    if (tableData.length > 0) {
       if (type === typeData) {
         setShowDetails(!showDetails);
       } else {
         setShowDetails(true);
       }
-    }else{
-      return
+    } else {
+      return;
     }
- 
   };
 
   // definir estilos como objeto JavaScript
@@ -468,7 +474,6 @@ const TotalByPartNumber = () => {
                             {item}
                           </td>
                         )}
-                  
                       </>
                     );
                   })}
@@ -478,7 +483,6 @@ const TotalByPartNumber = () => {
                     <td colSpan="7">
                       <div style={tableContainerStyle}>
                         <DynamicTable data={tableData} type={typeData} />
-                       
                       </div>
                     </td>
                   </tr>
