@@ -3,7 +3,6 @@ import SelectCustom from "./Select";
 import { useTranslation } from "react-i18next";
 import { MainContext } from "../../context/MainContext";
 import { useContext } from "react";
-import { Badge, Grid, Tooltip, Typography } from "@mui/material";
 import CustomInputTootip from "./utils/CustomInputTootip";
 
 const Incidents = ({
@@ -86,27 +85,6 @@ const Incidents = ({
                               incidents={incidents}
                               dumpValue={dumpValue}
                             />
-                            {/* <Tooltip
-                              title={incType
-                                ?.filter((d) => d.clause === sA)
-                                .map((m) => (
-                                  <Typography>{`${incidentLabels[m.type]}`}</Typography>
-                                ))}
-                              placement="top-end"
-                            >
-                              <Badge
-                                badgeContent={incidents[sA]}
-                                color="primary"
-                              >
-                                <input
-                                  placeholder={sA}
-                                  readOnly
-                                  type="text"
-                                  style={{ textAlign: "center" }}
-                                  defaultValue={dumpValue}
-                                />
-                              </Badge>
-                            </Tooltip> */}
                             <br />
                           </>
                         )}
@@ -216,13 +194,13 @@ const Incidents = ({
       <td colSpan={1} style={{ textAlign: "center" }}>
         <div> </div>
         {divs2.map(
-          (fila, i) =>
-            i === 0 && (
-              <div key={i + "clauses"}>
+          (fila, k) =>
+            k === 0 && (
+              <div key={k + "clausesSelects"}>
                 {fila.values.map(
                   (valor, i) =>
                     i > 6 && (
-                      <div key={i + "clause"}>
+                      <div key={`clausesSelect${i}`}>
                         {i === 8 && (
                           <>
                             <SelectCustom data={optionClause} clause="A" />
@@ -294,11 +272,11 @@ const Incidents = ({
           {t("reports.incidents_label")} <span className="required">*</span>
         </div>
         {reportFooter3.map(
-          (fila, i) =>
-            i < reportFooter3.length - 1 && (
-              <div key={i + "incidentes"}>
+          (fila, p) =>
+            p < reportFooter3.length - 1 && (
+              <div key={p + "incidentes"}>
                 {fila.values.map((valor, i) => (
-                  <div key={i + "incidente"}>
+                  <div key={valor + "incidente"}>
                     <select
                       value={valor}
                       onChange={(e) =>
@@ -308,7 +286,7 @@ const Incidents = ({
                       <option value="0">Incidente</option>
                       {reportIncidents.map((item, i) => {
                         return (
-                          <option value={item.id_incident} key={item.value + i}>
+                          <option value={item.id_incident} key={`optionIncident${i}`}>
                             {item.code} - {item.incident}
                           </option>
                         );

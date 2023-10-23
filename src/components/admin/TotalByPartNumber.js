@@ -28,7 +28,7 @@ export const DynamicTable = ({ data, type }) => {
           filteredData?.map((item) => {
             const dataToReturn = {
               clause: item?.clause,
-              incident: item?.incident,
+              incident: item?.type,
               report_id: item?.report_id,
             };
             return dataToReturn;
@@ -69,6 +69,7 @@ export const DynamicTable = ({ data, type }) => {
 
       setGroupedData2(groupedByReportIdAndClause);
       setGroupedData(groupedData);
+      console.log(groupedData)
     }
   }, [type]);
 
@@ -162,7 +163,7 @@ export const DynamicTable = ({ data, type }) => {
                     handleCellClick(
                       e,
                       groupedData2[reportId][clause] &&
-                        groupedData2[reportId][clause].incident,
+                        groupedData2[reportId][clause].type,
                       groupedData[reportId][clause]
                     )
                   }
@@ -177,6 +178,7 @@ export const DynamicTable = ({ data, type }) => {
                     } ${isFocused ? "removable" : ""}`}
                     style={{ pointerEvents: "none" }}
                   >
+
                     {groupedData[reportId][clause]}
                   </span>
                 </td>

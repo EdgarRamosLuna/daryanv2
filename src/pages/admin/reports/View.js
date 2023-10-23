@@ -451,9 +451,9 @@ const View = () => {
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
-              values: Array.from({ length: 1 }, () => rby[i - 8].realized_by),
-              id_db: Number(rby[i - 8].id),
-              type: Number(rby[i - 8].type),
+              values: Array.from({ length: 1 }, () => rby[i - 8]?.realized_by),
+              id_db: Number(rby[i - 8]?.id),
+              type: Number(rby[i - 8]?.type),
             });
           }
         }
@@ -491,9 +491,9 @@ const View = () => {
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
-              values: Array.from({ length: 1 }, () => obs[i - 8].observations),
-              id_db: Number(obs[i - 8].id),
-              type: Number(obs[i - 8].type),
+              values: Array.from({ length: 1 }, () => obs[i - 8]?.observations),
+              id_db: Number(obs[i - 8]?.id),
+              type: Number(obs[i - 8]?.type),
             });
           }
         }
@@ -533,9 +533,9 @@ const View = () => {
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
-              values: Array.from({ length: 1 }, () => inc[i - 8].incidents),
-              id_db: Number(inc[i - 8].id),
-              type: Number(inc[i - 8].type),
+              values: Array.from({ length: 1 }, () => inc[i - 8]?.incidents),
+              id_db: Number(inc[i - 8]?.id),
+              type: Number(inc[i - 8]?.type),
             });
           }
         }
@@ -1165,7 +1165,7 @@ const View = () => {
                   name="part_number"
                   placeholder=""
                   required
-                  value={dataC.part_number}
+                  value={dataCDb.part_number}
                   onChange={(e) =>
                     setDataCDb({
                       ...dataCDb,
