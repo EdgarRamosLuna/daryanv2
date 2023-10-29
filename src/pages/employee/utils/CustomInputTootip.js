@@ -15,7 +15,7 @@ const CustomInputTootip = ({
         .map((m) => (
           <Typography>{`${incidentLabels[m.type]}`}</Typography>
         ))}
-      placement="top-end"
+      placement="top-end"      
     >
       <Badge badgeContent={incidents[sClause]} color="primary">
         <input

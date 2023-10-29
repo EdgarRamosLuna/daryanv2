@@ -69,7 +69,6 @@ export const DynamicTable = ({ data, type }) => {
 
   const reportIds = groupedData ? Object.keys(groupedData) : [];
 
-  //console.log(incidents);
   // Convertir los datos agrupados a formato de array para usar en la tabla
   let tableData = [];
   for (let report_id in groupedData) {
@@ -81,27 +80,7 @@ export const DynamicTable = ({ data, type }) => {
       });
     }
   }
-  const [tooltip, setTooltip] = useState({
-    x: 0,
-    y: 0,
-    show: false,
-    text: "",
-  });
 
-  // const handleCellClick = (e, text, cant) => {
-  //   e.target.children[0].classList.add("span-btn-hover");
-
-  //   if (cant === 0) return;
-  //   console.log("Clicked text:", text); // Agrega esta línea
-  //   const rect = e.target.children[0].getBoundingClientRect();
-  //   setTooltip({
-  //     x: rect.x - 180,
-  //     y: rect.y,
-  //     show: true,
-  //     text: text,
-  //   });
-  //   console.log(rect);
-  // };
   const spanRef = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -118,19 +97,6 @@ export const DynamicTable = ({ data, type }) => {
       spanRef.current.classList.add("removable");
     }
   };
-
-  // useEffect(() => {
-  //   const handleClickOutside = (e) => {
-  //     if (!e.target.className.includes("table-center")) {
-  //       setTooltip({ ...tooltip, show: false });
-  //     }
-  //   };
-  //   document.addEventListener("click", handleClickOutside);
-
-  //   return () => {
-  //     document.removeEventListener("click", handleClickOutside);
-  //   };
-  // }, [tooltip]);
 
   return (
     <>
@@ -174,20 +140,7 @@ export const DynamicTable = ({ data, type }) => {
                       placement="left"
                       arrow
                     >
-                      <Chip label={groupedData[reportId][clause]} color="primary" variant="outlined" />
-                      {/* <Typography>
-                      
-                      </Typography> */}
-                      {/* <span
-                        ref={spanRef}
-                        className={`${
-                          groupedData[reportId][clause] !== 0 &&
-                          "span-btn-clause"
-                        } ${isFocused ? "removable" : ""}`}
-                        style={{ pointerEvents: "none" }}
-                      >
-                   
-                      </span> */}
+                      <Chip label={groupedData[reportId][clause]} color="sucess" variant="outlined" />                    
                     </Tooltip>
                   </>
                 </td>
@@ -195,22 +148,7 @@ export const DynamicTable = ({ data, type }) => {
             </tr>
           ))}
         </tbody>
-        {/* {tooltip.show && (
-          <div
-            style={{
-              position: "fixed",
-              left: tooltip.x,
-              top: tooltip.y,
-              backgroundColor: "white",
-              border: "1px solid black",
-              padding: "5px",
-              zIndex: 100,
-            }}
-          >
-            <b>Incidencia: </b>
-            {tooltip.text}
-          </div>
-        )} */}
+       
       </table>
     </>
   );
@@ -298,10 +236,7 @@ const TotalByPartNumber = () => {
         )}
       </>,
     ]);
-    //console.log(total_inspected);
-    return () => {
-      //console.log("cleanup");
-    };
+
   }, [rDetailsData, showDetails, partNumber]);
 
   const [typeData, setTypeData] = useState(0);
@@ -318,14 +253,6 @@ const TotalByPartNumber = () => {
     }
   };
 
-  // definir estilos como objeto JavaScript
-  const tableStyle = {
-    maxHeight: "200px",
-    overflowY: "auto",
-    display: "block",
-    maxWidth: "590px",
-    margin: "0 auto",
-  };
   const tableContainerStyle = {
     maxHeight: "200px",
     overflowY: "auto",

@@ -109,9 +109,7 @@ const View2 = () => {
       });
     });
     
-    // dataC.reports_inspectors.forEach((element, index) => {
-    //   setInspectors((prev) => [...prev, element ]);
-    // });
+
   }, [dataC]);
   //  console.log(divs);
 
@@ -148,33 +146,7 @@ const View2 = () => {
 
   const [inspectedBy, setInspectedBy] = useState(dataC.inspected_by);
   const [authorizedBy, setAuthorizedBy] = useState(dataC.authorized_by);
-  // function handleInputChange(divId, inputIndex, newValue) {
-  //   setDivs((prevDivs) => {
-  //     // Busca el índice del objeto a actualizar en el array de divs basándose en el divId.
-  //     const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
-  //     // Crea una copia del objeto a actualizar usando el operador de propagación.
-  //     const updatedDiv = { ...prevDivs[divToUpdateIndex] };
 
-  //     // Guarda el valor antiguo de la celda antes de actualizarlo.
-  //     const oldValue = Number(updatedDiv.values[inputIndex]) || 0;
-  //     // Actualiza el valor en la celda correspondiente.
-  //     updatedDiv.values[inputIndex] = newValue;
-
-  //     // Guarda la suma antigua de la fila.
-  //     const oldRowSum = Number(
-  //       updatedDiv.values[updatedDiv.values.length - 1] || 0
-  //     );
-  //     // Calcula la diferencia entre el nuevo valor y el antiguo si ambos son números.
-  //     const delta = !isNaN(newValue) ? Number(newValue) - oldValue : 0;
-  //     // Actualiza la suma de la fila restando el valor antiguo y sumando el nuevo.
-  //     updatedDiv.values[updatedDiv.values.length - 1] = oldRowSum + delta;
-
-  //     // Crea una copia de la lista de divs, reemplaza el div actualizado y devuelve la nueva lista.
-  //     const updatedDivs = [...prevDivs];
-  //     updatedDivs[divToUpdateIndex] = updatedDiv;
-  //     return updatedDivs;
-  //   });
-  // }
   useEffect(() => {
     const newArray = [
       {

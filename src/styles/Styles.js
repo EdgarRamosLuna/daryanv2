@@ -362,6 +362,9 @@ export const Table = styled.div`
       border-color: transparent;
     }
   }
+  tr.tr-h.rloaderContainer * {
+      cursor: default;
+  }
   .tr-hd {
     animation: hideLoader 0.2s ease-in-out forwards;
 
