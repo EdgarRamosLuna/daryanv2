@@ -20,7 +20,7 @@ export const MainContext = createContext();
 
 export const MainContextProvider = ({ children }) => {
   const dataSes = localStorage.getItem("sesType");
-  
+
   const handleCheckBox = (e, type, id, data) => {
     const allCheckBox = document.querySelectorAll('input[type="checkbox"]');
     const idM = data.map((data) => data.id);
@@ -140,7 +140,12 @@ export const MainContextProvider = ({ children }) => {
       }
     }
     axios
-      .post(`${serverUrl}/api/aprove`, dataToSave)
+      .post(`${serverUrl}/api/aprove`, dataToSave, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
       .then((res) => {
         const datares = res.data;
         if (datares.error) {
@@ -164,7 +169,7 @@ export const MainContextProvider = ({ children }) => {
   const navigate = useNavigate();
   const token = localStorage.getItem("t");
   const saveReport = async (e) => {
-  const dT = dataToSave[0];
+    const dT = dataToSave[0];
 
     if (
       dT.data.length < 9 ||
@@ -585,7 +590,6 @@ export const MainContextProvider = ({ children }) => {
       });
       setNumColumnas((prev) => prev - 1);
     } else {
-
       return false;
     }
   };
@@ -913,7 +917,7 @@ export const MainContextProvider = ({ children }) => {
 
   const onlyNumbers = /^\d+$/;
   const [openModalIncident, setOpenModalIncident] = useState(false);
-  const [reportIncidents, setReportIncidents] = useState([]);  
+  const [reportIncidents, setReportIncidents] = useState([]);
 
   const PROPS = {
     dataSes,
@@ -1087,12 +1091,12 @@ export const MainContextProvider = ({ children }) => {
     divsSamplingTableInsp,
     setDivsSamplingTableInsp,
     onlyNumbers, // Regex solo numeros
-    openModalIncident, 
+    openModalIncident,
     setOpenModalIncident,
-    reportIncidents, 
+    reportIncidents,
     setReportIncidents,
     InfoIcon,
-    ABECEDARIO
+    ABECEDARIO,
   };
   return (
     <MainContext.Provider value={PROPS}>

@@ -742,6 +742,8 @@ const View = () => {
   }, [numColumnas2, numColumnas]);
 
   useEffect(() => {
+    
+    const filteredIncidents = reportFooter3.filter(d => Number(d?.values[0]) !== 0);
     const newArray = [
       {
         data: dataCDb,
@@ -750,7 +752,7 @@ const View = () => {
         customerControlTable: divs,
         madeBy: reportFooter,
         observations: reportFooter2,
-        incidents: reportFooter3,
+        incidents: filteredIncidents,
         producedBy: producedBy,
         checkedBy: checkedBy,
         authorizedBy: authorizedBy,
@@ -917,10 +919,7 @@ const View = () => {
                 const data = res?.data;
                 const {column_values = []} = data;
                 setIncType(column_values)
-                console.log(data)
-                // setColumnTitles(data?.column_names || []);
-                // setTableData(data?.column_values || []);
-                // setOriginalTableData(data?.column_values || []); // Aquí se establecen los datos originales
+           
               } catch (err) {
                 console.log(err);
               }

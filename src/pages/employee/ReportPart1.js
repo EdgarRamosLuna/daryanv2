@@ -114,7 +114,7 @@ const ReportPart1 = ({
             sx={{
               width: "95%",
             }}
-            value={data.report_number}
+            value={Number.isNaN(data.report_number) ? 1 : data.report_number}
             onChange={(e) =>
               setData({
                 ...data,

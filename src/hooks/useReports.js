@@ -259,6 +259,10 @@ const useReports = () => {
   }, [numColumnas]);
 
   useEffect(() => {
+
+    //console.log(reportFooter3.filter(d => Number(d.values[0]) !== 0))
+    //console.log(reportFooter3)
+    const filteredIncidents = reportFooter3.filter(d => Number(d?.values[0]) !== 0);
     const newArray = [
       {
         data: data,
@@ -267,7 +271,7 @@ const useReports = () => {
         customerControlTable: divs,
         madeBy: reportFooter,
         observations: reportFooter2,
-        incidents: reportFooter3,
+        incidents: filteredIncidents,
         producedBy: producedBy,
         checkedBy: checkedBy,
         authorizedBy: authorizedBy,

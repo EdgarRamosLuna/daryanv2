@@ -140,7 +140,16 @@ export const DynamicTable = ({ data, type }) => {
                       placement="left"
                       arrow
                     >
-                      <Chip label={groupedData[reportId][clause]} color="sucess" variant="outlined" />                    
+                      {groupedData[reportId] &&
+                      groupedData[reportId][clause] ? (
+                        <Chip
+                          label={groupedData[reportId][clause]}
+                          color="success"
+                          variant="outlined"
+                        />
+                      ) : (
+                        ""
+                      )}
                     </Tooltip>
                   </>
                 </td>
@@ -148,7 +157,6 @@ export const DynamicTable = ({ data, type }) => {
             </tr>
           ))}
         </tbody>
-       
       </table>
     </>
   );
@@ -236,7 +244,6 @@ const TotalByPartNumber = () => {
         )}
       </>,
     ]);
-
   }, [rDetailsData, showDetails, partNumber]);
 
   const [typeData, setTypeData] = useState(0);
