@@ -23,6 +23,8 @@ import { StyledForm, Table } from "../../../../styles/Styles";
 import { useParams } from "react-router-dom";
 import { LanguageContext } from "../../../../context/LanguageContext";
 import InputDate from "../../../../components/inputs/InputDate";
+import AutocompleteInput from "../../../../components/inputs/AutocompleteInput";
+import useReports from "../../../../hooks/useReports";
 
 const Create2 = () => {
   const {
@@ -36,7 +38,7 @@ const Create2 = () => {
   } = useContext(MainContext);
   const params = useParams();
   const idReport = params.id;
-
+  
   //console.log(data2);
   const eData =
     data2.length === 0
@@ -293,8 +295,10 @@ export const Create2FirstTable = ({
     });
 
   }, [dataC]);
-  
-
+  const {suppliers} = useReports();
+  const supplierValue = suppliers?.find(
+    (supplier) => Number(supplier?.id) === Number(dataC?.id_supplier)
+  );
   return (
     <>
       <div className="container">
@@ -324,6 +328,31 @@ export const Create2FirstTable = ({
               }
             />
           </div>
+          <Box className="form-container">
+                <AutocompleteInput
+                  disablePortal
+                  id="combo-box-demo"
+                  name="id_supplier"
+                  options={suppliers}
+                  getOptionLabel={(option) => option.fullname}
+                  sx={{ width: "95%" }}
+                  value={supplierValue ? supplierValue : null}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      required
+                      label={t("table.supplier")}
+                      name="id_supplier"
+                    />
+                  )}
+                  onChange={(e, newValue) =>
+                    setDataC({
+                      ...dataC,
+                      id_supplier: newValue ? newValue.id : null,
+                    })
+                  }
+                />
+              </Box>
           <div className="form-container">
             <TextField
               id="outlined-basic"

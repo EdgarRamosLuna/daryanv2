@@ -24,6 +24,7 @@ const Reports = () => {
             setData(reportes);
           }
         } catch (error) {
+          console.log(error)
           toast.error("error", {
             duration: 5000,
           });
@@ -37,7 +38,7 @@ const Reports = () => {
       const request = async () => {
         try {
           const response = await getReportsByH(token);
-          const datares = response?.data.result;
+          const datares = response?.data;
           const { error } = datares;
           if (!error) {
             const reportes = Object.values(datares);
@@ -45,6 +46,7 @@ const Reports = () => {
             setData2(reportes);
           }
         } catch (error) {
+          console.log(error)
           toast.error("error", {
             duration: 5000,
           });

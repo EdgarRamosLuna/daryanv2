@@ -134,7 +134,7 @@ export const DynamicTable = ({ data, type }) => {
                       title={
                         <>
                           <b>Incidencia: </b>
-                          {groupedData2[reportId][clause].comment}
+                          {groupedData2[reportId][clause]?.comment}
                         </>
                       }
                       placement="left"
@@ -265,8 +265,7 @@ const TotalByPartNumber = () => {
     overflowY: "auto",
   };
   const [showFIltersT, setShowFiltersT] = useState(false);
-  const showFilterTable = () => {
-    console.log("showFilterTable");
+  const showFilterTable = () => {    
     setShowFiltersT((prev) => !prev);
   };
   useEffect(() => {

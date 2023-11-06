@@ -20,6 +20,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import SelectCustom from "./Select";
 import dayjs from "dayjs";
+import AutocompleteInput from "../../components/inputs/AutocompleteInput";
+import useReports from "../../hooks/useReports";
+import { useTranslation } from "react-i18next";
 const Create2 = () => {
   const {
     dataReportH,
@@ -29,6 +32,7 @@ const Create2 = () => {
     setActiveTabReportByH,
     divsSamplingTable,
   } = useContext(MainContext);
+  
   const [data, setData] = useState([]);
   const handleSelect = (e, type) => {
     setData({
@@ -157,6 +161,8 @@ export const Create2FirstTable = ({
   setDivsR4
 }) => {
   const dataSes = localStorage.getItem("sesType");
+  const {suppliers} = useReports();
+  const { t } = useTranslation();
   useEffect(() => {
     const newArray = [
       {
@@ -219,6 +225,25 @@ export const Create2FirstTable = ({
               }
             />
           </div>
+          <div className="form-container">
+          <AutocompleteInput
+            id="combo-box-demo"
+            name="id_supplier"
+            options={suppliers}
+            value={
+              suppliers.find((supplier) => supplier.id === data.id_supplier) ||
+              null
+            }
+            label={t("table.supplier")}
+            getOptionLabel={(option) => option.fullname}
+            onChange={(e, newValue) =>
+              setData({
+                ...data,
+                id_supplier: newValue ? newValue.id : null,
+              })
+            }
+          />
+        </div>
           <div className="form-container">
             <TextField
               id="outlined-basic"
