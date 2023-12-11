@@ -165,7 +165,7 @@ const ReportPart1 = ({
               totalHours > 0 &&
               typeof totalHours === "number" &&
               onlyNumbers.test(data.rate)
-                ? totalHours.toFixed(0)
+                ? totalHours.toFixed(1)
                 : data.worked_hours
             }
             onChange={(e) =>

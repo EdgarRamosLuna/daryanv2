@@ -108,7 +108,7 @@ const View = () => {
   const clauses = Number(dataC.report_in.length);
   const newLength = 11 + clauses;
   const [numFilas2, setNumFilas2] = useState(Number(dataC.reports_cc.length));
-  const [numColumnas2, setNumColumnas2] = useState(newLength);
+  const [numColumnas2, setNumColumnas2] = useState(newLength < 15 ? 15 : newLength);
 
   useEffect(() => {
     const reports_sample_table = eData.report_sata;

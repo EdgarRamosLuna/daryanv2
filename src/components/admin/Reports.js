@@ -72,11 +72,9 @@ function ReportsTable({ data, dataReportByH }) {
   const [nameFilter, setNameFilter] = useState("");
   const [nameFilter2, setNameFilter2] = useState("");
   const [nameFilterByH, setNameFilterByH] = useState("");
-  const [lastnameFilter, setLastnameFilter] = useState("");
-  const [idSupplier, setIdSupplier] = useState(0);
+
   const today = new Date();
-  const sixDaysLater = new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000);
-  const sixDaysBefore = new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000);
+
 
   const [dateStart, setDateStart] = useState(firstDayOfYear);
   const [dateEnd, setDateEnd] = useState(today);
@@ -328,7 +326,7 @@ function ReportsTable({ data, dataReportByH }) {
 
   useEffect(() => {
     const data = getPaginatedData();
-    console.log()
+    console.log(clients)
     if (data.length > 0) {
       const uniqueValues = Array.from(
         new Set(data.map((item) => item.id_supplier))

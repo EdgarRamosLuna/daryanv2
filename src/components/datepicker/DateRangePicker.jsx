@@ -12,7 +12,8 @@ import {
     addMonths,
     startOfWeek,
     differenceInCalendarDays,
-    format, startOfDay, endOfWeek, startOfMonth, endOfMonth, subWeeks, subMonths, isSameDay, isWithinInterval, addDays
+    format, startOfDay, endOfWeek, startOfMonth, endOfMonth, subWeeks, subMonths, isSameDay, isWithinInterval, addDays,
+     
 } from 'date-fns';
 
 import "react-date-range/dist/styles.css"; // main css file
@@ -22,10 +23,13 @@ import { DateRange, DateRangePicker, DefinedRange } from 'react-date-range';
 import { es, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 
-
-
 const DatePickerRange = ({ setDateStart, setDateEnd }) => {
     const { t, i18n } = useTranslation();
+    const [markedDatesRange, setMarkedDatesRange] = useState({
+        startDate: new Date('2023-12-01'),
+        endDate: new Date('2023-12-10')
+    });
+
     const defineds = {
         startOfWeek: startOfWeek(new Date()),
         endOfWeek: endOfWeek(new Date()),
@@ -40,6 +44,41 @@ const DatePickerRange = ({ setDateStart, setDateEnd }) => {
         startOfLastMonth: startOfMonth(addMonths(new Date(), -1)),
         endOfLastMonth: endOfMonth(addMonths(new Date(), -1)),
     };
+    function isDateInMarkedRange(date) {
+        return isWithinInterval(date, {
+            start: markedDatesRange.startDate,
+            end: markedDatesRange.endDate
+        });
+    }
+    function customDayContent(day) {
+        let extraDot = null;
+        const { startDate, endDate } = markedDatesRange; // Asumiendo que estas son tus fechas de inicio y fin
+
+        // Verifica si la fecha actual es la fecha de inicio o la fecha de fin
+        if ((startDate && isSameDay(day, startDate)) || (endDate && isSameDay(day, endDate))) {
+            extraDot = (
+                <div
+                    style={{
+                        height: '10px',
+                        width: '10px',
+                        borderRadius: '100%',
+                        background: 'red', // Elige el color de la marca
+                        position: 'absolute',
+                        top: 2,
+                        right: 2,
+                    }}
+                />
+            );
+        }
+
+        return (
+            <div>
+                {extraDot}
+                <span>{format(day, 'd')}</span>
+            </div>
+        );
+    }
+
 
     const staticRanges = [
         {
@@ -129,9 +168,7 @@ const DatePickerRange = ({ setDateStart, setDateEnd }) => {
                 return differenceInCalendarDays(range.endDate, defineds.startOfToday) + 1;
             },
         },
-    ];
-
-    const LANG = "es";
+    ];    
 
 
     const [state, setState] = useState([
@@ -187,6 +224,7 @@ const DatePickerRange = ({ setDateStart, setDateEnd }) => {
                     moveRangeOnFirstSelection={false}
                     months={2}
                     direction="horizontal"
+                    dayContentRenderer={customDayContent}
                 />
             </div>
         </>

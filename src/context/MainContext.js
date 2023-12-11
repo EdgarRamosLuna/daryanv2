@@ -806,7 +806,10 @@ export const MainContextProvider = ({ children }) => {
   useEffect(() => {
     async function loadTask() {
       const res2 = await getSuppliers();
-      setSuppliers(res2.data);
+
+      const {data:response} = res2;
+      const suppliers = response.filter(r => Number(r.bUsado) > 0)
+      setSuppliers(suppliers);
     }
     loadTask();
   }, []);

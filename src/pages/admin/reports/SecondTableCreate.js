@@ -205,7 +205,7 @@ export default function SecondTableCreate({
     const nextInput = document.getElementById(`input-${filaId + 1}-${3}`);
     nextInput && nextInput.focus();
   }, []);
-  //console.log(previousThText);
+  
   return (
     <Table>
       <table>
