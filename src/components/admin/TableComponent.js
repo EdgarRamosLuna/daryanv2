@@ -115,21 +115,21 @@ const TableComponent = ({ groupedData, loader }) => {
                     <td className="table-center">{dateData.total_inspected}</td>
                   )}
                   {tableFilters[0].total_ng === true && (
-                    <td className="table-center">{dateData.total_ng_pieces}</td>
+                    <td className="table-center">{dateData?.total_ng_pieces.toFixed(2)}</td>
                   )}
                   {tableFilters[0].total_ok === true && (
-                    <td className="table-center">{dateData.total_ok_pieces}</td>
+                    <td className="table-center">{dateData?.total_ok_pieces.toFixed(2)}</td>
                   )}
                   {tableFilters[0].total_rw === true && (
                     <td className="table-center">
-                      {dateData.total_re_work_parts}
+                      {dateData?.total_re_work_parts.toFixed(2)}
                     </td>
                   )}
                   {tableFilters[0].total_sc === true && (
-                    <td className="table-center">{dateData.total_scrap}</td>
+                    <td className="table-center">{dateData?.total_scrap.toFixed(2)}</td>
                   )}
                   {tableFilters[0].total_wh === true && (
-                    <td className="table-center">{dateData.worked_h}</td>
+                    <td className="table-center">{(dateData.worked_h.toFixed(2))}</td>
                   )}
                  
                   {/* <td className="table-center">{dateData.total_A}</td> */}

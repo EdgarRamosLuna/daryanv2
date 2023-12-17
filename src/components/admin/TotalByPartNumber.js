@@ -405,7 +405,7 @@ const TotalByPartNumber = () => {
                         )}
                         {index === 5 && tableFilters2[0].total_wh === true && (
                           <td key={index} className="table-center">
-                            {item}
+                            {item.toFixed(2)}
                           </td>
                         )}
                         {index === 6 && (
