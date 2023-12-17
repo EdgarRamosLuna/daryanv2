@@ -96,12 +96,12 @@ const View = () => {
   const idReport = params.id;
   const eData =
     data.length === 0
-      ? JSON.parse(dataTS).filter(
-          (data) => Number(data.id) === Number(idReport)
-        )[0]
+      ? JSON.parse(dataTS).filter((d) => Number(d.report_id) === Number(idReport))[0]
       : data.filter((data) => Number(data.id) === Number(idReport))[0];
 
   const [dataC, setDataC] = useState(eData);
+
+  //console.log(.filter((d) => Number(d.report_id) === Number(idReport)))
   const [producedBy, setProducedBy] = useState(eData.made_by);
   const [checkedBy, setCheckedBy] = useState(eData.checked_by);
   const [authorizedBy, setAuthorizedBy] = useState(eData.authorized_by);
@@ -215,9 +215,6 @@ const View = () => {
     return () => {};
   }, [numFilas2]);
 
-  const updateData = useCallback((data) => {
-    setDataC(data);
-  }, []);
   useEffect(() => {
     setNumColumnas2(numColumnas);
   }, [numColumnas]);
@@ -892,11 +889,12 @@ const View = () => {
   useEffect(() => {
     let dataFromDb;
     try {
-        dataFromDb = JSON.parse(dataTS);
+        dataFromDb = JSON.parse(dataTS).filter((d) => Number(d.report_id) === Number(idReport));
     } catch (error) {
         console.error('Error parsing JSON:', error);
         return;  // Early return in case of error
     }
+    
     
     if (dataFromDb.length > 0) {
         const timerId = setTimeout(() => {
@@ -911,6 +909,7 @@ const View = () => {
                 shift,
                 part_number,
                 id_supplier,
+                report_id
             } = dataFromDb[0];            
             const getAllDetails = async (partNumber) => {
               //setIsLoading(true); // Comienza la carga
@@ -936,6 +935,7 @@ const View = () => {
                 shift,
                 part_number,
                 id_supplier,
+                report_id
             });
         }, 100);
         
@@ -944,7 +944,7 @@ const View = () => {
             clearTimeout(timerId);
         };
     }
-}, [dataTS]);
+}, [dataTS, idReport]);
 
 
   const [dumpValue, setDumpValue] = useState("");
@@ -1151,7 +1151,7 @@ const View = () => {
                     typeof totalHours === "number" &&
                     onlyNumbers.test(dataCDb.rate)
                       ? totalHours.toFixed(0)
-                      : dataC.worked_h
+                      : dataCDb.worked_h
                   }
                   onChange={(e) =>
                     setDataCDb({

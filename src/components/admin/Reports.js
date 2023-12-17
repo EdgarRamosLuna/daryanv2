@@ -280,7 +280,7 @@ function ReportsTable({ data, dataReportByH }) {
         const id_supplier = item.id_supplier;
         const suppliers = item.supplier.toLowerCase();
         const planta = item.plant.toLowerCase();
-        const fullName = `${id}${id_supplier} ${part_number}${item.reports_cc
+        const fullName = `${id}${id_supplier}${part_number}${item.reports_cc
           .map((cc) => cc.lot)
           .join(", ")} ${item.reports_cc
           .map((cc) => cc.serial)

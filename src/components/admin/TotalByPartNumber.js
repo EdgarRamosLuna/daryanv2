@@ -170,7 +170,7 @@ const TotalByPartNumber = () => {
     tableFilters2,
     setTableFilters2,
     LANG,
-    langu,
+    langu,    
   } = useContext(MainContext);
 
   const [total_inspected, setTotalInspected] = useState([]);
@@ -179,7 +179,13 @@ const TotalByPartNumber = () => {
   const [tableData, setTableData] = useState([]);
   const [originalTableData, setOriginalTableData] = useState([]);
 
+  const serverUrl = 'http://phpstack-1070657-3746640.cloudwaysapps.com';
+  
+  //'http://localhost:3001';
   const [isLoading, setIsLoading] = useState(false);
+  const viewReportByPartNumber = (partNumber) =>{
+    window.open(`${serverUrl}/rip/${partNumber}?token=${token}`, '_blank');
+  };
   useEffect(() => {
     const getAllDetails = async () => {
       setIsLoading(true); // Comienza la carga
@@ -196,7 +202,6 @@ const TotalByPartNumber = () => {
     getAllDetails(partNumber);
   }, []);
   useEffect(() => {
-    //console.log(dataDb);
 
     // Sum the values of the object array
     const total_inspected = rDetailsData.reduce(
@@ -240,6 +245,7 @@ const TotalByPartNumber = () => {
               fontSize: "1.3rem",
               color: "#600404",
             }}
+            onClick={() => viewReportByPartNumber(partNumber)}
           ></i>
         )}
       </>,

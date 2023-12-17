@@ -4,6 +4,7 @@ import { MainContext } from "../../context/MainContext";
 import ComponentPagination from "../ComponentPagination";
 import NoInfo from "../helpers/NoInfo";
 import { useTranslation } from "react-i18next";
+import { Button, Chip } from "@mui/material";
 
 const TableComponent = ({ groupedData, loader }) => {
   const { t } = useTranslation();
@@ -97,10 +98,15 @@ const TableComponent = ({ groupedData, loader }) => {
                   {index === 0 && (
                     <td
                       className="table-center td-nh"
-                      rowSpan={dates.length}
-                      
-                    >
-                      {partNumber}
+                      rowSpan={dates.length}                                            
+                    >                                 
+                        <Button variant="contained" 
+                        color="success"
+                        sx={{
+                          
+                          cursor:'pointer !important'
+                        }}
+                        onClick={() => showDetailsTable(partNumber)}>{partNumber}</Button>                       
                     </td>
                   )}
                   <td className="table-center">{dateData.date}</td>
@@ -125,17 +131,7 @@ const TableComponent = ({ groupedData, loader }) => {
                   {tableFilters[0].total_wh === true && (
                     <td className="table-center">{dateData.worked_h}</td>
                   )}
-                  <td className="table-center">
-                    <i
-                      className="fas fa-eye"
-                      style={{
-                        fontSize: "1.5rem",
-                        cursor: "pointer",
-                        color: "green",
-                      }}
-                      onClick={() => showDetailsTable(partNumber)}
-                    />
-                  </td>
+                 
                   {/* <td className="table-center">{dateData.total_A}</td> */}
                 </tr>
               );
