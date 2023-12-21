@@ -12,9 +12,12 @@ import Loader from "../Loader";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import StatusBtn from "../StatusBtn";
-import { Grid, TextField } from "@mui/material";
+import { Button, Grid, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import ComponentPagination from "../ComponentPagination";
+import ModalMui from "../modal/ModalMui";
+import SupplierDetails from "./suppliers/SupplierDetails";
+
 
 registerLocale("es", es);
 function SuppliersTable({ data }) {
@@ -144,8 +147,24 @@ function SuppliersTable({ data }) {
     setUpdateId(id_user);
     setShowModalS(true);
   };
+  const [openModal, setOpenModal] = useState(false);
+  const [nIdSupplier, setIdSupplier] = useState(0);
+  const handleShowModal = (nIdSupplier) =>{
+    setOpenModal(true);
+    setIdSupplier(nIdSupplier);
+  }
   return (
     <>
+    <ModalMui
+      open={openModal}
+      onClose={() => setOpenModal(false)}
+      title={"Detalles proveedor"}
+      maxWidth={'80%'}
+    >
+      <SupplierDetails
+        nIdSupplier={nIdSupplier}
+      />
+    </ModalMui>
       <Table>
         <div className="table-container">
           <div className="header-container">
@@ -214,7 +233,9 @@ function SuppliersTable({ data }) {
                         isLoading === false ? "tr-h rloaderContainer" : "tr-hd"
                       }
                     >
-                      <td className="table-center">{item.fullname}</td>
+                      <td className="table-center">
+                        <Button variant="outlined" sx={{cursor:'pointer !important'}} onClick={() => handleShowModal(item.id)}>{item.fullname}</Button>
+                      </td>
                       <td className="table-center">{item.phone}</td>
                       <td className="table-center">{item.address}</td>
                       <td
@@ -237,6 +258,10 @@ function SuppliersTable({ data }) {
                             className="fa-solid fa-pen-to-square"
                             onClick={() => updateUser(item.id)}
                           ></i>
+                          {/* <i
+                            className="fa-solid fa-circle-info"
+                            onClick={() => updateUser(item.id)}
+                          ></i> */}
                         </div>
                       </td>
                     </tr>
@@ -255,7 +280,6 @@ function SuppliersTable({ data }) {
             setRowsPerPage={setRowsPerPage}
             data={data.length}
           />
-        
         </div>
       </Table>
     </>

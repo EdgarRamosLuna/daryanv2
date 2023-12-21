@@ -16,6 +16,8 @@ import {
   statusUser,
 } from "../api/daryan.api";
 import SpanishApp from "../components/datepicker/AdapterDates";
+import TaLoader from "../components/client/TaLoader";
+import { Grid } from "@mui/material";
 export const MainContext = createContext();
 
 export const MainContextProvider = ({ children }) => {
@@ -786,6 +788,7 @@ export const MainContextProvider = ({ children }) => {
   const [total14, setTotal14] = useState(0);
   const [sort, setSort] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDownloading, setIsDownloading] = useState(null);
   const serverUrl = process.env.REACT_APP_SERVER_URL;
   const formattedDate = (value) => {
     const date = new Date(value);
@@ -1010,6 +1013,8 @@ export const MainContextProvider = ({ children }) => {
     toast,
     isLoading,
     setIsLoading,
+    isDownloading, 
+    setIsDownloading,
     formattedDate,
     getNextLetter,
     dataUsers,
@@ -1103,6 +1108,13 @@ export const MainContextProvider = ({ children }) => {
   };
   return (
     <MainContext.Provider value={PROPS}>
+      {isDownloading &&
+      <Grid
+      sx={{position:'fixed', width:'100%', height:'100vh', display:'flex', justifyContent:'center', alignItems:'center', zIndex:'99999', background:'#fff'}}
+      >
+      <TaLoader />
+      </Grid>
+      }
       <Toaster richColors position={position} closeButton />
       <SpanishApp>{children}</SpanishApp>
     </MainContext.Provider>

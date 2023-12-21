@@ -230,3 +230,9 @@ export const getReportIncidents= (token) =>
       Authorization: `Bearer ${token}`,
     },
   });
+export const getTotalReportsBySupplier= (nIdSupplier) =>
+  serverApi.get(`/getTotalReportsBySupplier/${nIdSupplier}`, {
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
+  });

@@ -50,6 +50,9 @@ import { Close as CloseIcon } from "@mui/icons-material";
 import NoInfo from "../helpers/NoInfo";
 import { useTranslation } from "react-i18next";
 import FilterTable from "./FilterTable";
+import Charts from "./Charts";
+import BtnReportViewPdf from "./BtnReportViewPdf";
+import TableRowComponent from "./TableRowComponent";
 registerLocale("es", es);
 function ReportsTable({ data, dataReportByH }) {
   const { t } = useTranslation();
@@ -68,13 +71,14 @@ function ReportsTable({ data, dataReportByH }) {
     showCharts,
     firstDayOfYear,
     handleCheckBox,
+    setIsDownloading,
+    isDownloading,
   } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const [nameFilter2, setNameFilter2] = useState("");
   const [nameFilterByH, setNameFilterByH] = useState("");
 
   const today = new Date();
-
 
   const [dateStart, setDateStart] = useState(firstDayOfYear);
   const [dateEnd, setDateEnd] = useState(today);
@@ -323,10 +327,9 @@ function ReportsTable({ data, dataReportByH }) {
     [nameFilter, dateStart, dateEnd]
   );
 
-
   useEffect(() => {
     const data = getPaginatedData();
-    console.log(clients)
+    console.log(clients);
     if (data.length > 0) {
       const uniqueValues = Array.from(
         new Set(data.map((item) => item.id_supplier))
@@ -401,8 +404,6 @@ function ReportsTable({ data, dataReportByH }) {
   const [totalGeneral, setTotalGeneral] = useState([]);
   useEffect(() => {
     if (data.length > 0) {
-      
-      
       const filterLot = filtersLot;
       const filterSerial = filtersSerial;
       const filterPartNumber = filtersPartNumber;
@@ -412,7 +413,7 @@ function ReportsTable({ data, dataReportByH }) {
       // Definir las fechas del filtro
       const startDate = dateStart;
       const endDate = dateEnd;
-      
+
       for (let i = 0; i < data.length; i++) {
         const date = new Date(data[i].date);
         const report_totals = data[i].report_totals;
@@ -506,7 +507,8 @@ function ReportsTable({ data, dataReportByH }) {
             )) ||
           (filterPartNumber.length && !filterPartNumber.includes(partNumber)) || // Nueva condición para el filtro de búsqueda de part_number
           (filterSupplier.length && !filterSupplier.includes(supplier)) ||
-          ((date < adjustedStartDate || date > adjustedEndDate))
+          date < adjustedStartDate ||
+          date > adjustedEndDate
         ) {
           continue; // Saltar a la siguiente iteración del loop
         }
@@ -518,7 +520,6 @@ function ReportsTable({ data, dataReportByH }) {
 
         const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
 
-    
         temp2[i] = {
           part_number: partNumber,
           total_inspected: total_inspected,
@@ -606,7 +607,6 @@ function ReportsTable({ data, dataReportByH }) {
         });
       });
 
-
       setDataToTable(summedData);
       const totalesArray = [];
 
@@ -642,7 +642,7 @@ function ReportsTable({ data, dataReportByH }) {
     filtersSerial,
     filtersSupplier,
   ]);
- 
+
   const filteredData = filterData(data);
   const filteredData2 = filterData2(data);
 
@@ -711,7 +711,6 @@ function ReportsTable({ data, dataReportByH }) {
         }
       });
       setUniqueSuppliers([...new Set(res0)]);
-  
 
       const res1 = [];
       const seen = {};
@@ -850,24 +849,24 @@ function ReportsTable({ data, dataReportByH }) {
     return obj;
   }, {});
 
-
   //Añade un cliente a la lista para autorizar
   const addClientToList = (e) => {
     const id = e.target.value;
-      
+
     // Look up the client name by id
-    const clientName = clientsById[id]?.fullname ? clientsById[id].fullname : '';
+    const clientName = clientsById[id]?.fullname
+      ? clientsById[id].fullname
+      : "";
     setSelectedClient(id);
-    if(clientName !== ''){      
+    if (clientName !== "") {
       setClientsToReport((prev) => {
-        if (!prev.some((client) => (client.id === id) && (Number(id) !== 0))) {        
+        if (!prev.some((client) => client.id === id && Number(id) !== 0)) {
           return [...prev, { id, clientName }];
         }
         return prev;
       });
     }
   };
-
 
   const removeClient = (id) => {
     setClientsToReport((prev) => prev.filter((client) => client.id !== id));
@@ -894,7 +893,7 @@ function ReportsTable({ data, dataReportByH }) {
     1: {
       componenteTitle: reportesComponents["insp"].p,
       componenteTop: (
-        <div className="header-container">         
+        <div className="header-container">
           <form autoComplete="off">
             <Grid
               sx={{
@@ -974,100 +973,62 @@ function ReportsTable({ data, dataReportByH }) {
       ),
       componenteMiddle: (
         <div className="table-body table-reports">
-        <table>
-          <thead>
-            <tr>
-              <th>
-                <Checkbox
-                  type="all"
-                  id={0}
-                  callback={handleCheckBox}
-                  data={getPaginatedData()}
-                />
-              </th>
-              <th>{t('reports.part_number')}</th>
-              <th>{t('reports.plant')}</th>
-              <th>{t('reports.supplier')}</th>
-              <th>{t('reports.date')}</th>
-              <th>{t('reports.status')}</th>
-              <th>{t('reports.actions')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <div className={loader === false ? "loaderContainer" : ""}>
-              <Loader>
-                <img src="/assets/img/loading2.svg" alt="" />
-              </Loader>
-            </div>
-            {getPaginatedData().length === 0 ? (
+          <table>
+            <thead>
               <tr>
-                <td
-                  colSpan="7"
-                  className="table-center"
-                  style={{ opacity: `${loader ? 0 : 1}` }}
-                >
-                  <h1>{t('reports.noDatabaseInformation')}</h1>
-                </td>
+                <th>
+                  <Checkbox
+                    type="all"
+                    id={0}
+                    callback={handleCheckBox}
+                    data={getPaginatedData()}
+                  />
+                </th>
+                <th>{t("reports.part_number")}</th>
+                <th>{t("reports.plant")}</th>
+                <th>{t("reports.supplier")}</th>
+                <th>{t("reports.date")}</th>
+                <th>Usuario modifica{/*t('reports.date')*/}</th>
+                <th>Empleado captura{/*t('reports.date')*/}</th>
+                <th>{t("reports.status")}</th>
+                <th>Tabla muestreo{/*t('reports.date')*/}</th>
+                <th>{t("reports.actions")}</th>
               </tr>
-            ) : (
-              getPaginatedData().map((item, index) => (
-                <tr key={index} onClick={(e) => singleView(item.id)}>
+            </thead>
+            <tbody>
+              <div className={loader === false ? "loaderContainer" : ""}>
+                <Loader>
+                  <img src="/assets/img/loading2.svg" alt="" />
+                </Loader>
+              </div>
+              {getPaginatedData().length === 0 ? (
+                <tr>
                   <td
+                    colSpan="7"
                     className="table-center"
-                    onClick={(e) => e.stopPropagation()}
-                    colSpan={1}
+                    style={{ opacity: `${loader ? 0 : 1}` }}
                   >
-                    <Checkbox
-                      type="single"
-                      id={item.id}
-                      callback={handleCheckBox}
-                      data={getPaginatedData()}
-                    />
-                  </td>
-                  <td className="table-center">{item.part_number}</td>
-                  <td className="table-center">{item.plant}</td>
-                  <td className="table-center">{item.supplier}</td>
-                  <td className="table-center">{item.date}</td>
-                  <td className="table-center">
-                    {Number(item.status) === 1 && t('reports.notApproved')} 
-                    {Number(item.status) === 3 && t('reports.approved')}
-                  </td>
-                  <td
-                    className="table-center"
-                    onClick={(e) => e.stopPropagation()}
-                    colSpan={1}
-                  >
-                    <div className="actions">
-                      <FontAwesomeIcon
-                        icon={faTrash}
-                        onClick={() => handleDel(item.id, "reports")}
-                      />
-                      <a
-                        href={`http://phpstack-1070657-3746640.cloudwaysapps.com/reporte-inspeccion/${item.id}`}
-                        target="_blank"
-                        className="btn-pdf"
-                        rel="noreferrer"
-                      >
-                        {!navigator.onLine ? (
-                          <FontAwesomeIcon icon={faFilePdf} />
-                        ) : (
-                          <i className="fa-solid fa-file-pdf"></i>
-                        )}
-                      </a>
-                      <FontAwesomeIcon
-                        icon={faUsers}
-                        color="green"
-                        onClick={() => authClientsC(item.id)}
-                      />
-                    </div>
+                    <h1>{t("reports.noDatabaseInformation")}</h1>
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-      
+              ) : (
+                getPaginatedData().map((item, index) => (
+                  <TableRowComponent
+                    item={item}
+                    singleView={singleView}
+                    index={index}
+                    handleDel={handleDel}
+                    handleCheckBox={handleCheckBox}
+                    getPaginatedData={getPaginatedData}
+                    authClientsC={authClientsC}
+                    t={t}
+                    key={index}
+                  />
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       ),
       componenteBottom: (
         <ComponentPagination
@@ -1126,7 +1087,9 @@ function ReportsTable({ data, dataReportByH }) {
                           width: "90%",
                         }}
                       >
-                        <MenuItem value="0">{t("reports.selectAClient")}</MenuItem>
+                        <MenuItem value="0">
+                          {t("reports.selectAClient")}
+                        </MenuItem>
                         {uniqueClients.map((option) => (
                           <MenuItem key={option} value={option.id}>
                             {option.fullname}
@@ -1180,7 +1143,6 @@ function ReportsTable({ data, dataReportByH }) {
       componenteTitle: reportesComponents["total_insp"].p,
       componenteTop: (
         <div className="header-container2">
-           
           <form autoComplete="off">
             <Box
               className=""
@@ -1436,14 +1398,14 @@ function ReportsTable({ data, dataReportByH }) {
               setDateStart={setDateStart}
               setDateEnd={setDateEnd}
             />
-          
-          <div className="table-controlls">
-              {showFIltersT && (
-                <FilterTable />
-              )}
+
+            <div className="table-controlls">
+              {showFIltersT && <FilterTable />}
               <div className="table-controlls-left">
                 <div
-                  className={`table-controlls-left-item ${showFIltersT ? "activeFilters" : ""}`}
+                  className={`table-controlls-left-item ${
+                    showFIltersT ? "activeFilters" : ""
+                  }`}
                   onClick={showFilterTable}
                 >
                   <i className="fa-solid fa-filter"></i>
@@ -1453,33 +1415,13 @@ function ReportsTable({ data, dataReportByH }) {
           </form>
           <div className={`charts ${showCharts === true && "smoothFadeIn"}`}>
             {showCharts === true && (
-              <>
-                <Chart1
-                  totalG={totalGeneral}
-                  colorScale={[
-                    "tomato",
-                    "orange",
-                    "gold",
-                    "gold",
-                    "gold",
-                    "gold",
-                  ]}
-                />
-                <Chart2
-                  totalG={totalGeneral}
-                  colorScale={[
-                    "tomato",
-                    "orange",
-                    "gold",
-                    "gold",
-                    "gold",
-                    "gold",
-                  ]}
-                />
-              </>
+              <Charts
+                totalGeneral={totalGeneral}
+                setIsDownloading={setIsDownloading}
+                isDownloading={isDownloading}
+              />
             )}
           </div>
-          
         </div>
       ),
       componenteMiddle: (
