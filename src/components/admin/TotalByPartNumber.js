@@ -171,20 +171,19 @@ const TotalByPartNumber = () => {
     setTableFilters2,
     LANG,
     langu,    
+    serverNodeUrl
   } = useContext(MainContext);
 
   const [total_inspected, setTotalInspected] = useState([]);
   const [showDetails, setShowDetails] = useState(false); // Nuevo estado para el toggle
   const [columnTitles, setColumnTitles] = useState([]); // Nuevo estado para los títulos de las columnas
   const [tableData, setTableData] = useState([]);
-  const [originalTableData, setOriginalTableData] = useState([]);
-
-  const serverUrl = 'http://phpstack-1070657-3746640.cloudwaysapps.com';
+  const [originalTableData, setOriginalTableData] = useState([]);  
   
   //'http://localhost:3001';
   const [isLoading, setIsLoading] = useState(false);
   const viewReportByPartNumber = (partNumber) =>{
-    window.open(`${serverUrl}/rip/${partNumber}?token=${token}`, '_blank');
+    window.open(`${serverNodeUrl}rip/${partNumber}?st=${token}`, '_blank');
   };
   useEffect(() => {
     const getAllDetails = async () => {

@@ -28,7 +28,7 @@ export default function ReportsTable({ data, totalReports }) {
             <TableCell>Reporte id</TableCell>
             <TableCell align="center">Numero de parte</TableCell>
             <TableCell align="center">Fecha</TableCell>
-            <TableCell align="center">Reportes totales</TableCell>
+            {/* <TableCell align="center">Reportes totales</TableCell> */}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -46,7 +46,7 @@ export default function ReportsTable({ data, totalReports }) {
               
               {index === (data.length % 2) - 1 && (
                 <TableCell rowSpan={data.length} align="center"> {/* rowSpan se establece al número total de filas */}
-                    {totalReports}
+                    {/* {totalReports} */}
                 </TableCell>
                 )}
             </TableRow>

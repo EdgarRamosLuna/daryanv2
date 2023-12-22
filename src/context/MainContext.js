@@ -790,6 +790,7 @@ export const MainContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDownloading, setIsDownloading] = useState(null);
   const serverUrl = process.env.REACT_APP_SERVER_URL;
+  const serverNodeUrl = process.env.REACT_APP_SERVER_NODE_URL;
   const formattedDate = (value) => {
     const date = new Date(value);
     const year = date.getFullYear();
@@ -1105,6 +1106,7 @@ export const MainContextProvider = ({ children }) => {
     setReportIncidents,
     InfoIcon,
     ABECEDARIO,
+    serverNodeUrl
   };
   return (
     <MainContext.Provider value={PROPS}>
