@@ -289,23 +289,18 @@ function ReportsTable({ data, dataReportByH }) {
           .join(", ")} ${item.reports_cc
           .map((cc) => cc.serial)
           .join(", ")} ${suppliers} ${planta} `;
+        console.log(item.date);
         const date = new Date(item.date);
-
-        // Ajusta la fecha 'date' para que solo tenga año, mes y día
-        date.setHours(0, 0, 0, 0);
-        // Luego ajusta para tener en cuenta el desplazamiento de la zona horaria
-        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+        date.setUTCHours(6, 0, 0, 999);
 
         const startDate = new Date(dateStart);
-        startDate.setHours(0, 0, 0, 0);
-        startDate.setMinutes(
-          startDate.getMinutes() + startDate.getTimezoneOffset()
-        );
+        startDate.setUTCHours(6, 0, 0, 999);
 
         const endDate = new Date(dateEnd);
-        endDate.setHours(23, 59, 59, 999);
-        endDate.setMinutes(endDate.getMinutes() + endDate.getTimezoneOffset());
-
+        endDate.setUTCHours(6, 0, 0, 999);
+        console.log(date);
+        console.log(startDate);
+        console.log(endDate);
         if (
           nameFilter &&
           fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
@@ -1004,7 +999,7 @@ function ReportsTable({ data, dataReportByH }) {
               {getPaginatedData().length === 0 ? (
                 <tr>
                   <td
-                    colSpan="7"
+                    colSpan="10"
                     className="table-center"
                     style={{ opacity: `${loader ? 0 : 1}` }}
                   >

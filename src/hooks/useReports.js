@@ -10,6 +10,7 @@ const useReports = () => {
     reportIncidents,
     setReportIncidents,
   } = useContext(MainContext);
+  const [incType, setIncType] = useState([]);
   const loadTask = async () => {
     const res = await getReportIncidents();
     setReportIncidents(res.data);
@@ -81,8 +82,7 @@ const useReports = () => {
     container2Ref,
     handleScroll1,
     handleScroll2,
-    suppliers,
-    incType,
+    suppliers,    
     activeTabReportInsp,
     setActiveTabReportInsp,
     divsSamplingTableInsp,
@@ -388,6 +388,7 @@ const useReports = () => {
     setCheckedBy,
     divsSamplingTableInsp,
     setDivsSamplingTableInsp,
+    incType, setIncType
   };
 };
 

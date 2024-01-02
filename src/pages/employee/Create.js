@@ -69,6 +69,8 @@ const Create = () => {
     divsSamplingTableInsp,
     setDivsSamplingTableInsp,
     activeTabReportInsp,
+    incType, 
+    setIncType
   } = useReports();
 
   
@@ -171,6 +173,8 @@ const Create = () => {
             reportFooter={reportFooter}
             setProducedBy={setProducedBy}
             setCheckedBy={setCheckedBy}
+            incType={incType}
+            setIncType={setIncType}
           />
         </>
       ),

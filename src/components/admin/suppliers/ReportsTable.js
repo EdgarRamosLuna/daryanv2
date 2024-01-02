@@ -19,16 +19,17 @@ const rows = [
   createData("Gingerbread", 356, 16.0, 49, 3.9),
 ];
 
-export default function ReportsTable({ data, totalReports }) {
+export default function ReportsTable({ data, labels }) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Reporte id</TableCell>
-            <TableCell align="center">Numero de parte</TableCell>
-            <TableCell align="center">Fecha</TableCell>
-            {/* <TableCell align="center">Reportes totales</TableCell> */}
+            <TableCell>Nombre de parte</TableCell>
+            <TableCell align="center">Numero de parte</TableCell>  
+            {labels.map((element, i) => {
+              return <TableCell key={`${i+element}`}>{element}</TableCell>
+            })}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -40,15 +41,13 @@ export default function ReportsTable({ data, totalReports }) {
               {/* <TableCell component="th" scope="row">
                 {row.name}
               </TableCell> */}
-              <TableCell align="center">{row.id_report}</TableCell>
+              <TableCell align="center">{row.part_name}</TableCell>
               <TableCell align="center">{row.part_number}</TableCell>
-              <TableCell align="center">{row.date}</TableCell>
-              
-              {index === (data.length % 2) - 1 && (
-                <TableCell rowSpan={data.length} align="center"> {/* rowSpan se establece al número total de filas */}
-                    {/* {totalReports} */}
-                </TableCell>
-                )}
+              <TableCell align="center">{row.totalInp}</TableCell>
+              <TableCell align="center">{row.totalNG}</TableCell>
+              <TableCell align="center">{row.totalOK}</TableCell>
+              <TableCell align="center">{row.totalRework}</TableCell>
+              <TableCell align="center">{row.totalScrap}</TableCell>              
             </TableRow>
           ))}
         </TableBody>

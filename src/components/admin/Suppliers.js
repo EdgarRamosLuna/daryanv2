@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import ComponentPagination from "../ComponentPagination";
 import ModalMui from "../modal/ModalMui";
 import SupplierDetails from "./suppliers/SupplierDetails";
+import TabComponentMUI from "../tabs/TabComponentMUI";
 
 
 registerLocale("es", es);
@@ -153,6 +154,19 @@ function SuppliersTable({ data }) {
     setOpenModal(true);
     setIdSupplier(nIdSupplier);
   }
+  const tabsData = [
+    {
+      label: "Reportes",
+      content:  <SupplierDetails
+      nIdSupplier={nIdSupplier}
+    />,
+    },
+    {
+      label: "Usuarios",
+      content: <div>Contenido de la Pestaña 2</div>,
+    },
+  ]
+  
   return (
     <>
     <ModalMui
@@ -161,9 +175,9 @@ function SuppliersTable({ data }) {
       title={"Detalles proveedor"}
       maxWidth={'80%'}
     >
-      <SupplierDetails
-        nIdSupplier={nIdSupplier}
-      />
+
+      <TabComponentMUI tabs={tabsData} />  
+     
     </ModalMui>
       <Table>
         <div className="table-container">

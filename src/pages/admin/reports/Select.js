@@ -1,12 +1,10 @@
 // Importando las dependencias necesarias de React
 import React, { useState, useEffect, useContext } from "react";
 
-import { MainContext } from "../../../context/MainContext";
 // Definiendo un componente funcional llamado SelectCustom
-const SelectCustom = ({ data, clause, selected }) => {
+const SelectCustom = ({ data, clause, selected, setIncType }) => {
   // Utilizando el hook useContext para acceder al contexto MainContext
-  // y desestructurando setIncType e incType de dicho contexto
-  const { setIncType } = useContext(MainContext);
+  // y desestructurando setIncType e incType de dicho contexto  
 
   // Utilizando el hook useEffect para ejecutar lógica cuando el prop 'selected' cambie
   useEffect(() => {
@@ -24,16 +22,26 @@ const SelectCustom = ({ data, clause, selected }) => {
   const handleChange = (e) => {
     // Obteniendo el valor del elemento seleccionado
     const type = e.target.value;
-
+    //console.log(setIncType)
     // Actualizando el estado del contexto con el nuevo valor seleccionado
     setIncType((prevArray) => {
+      // Crear un mapa para almacenar objetos únicos
       const uniqueObjects = new Map(
-        prevArray.map((obj) => [JSON.stringify(obj), obj])
+        prevArray.map((obj) => [JSON.stringify({ type: obj.type, clause: obj.clause }), obj])
       );
-      uniqueObjects.set(JSON.stringify({ type, clause }), { type, clause });
+    
+      // Clave para el nuevo objeto
+      const newKey = JSON.stringify({ type, clause });
+    
+      // Solo agregar si no existe ya en el mapa
+      if (!uniqueObjects.has(newKey)) {
+        uniqueObjects.set(newKey, { type, clause });
+      }
+    
+      // Convertir de vuelta a un arreglo
       return Array.from(uniqueObjects.values());
     });
-
+    
     // Actualizando el estado local dataC con el nuevo valor seleccionado
     setDataC(type);
   };

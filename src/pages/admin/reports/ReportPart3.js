@@ -52,6 +52,8 @@ const ReportPart3 = ({
   reportFooter,
   setProducedBy,
   setCheckedBy,
+  incType,
+  setIncType
 }) => {
   const { t } = useContext(LanguageContext);
   return (
@@ -271,6 +273,8 @@ const ReportPart3 = ({
                 reportFooter3={reportFooter3}
                 handleUpdate={handleUpdate}
                 reportIncidents={reportIncidents}
+                incType={incType}
+                setIncType={setIncType}
               />
             </tr>
             <tr>

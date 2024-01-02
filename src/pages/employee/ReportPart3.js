@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Table } from "../../styles/Styles";
 import { LanguageContext } from "../../context/LanguageContext";
 import Incidents from "./Incidents";
@@ -52,8 +52,10 @@ const ReportPart3 = ({
   reportFooter,
   setProducedBy,
   setCheckedBy,
+  incType, setIncType
 }) => {
   const { t } = useContext(LanguageContext);
+  
   return (
     <div
       className="container scrollX c2"
@@ -275,6 +277,8 @@ const ReportPart3 = ({
                 reportFooter3={reportFooter3}
                 handleUpdate={handleUpdate}
                 reportIncidents={reportIncidents}
+                incType={incType}
+                setIncType={setIncType}
               />
             </tr>
             <tr>

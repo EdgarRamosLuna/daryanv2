@@ -13,9 +13,12 @@ const Incidents = ({
   reportFooter3,
   handleUpdate,
   reportIncidents,
+  incType,
+  setIncType
 }) => {
   const { t } = useTranslation();
-  const { InfoIcon, incType, ABECEDARIO } = useContext(MainContext);
+  const { InfoIcon, ABECEDARIO } = useContext(MainContext);
+  
 
   const [aIncidents, setAIncidents] = useState(0);
   const [incidents, setIncidents] = useState([]);
@@ -45,7 +48,7 @@ const Incidents = ({
           oIncidents[clause] = count;
         }
       });
-
+      console.log(oIncidents)
       setIncidents(oIncidents);
     }
   }, [incType]);
@@ -84,6 +87,7 @@ const Incidents = ({
                               incidentLabels={incidentLabels}
                               incidents={incidents}
                               dumpValue={dumpValue}
+                              setIncType={setIncType}
                             />
                             <br />
                           </>
@@ -96,6 +100,7 @@ const Incidents = ({
                               incidentLabels={incidentLabels}
                               incidents={incidents}
                               dumpValue={dumpValue}
+                              setIncType={setIncType}
                             />
                             <br />
                           </>
@@ -108,6 +113,7 @@ const Incidents = ({
                               incidentLabels={incidentLabels}
                               incidents={incidents}
                               dumpValue={dumpValue}
+                              setIncType={setIncType}
                             />
                             <br />
                           </>
@@ -120,6 +126,7 @@ const Incidents = ({
                               incidentLabels={incidentLabels}
                               incidents={incidents}
                               dumpValue={dumpValue}
+                              setIncType={setIncType}
                             />
                             <br />
                           </>
@@ -132,6 +139,7 @@ const Incidents = ({
                               incidentLabels={incidentLabels}
                               incidents={incidents}
                               dumpValue={dumpValue}
+                              setIncType={setIncType}
                             />
                             <br />
                           </>
@@ -144,6 +152,7 @@ const Incidents = ({
                               incidentLabels={incidentLabels}
                               incidents={incidents}
                               dumpValue={dumpValue}
+                              setIncType={setIncType}
                             />
                             <br />
                           </>
@@ -156,6 +165,7 @@ const Incidents = ({
                               incidentLabels={incidentLabels}
                               incidents={incidents}
                               dumpValue={dumpValue}
+                              setIncType={setIncType}
                             />
                             <br />
                           </>
@@ -168,6 +178,7 @@ const Incidents = ({
                               incidentLabels={incidentLabels}
                               incidents={incidents}
                               dumpValue={dumpValue}
+                              setIncType={setIncType}
                             />
                             <br />
                           </>
@@ -180,6 +191,7 @@ const Incidents = ({
                               incidentLabels={incidentLabels}
                               incidents={incidents}
                               dumpValue={dumpValue}
+                              setIncType={setIncType}
                             />
                             <br />
                           </>
@@ -203,57 +215,57 @@ const Incidents = ({
                       <div key={`clausesSelect${i}`}>
                         {i === 8 && (
                           <>
-                            <SelectCustom data={optionClause} clause="A" />
+                            <SelectCustom data={optionClause} clause="A" setIncType={setIncType} />
 
                             <br />
                           </>
                         )}
                         {i === 9 && (
                           <>
-                            <SelectCustom data={optionClause} clause="B" />
+                            <SelectCustom data={optionClause} clause="B" setIncType={setIncType} />
 
                             <br />
                           </>
                         )}
                         {i === 10 && (
                           <>
-                            <SelectCustom data={optionClause} clause="C" />
+                            <SelectCustom data={optionClause} clause="C" setIncType={setIncType} />
                             <br />
                           </>
                         )}
                         {i === 11 && (
                           <>
-                            <SelectCustom data={optionClause} clause="D" />
+                            <SelectCustom data={optionClause} clause="D" setIncType={setIncType} />
                             <br />
                           </>
                         )}
                         {i === 12 && (
                           <>
-                            <SelectCustom data={optionClause} clause="E" />
+                            <SelectCustom data={optionClause} clause="E" setIncType={setIncType} />
                             <br />
                           </>
                         )}
                         {i === 13 && (
                           <>
-                            <SelectCustom data={optionClause} clause="F" />
+                            <SelectCustom data={optionClause} clause="F" setIncType={setIncType} />
                             <br />
                           </>
                         )}
                         {i === 14 && (
                           <>
-                            <SelectCustom data={optionClause} clause="G" />
+                            <SelectCustom data={optionClause} clause="G" setIncType={setIncType} />
                             <br />
                           </>
                         )}
                         {i === 15 && (
                           <>
-                            <SelectCustom data={optionClause} clause="H" />
+                            <SelectCustom data={optionClause} clause="H" setIncType={setIncType} />
                             <br />
                           </>
                         )}
                         {i === 16 && (
                           <>
-                            <SelectCustom data={optionClause} clause="I" />
+                            <SelectCustom data={optionClause} clause="I" setIncType={setIncType} />
                             <br />
                           </>
                         )}

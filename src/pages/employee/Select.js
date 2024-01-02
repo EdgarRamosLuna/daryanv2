@@ -1,15 +1,12 @@
 // Importando las dependencias necesarias de React
 import React from "react";
-import { useContext } from "react";
-import { MainContext } from "../../context/MainContext";
 import { useState } from "react";
 import { useEffect } from "react";
 
 // Definiendo un componente funcional llamado SelectCustom
-const SelectCustom = ({ data, clause, selected }) => {
+const SelectCustom = ({ data, clause, selected, setIncType }) => {
   // Utilizando el hook useContext para acceder al contexto MainContext
   // y desestructurando setIncType e incType de dicho contexto
-  const { setIncType } = useContext(MainContext);
 
   // Utilizando el hook useEffect para ejecutar lógica cuando el prop 'selected' cambie
   useEffect(() => {

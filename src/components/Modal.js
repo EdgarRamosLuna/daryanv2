@@ -11,7 +11,9 @@ const Modal = ({ children, callback, width }) => {
     <StyledModal width={width}>
       <div className="modal-container">
         <div className="modal-close">
-          <button ref={btnCloseRef} onClick={() => callback()}><FontAwesomeIcon icon={faXmark} color="#450107" />
+          <button ref={btnCloseRef} onClick={() => callback()}><FontAwesomeIcon icon={faXmark} color="#450107" style={{
+            fontSize:'1.5em'
+          }} />
             {/* <i className="fa-solid fa-xmark"></i> */}
           </button>
         </div>

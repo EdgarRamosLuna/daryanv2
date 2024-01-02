@@ -26,8 +26,8 @@ import { useTranslation } from 'react-i18next';
 const DatePickerRange = ({ setDateStart, setDateEnd }) => {
     const { t, i18n } = useTranslation();
     const [markedDatesRange, setMarkedDatesRange] = useState({
-        startDate: new Date('2023-12-01'),
-        endDate: new Date('2023-12-10')
+        startDate: new Date(),
+        endDate: new Date('2024-01-02 06:00:00')
     });
 
     const defineds = {
@@ -173,8 +173,8 @@ const DatePickerRange = ({ setDateStart, setDateEnd }) => {
 
     const [state, setState] = useState([
         {
-            startDate: new Date(),
-            endDate: new Date(),
+            startDate: new Date().setUTCHours(6, 0, 0, 999),
+            endDate: new Date().setUTCHours(6, 0, 0, 999),
             key: 'selection'
         }
     ]);

@@ -4,9 +4,8 @@ import { MainContext } from "../../context/MainContext";
 import { useState } from "react";
 import { useEffect } from "react";
 
-const SelectIncidents = ({ data, clause, selected }) => {
+const SelectIncidents = ({ data, clause, selected, setIncType }) => {
 
-    const {setIncType, incType} = useContext(MainContext);    
     useEffect(() => {
       
       if(selected){

@@ -918,9 +918,7 @@ export const MainContextProvider = ({ children }) => {
     localStorage.setItem("lang", langu);
   }, [langu]);
   const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1);
-  const [isAdmin, setIsAdmin] = useState(null);
-
-  const [incType, setIncType] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(null);  
 
   const onlyNumbers = /^\d+$/;
   const [openModalIncident, setOpenModalIncident] = useState(false);
@@ -1082,9 +1080,7 @@ export const MainContextProvider = ({ children }) => {
     firstDayOfYear,
     isAdmin,
     setIsAdmin,
-    token,
-    incType,
-    setIncType,
+    token,    
     dataReportH,
     setDataReportH,
     saveReportH,

@@ -78,17 +78,17 @@ const View = () => {
     setNumColumnas,
     suppliers,
     toast,
-    isAdmin,
-    incType,
+    isAdmin,    
     activeTabReportInsp,
     divsSamplingTableInsp,
     setDivsSamplingTableInsp,
     setNumFilas,
     onlyNumbers,
-    token,
-    setIncType
+    token,    
   } = useContext(MainContext);
   const { lang } = useContext(LanguageContext);
+
+  const [incType, setIncType] = useState([]);
 
   const { reportIncidents, dataSes } = useReports();
 
@@ -917,7 +917,9 @@ const View = () => {
                 const res = await getReportsByPartNumber({ partNumber, token });
                 const data = res?.data;
                 const {column_values = []} = data;
-                setIncType(column_values)
+
+                setIncType(column_values.filter(cv => cv.report_id === idReport))
+                console.log(data)
            
               } catch (err) {
                 console.log(err);
@@ -1455,6 +1457,8 @@ const View = () => {
             reportFooter={reportFooter}
             setProducedBy={setProducedBy}
             setCheckedBy={setCheckedBy}
+            incType={incType}
+            setIncType={setIncType}
           />
         </>
       ),
