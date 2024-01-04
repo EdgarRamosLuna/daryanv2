@@ -1,13 +1,10 @@
 import { Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { getTotalReportsBySupplier } from "../../../api/daryan.api";
-import { toast } from "sonner";
 import ReportsTable from "./ReportsTable";
 import { PieChart } from "../../chart/PieChart";
 
-const SupplierDetails = ({ nIdSupplier }) => {
-  const [reportDetails, setReportDetails] = useState([]);
-  const [series, setSeries] = useState([]);
+const SupplierDetails = ({ nIdSupplier, reportDetails, series }) => {
+    
   const [labels, setLabels] = useState([    
     "Total NG",
     "Total OK",
@@ -21,33 +18,7 @@ const SupplierDetails = ({ nIdSupplier }) => {
     "Total Retrabajo",
     "Total Scrap",
   ]);
-  useEffect(() => {
-    const getReportBySupplier = async () => {
-      try {
-        const response = await getTotalReportsBySupplier(nIdSupplier);
-        const { error: errorDb, message, data: dataResponse } = response.data;
-        if (typeof errorDb !== "boolean") {
-          toast.error("Ocurrio un error intentalo mas tarde");
-        } else {
-          const {
-            totalInp,
-            totalNG,
-            totalOK,
-            totalRework,
-            totalScrap,
-            TotalsByPartName,
-          } = dataResponse[0];
-          setReportDetails(JSON.parse(TotalsByPartName));
-          setSeries([totalNG, totalOK, totalRework, totalScrap]);
-        }
-        //setTotalReports()
-      } catch (error) {
-        toast.error("Ocurrio un error intentalo mas tarde");
-      }
-    };
-    getReportBySupplier();
-    return () => {};
-  }, [nIdSupplier]);
+
 
   return (
     <Grid
@@ -58,7 +29,7 @@ const SupplierDetails = ({ nIdSupplier }) => {
         flexDirection:'column'
       }}
     >
-      <h1>Total de incidencias</h1>        
+      <Typography>Total de incidencias</Typography>        
       <Grid>        
         <PieChart labels={labels} series={series} />
       </Grid>

@@ -3,8 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
-  useState,
+  useMemo,  useState,
 } from "react";
 import { registerLocale } from "react-datepicker";
 import { debounce } from "lodash";
@@ -14,18 +13,13 @@ import Loader from "../Loader";
 import Checkbox from "../Checkbox";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import TableComponent from "./TableComponent";
-import Chart1 from "../Chart1";
-import Chart2 from "../Chart2";
+
 import { getAuthClients, getClientsInfo } from "../../api/daryan.api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendarDays,
-  faFilePdf,
-  faTimes,
-  faTrash,
-  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 
 import ReportsByH from "./ReportsByH";
@@ -47,11 +41,9 @@ import {
   Checkbox as CheckboxMUI,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-import NoInfo from "../helpers/NoInfo";
 import { useTranslation } from "react-i18next";
 import FilterTable from "./FilterTable";
 import Charts from "./Charts";
-import BtnReportViewPdf from "./BtnReportViewPdf";
 import TableRowComponent from "./TableRowComponent";
 registerLocale("es", es);
 function ReportsTable({ data, dataReportByH }) {
@@ -73,6 +65,7 @@ function ReportsTable({ data, dataReportByH }) {
     handleCheckBox,
     setIsDownloading,
     isDownloading,
+    serverNodeUrl
   } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const [nameFilter2, setNameFilter2] = useState("");
@@ -1018,6 +1011,8 @@ function ReportsTable({ data, dataReportByH }) {
                     authClientsC={authClientsC}
                     t={t}
                     key={index}
+                    serverNodeUrl={serverNodeUrl}
+                    
                   />
                 ))
               )}

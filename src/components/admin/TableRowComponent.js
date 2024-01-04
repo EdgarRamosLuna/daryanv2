@@ -9,7 +9,7 @@ import {
     faUsers,
   } from "@fortawesome/free-solid-svg-icons";
 import Checkbox from "../Checkbox";
-const TableRowComponent = ({item, singleView, handleDel, handleCheckBox, getPaginatedData, authClientsC, t}) => {
+const TableRowComponent = ({item, singleView, handleDel, handleCheckBox, getPaginatedData, authClientsC, t, serverNodeUrl}) => {
     const [tablaMuestreo, setTablaMuestreo] = useState(true);
     const toggleCheckbox = (e) =>{
         e.stopPropagation();
@@ -50,7 +50,7 @@ const TableRowComponent = ({item, singleView, handleDel, handleCheckBox, getPagi
             icon={faTrash}
             onClick={() => handleDel(item.id, "reports")}
           />
-          <BtnReportViewPdf item={item} tablaMuestreo={tablaMuestreo} />
+          <BtnReportViewPdf item={item} tablaMuestreo={tablaMuestreo} serverNodeUrl={serverNodeUrl} />
           <FontAwesomeIcon
             icon={faUsers}
             color="green"

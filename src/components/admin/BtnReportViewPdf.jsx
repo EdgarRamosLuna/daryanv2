@@ -3,11 +3,12 @@ import React from 'react'
 import {
     faFilePdf,
   } from "@fortawesome/free-solid-svg-icons";
-const BtnReportViewPdf = ({item, tablaMuestreo}) => {
+const BtnReportViewPdf = ({item, tablaMuestreo, serverNodeUrl}) => {
+    const numOfRows = item.reports_cc.length;
     return (
         <>        
         <a
-            href={`http://phpstack-1070657-3746640.cloudwaysapps.com/reporte-inspeccion/${item.id}/?tablaMuestreo=${tablaMuestreo ? 'show' : 'hide'}`}
+            href={`${serverNodeUrl}reporte-inspeccion${numOfRows > 20 ? '-xl':''}/${item.id}/?tablaMuestreo=${tablaMuestreo ? 'show' : 'hide'}`}
             target="_blank"
             className="btn-pdf"
             rel="noreferrer"

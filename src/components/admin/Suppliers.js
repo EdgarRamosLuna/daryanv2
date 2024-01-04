@@ -18,6 +18,9 @@ import ComponentPagination from "../ComponentPagination";
 import ModalMui from "../modal/ModalMui";
 import SupplierDetails from "./suppliers/SupplierDetails";
 import TabComponentMUI from "../tabs/TabComponentMUI";
+import { toast } from "sonner";
+import { getTotalReportsBySupplier } from "../../api/daryan.api";
+import SupplierClients from "./suppliers/SupplierClients";
 
 
 registerLocale("es", es);
@@ -29,6 +32,12 @@ function SuppliersTable({ data }) {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(20);
+  
+  const [reportDetails, setReportDetails] = useState([]);
+  const [series, setSeries] = useState([]);
+  const [clients, setClients] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [nIdSupplier, setIdSupplier] = useState(0);
 
   useEffect(() => {
     setIsLoading(true);
@@ -89,67 +98,45 @@ function SuppliersTable({ data }) {
       <i className="fa-solid fa-calendar-days"></i>
     </div>
   ));
-  CustomInputD.displayName = "CustomInputD";
-  const [checkList, setCheckList] = useState([]);
-  const handleCheckBox = (e, type, id) => {
-    console.log(type, id);
-    const allCheckBox = document.querySelectorAll('input[type="checkbox"]');
-    const idM = getPaginatedData().map((data) => data.id);
-    const classCheckbox = e.target.classList;
-    if (type === "all") {
-      if (classCheckbox.length > 1) {
-        const clsName = e.target.classList[1];
-        if (clsName === "ucAll") {
-          setCheckList([]);
-          classCheckbox.remove("ucAll");
-
-          allCheckBox.forEach((checkbox) => {
-            checkbox.checked = false;
-          });
-        } else {
-          //console.log(id);
-          setCheckList(idM);
-          allCheckBox.forEach((checkbox) => {
-            checkbox.checked = true;
-          });
-          classCheckbox.add("ucAll");
-        }
-      } else {
-        //console.log(idM);
-        setCheckList(idM);
-        allCheckBox.forEach((checkbox, index) => {
-          checkbox.checked = true;
-          if (index !== 0) {
-            checkbox.classList.add("ucSingle");
-          }
-        });
-        classCheckbox.add("ucAll");
-      }
-    }
-    if (type === "single") {
-      if (classCheckbox.length > 1) {
-        const clsName = e.target.classList[1];
-        if (clsName === "ucSingle") {
-          setCheckList((prev) => prev.filter((data) => data !== id));
-
-          classCheckbox.remove("ucSingle");
-        } else {
-          setCheckList((prev) => [...prev, id]);
-          classCheckbox.add("ucSingle");
-        }
-      } else {
-        setCheckList((prev) => [...prev, id]);
-        classCheckbox.add("ucSingle");
-      }
-    }
-  };
-
+  CustomInputD.displayName = "CustomInputD"; 
+ 
   const updateUser = (id_user) => {
     setUpdateId(id_user);
     setShowModalS(true);
   };
-  const [openModal, setOpenModal] = useState(false);
-  const [nIdSupplier, setIdSupplier] = useState(0);
+  useEffect(() => {
+    const getReportBySupplier = async () => {
+      try {
+        const response = await getTotalReportsBySupplier(nIdSupplier);
+        const { error: errorDb, message, data: dataResponse } = response.data;
+        if (typeof errorDb !== "boolean") {
+          toast.error("Ocurrio un error intentalo mas tarde");
+        } else {
+          const {
+            totalInp,
+            totalNG,
+            totalOK,
+            totalRework,
+            totalScrap,
+            TotalsByPartName,
+            ClientsBySupplier
+          } = dataResponse[0];
+          setReportDetails(JSON.parse(TotalsByPartName));
+          setClients(JSON.parse(ClientsBySupplier));
+          setSeries([totalNG, totalOK, totalRework, totalScrap]);
+        }
+        //setTotalReports()
+      } catch (error) {
+        toast.error("Ocurrio un error intentalo mas tarde");
+      }
+    };
+
+    if(Number(nIdSupplier) > 0){
+      getReportBySupplier();
+    }
+    
+  }, [nIdSupplier]);
+  
   const handleShowModal = (nIdSupplier) =>{
     setOpenModal(true);
     setIdSupplier(nIdSupplier);
@@ -159,11 +146,13 @@ function SuppliersTable({ data }) {
       label: "Reportes",
       content:  <SupplierDetails
       nIdSupplier={nIdSupplier}
+      reportDetails={reportDetails}
+      series={series}
     />,
     },
     {
       label: "Usuarios",
-      content: <div>Contenido de la Pestaña 2</div>,
+      content: <SupplierClients data={clients}/>
     },
   ]
   
