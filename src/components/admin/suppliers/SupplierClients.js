@@ -15,7 +15,7 @@ const SupplierClients = ({ data }) => {
       }}
     >
       <Typography>Usuarios</Typography>
-      <Grid>
+      <Grid sx={{width:'100%'}} >
         <ClientsTable data={data}/>
       </Grid>
     </Grid>

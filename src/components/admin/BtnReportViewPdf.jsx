@@ -14,7 +14,7 @@ const BtnReportViewPdf = ({item, tablaMuestreo, serverNodeUrl}) => {
             rel="noreferrer"
         >
             {!navigator.onLine ? (
-                <FontAwesomeIcon icon={faFilePdf} />
+                <FontAwesomeIcon icon={faFilePdf}    />
             ) : (
                 <i className="fa-solid fa-file-pdf"></i>
             )}

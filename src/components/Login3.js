@@ -5,6 +5,7 @@ import { MainContext } from "../context/MainContext";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import LoginButton from "./buttons/LoginButton";
 
 export default function Login3() {
   const {
@@ -19,7 +20,8 @@ export default function Login3() {
     setUser("");
     e.target.value = "";
   };
-  const { toast } = useContext(MainContext);
+  const { toast, hoverBtnsStyle } = useContext(MainContext);
+  console.log(hoverBtnsStyle)
   const navigate = useNavigate();
   const [loader, setLoader] = useState(false);
   const onSubmmit = handleSubmit(async (data) => {
@@ -41,24 +43,7 @@ export default function Login3() {
             });
             navigate("/admin/reports");
             setLoader(false);
-          }, 500);
-          //router.push('/user/reports');
-          //window.location.replace("/user/reports");
-          //const { email, name, id_supplier, hour } = data;
-          //const { last_id } = datares;
-          // setDataClients((prev) => [
-          //   {
-          //     id: `${last_id}`,
-          //     id_supplier: `${id_supplier}`,
-          //     fullname: name,
-          //     email,
-          //     status: "1",
-          //     hour: Number(hour) === 1 ? true : false,
-          //   },
-          //   ...prev,
-          // ]);
-
-          // btnCloseRef.current.click();
+          }, 500);    
         }
       })
       .catch((err) => {
@@ -80,8 +65,7 @@ export default function Login3() {
         } else {
           toast.success(datares.message, {
             duration: 4000,
-          });
-          //setData((data) => data.filter((data) => data.id !== `${id}`));
+          });          
         }
       })
       .catch((err) => {
@@ -98,64 +82,8 @@ export default function Login3() {
       window.location.replace("/user/reports");
     }
   }, []);
-  /**
-   * const onSubmmit = handleSubmit(async (data) => {
-    setloader(true);
-    await createClient(data)
-      .then((res) => {
-        const datares = res.data;
-        if (datares.error) {
-          toast.error(datares.message, {
-            duration: 5000,
-          });
-        } else {
-          toast.success(datares.message, {
-            duration: 4000,
-          });
-          const { email, name, id_supplier, hour } = data;
-          const { last_id } = datares;
-          setDataClients((prev) => [
-            {
-              id: `${last_id}`,
-              id_supplier: `${id_supplier}`,
-              fullname: name,              
-              email,
-              status: "1",
-              hour: Number(hour) === 1 ? true : false,
-            },
-            ...prev,
-          ]);
-
-          btnCloseRef.current.click();
-        }
-      })
-      .catch((err) => {
-        //console.log(err);
-        toast.error(err, {
-          duration: 5000,
-        });
-      });
-
-    //console.log(res);
-
-    setloader(false);
-  });
-
-  return (
-    <CreateForm>
-      <p>Crear Cliente</p>
-      <form autoComplete="off" onSubmit={onSubmmit}>
-        <div className="item-from-container">
-          <label htmlFor="name">Proveedor</label>
-          <select
-            name="id_supplier"
-            {...register("id_supplier", {
-              validate: (value) => value !== "0" && value !== "",
-            })}
-   * 
-   * / */
-   const styles = {
-    //filter: 'invert(100%)',
+  
+  const styles = {
     height: '100%',
   };
   return (
@@ -184,14 +112,8 @@ export default function Login3() {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                       message: "Ingresa un correo valido",
                     },
-                    // minLength: {
-                    //   value: 11,
-                    //   message: "This input must exceed 10 characters",
-                    // },
+           
                   })}
-
-                  // value={user}
-                  //  onChange={(e) => setUser(e.target.value.replace(" ", ""))}
                 />
                 {errors.email && (
                   <span className="error">{errors.email.message}</span>
@@ -227,13 +149,7 @@ export default function Login3() {
               </div>
               <div className={style.button_container}>
                 
-                <button type="submit" disabled={loader === true ? true : false}>
-                  {loader ? (
-                    <img src="/assets/img/loading.svg" alt="" style={styles} />                    
-                  ) : (
-                    "Ingresar"
-                  )}
-                </button>
+                <LoginButton loader={loader} hoverBtnsStyle={hoverBtnsStyle} />
               </div>
             </form>
           </div>

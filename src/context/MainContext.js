@@ -923,7 +923,12 @@ export const MainContextProvider = ({ children }) => {
   const onlyNumbers = /^\d+$/;
   const [openModalIncident, setOpenModalIncident] = useState(false);
   const [reportIncidents, setReportIncidents] = useState([]);
-
+  const hoverBtnsStyle = {
+    transition: 'all 0.3s',
+    border: '1px solid #fff',
+    background: '#002353',
+    color: '#fff',
+  };
   const PROPS = {
     dataSes,
     dataT,
@@ -1102,7 +1107,8 @@ export const MainContextProvider = ({ children }) => {
     setReportIncidents,
     InfoIcon,
     ABECEDARIO,
-    serverNodeUrl
+    serverNodeUrl,
+  hoverBtnsStyle
   };
   return (
     <MainContext.Provider value={PROPS}>

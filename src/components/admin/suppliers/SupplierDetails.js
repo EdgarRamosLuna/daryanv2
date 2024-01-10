@@ -2,10 +2,10 @@ import { Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ReportsTable from "./ReportsTable";
 import { PieChart } from "../../chart/PieChart";
+import MuiCard from "../../cards/MuiCard";
 
 const SupplierDetails = ({ nIdSupplier, reportDetails, series }) => {
-    
-  const [labels, setLabels] = useState([    
+  const [labels, setLabels] = useState([
     "Total NG",
     "Total OK",
     "Total Retrabajo",
@@ -18,21 +18,27 @@ const SupplierDetails = ({ nIdSupplier, reportDetails, series }) => {
     "Total Retrabajo",
     "Total Scrap",
   ]);
-
+  const [show, setShow] = useState(true);
 
   return (
     <Grid
       sx={{
         display: "flex",
         justifyContent: "center",
-        alignItems:'center',
-        flexDirection:'column'
+        alignItems: "center",
+        flexDirection: "column",
       }}
     >
-      <Typography>Total de incidencias</Typography>        
-      <Grid>        
-        <PieChart labels={labels} series={series} />
-      </Grid>
+      <MuiCard show={show} setShow={setShow}>
+        {show ? (
+          <>
+            <Typography>Total de incidencias</Typography>
+            <PieChart labels={labels} series={series} />
+          </>
+        ) : (
+          ""
+        )}
+      </MuiCard>
       <Grid>
         <ReportsTable data={reportDetails} labels={labelsTables} />
       </Grid>

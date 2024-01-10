@@ -32,5 +32,5 @@ export function PieChart({ labels, series }) {
         ],
     };
 
-    return <Pie data={data}  height={400} options={{ maintainAspectRatio: false }} />;
+    return <Pie data={data}  height={400} />;
 }
