@@ -6,14 +6,14 @@
  * @author ERL 12:35pm
  * @returns 
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     endOfDay,
     addMonths,
     startOfWeek,
     differenceInCalendarDays,
     format, startOfDay, endOfWeek, startOfMonth, endOfMonth, subWeeks, subMonths, isSameDay, isWithinInterval, addDays,
-     
+
 } from 'date-fns';
 
 import "react-date-range/dist/styles.css"; // main css file
@@ -22,14 +22,40 @@ import "react-datepicker/dist/react-datepicker.css";
 import { DateRange, DateRangePicker, DefinedRange } from 'react-date-range';
 import { es, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
+import { parseISO } from 'date-fns';
+import { Tooltip } from '@mui/material';
 
-const DatePickerRange = ({ setDateStart, setDateEnd }) => {
+const DatePickerRange = ({ setDateStart, setDateEnd, dLastDateByPartNumber, dfirstDateByPartNumber, reportDates = [] }) => {
+
     const { t, i18n } = useTranslation();
     const [markedDatesRange, setMarkedDatesRange] = useState({
-        startDate: new Date(),
-        endDate: new Date('2024-01-02 06:00:00')
+        startDate: new Date(dLastDateByPartNumber),
+        endDate: new Date(dfirstDateByPartNumber),
+        key: 'selection'
     });
+    const [state, setState] = useState([
+        {
+            startDate: new Date().setUTCHours(5, 0, 0, 999),
+            endDate: new Date().setUTCHours(5, 0, 0, 999),
+            key: 'selection'
+        }
+    ]);
+    useEffect(() => {
 
+        if (dLastDateByPartNumber !== '' && dfirstDateByPartNumber !== '') {
+
+            setMarkedDatesRange({
+                startDate: new Date(dLastDateByPartNumber).setUTCHours(6, 0, 0, 999),
+                endDate: new Date(dfirstDateByPartNumber).setUTCHours(6, 0, 0, 999),
+            })
+            setState([{
+                startDate: new Date(dLastDateByPartNumber).setUTCHours(6, 0, 0, 999),
+                endDate: new Date(dfirstDateByPartNumber).setUTCHours(6, 0, 0, 999),
+                key: 'selection'
+            }])
+        }
+
+    }, [dLastDateByPartNumber, dfirstDateByPartNumber])
     const defineds = {
         startOfWeek: startOfWeek(new Date()),
         endOfWeek: endOfWeek(new Date()),
@@ -54,23 +80,73 @@ const DatePickerRange = ({ setDateStart, setDateEnd }) => {
         let extraDot = null;
         const { startDate, endDate } = markedDatesRange; // Asumiendo que estas son tus fechas de inicio y fin
 
-        // Verifica si la fecha actual es la fecha de inicio o la fecha de fin
-        if ((startDate && isSameDay(day, startDate)) || (endDate && isSameDay(day, endDate))) {
+
+        const specialDates = reportDates
+            .reduce((unique, date) => {
+                // Convert the date string to a Date object
+                const dateObj = parseISO(date);
+                // Create a string representation of the date for comparison
+                const dateStr = dateObj.toISOString();
+                // If this date string is not yet in the unique array, add the Date object
+                if (!unique.some(d => d.toISOString() === dateStr)) {
+                    unique.push(dateObj);
+                }
+                return unique;
+            }, []);
+
+        if (specialDates.some(specialDate => isSameDay(day, specialDate))) {
             extraDot = (
-                <div
-                    style={{
-                        height: '10px',
-                        width: '10px',
-                        borderRadius: '100%',
-                        background: 'red', // Elige el color de la marca
-                        position: 'absolute',
-                        top: 2,
-                        right: 2,
-                    }}
-                />
+                <Tooltip title="Dia inspecciónado">
+                    <div style={{
+                        height: "100%",
+                        width: "50%",
+                        borderRadius: "100%",
+                        background: "red", // Customize as needed
+                        position: "absolute",
+                        opacity:'0.2',
+                        top: '50%',
+                        left:'50%',
+                        transform:'translateY(-50%)translateX(-50%)'
+                    }} />
+                </Tooltip>
             );
         }
 
+        // Verifica si la fecha actual es la fecha de inicio o la fecha de fin
+        if ((startDate && isSameDay(day, startDate))) {
+            extraDot = (
+                <Tooltip title="Primera fecha de inspección">
+                    <div
+                        style={{
+                            height: '10px',
+                            width: '10px',
+                            borderRadius: '100%',
+                            background: 'yellowgreen', // Elige el color de la marca
+                            position: 'absolute',
+                            top: 2,
+                            right: 2,
+                        }}
+                    />
+                </Tooltip>
+            );
+        }
+        if ((endDate && isSameDay(day, endDate))) {
+            extraDot = (
+                <Tooltip title="Ultima fecha de inspección">
+                    <div
+                        style={{
+                            height: '10px',
+                            width: '10px',
+                            borderRadius: '100%',
+                            background: 'yellowgreen', // Elige el color de la marca
+                            position: 'absolute',
+                            top: 2,
+                            right: 2,
+                        }}
+                    />
+                </Tooltip>
+            );
+        }
         return (
             <div>
                 {extraDot}
@@ -168,19 +244,12 @@ const DatePickerRange = ({ setDateStart, setDateEnd }) => {
                 return differenceInCalendarDays(range.endDate, defineds.startOfToday) + 1;
             },
         },
-    ];    
+    ];
 
 
-    const [state, setState] = useState([
-        {
-            startDate: new Date().setUTCHours(6, 0, 0, 999),
-            endDate: new Date().setUTCHours(6, 0, 0, 999),
-            key: 'selection'
-        }
-    ]);
+
 
     const handleSelect = (ranges) => {
-        console.log(ranges);
 
         // Para obtener los valores de startDate y endDate
         const startDate = ranges.selection.startDate;
@@ -225,6 +294,7 @@ const DatePickerRange = ({ setDateStart, setDateEnd }) => {
                     months={2}
                     direction="horizontal"
                     dayContentRenderer={customDayContent}
+
                 />
             </div>
         </>

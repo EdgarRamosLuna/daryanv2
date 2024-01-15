@@ -236,3 +236,10 @@ export const getTotalReportsBySupplier= (nIdSupplier) =>
     //   Authorization: `Bearer ${token}`,
     // },
   });
+export const getDatesByPartNumber= (sPartNumber, token) =>
+  serverApi.get(`/getDatesByPartNumber/${sPartNumber}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });

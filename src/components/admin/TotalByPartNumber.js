@@ -5,7 +5,7 @@ import { getReportsByPartNumber } from "../../api/daryan.api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import FilterTable from "./FilterTable";
-import { Chip, Tooltip, Typography } from "@mui/material";
+import { Chip, Grid, Tooltip, Typography } from "@mui/material";
 
 export const DynamicTable = ({ data, type }) => {
   const [groupedData, setGroupedData] = useState([]);
@@ -182,8 +182,9 @@ const TotalByPartNumber = () => {
   
   //'http://localhost:3001';
   const [isLoading, setIsLoading] = useState(false);
-  const viewReportByPartNumber = (partNumber) =>{
-    window.open(`${serverNodeUrl}rip/${partNumber}?st=${token}`, '_blank');
+  const viewReportByPartNumber = (partNumber, typeDoc) =>{
+    
+    window.open(`${serverNodeUrl}rip${typeDoc === 'pdf' ? ``:`-ex`}/${partNumber}?st=${token}`, '_blank');
   };
   useEffect(() => {
     const getAllDetails = async () => {
@@ -234,9 +235,9 @@ const TotalByPartNumber = () => {
       total_re_work_parts,
       total_scrap,
       total_worked_h,
-      <>
+      <Grid sx={{display:'flex', gap:'15px'}}>
         {!navigator.onLine ? (
-          <FontAwesomeIcon icon={faFilePdf} />
+          <FontAwesomeIcon icon={faFilePdf} onClick={() => viewReportByPartNumber(partNumber, 'pdf')}/>
         ) : (
           <i
             className="fa-solid fa-file-pdf"
@@ -244,10 +245,18 @@ const TotalByPartNumber = () => {
               fontSize: "1.3rem",
               color: "#600404",
             }}
-            onClick={() => viewReportByPartNumber(partNumber)}
+            onClick={() => viewReportByPartNumber(partNumber, 'pdf')}
           ></i>
         )}
-      </>,
+        <i
+            className="fa-solid fa-file-excel"
+            style={{
+              fontSize: "1.3rem",
+              color: "#107c41",
+            }}
+            onClick={() => viewReportByPartNumber(partNumber, 'excel')}
+          ></i>
+      </Grid>,
     ]);
   }, [rDetailsData, showDetails, partNumber]);
 

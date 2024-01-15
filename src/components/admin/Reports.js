@@ -16,7 +16,7 @@ import { MainContext } from "../../context/MainContext";
 import { useNavigate } from "react-router-dom";
 import TableComponent from "./TableComponent";
 
-import { getAuthClients, getClientsInfo } from "../../api/daryan.api";
+import { getAuthClients, getClientsInfo, getDatesByPartNumber } from "../../api/daryan.api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendarDays,
@@ -282,7 +282,7 @@ function ReportsTable({ data, dataReportByH }) {
           .join(", ")} ${item.reports_cc
           .map((cc) => cc.serial)
           .join(", ")} ${suppliers} ${planta} `;
-        console.log(item.date);
+    
         const date = new Date(item.date);
         date.setUTCHours(6, 0, 0, 999);
 
@@ -291,9 +291,7 @@ function ReportsTable({ data, dataReportByH }) {
 
         const endDate = new Date(dateEnd);
         endDate.setUTCHours(6, 0, 0, 999);
-        console.log(date);
-        console.log(startDate);
-        console.log(endDate);
+    
         if (
           nameFilter &&
           fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
@@ -315,13 +313,46 @@ function ReportsTable({ data, dataReportByH }) {
     [nameFilter, dateStart, dateEnd]
   );
 
+  const [dLastDate, setDLastDate] = useState('');
+  const [dfirstDate, setDFirstDate] = useState('');
+
+  const [reportDates, setReportDates] = useState([]);
+  const getDatesByPartNumbers = async(partNumber) =>{
+    const token = localStorage.getItem("t");
+    try {
+      const response =  await getDatesByPartNumber(partNumber, token);
+
+      
+      const {nCodigo, sType, dFirstDate, dLastDate, dates} = response.data;
+      const formattedDates = JSON.parse(dates);
+      if(Number(nCodigo) === 0){
+        setDLastDate(dFirstDate)
+        setDFirstDate(dLastDate)
+        setDateStart(dFirstDate)
+        setDateEnd(dLastDate)
+        setReportDates(formattedDates)
+      }
+
+    } catch (error) {
+      
+    }
+    
+  }  
   useEffect(() => {
     const data = getPaginatedData();
-    console.log(clients);
+    
     if (data.length > 0) {
       const uniqueValues = Array.from(
         new Set(data.map((item) => item.id_supplier))
-      );
+        );
+      const uniqueValuesParNumber = Array.from(
+        new Set(data.map((item) => item.part_number))
+        );
+        
+      if(uniqueValuesParNumber.length === 1 && nameFilter.length > 5){
+        const partNumber =  uniqueValuesParNumber[0];
+        getDatesByPartNumbers(partNumber);
+      }
       const options = uniqueValues.map((value) => ({ id_supplier: value }));
       if (options.length === 1) {
         const id_supplier = options[0].id_supplier;
@@ -837,6 +868,7 @@ function ReportsTable({ data, dataReportByH }) {
     return obj;
   }, {});
 
+
   //Añade un cliente a la lista para autorizar
   const addClientToList = (e) => {
     const id = e.target.value;
@@ -903,7 +935,7 @@ function ReportsTable({ data, dataReportByH }) {
                   name="buscar"
                   value={nameFilter}
                   onChange={(e) => handleNameFilterChange(e)}
-                  placeholder={t("reports.search_by_date")}
+                  placeholder={t("reports.search")}
                 />
               </div>
               <div className="filter-item">
@@ -954,6 +986,9 @@ function ReportsTable({ data, dataReportByH }) {
               <DatePickerRange
                 setDateStart={setDateStart}
                 setDateEnd={setDateEnd}
+                dLastDateByPartNumber={dLastDate}
+                dfirstDateByPartNumber={dfirstDate}
+                reportDates={reportDates}
               />
             </Grid>
           </form>
