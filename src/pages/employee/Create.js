@@ -75,7 +75,7 @@ const Create = () => {
 
   
   const [dumpValue, setDumpValue] = useState("");
-
+  const [downTime, setDownTime] = useState(0);
   const optionClause = [
     {
       value: "1",
@@ -115,6 +115,8 @@ const Create = () => {
             customerControl={customerControl}
             setCustomerControl={setCustomerControl}
             onlyNumbers={onlyNumbers}
+            downTime={downTime}
+            setDownTime={setDownTime}
           />
           <div
             className="container c2 scrollX"

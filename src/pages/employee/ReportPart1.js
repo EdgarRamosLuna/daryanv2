@@ -25,7 +25,9 @@ const ReportPart1 = ({
   setServiceType,
   customerControl,
   setCustomerControl,
-  onlyNumbers
+  onlyNumbers,
+  downTime,
+  setDownTime
 }) => {
   const { t } = useTranslation();
   return (
@@ -292,7 +294,7 @@ const ReportPart1 = ({
             <div className="others-container">
               <TextField
                 id="outlined-basic"
-                label="Otros"
+                label={t("Others")}
                 variant="outlined"
                 sx={{
                   width: "95%",
@@ -382,7 +384,7 @@ const ReportPart1 = ({
             <div className="others-container">
               <TextField
                 id="outlined-basic"
-                label="Otros"
+                label={t("Others")}
                 variant="outlined"
                 sx={{
                   width: "95%",
@@ -399,6 +401,32 @@ const ReportPart1 = ({
               />
             </div>
           </div>
+        </Grid>
+
+        <Grid
+          sx={{
+            width: "24%",
+          }}
+        >
+          <TextField
+            id="outlined-basic"
+            variant="outlined"
+            label={t("table.downtime")}
+            sx={{
+              width: "95%",
+            }}
+            required
+            type="text"
+            name="downtime"
+            placeholder=""
+            value={data.downtime}
+            onChange={(e) =>
+              setData({
+                ...data,
+                [e.target.name]: e.target.value,
+              })
+            }
+          />
         </Grid>
       </StyledForm>
     </div>

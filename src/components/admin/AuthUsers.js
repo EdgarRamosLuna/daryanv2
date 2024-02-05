@@ -7,7 +7,7 @@ import { deleteAuthClient } from "../../api/daryan.api";
 import StatusBtn from "../StatusBtn";
 
 const AuthUsers = ({ data, deleteAU }) => {
-  //console.log(data);
+  //
   const { isAdmin, lang } = useContext(MainContext);
 
   return (

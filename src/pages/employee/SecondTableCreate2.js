@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Table } from "../../styles/Styles";
 import { useContext } from "react";
 import { MainContext } from "../../context/MainContext";
+import { useTranslation } from "react-i18next";
 
 export default function SecondTableCreate2({
   setTotalesDefectos,
   divs,
   setDivs,
 }) {
+  const { t } = useTranslation();
   const { setNumFilasReportByH } = useContext(MainContext);
   function handleAddDiv() {
     const newId = divs.length + 1;
@@ -57,7 +59,6 @@ export default function SecondTableCreate2({
     });
   }
 
-  const [colSums, setColSums] = useState([]);
   useEffect(() => {
     const totalIssues = divs.slice();
     if (totalIssues !== undefined && totalIssues.length > 0) {
@@ -73,7 +74,6 @@ export default function SecondTableCreate2({
     return () => {};
   }, [divs]);
 
-  const [sums, setSums] = useState(Array(14).fill(0));
 
   return (
     <Table>
@@ -99,7 +99,7 @@ export default function SecondTableCreate2({
               </span>
             </th>
             <th>Item</th>
-            <th>Defecto</th>
+            <th>{t("Defecto")}</th>
             <th>1</th>
             <th>2</th>
             <th>3</th>
@@ -222,16 +222,7 @@ export default function SecondTableCreate2({
             </tr>
           ))}
         </tbody>
-        {/* <tfoot>
-    <tr>
-      <td>Totales:</td>
-      <td></td>
-      <td></td>
-      {colSums.map((sum, i) => (
-        <td key={i}>{sum}</td>
-      ))}
-    </tr>
-  </tfoot> */}
+
       </table>
     </Table>
   );

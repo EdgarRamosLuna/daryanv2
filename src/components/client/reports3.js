@@ -31,7 +31,7 @@ import { ModalCard } from "../../styles/ModalCard";
 import FilterTable from "./FilterTable";
 registerLocale("es", es);
 function ReportsTable({ data }) {
-  console.log(data);
+  
   const {
     toast,
     activeTab,

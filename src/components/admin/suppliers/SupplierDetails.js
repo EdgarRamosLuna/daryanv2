@@ -3,19 +3,21 @@ import React, { useEffect, useState } from "react";
 import ReportsTable from "./ReportsTable";
 import { PieChart } from "../../chart/PieChart";
 import MuiCard from "../../cards/MuiCard";
+import { useTranslation } from "react-i18next";
 
 const SupplierDetails = ({ nIdSupplier, reportDetails, series }) => {
+  const { t } = useTranslation();
   const [labels, setLabels] = useState([
     "Total NG",
     "Total OK",
-    "Total Retrabajo",
+    t("Total Retrabajo"),
     "Total Scrap",
   ]);
   const [labelsTables, setLabelsTables] = useState([
-    "Total inspeccionado",
+    t("Total inspeccionado"),
     "Total NG",
     "Total OK",
-    "Total Retrabajo",
+    t("Total Retrabajo"),
     "Total Scrap",
   ]);
   const [show, setShow] = useState(true);
@@ -32,7 +34,7 @@ const SupplierDetails = ({ nIdSupplier, reportDetails, series }) => {
       <MuiCard show={show} setShow={setShow}>
         {show ? (
           <>
-            <Typography>Total de incidencias</Typography>
+            <Typography>{t('Total de incidencias')}</Typography>
             <PieChart labels={labels} series={series} />
           </>
         ) : (

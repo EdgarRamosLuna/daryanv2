@@ -29,7 +29,7 @@ export default function MuiCard({ children, show = true, setShow }) {
         </Grid>
       </CardContent>
       <CardActions sx={{ justifyContent: 'center' }}>
-        <Button onClick={() => setShow(prev => !prev)}>{show ? <VisibilityIcon style={style} /> : <VisibilityOffIcon style={style} />}</Button>
+        <Button onClick={() => setShow(prev => !prev)}>{show ? <VisibilityOffIcon style={style} /> : <VisibilityIcon style={style} /> }</Button>
       </CardActions>
     </Card>
   );

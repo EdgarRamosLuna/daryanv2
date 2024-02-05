@@ -3,7 +3,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
@@ -13,13 +12,15 @@ import Loader from "../Loader";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import StatusBtn from "../StatusBtn";
-import TaLoader from "./TaLoader";
 import NoInfo from "../helpers/NoInfo";
 import ComponentPagination from "../ComponentPagination";
+import { useTranslation } from "react-i18next";
+import { Grid, TextField } from "@mui/material";
 
 registerLocale("es", es);
 function UsersTable({ data }) {
-  // console.log(data);
+  const { t } = useTranslation();
+  //
   const {
     handleDel,
     setShowModalU,
@@ -94,17 +95,6 @@ function UsersTable({ data }) {
         return false;
       }
 
-      // if (
-      //   (dateStart && date < new Date(dateStart).getTime() && dateEnd) ||
-      //   date > new Date(dateEnd).getTime()
-      // ) {
-      //   return false;
-      // }
-      /*
-      if () {
-        return false;
-      }*/
-
       return true;
     });
   }, [nameFilter, dateStart, dateEnd, data]);
@@ -136,95 +126,53 @@ function UsersTable({ data }) {
     </div>
   ));
   CustomInputD.displayName = "CustomInputD";
-  const [checkList, setCheckList] = useState([]);
-  const handleCheckBox = (e, type, id) => {
-    console.log(type, id);
-    const allCheckBox = document.querySelectorAll('input[type="checkbox"]');
-    const idM = getPaginatedData().map((data) => data.id);
-    const classCheckbox = e.target.classList;
-    if (type === "all") {
-      if (classCheckbox.length > 1) {
-        const clsName = e.target.classList[1];
-        if (clsName === "ucAll") {
-          setCheckList([]);
-          classCheckbox.remove("ucAll");
 
-          allCheckBox.forEach((checkbox) => {
-            checkbox.checked = false;
-          });
-        } else {
-          //console.log(id);
-          setCheckList(idM);
-          allCheckBox.forEach((checkbox) => {
-            checkbox.checked = true;
-          });
-          classCheckbox.add("ucAll");
-        }
-      } else {
-        //console.log(idM);
-        setCheckList(idM);
-        allCheckBox.forEach((checkbox, index) => {
-          checkbox.checked = true;
-          if (index !== 0) {
-            checkbox.classList.add("ucSingle");
-          }
-        });
-        classCheckbox.add("ucAll");
-      }
-    }
-    if (type === "single") {
-      if (classCheckbox.length > 1) {
-        const clsName = e.target.classList[1];
-        if (clsName === "ucSingle") {
-          setCheckList((prev) => prev.filter((data) => data !== id));
-
-          classCheckbox.remove("ucSingle");
-        } else {
-          setCheckList((prev) => [...prev, id]);
-          classCheckbox.add("ucSingle");
-        }
-      } else {
-        setCheckList((prev) => [...prev, id]);
-        classCheckbox.add("ucSingle");
-      }
-    }
-    //console.log("Check");
-  };
-  //console.log(checkList);
-
-  const updateUser = (id_user) =>{
+  const updateUser = (id_user) => {
     setUpdateId(id_user);
     setShowModalU(true);
-  }
+  };
+
   return (
     <>
       <Table>
         <div className="table-container">
           <div className="header-container">
             <form autoComplete="off">
-              <div className="filter-container">
-                <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar usuario:</label>
-                  <div className="filter-item-input">
-                    <input
-                      type="text"
-                      id="name-filter"
-                      value={nameFilter}
-                      onChange={handleNameFilterChange}
-                    />
-                  </div>
-                </div>
-              </div>
+              <Grid
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  gap: "10px",
+                }}
+              >
+                <label htmlFor="name-filter">{t("Buscar usuario")}:</label>
+                <Grid
+                  className=""
+                  sx={{
+                    width: "50%",
+                  }}
+                >
+                  <TextField
+                    type="text"
+                    id="name-filter"
+                    value={nameFilter}
+                    onChange={handleNameFilterChange}
+                    placeholder={t("users_section.table.placeholder")}
+                    fullWidth
+                  />
+                </Grid>
+              </Grid>
             </form>
           </div>
           <div className="table-body table-reports">
             <table>
               <thead>
                 <tr>
-                  <th>Usuario</th>
-                  <th>Correo</th>
-                  <th>Status</th>
-                  <th>Acciones</th>
+                  <th>{t("clients_section.username")}</th>
+                  <th>{t("clients_section.email")}</th>
+                  <th>{t("reports.status")}</th>
+                  <th>{t("reports.actions")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -245,8 +193,11 @@ function UsersTable({ data }) {
                     >
                       <td className="table-center">{item.fullname}</td>
                       <td className="table-center">{item.email}</td>
-                      <td className="table-center" style={{width:120, padding:'0 25px'}}>
-                        <StatusBtn 
+                      <td
+                        className="table-center"
+                        style={{ width: 120, padding: "0 25px" }}
+                      >
+                        <StatusBtn
                           status={Number(item.status)}
                           id={item.id}
                           table="users"

@@ -1,10 +1,10 @@
 import { Grid, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { getTotalReportsBySupplier } from "../../../api/daryan.api";
-import { toast } from "sonner";
+import React from "react";
 import ClientsTable from "./ClientsTable";
+import { useTranslation } from "react-i18next";
 
 const SupplierClients = ({ data }) => {
+  const { t } = useTranslation();
   return (
     <Grid
       sx={{
@@ -14,7 +14,7 @@ const SupplierClients = ({ data }) => {
         flexDirection:'column'
       }}
     >
-      <Typography>Usuarios</Typography>
+      <Typography>{t('Usuarios')}</Typography>
       <Grid sx={{width:'100%'}} >
         <ClientsTable data={data}/>
       </Grid>

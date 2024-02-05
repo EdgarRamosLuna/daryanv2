@@ -1,12 +1,12 @@
 import React, { useContext, useEffect } from "react";
 import { CreateForm } from "../../../styles/Styles";
-import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { updateUser } from "../../../api/daryan.api";
-import { useNavigate, useParams } from "react-router-dom";
 import { MainContext } from "../../../context/MainContext";
+import { useTranslation } from "react-i18next";
 const UpdateUser = () => {
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -67,49 +67,38 @@ const UpdateUser = () => {
         }
       })
       .catch((err) => {
-        //console.log(err);
         toast.error(err, {
           duration: 5000,
         });
       });
 
-    //console.log(res);
 
     setSaving(false);
   });
 
   return (
     <CreateForm>
-      <p>Actualizar información del usuario</p>
+      <p>{t('Actualizar información del usuario')}</p>
       <form autoComplete="off" onSubmit={onSubmmit}>
         <div className="item-from-container">
-          <label htmlFor="name">Nombre</label>
+          <label htmlFor="name">{t('suppliers_section.name')}</label>
           <input
             type="text"
             id="name"
             name="name"
             {...register("name", { required: true })}
           />
-          {errors.name && <span className="error">Informacion requerida</span>}
+          {errors.name && <span className="error">{t('Información requerida')}</span>}
         </div>
-        {/* <div className="item-from-container">
-          <label htmlFor="user">Usuario</label>
-          <input
-            type="text"
-            id="user"
-            name="user"
-            {...register("user", { required: true })}
-          />
-          {errors.user && <span className="error">Informacion requerida</span>}
-        </div> */}
+
         <div className="item-from-container">
-          <label htmlFor="email">Correo</label>
+          <label htmlFor="email">{t('clients_section.email')}</label>
           <input
             {...register("email", {
-              required: "Informacion requerida",
+              required: t('Información requerida'),
               pattern: {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Ingresa un correo valido",
+                message: t("Ingresa un correo válido"),
               }
             })}
           />
@@ -118,7 +107,7 @@ const UpdateUser = () => {
           )}
         </div> 
         <div className="item-from-container">
-          <label htmlFor="password">Contraseña</label>
+          <label htmlFor="password">{t('clients_section.password')}</label>
           <input
             type="password"
             id="password"
@@ -126,11 +115,11 @@ const UpdateUser = () => {
             {...register("password", { required: false })}
           />
           {errors.password && (
-            <span className="error">Informacion requerida</span>
+            <span className="error">{t('Información requerida')}</span>
           )}
           <br />
           <button type="submit" disabled={saving === true ? true : false}>
-            {saving ? <img src="/assets/img/loading.svg" alt="" /> : "Guardar"}
+            {saving ? <img src="/assets/img/loading.svg" alt="" /> :t('clients_section.save')}
           </button>
         </div>
       </form>

@@ -85,7 +85,7 @@ const UpdateClient = () => {
 
   return (
     <CreateForm>
-      <p>Actualizar Informacion del cliente</p>
+      <p>{t('Actualizar la información del cliente')}</p>
       <form autoComplete="off" onSubmit={onSubmmit}>
         <div className="item-from-container">
           <label id="" sx={{ margin: "0 !important" }}>
@@ -112,28 +112,28 @@ const UpdateClient = () => {
             ))}
           </Select>
           {errors.id_supplier && (
-            <span className="error">Informacion requerida</span>
+            <span className="error">{t('requiredInfo')}</span>
           )}
         </div>
         <div className="item-from-container">
-          <label htmlFor="name">Nombre del cliente</label>
+          <label htmlFor="name">{t('clients_section.clientName')}</label>
           <input
             type="text"
             id="name"
             name="name"
             {...register("name", { required: true })}
           />
-          {errors.name && <span className="error">Informacion requerida</span>}
+          {errors.name && <span className="error">{t('requiredInfo')}</span>}
         </div>
 
         <div className="item-from-container">
-          <label htmlFor="email">Correo</label>
+          <label htmlFor="email">{t('clients_section.email')}</label>
           <input
             {...register("email", {
-              required: "Informacion requerida",
+              required: t('requiredInfo'),
               pattern: {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Ingresa un correo valido",
+                message: t("Ingresa un correo válido"),
               },
 
             })}
@@ -143,7 +143,7 @@ const UpdateClient = () => {
           )}
         </div>
         <div className="item-from-container">
-          <label htmlFor="name">Reporte por hora</label>
+          <label htmlFor="name">{t('button_texts.hourlyReport')}</label>
           <div className="checkbox-contain">
      
             <div className="checkbox-item">
@@ -157,7 +157,7 @@ const UpdateClient = () => {
           </div>
         </div>
         <div className="item-from-container">
-          <label htmlFor="password">Contraseña</label>
+          <label htmlFor="password">{t('clients_section.password')}</label>
           <input
             type="password"
             id="password"
@@ -166,11 +166,11 @@ const UpdateClient = () => {
    
           />
           {errors.password && (
-            <span className="error">Informacion requerida</span>
+            <span className="error">{t('requiredInfo')}</span>
           )}
           <br />
           <button type="submit" disabled={saving === true ? true : false}>
-            {saving ? <img src="/assets/img/loading.svg" alt="" /> : "Guardar"}
+            {saving ? <img src="/assets/img/loading.svg" alt="" /> : t('clients_section.save')}
           </button>
         </div>
       </form>

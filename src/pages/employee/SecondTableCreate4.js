@@ -3,25 +3,12 @@ import { Table } from "../../styles/Styles";
 import { useContext } from "react";
 import { MainContext } from "../../context/MainContext";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function SecondTableCreate4({divs, setDivs}) {
-  const { divsSamplingTable, setDivsSamplingTable } = useContext(MainContext);
+  const { setDivsSamplingTable } = useContext(MainContext);
 
- 
-  function handleAddDiv() {
-    const newId = divs.length + 1;
-    const newValues = ["", "", "", "", "", "", "", "", "", "", "", "", "", ""];
-    setDivs([...divs, { id: newId, values: newValues }]);
-    const tableWrapper = document.querySelector(".c2");
-    const scrollHeight = tableWrapper.scrollHeight;
-    const clientHeight = tableWrapper.clientHeight;
-    if (scrollHeight > clientHeight) {
-      //tableWrapper.scrollTop = scrollHeight - clientHeight;
-      setTimeout(() => {
-        tableWrapper.scrollTo({ top: scrollHeight, behavior: "smooth" });
-      }, 100);
-    }
-  }
+  const { t } = useTranslation();
 
   function handleInputChange(divId, inputIndex, newValue) {
     setDivs((prevDivs) => {
@@ -55,12 +42,12 @@ export default function SecondTableCreate4({divs, setDivs}) {
               ></i>
             </th>
             <th>Item</th>
-            <th>Lote</th>
-            <th>Serial</th>
-            <th>#PZAS INSP</th>
-            <th>#PZAS MUESTREO</th>
-            <th>Hora</th>
-            <th>Firma </th>
+            <th>{t('reports.batch_label')}</th>
+            <th>{t('reports.series')}</th>
+            <th>#{t('PZAS INSP')}</th>
+            <th>#{t('PZAS MUESTREO')}</th>
+            <th>{t('Hora')}</th>
+            <th>{t('Firma')} </th>
           </tr>
         </thead>
         <tbody>

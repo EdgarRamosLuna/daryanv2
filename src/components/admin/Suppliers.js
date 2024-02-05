@@ -26,7 +26,7 @@ import SupplierClients from "./suppliers/SupplierClients";
 registerLocale("es", es);
 function SuppliersTable({ data }) {
   const { t } = useTranslation();
-  const { handleDel, setShowModalS, setUpdateId, isLoading, setIsLoading } =
+  const { handleDel, setShowModalS, setUpdateId, isLoading, setIsLoading, showConfig } =
     useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
 
@@ -143,7 +143,7 @@ function SuppliersTable({ data }) {
   }
   const tabsData = [
     {
-      label: "Reportes",
+      label: t("Reportes"),
       content:  <SupplierDetails
       nIdSupplier={nIdSupplier}
       reportDetails={reportDetails}
@@ -151,17 +151,25 @@ function SuppliersTable({ data }) {
     />,
     },
     {
-      label: "Usuarios",
+      label: t("Usuarios"),
       content: <SupplierClients data={clients}/>
     },
   ]
+
+  useEffect(() => {
+    
+  
+    setOpenModal(false)
+    
+  }, [showConfig])
+  
   
   return (
     <>
     <ModalMui
       open={openModal}
       onClose={() => setOpenModal(false)}
-      title={"Detalles proveedor"}
+      title={t("Detalles proveedor")}
       maxWidth={'80%'}
     >
 
@@ -261,10 +269,7 @@ function SuppliersTable({ data }) {
                             className="fa-solid fa-pen-to-square"
                             onClick={() => updateUser(item.id)}
                           ></i>
-                          {/* <i
-                            className="fa-solid fa-circle-info"
-                            onClick={() => updateUser(item.id)}
-                          ></i> */}
+                  
                         </div>
                       </td>
                     </tr>

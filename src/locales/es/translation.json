@@ -136,7 +136,8 @@
       "searchFor": "Buscar:",
       "noDatabaseInformation": "No hay información en la base de datos",
       "approved": "Aprobado",
-      "notApproved": "Sin aprobar"
+      "notApproved": "Sin aprobar",
+      "downtime":"Tiempo muerto"
     },
     "pagination_options": {
       "20": "20 filas por página",
@@ -164,12 +165,13 @@
       }
     },
     "clients_section": {
-        "searchClient": "Buscar cliente:",
+        "searchClient": "Buscar cliente",
         "username": "Usuario",
         "email": "Correo",
         "status": "Estado",
         "actions": "Acciones",
         "noData": "No hay información en la base de datos",
+        "title": "Crear cliente",
         "supplier": "Proveedor",
         "selectSupplier": "Selecciona un proveedor",
         "clientName": "Nombre del cliente",
@@ -177,13 +179,59 @@
         "password": "Contraseña",
         "requiredInfo": "Información requerida",
         "validEmail": "Ingresa un correo válido",
-        "save": "Guardar"
+        "save": "Guardar",
+        "table": {      
+          "placeholder": "Nombre del cliente, Correo"
+        }
+    },
+    "employees_section": {
+      "table": {      
+        "placeholder": "Nombre, Correo"
+      }
+    },
+    "users_section": {
+      "table": {      
+        "placeholder": "Nombre, Correo"
+      }
     },
     "incidents":{
       "code_incident":"Código",
       "name_incident":"Nombre de la incidencia",
       "create_incident":"Crear incidencia",
       "requiredInfo": "Información requerida"
-    }
+    },
+    "Datos borrados correctamente":"Datos borrados correctamente",
+    "Others": "Otros",
+    "Hours":"Horas",
+    "REPORTE POR HORAS":"REPORTE POR HORAS",
+    "Defecto":"Defecto",
+    "Total de defectos":"Total de defectos",
+    "Total de piezas inspeccionadas":"Total de piezas inspeccionadas",
+    "INSPECTOR":"INSPECTOR",
+    "COMENTARIOS":"COMENTARIOS",
+    "REVISADO POR":"REVISADO POR",
+    "AUTORIZADO POR":"AUTORIZADO POR",
+    "Tabla de muestreo":"Tabla de muestreo",
+    "TablaMuestreoDesc":"TABLA DE MUESTREO (EL SUPERVISOR, LIDER Y/O ENCARGADO DEL TURNO DEBE DE RE-INSPECCIONAR UN 20% DE TODO EL MATERIAL LIBERADO).",
+    "PZAS INSP":"PZAS INSP",
+    "PZAS MUESTREO":"PZAS MUESTREO",
+    "Hora":"Hora",
+    "Firma":"Firma",
+    "Buscar usuario":"Buscar usuario",
+    "Actualizar información del usuario":"Actualizar información del usuario",
+    "Información requerida":"Información requerida",
+    "Ingresa un correo válido":"Ingresa un correo válido",
+    "Crear Usuario":"Crear Usuario",
+    "Buscar empleado":"Buscar empleado",
+    "Crear Empleado":"Crear Empleado",
+    "Actualizar la información del empleado":"Actualizar la información del empleado",
+    "Actualizar la información del cliente":"Actualizar la información del cliente",
+    "Buscar cliente":"Buscar cliente",
+    "Detalles proveedor":"Detalles proveedor",
+    "Reportes":"Reportes",
+    "Usuarios":"Usuarios",
+    "Total Retrabajo":"Total Retrabajo",
+    "Total inspeccionado":"Total inspeccionado",
+    "Total de incidencias":"Total de incidencias"
   }
   

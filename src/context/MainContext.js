@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useRef } from "react";
@@ -6,6 +6,7 @@ import { Toaster, toast } from "sonner";
 import InfoIcon from "@mui/icons-material/Info";
 import {
   aproveReportHToDb,
+  deleteRit,
   getSuppliers,
   saveReportHToDb,
   saveReportToDb,
@@ -18,6 +19,7 @@ import {
 import SpanishApp from "../components/datepicker/AdapterDates";
 import TaLoader from "../components/client/TaLoader";
 import { Grid } from "@mui/material";
+import { useTranslation } from "react-i18next";
 export const MainContext = createContext();
 
 export const MainContextProvider = ({ children }) => {
@@ -158,7 +160,7 @@ export const MainContextProvider = ({ children }) => {
           toast.success(datares.message, {
             duration: 4000,
           });
-          //     navigate("/admin/reports");
+          navigate("/admin/reports");
         }
       })
       .catch((err) => {
@@ -929,7 +931,26 @@ export const MainContextProvider = ({ children }) => {
     background: '#002353',
     color: '#fff',
   };
+  const [nIdReport, setIdReport] = useState(0);
+  const { t } = useTranslation();
+  const adminCallback = async(nIdRit) =>{        
+    try {
+      const response =  await deleteRit({nIdRit:Number(nIdRit), nIdReport:Number(nIdReport)});
+      const {error, message} = response.data
+      if(error){
+        toast.error(t(message))
+      }else{
+        toast.success(t(message))
+      }
+    } catch (error) {
+       toast.error("Ocurrio un error, favor de intentarlo mas tarde.")
+      
+     }
+      
+  }
   const PROPS = {
+    nIdReport, setIdReport,
+    adminCallback,
     dataSes,
     dataT,
     data,

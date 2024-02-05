@@ -97,13 +97,13 @@ const CreateClient = () => {
         </div>
   
         <div className="item-from-container">
-          <label htmlFor="email">{t('requiredInfo')}</label>
+          <label htmlFor="email">{t('clients_section.email')}</label>
           <input
             {...register("email", {
               required: t('requiredInfo'),
               pattern: {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Ingresa un correo valido",
+                message: t("Ingresa un correo válido"),
               },
             })}
           />

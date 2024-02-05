@@ -136,7 +136,8 @@
     "searchFor": "Search:",
     "noDatabaseInformation": "No data in the database",
     "approved": "Approved",
-    "notApproved": "Not Approved"
+    "notApproved": "Not Approved",
+    "downtime":"Down time"
   },
   "pagination_options": {
     "20": "20 rows per page",
@@ -164,25 +165,72 @@
     }
   },
   "clients_section": {
-    "searchClient": "Search Client:",
+    "searchClient": "Search Client",
     "username": "Username",
     "email": "Email",
     "status": "Status",
     "actions": "Actions",
     "noData": "No information in the database",
-    "title": "Create Client",
+    "title": "Create client",
     "supplier": "Supplier",
     "selectSupplier": "Select a supplier",
     "clientName": "Client Name",
+    "hourlyReport": "Reporte por hora",
     "password": "Password",
     "requiredInfo": "Required information",
     "validEmail": "Enter a valid email",
-    "save": "Save"
+    "save": "Save",
+    "table": {      
+      "placeholder": "Client name, Email"
+    }
+  },
+  "employees_section": {
+    "table": {      
+      "placeholder": "Name, Email"
+    }
+  },
+  "users_section": {
+    "table": {      
+      "placeholder": "Name, Email"
+    }
   },
   "incidents":{
     "code_incident":"Code",
     "name_incident":"Incident name",
     "create_incident":"Create incident",
     "requiredInfo": "Required information"
-  }
+  },
+  "Datos borrados correctamente":"Data deleted succesfuly",
+  "Others": "Others",
+  "Hours":"Hours",
+  "REPORTE POR HORAS":"HOURLY REPORT",
+  "Defecto":"Defect",
+  "Total de defectos":"Total defects",
+  "Total de piezas inspeccionadas":"Total parts inspected",
+  "INSPECTOR":"INSPECTOR",
+  "COMENTARIOS":"COMMENTS",
+  "REVISADO POR":"REVIEWED BY",
+  "AUTORIZADO POR":"AUTHORIZED BY",
+  "Tabla de muestreo":"Sampling table",
+  "TablaMuestreoDesc":"SAMPLING TABLE (THE SUPERVISOR, SHIFT LEADER AND/OR SHIFT MANAGER MUST RE-INSPECT 20% OF ALL RELEASED MATERIAL). RE-INSPECT 20% OF ALL MATERIAL RELEASED).",
+  "PZAS INSP":"PCS INSP",
+  "PZAS MUESTREO":"PCS SAMPLE",
+  "Hora":"Hour",
+  "Firma":"Signature",
+  "Buscar usuario":"Search user",
+  "Actualizar información del usuario":"Update user information",
+  "Información requerida":"Required information",
+  "Ingresa un correo válido":"Enter a valid email address",
+  "Crear Usuario":"Create User",
+  "Buscar empleado":"Search employee",
+  "Crear Empleado":"Create Employee",
+  "Actualizar la información del empleado":"Update Employee Information",
+  "Actualizar la información del cliente":"Update Customer Information",
+  "Buscar cliente":"Search client",
+  "Detalles proveedor":"Supplier Details",
+  "Reportes":"Reports",
+  "Usuarios":"Users",
+  "Total Retrabajo":"Total Rework",
+  "Total inspeccionado":"Total inspected",
+  "Total de incidencias":"Total incidences"  
 }

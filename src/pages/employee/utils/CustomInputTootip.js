@@ -8,9 +8,13 @@ const CustomInputTootip = ({
   incidents,
   dumpValue,
   setIncType,
+  adminCallback
 }) => {
   
   const deleteIncType = (sClause, nType, nIdDb = 0) => {
+    if(typeof adminCallback === 'function'){
+      adminCallback(nIdDb)
+    }
     setIncType(prev => prev.filter(item => !(item.clause === sClause && item.type === nType)));
   }
 
@@ -29,7 +33,7 @@ const CustomInputTootip = ({
             </Grid>
             <Grid
             
-            ><CloseIcon color="error" onClick={() => deleteIncType(m.clause, m.type)} /></Grid>
+            ><CloseIcon color="error" onClick={() => deleteIncType(m.clause, m.type, m.nIdRit)} /></Grid>
           </Grid>
         ))}
       placement="top-end"

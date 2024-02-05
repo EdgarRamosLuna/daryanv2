@@ -475,3 +475,6 @@ table.table-totals tr:hover {
   position: relative;
   white-space: nowrap;
 }
+.actions *{
+  cursor: pointer !important;
+}

@@ -3,21 +3,22 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from "react";
-import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
+import { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import Loader from "../Loader";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import StatusBtn from "../StatusBtn";
-import TaLoader from "./TaLoader";
+import { useTranslation } from "react-i18next";
+import ComponentPagination from "../ComponentPagination";
+import { Grid, TextField } from "@mui/material";
 
 registerLocale("es", es);
 function EmployeesTable({ data }) {
-  // console.log(data);
+  const { t } = useTranslation();
   const {
     handleDel,
     setShowModalE,
@@ -26,10 +27,9 @@ function EmployeesTable({ data }) {
     isLoading,
     setIsLoading,
   } = useContext(MainContext);
+  
   const [nameFilter, setNameFilter] = useState("");
-  const [lastnameFilter, setLastnameFilter] = useState("");
   const today = new Date();
-  const sixDaysLater = new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000);
   const sixDaysBefore = new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000);
   const [dateStart, setDateStart] = useState(sixDaysBefore);
   const [dateEnd, setDateEnd] = useState(today);
@@ -89,18 +89,7 @@ function EmployeesTable({ data }) {
       if (nameFilter && fullName.indexOf(nameFilter.toLowerCase()) === -1) {
         // buscamos dentro de fullName
         return false;
-      }
-
-      // if (
-      //   (dateStart && date < new Date(dateStart).getTime() && dateEnd) ||
-      //   date > new Date(dateEnd).getTime()
-      // ) {
-      //   return false;
-      // }
-      /*
-      if () {
-        return false;
-      }*/
+      }      
 
       return true;
     });
@@ -133,61 +122,7 @@ function EmployeesTable({ data }) {
     </div>
   ));
   CustomInputD.displayName = "CustomInputD";
-  const [checkList, setCheckList] = useState([]);
-  const handleCheckBox = (e, type, id) => {
-    console.log(type, id);
-    const allCheckBox = document.querySelectorAll('input[type="checkbox"]');
-    const idM = getPaginatedData().map((data) => data.id);
-    const classCheckbox = e.target.classList;
-    if (type === "all") {
-      if (classCheckbox.length > 1) {
-        const clsName = e.target.classList[1];
-        if (clsName === "ucAll") {
-          setCheckList([]);
-          classCheckbox.remove("ucAll");
 
-          allCheckBox.forEach((checkbox) => {
-            checkbox.checked = false;
-          });
-        } else {
-          //console.log(id);
-          setCheckList(idM);
-          allCheckBox.forEach((checkbox) => {
-            checkbox.checked = true;
-          });
-          classCheckbox.add("ucAll");
-        }
-      } else {
-        //console.log(idM);
-        setCheckList(idM);
-        allCheckBox.forEach((checkbox, index) => {
-          checkbox.checked = true;
-          if (index !== 0) {
-            checkbox.classList.add("ucSingle");
-          }
-        });
-        classCheckbox.add("ucAll");
-      }
-    }
-    if (type === "single") {
-      if (classCheckbox.length > 1) {
-        const clsName = e.target.classList[1];
-        if (clsName === "ucSingle") {
-          setCheckList((prev) => prev.filter((data) => data !== id));
-
-          classCheckbox.remove("ucSingle");
-        } else {
-          setCheckList((prev) => [...prev, id]);
-          classCheckbox.add("ucSingle");
-        }
-      } else {
-        setCheckList((prev) => [...prev, id]);
-        classCheckbox.add("ucSingle");
-      }
-    }
-    //console.log("Check");
-  };
-  //console.log(checkList);
 
   const updateUser = (id_user) =>{
     setUpdateId(id_user);
@@ -196,32 +131,44 @@ function EmployeesTable({ data }) {
   return (
     <>
       <Table>
-        <div className="table-container">
+        <div className="table-container">         
           <div className="header-container">
             <form autoComplete="off">
-              <div className="filter-container">
-                <div className="filter-item">
-                  <label htmlFor="name-filter">Buscar empleado:</label>
-                  <div className="filter-item-input">
-                    <input
-                      type="text"
-                      id="name-filter"
-                      value={nameFilter}
-                      onChange={handleNameFilterChange}
-                    />
-                  </div>
-                </div>
-              </div>
+              <Grid
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  gap: "10px",
+                }}
+              >
+                <label htmlFor="name-filter">{t("Buscar empleado")}:</label>
+                <Grid
+                  className=""
+                  sx={{
+                    width: "50%",
+                  }}
+                >
+                  <TextField
+                    type="text"
+                    id="name-filter"
+                    value={nameFilter}
+                    onChange={handleNameFilterChange}
+                    placeholder={t("employees_section.table.placeholder")}
+                    fullWidth
+                  />
+                </Grid>
+              </Grid>
             </form>
           </div>
           <div className="table-body table-reports">
             <table>
               <thead>
                 <tr>
-                  <th>Usuario</th>
-                  <th>Correo</th>
-                  <th>Status</th>
-                  <th>Acciones</th>
+                  <th>{t('clients_section.username')}</th>
+                  <th>{t('clients_section.email')}</th>
+                  <th>{t('reports.status')}</th>
+                  <th>{t('reports.actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -233,7 +180,7 @@ function EmployeesTable({ data }) {
                 {getPaginatedData().length === 0 ? (
                   <tr>
                     <td colSpan="4" className="table-center" style={{opacity:`${isLoading ? 0 : 1}`}}>
-                      <h1>No hay informacion en la base de datos</h1>
+                      <h1>{t('reports.no_data_in_database')}</h1>
                     </td>
                   </tr>
                 ) : (
@@ -271,44 +218,16 @@ function EmployeesTable({ data }) {
               </tbody>
             </table>
           </div>
-          <div className="pagination">
-            <span>
-              Página {currentPage} de {totalPages}
-            </span>
-
-            <button disabled={currentPage === 1} onClick={handleFirstPageClick}>
-              <i className="fa-solid fa-backward-step"></i>
-            </button>
-            <button
-              disabled={currentPage === 1}
-              onClick={() => handlePageChange(currentPage - 1)}
-            >
-              <i className="fa-solid fa-chevron-left"></i>
-            </button>
-
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => handlePageChange(currentPage + 1)}
-            >
-              <i className="fa-solid fa-chevron-right"></i>
-            </button>
-            <button
-              disabled={currentPage === totalPages}
-              onClick={handleLastPageClick}
-            >
-              <i className="fa-solid fa-forward-step"></i>
-            </button>
-
-            <select
-              value={rowsPerPage}
-              onChange={(event) => setRowsPerPage(parseInt(event.target.value))}
-            >
-              <option value="20">20 filas por página</option>
-              <option value="50">50 filas por página</option>
-              <option value="100">100 filas por página</option>
-              <option value={`${data.length}`}>todas filas</option>
-            </select>
-          </div>
+          <ComponentPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            handleFirstPageClick={handleFirstPageClick}
+            handlePageChange={handlePageChange}
+            handleLastPageClick={handleLastPageClick}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+            data={data.length}
+          />
         </div>
       </Table>
     </>

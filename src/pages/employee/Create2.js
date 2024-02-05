@@ -2,10 +2,8 @@ import React, { useContext, useState } from "react";
 import { MainContext } from "../../context/MainContext";
 import { StyledForm, Table } from "../../styles/Styles";
 
-import SecondTableCreate from "./SecondTableCreate";
 import SecondTableCreate2 from "./SecondTableCreate2";
 import { useEffect } from "react";
-import DatePickerInput from "../../components/DateInput";
 import Create3 from "./Create3";
 import {
   FormControl,
@@ -32,14 +30,9 @@ const Create2 = () => {
     setActiveTabReportByH,
     divsSamplingTable,
   } = useContext(MainContext);
-  
+
   const [data, setData] = useState([]);
-  const handleSelect = (e, type) => {
-    setData({
-      ...data,
-      [e.target.dataset.name || e.target.name]: e.target.value,
-    });
-  };
+
   const [totalesDefectos, setTotalesDefectos] = useState([]);
   const [totalesD, setTotalesD] = useState([]);
   useEffect(() => {
@@ -119,14 +112,21 @@ const Create2 = () => {
           totalesD={totalesD}
           totalPiecesInsp={totalPiecesInsp}
           setTotalesDefectos={setTotalesDefectos}
-          divsR4={divsR4} 
+          divsR4={divsR4}
           setDivsR4={setDivsR4}
-          
         />
       ),
     },
     2: {
-      component: <Create3 divs={divs} setDivs={setDivs} divsR4={divsR4} setDivsR4={setDivsR4}  reportType="byh" />,
+      component: (
+        <Create3
+          divs={divs}
+          setDivs={setDivs}
+          divsR4={divsR4}
+          setDivsR4={setDivsR4}
+          reportType="byh"
+        />
+      ),
     },
   };
   return <>{tabsObj[activeTabReportByH]?.component}</>;
@@ -135,11 +135,7 @@ const Create2 = () => {
 export default Create2;
 
 export const Create2FirstTable = ({
-  dataReportH,
   setDataReportH,
-  numFilasReportByH,
-  activeTabReportByH,
-  setActiveTabReportByH,
   divs,
   setDivs,
   divsSamplingTable,
@@ -157,11 +153,9 @@ export const Create2FirstTable = ({
   totalesD,
   totalPiecesInsp,
   setTotalesDefectos,
-  divsR4, 
-  setDivsR4
 }) => {
   const dataSes = localStorage.getItem("sesType");
-  const {suppliers} = useReports();
+  const { suppliers } = useReports();
   const { t } = useTranslation();
   useEffect(() => {
     const newArray = [
@@ -174,7 +168,7 @@ export const Create2FirstTable = ({
         authorizedBy,
         totalDefects: totalesD,
         totalPieces: totalPiecesInsp,
-        sampling_table:divsSamplingTable
+        sampling_table: divsSamplingTable,
       },
     ];
     setDataReportH(newArray);
@@ -200,7 +194,7 @@ export const Create2FirstTable = ({
     <>
       <div className="container">
         <div className="title">
-          <h3>REPORTE POR HORAS</h3>
+          <h3>{t("REPORTE POR HORAS")}</h3>
           <br />
         </div>
         <StyledForm>
@@ -208,7 +202,7 @@ export const Create2FirstTable = ({
             <TextField
               id="outlined-basic"
               variant="outlined"
-              label="Planta"
+              label={t("table.plant")}
               sx={{
                 width: "95%",
               }}
@@ -226,29 +220,30 @@ export const Create2FirstTable = ({
             />
           </div>
           <div className="form-container">
-          <AutocompleteInput
-            id="combo-box-demo"
-            name="id_supplier"
-            options={suppliers}
-            value={
-              suppliers.find((supplier) => supplier.id === data.id_supplier) ||
-              null
-            }
-            label={t("table.supplier")}
-            getOptionLabel={(option) => option.fullname}
-            onChange={(e, newValue) =>
-              setData({
-                ...data,
-                id_supplier: newValue ? newValue.id : null,
-              })
-            }
-          />
-        </div>
+            <AutocompleteInput
+              id="combo-box-demo"
+              name="id_supplier"
+              options={suppliers}
+              value={
+                suppliers.find(
+                  (supplier) => supplier.id === data.id_supplier
+                ) || null
+              }
+              label={t("table.supplier")}
+              getOptionLabel={(option) => option.fullname}
+              onChange={(e, newValue) =>
+                setData({
+                  ...data,
+                  id_supplier: newValue ? newValue.id : null,
+                })
+              }
+            />
+          </div>
           <div className="form-container">
             <TextField
               id="outlined-basic"
               variant="outlined"
-              label="Numero de parte"
+              label={t("reports.part_number_label")}
               sx={{
                 width: "95%",
               }}
@@ -274,7 +269,7 @@ export const Create2FirstTable = ({
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={["DatePicker"]}>
                 <DatePicker
-                  label="Fecha *"
+                  label={`${t("table.date")} *`}
                   required
                   name="date"
                   sx={{
@@ -297,7 +292,7 @@ export const Create2FirstTable = ({
             <TextField
               id="outlined-basic"
               variant="outlined"
-              label="No. de Reporte"
+              label={t("reports.report_number_label")}
               sx={{
                 width: "95%",
               }}
@@ -318,7 +313,7 @@ export const Create2FirstTable = ({
             <TextField
               id="outlined-basic"
               variant="outlined"
-              label="Mesa"
+              label={t("Hours")}
               sx={{
                 width: "95%",
               }}
@@ -339,7 +334,7 @@ export const Create2FirstTable = ({
             <TextField
               id="outlined-basic"
               variant="outlined"
-              label="Nombre de parte"
+              label={t("reports.part_name_label")}
               sx={{
                 width: "95%",
               }}
@@ -358,7 +353,9 @@ export const Create2FirstTable = ({
           </div>
           <div className="form-container">
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Turno *</InputLabel>
+              <InputLabel id="demo-simple-select-label">
+                {t("reports.shift_label")} *
+              </InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -408,7 +405,7 @@ export const Create2FirstTable = ({
                   </span>
                 </th>
                 <th>Item</th>
-                <th>Defecto</th>
+                <th> {t("Defecto")}</th>
                 <th>1</th>
                 <th>2</th>
                 <th>3</th>
@@ -479,7 +476,7 @@ export const Create2FirstTable = ({
                 <td> </td>
                 <td> </td>
                 <td style={{ textAlign: "center" }}>
-                  <div style={{ width: "300px" }}>Total de defectos</div>
+                  <div style={{ width: "300px" }}>{t('Total de defectos')}</div>
                 </td>
                 {totalesD.map((sum, i) => (
                   <td key={i}>
@@ -510,7 +507,7 @@ export const Create2FirstTable = ({
                 <td> </td>
                 <td style={{ textAlign: "center" }}>
                   <div style={{ width: "300px" }}>
-                    Total de piezas inspeccionadas
+                    {t('Total de piezas inspeccionadas')}
                   </div>
                 </td>
                 {totalPiecesInsp.map((total, index) => (
@@ -528,7 +525,7 @@ export const Create2FirstTable = ({
               </tr>
               <tr>
                 <td colSpan={3} style={{ textAlign: "center" }}>
-                  <div>INSPECTOR</div>
+                  <div>{t('INSPECTOR')}</div>
                   {inspectors.map((inspector, index) => (
                     <React.Fragment key={index}>
                       <input
@@ -543,7 +540,7 @@ export const Create2FirstTable = ({
                   ))}
                 </td>
                 <td colSpan={13} style={{ textAlign: "center" }}>
-                  <div>COMENTARIOS</div>
+                  <div>{t('COMENTARIOS')}</div>
                   {comments.map((comment, index) => (
                     <React.Fragment key={index}>
                       <input
@@ -561,7 +558,7 @@ export const Create2FirstTable = ({
               <tr>
                 <td colSpan={8} style={{ textAlign: "center" }}>
                   <div>
-                    REVISO <span className="required">*</span>
+                    {t('REVISADO POR')} <span className="required">*</span>
                   </div>
                   <div className="firm">
                     <input
@@ -575,7 +572,7 @@ export const Create2FirstTable = ({
                 </td>
 
                 <td colSpan={8} style={{ textAlign: "center" }}>
-                  <div>AUTORIZO</div>
+                  <div>{t('AUTORIZADO POR')}</div>
                   <div className="firm">
                     <input
                       type=""

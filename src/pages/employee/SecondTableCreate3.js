@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Table } from "../../styles/Styles";
-import { useContext } from "react";
-import { MainContext } from "../../context/MainContext";
+import { useTranslation } from "react-i18next";
 
 export default function SecondTableCreate3({ divs, setDivs }) {
-  const { numFilasReportByH } = useContext(MainContext);
 
+  const { t } = useTranslation();
 
   function handleInputChange(divId, inputIndex, newValue) {
     setDivs((prevDivs) => {
@@ -30,12 +29,12 @@ export default function SecondTableCreate3({ divs, setDivs }) {
               ></i>
             </th>
             <th>Item</th>
-            <th>Lote</th>
-            <th>Serial</th>
-            <th>#PZAS INSP</th>
-            <th>#PZAS MUESTREO</th>
-            <th>Hora</th>
-            <th>Firma </th>
+            <th>{t('reports.batch_label')}</th>
+            <th>{t('reports.series')}</th>
+            <th>#{t('PZAS INSP')}</th>
+            <th>#{t('PZAS MUESTREO')}</th>
+            <th>{t('Hora')}</th>
+            <th>{t('Firma')} </th>
           </tr>
         </thead>
         <tbody>

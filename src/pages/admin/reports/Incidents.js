@@ -18,7 +18,7 @@ const Incidents = ({
   setIncType
 }) => {
   const { t } = useTranslation();
-  const { InfoIcon, ABECEDARIO } = useContext(MainContext);
+  const { InfoIcon, ABECEDARIO, adminCallback } = useContext(MainContext);
 
   const [aIncidents, setAIncidents] = useState(0);
   const [incidents, setIncidents] = useState([]);
@@ -83,6 +83,7 @@ const Incidents = ({
                         {i === 8 && (
                           <>
                             <CustomInputTootip
+                              adminCallback={adminCallback}
                               incType={incType}
                               sClause={sA}
                               incidentLabels={incidentLabels}
@@ -96,6 +97,7 @@ const Incidents = ({
                         {i === 9 && (
                           <>
                             <CustomInputTootip
+                              adminCallback={adminCallback}
                               incType={incType}
                               sClause={sB}
                               incidentLabels={incidentLabels}
@@ -109,6 +111,7 @@ const Incidents = ({
                         {i === 10 && (
                           <>
                             <CustomInputTootip
+                              adminCallback={adminCallback}
                               incType={incType}
                               sClause={sC}
                               incidentLabels={incidentLabels}
@@ -122,6 +125,7 @@ const Incidents = ({
                         {i === 11 && (
                           <>
                             <CustomInputTootip
+                              adminCallback={adminCallback}
                               incType={incType}
                               sClause={sD}
                               incidentLabels={incidentLabels}
@@ -135,6 +139,7 @@ const Incidents = ({
                         {i === 12 && (
                           <>
                             <CustomInputTootip
+                              adminCallback={adminCallback}
                               incType={incType}
                               sClause={sE}
                               incidentLabels={incidentLabels}
@@ -148,6 +153,7 @@ const Incidents = ({
                         {i === 13 && (
                           <>
                             <CustomInputTootip
+                              adminCallback={adminCallback}
                               incType={incType}
                               sClause={sF}
                               incidentLabels={incidentLabels}
@@ -161,6 +167,7 @@ const Incidents = ({
                         {i === 14 && (
                           <>
                             <CustomInputTootip
+                              adminCallback={adminCallback}
                               incType={incType}
                               sClause={sG}
                               incidentLabels={incidentLabels}
@@ -174,6 +181,7 @@ const Incidents = ({
                         {i === 15 && (
                           <>
                             <CustomInputTootip
+                              adminCallback={adminCallback}
                               incType={incType}
                               sClause={sH}
                               incidentLabels={incidentLabels}
@@ -187,6 +195,7 @@ const Incidents = ({
                         {i === 16 && (
                           <>
                             <CustomInputTootip
+                              adminCallback={adminCallback}
                               incType={incType}
                               sClause={sI}
                               incidentLabels={incidentLabels}

@@ -8,11 +8,11 @@ const ComponentPagination = ({
   handlePageChange,
   handleLastPageClick,
   rowsPerPage,
-  setRowsPerPage,
-  totalEntries,
+  setRowsPerPage,  
+  data
 }) => {
   const { t } = useTranslation();
-
+  const totalEntries =  data
   return (
     <div className="pagination">
       <span>

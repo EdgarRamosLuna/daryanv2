@@ -10,12 +10,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import { StyledForm, Table } from "../../../styles/Styles";
 import SecondTableCreate from "./SecondTableCreate";
 
-import { deleteReportIn, deleteReportItem, getReportsByPartNumber } from "../../../api/daryan.api";
+import {
+  deleteReportIn,
+  deleteReportItem,
+  getReportsByPartNumber,
+} from "../../../api/daryan.api";
 import Select from "../../employee/Select";
 import {
   Autocomplete,
   Box,
   FormControl,
+  Grid,
   InputLabel,
   MenuItem,
   Select as SelectMUI,
@@ -78,13 +83,14 @@ const View = () => {
     setNumColumnas,
     suppliers,
     toast,
-    isAdmin,    
+    isAdmin,
     activeTabReportInsp,
     divsSamplingTableInsp,
     setDivsSamplingTableInsp,
     setNumFilas,
     onlyNumbers,
-    token,    
+    token,
+    setIdReport,
   } = useContext(MainContext);
   const { lang } = useContext(LanguageContext);
 
@@ -96,7 +102,9 @@ const View = () => {
   const idReport = params.id;
   const eData =
     data.length === 0
-      ? JSON.parse(dataTS).filter((d) => Number(d.report_id) === Number(idReport))[0]
+      ? JSON.parse(dataTS).filter(
+          (d) => Number(d.report_id) === Number(idReport)
+        )[0]
       : data.filter((data) => Number(data.id) === Number(idReport))[0];
 
   const [dataC, setDataC] = useState(eData);
@@ -108,7 +116,9 @@ const View = () => {
   const clauses = Number(dataC.report_in.length);
   const newLength = 11 + clauses;
   const [numFilas2, setNumFilas2] = useState(Number(dataC.reports_cc.length));
-  const [numColumnas2, setNumColumnas2] = useState(newLength < 15 ? 15 : newLength);
+  const [numColumnas2, setNumColumnas2] = useState(
+    newLength < 15 ? 15 : newLength
+  );
 
   useEffect(() => {
     const reports_sample_table = eData.report_sata;
@@ -126,6 +136,8 @@ const View = () => {
     }));
 
     setDivsSamplingTableInsp(newList);
+    setIdReport(idReport);
+    setDataCDb([])
 
     return () => {};
   }, []);
@@ -739,8 +751,9 @@ const View = () => {
   }, [numColumnas2, numColumnas]);
 
   useEffect(() => {
-    
-    const filteredIncidents = reportFooter3.filter(d => Number(d?.values[0]) !== 0);
+    const filteredIncidents = reportFooter3.filter(
+      (d) => Number(d?.values[0]) !== 0
+    );
     const newArray = [
       {
         data: dataCDb,
@@ -754,7 +767,7 @@ const View = () => {
         checkedBy: checkedBy,
         authorizedBy: authorizedBy,
         id_report: dataC.id,
-        reports_cc: dataC.reports_cc,
+        reports_cc: dataC.reports_cc,        
         total: {
           cant: total1,
           ng: total2,
@@ -773,6 +786,7 @@ const View = () => {
         },
         incType: incType,
         sampling_table: divsSamplingTableInsp,
+        
       },
     ];
     setDataToSave(newArray);
@@ -883,71 +897,73 @@ const View = () => {
       shift: dataC.shift,
       part_number: dataC.part_number,
       id_supplier: dataC.id_supplier,
+      downtime:dataC.downtime,
     });
   }, [t]);
 
   useEffect(() => {
     let dataFromDb;
     try {
-        dataFromDb = JSON.parse(dataTS).filter((d) => Number(d.report_id) === Number(idReport));
+      dataFromDb = JSON.parse(dataTS).filter(
+        (d) => Number(d.report_id) === Number(idReport)
+      );
     } catch (error) {
-        console.error('Error parsing JSON:', error);
-        return;  // Early return in case of error
+      console.error("Error parsing JSON:", error);
+      return; // Early return in case of error
     }
-    
-    
+
     if (dataFromDb.length > 0) {
-        const timerId = setTimeout(() => {
-            const {
-                plant,
-                supplier,
-                date,
-                report_number,
-                part_name,
-                worked_h,
-                rate,
-                shift,
-                part_number,
-                id_supplier,
-                report_id
-            } = dataFromDb[0];            
-            const getAllDetails = async (partNumber) => {
-              //setIsLoading(true); // Comienza la carga
-              try {
-                const res = await getReportsByPartNumber({ partNumber, token });
-                const data = res?.data;
-                const {column_values = []} = data;
+      const timerId = setTimeout(() => {
+        const {
+          plant,
+          supplier,
+          date,
+          report_number,
+          part_name,
+          worked_h,
+          rate,
+          shift,
+          part_number,
+          id_supplier,
+          report_id,
+          downtime
+        } = dataFromDb[0];
+        const getAllDetails = async (partNumber) => {
+          //setIsLoading(true); // Comienza la carga
+          try {
+            const res = await getReportsByPartNumber({ partNumber, token });
+            const data = res?.data;
+            const { column_values = [] } = data;
 
-                setIncType(column_values.filter(cv => cv.report_id === idReport))
-                console.log(data)
-           
-              } catch (err) {
-                console.log(err);
-              }
-            };
-            getAllDetails(part_number);
-            setDataCDb({
-                plant,
-                supplier,
-                date,
-                report_number,
-                part_name,
-                worked_hours: worked_h,
-                rate,
-                shift,
-                part_number,
-                id_supplier,
-                report_id
-            });
-        }, 100);
-        
-        // Return a cleanup function to clear the timer
-        return () => {
-            clearTimeout(timerId);
+            setIncType(column_values.filter((cv) => cv.report_id === idReport));
+            
+          } catch (err) {
+            console.log(err);
+          }
         };
-    }
-}, [dataTS, idReport]);
+        getAllDetails(part_number);
+        setDataCDb({
+          plant,
+          supplier,
+          date,
+          report_number,
+          part_name,
+          worked_hours: worked_h,
+          rate,
+          shift,
+          part_number,
+          id_supplier,
+          report_id,
+          downtime
+        });
+      }, 100);
 
+      // Return a cleanup function to clear the timer
+      return () => {
+        clearTimeout(timerId);
+      };
+    }
+  }, [dataTS, idReport]);
 
   const [dumpValue, setDumpValue] = useState("");
   const inputRef = useRef();
@@ -1389,6 +1405,32 @@ const View = () => {
                   </div>
                 </div>
               </Box>
+              <Grid
+                sx={{
+                  width: "24%",
+                }}
+              >
+                <TextField
+                  id="outlined-basic"
+                  variant="outlined"
+                  label={t("table.downtime")}
+                  sx={{
+                    width: "95%",
+                  }}
+                  required
+                  type="text"
+                  name="downtime"
+                  placeholder=""
+                  defaultValue={dataC.downtime}
+                  value={dataCDb.downtime}
+                  onChange={(e) =>
+                    setDataCDb({
+                      ...dataCDb,
+                      [e.target.name]: e.target.value,
+                    })
+                  }
+                />
+              </Grid>
             </StyledForm>
           </div>
           <div

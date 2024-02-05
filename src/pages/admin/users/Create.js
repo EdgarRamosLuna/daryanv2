@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { createUser } from "../../../api/daryan.api";
 import { MainContext } from "../../../context/MainContext";
+import { useTranslation } from "react-i18next";
 const CreateSupplier = () => {
   const {
     register,
@@ -13,7 +14,7 @@ const CreateSupplier = () => {
   const { btnCloseRef, toast, setDataUsers } = useContext(MainContext);
   const [saving, setSaving] = useState(false);
 
-  //console.log(dataSupplier);
+  const { t } = useTranslation();
   const onSubmmit = handleSubmit(async (data) => {
     setSaving(true);
     await createUser(data)
@@ -43,7 +44,6 @@ const CreateSupplier = () => {
         }
       })
       .catch((err) => {
-        //console.log(err);
         toast.error(err, {
           duration: 5000,
         });
@@ -56,36 +56,27 @@ const CreateSupplier = () => {
 
   return (
     <CreateForm>
-      <p>Crear Usuario</p>
+      <p>{t('Crear Usuario')}</p>
       <form autoComplete="off" onSubmit={onSubmmit}>
         <div className="item-from-container">
-          <label htmlFor="name">Nombre</label>
+          <label htmlFor="name">{t('suppliers_section.name')}</label>
           <input
             type="text"
             id="name"
             name="name"
             {...register("name", { required: true })}
           />
-          {errors.name && <span className="error">Informacion requerida</span>}
+          {errors.name && <span className="error">{t('Información requerida')}</span>}
         </div>
-        {/* <div className="item-from-container">
-          <label htmlFor="user">Usuario</label>
-          <input
-            type="text"
-            id="user"
-            name="user"
-            {...register("user", { required: true })}
-          />
-          {errors.user && <span className="error">Informacion requerida</span>}
-        </div> */}
+
         <div className="item-from-container">
-          <label htmlFor="email">Correo</label>
+          <label htmlFor="email">{t('clients_section.email')}</label>
           <input
             {...register("email", {
-              required: "Informacion requerida",
+              required:t('Información requerida'),
               pattern: {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Ingresa un correo valido",
+                message: t("Ingresa un correo válido"),
               },
             })}
           />
@@ -95,7 +86,7 @@ const CreateSupplier = () => {
         </div>
 
         <div className="item-from-container">
-          <label htmlFor="password">Contraseña</label>
+          <label htmlFor="password">{t('clients_section.password')}</label>
           <input
             type="password"
             id="password"
@@ -103,7 +94,7 @@ const CreateSupplier = () => {
             {...register("password", { required: true })}
           />
           {errors.password && (
-            <span className="error">Informacion requerida</span>
+            <span className="error">{t('Información requerida')}</span>
           )}
         </div>
         <div className="item-from-container">
@@ -120,7 +111,7 @@ const CreateSupplier = () => {
           </>
           <br />
           <button type="submit" disabled={saving === true ? true : false}>
-            {saving ? <img src="/assets/img/loading.svg" alt="" /> : "Guardar"}
+            {saving ? <img src="/assets/img/loading.svg" alt="" /> : t('clients_section.save')}
           </button>
         </div>
       </form>

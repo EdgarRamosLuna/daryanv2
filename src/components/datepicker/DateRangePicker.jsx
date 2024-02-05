@@ -56,6 +56,28 @@ const DatePickerRange = ({ setDateStart, setDateEnd, dLastDateByPartNumber, dfir
         }
 
     }, [dLastDateByPartNumber, dfirstDateByPartNumber])
+    // function customDayContent(day) {
+    //     let extraDot = null;
+    //     if (reportDates.some(specialDate => isSameDay(day, specialDate))) {
+    //       extraDot = (
+    //         <div style={{
+    //           height: "5px",
+    //           width: "5px",
+    //           borderRadius: "100%",
+    //           background: "red", // El color que prefieras
+    //           position: "absolute",
+    //           top: 2,
+    //           right: 2,
+    //         }} />
+    //       );
+    //     }
+    //     return (
+    //       <div>
+    //         {extraDot}
+    //         <span>{format(day, "d")}</span>
+    //       </div>
+    //     )
+    //   }
     const defineds = {
         startOfWeek: startOfWeek(new Date()),
         endOfWeek: endOfWeek(new Date()),
@@ -97,16 +119,16 @@ const DatePickerRange = ({ setDateStart, setDateEnd, dLastDateByPartNumber, dfir
         if (specialDates.some(specialDate => isSameDay(day, specialDate))) {
             extraDot = (
                 <Tooltip title="Dia inspecciónado">
+
+
                     <div style={{
-                        height: "100%",
-                        width: "50%",
+                        height: "6px",
+                        width: "6px",
                         borderRadius: "100%",
                         background: "red", // Customize as needed
                         position: "absolute",
-                        opacity:'0.2',
-                        top: '50%',
-                        left:'50%',
-                        transform:'translateY(-50%)translateX(-50%)'
+                        top: 2,
+                        right: 2,
                     }} />
                 </Tooltip>
             );

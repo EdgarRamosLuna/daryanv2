@@ -45,7 +45,7 @@ function TabComponentMUI({ tabs }) {
   return (
     <Box sx={{ width: '100%', minHeight:'647.016px'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+        <Tabs value={value} onChange={handleChange} aria-label="">
           {tabs.map((tab, index) => (
             <Tab label={tab.label} {...a11yProps(index)} key={index} />
           ))}

@@ -21,7 +21,7 @@ import DatePickerMUI2 from "../datepicker/DatePickerMUI2";
 import NoInfo from "../helpers/NoInfo";
 registerLocale("es", es);
 function ReportsByH({ data, dateStart, dateEnd, loader, setDateEnd }) {
-  console.log(data);
+  
 
   const { activeTab, setActiveTab, checkList, setCheckList, handleCheckBox } =
     useContext(MainContext);

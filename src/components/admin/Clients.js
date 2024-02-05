@@ -14,6 +14,7 @@ import { MainContext } from "../../context/MainContext";
 import StatusBtn from "../StatusBtn";
 import ComponentPagination from "../ComponentPagination";
 import { useTranslation } from "react-i18next";
+import { Grid, TextField } from "@mui/material";
 
 registerLocale("es", es);
 function ClientsTable({ data }) {
@@ -125,28 +126,40 @@ function ClientsTable({ data }) {
         <div className="table-container">
           <div className="header-container">
             <form autoComplete="off">
-              <div className="filter-container">
-                <div className="filter-item">
-                  <label htmlFor="name-filter">
-                    {t("clients_section.searchClient")}
-                  </label>
-                  <div className="filter-item-input">
-                    <input
-                      type="text"
-                      id="name-filter"
-                      value={nameFilter}
-                      onChange={handleNameFilterChange}
-                    />
-                  </div>
-                </div>
-              </div>
+              <Grid
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  gap: "10px",
+                }}
+              >
+                <label htmlFor="name-filter">
+                  {t("clients_section.searchClient")}:
+                </label>
+                <Grid
+                  className=""
+                  sx={{
+                    width: "50%",
+                  }}
+                >
+                  <TextField
+                    type="text"
+                    id="name-filter"
+                    value={nameFilter}
+                    onChange={handleNameFilterChange}
+                    placeholder={t("clients_section.table.placeholder")}
+                    fullWidth
+                  />
+                </Grid>
+              </Grid>
             </form>
           </div>
           <div className="table-body table-reports">
             <table>
               <thead>
                 <tr>
-                  <th>{t("clients_section.username")}</th>
+                  <th>{t("clients_section.clientName")}</th>
                   <th>{t("clients_section.email")}</th>
                   <th>{t("clients_section.status")}</th>
                   <th>{t("clients_section.actions")}</th>

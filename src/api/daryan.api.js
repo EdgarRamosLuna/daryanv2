@@ -243,3 +243,5 @@ export const getDatesByPartNumber= (sPartNumber, token) =>
       "Content-Type": "application/json",
     },
   });
+export const deleteRit= (data) =>
+  serverApi.post(`/deleteRit`, data);

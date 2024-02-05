@@ -223,7 +223,7 @@ const TotalByPartNumber = () => {
         const res = await getReportsByPartNumberClient({ partNumber, token });
         const data = res.data;
 
-        console.log(data);
+        
         setColumnTitles(data.column_names);
         setTableData(data.column_values);
         setOriginalTableData(data.column_values); // Aquí se establecen los datos originales
