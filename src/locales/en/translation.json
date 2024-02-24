@@ -232,5 +232,6 @@
   "Usuarios":"Users",
   "Total Retrabajo":"Total Rework",
   "Total inspeccionado":"Total inspected",
-  "Total de incidencias":"Total incidences"  
+  "Total de incidencias":"Total incidences",
+  "Todos los campos con * con obligatorios":"All fields marked with * are mandatory"
 }

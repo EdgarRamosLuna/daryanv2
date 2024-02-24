@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
@@ -9,25 +8,18 @@ import Login from "./components/Login";
 import Login3 from "./components/Login3";
 import Login2 from "./components/Login2";
 import Create from "./pages/employee/Create";
-import Settings from "./pages/employee/Settings";
-import Settings2 from "./pages/admin/Settings";
 import Users from "./pages/admin/Users";
 import Clients from "./pages/admin/Clients";
 import Employees from "./pages/admin/Employees";
 import Create2 from "./pages/employee/Create2";
-import CreateUser from "./pages/admin/users/Create";
 import View from "./pages/admin/reports/View";
+import ViewClient from "./pages/client/reports/View";
 import View2 from "./pages/employee/reports/View";
 import View3 from "./pages/employee/reports/View2";
 import View4 from "./pages/admin/reports/View2";
 import View5 from "./pages/client/reports/View";
-import View6 from "./pages/client/reports/View2";
 import Suppliers from "./pages/admin/Suppliers";
 import Create3 from "./pages/employee/Create3";
-import { MainContext } from "./context/MainContext";
-import { useContext } from "react";
-import { useEffect } from "react";
-import { checkUser } from "./api/daryan.api";
 import PdfTest from "./Test";
 import InspectionReport from "./components/pdf/InspectionReport";
 import NoFound404 from "./404";
@@ -44,23 +36,18 @@ function App() {
           <Route exact path="/user/reports/create/1" element={<Create />} />
           <Route exact path="/user/reports/create/2" element={<Create2 />} />
           <Route exact path="/user/reports/create/2/:t" element={<Create3 />} />
-          {/* <Route exact path="/user/my-account" element={<Settings />} /> */}
-          {/* <Route exact path="/admin/my-account" element={<Settings2 />} /> */}
           <Route exact path="/admin/reports" element={<Reports3 />} />
           <Route exact path="/admin/reports_insp/:id" element={<View />} />
           <Route exact path="/user/reports_insp/:id" element={<View2 />} />
+          <Route exact path="/client/reports_insp/:id" element={<ViewClient />} />
           <Route exact path="/user/reports_by_h/:id" element={<View3 />} />
           <Route exact path="/admin/reports_by_h/:id" element={<View4 />} />
-          <Route exact path="/admin/users" element={<Users />} />
-          
-          
+          <Route exact path="/admin/users" element={<Users />} />                  
           <Route exact path="/admin/clients" element={<Clients />} />
           <Route exact path="/admin/employees" element={<Employees/>} />
           <Route exact path="/admin/suppliers" element={<Suppliers/>} />
-          {/* <Route exact path="/admin/my-account" element={<Settings />} /> */}
           <Route exact path="/client/reports" element={<Reports2 />} />
           <Route exact path="/client/reports/:id" element={<View5 />} />
-          {/* <Route exact path="/client/my-account" element={<Settings />} /> */}
         </Route>
         <Route exact path="/reporte_inspeccion/:id" element={<InspectionReport />} />
         <Route exact path="/user/login" element={<Login />} />

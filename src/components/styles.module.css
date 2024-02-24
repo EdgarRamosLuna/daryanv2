@@ -14,7 +14,7 @@
   color: #fff;
 }
 .header:hover {
-  width: 200px;
+  width: 250px;
   transition: all 0.3s;
 }
 .header:hover .logo img{

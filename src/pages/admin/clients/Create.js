@@ -14,7 +14,7 @@ const CreateClient = () => {
     setValue,
   } = useForm();
   const { t } = useTranslation();
-  const { btnCloseRef, toast, setDataClients, suppliers } =
+  const { btnCloseRef, toast, setDataClients, suppliersByClient } =
     useContext(MainContext);
   const [saving, setSaving] = useState(false);
 
@@ -74,7 +74,7 @@ const CreateClient = () => {
               })}
             >
               <MenuItem value="0">{t('clients_section.selectSupplier')}</MenuItem>
-              {suppliers.map((supplier, indx) => (
+              {suppliersByClient.map((supplier, indx) => (
                 <MenuItem key={indx} value={supplier.id}>
                   {supplier.fullname}
                 </MenuItem>

@@ -1,16 +1,11 @@
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-} from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
-import { getReportsByPartNumberClient } from "../../api/daryan.api";
-import TaLoader from "./TaLoader";
+import { getReportsByPartNumber } from "../../api/daryan.api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import FilterTable from "./FilterTable";
+import { Chip, Grid, Tooltip, Typography } from "@mui/material";
 
 export const DynamicTable = ({ data, type }) => {
   const [groupedData, setGroupedData] = useState([]);
@@ -20,15 +15,15 @@ export const DynamicTable = ({ data, type }) => {
   useEffect(() => {
     if (type !== 0) {
       // Obtén todas las cláusulas únicas para crear las cabeceras de la tabla
-      let filteredData = data.filter((t) => Number(t.type) === type);
-      const clauses = [...new Set(filteredData.map((item) => item.clause))];
+      let filteredData = data?.filter((t) => Number(t.type) === type);
+      const clauses = [...new Set(filteredData?.map((item) => item?.clause))];
       const indicentsDb = [
         ...new Set(
-          filteredData.map((item) => {
+          filteredData?.map((item) => {
             const dataToReturn = {
-              clause: item.clause,
-              incident: item.incident,
-              report_id: item.report_id,
+              clause: item?.clause,
+              incident: item?.type,
+              report_id: item?.report_id,
             };
             return dataToReturn;
           })
@@ -38,19 +33,19 @@ export const DynamicTable = ({ data, type }) => {
       setClauses(clauses);
 
       // Agrupa los datos por report_id
-      const groupedData = filteredData.reduce((acc, item) => {
-        if (!acc[item.report_id]) {
-          acc[item.report_id] = clauses.reduce(
+      const groupedData = filteredData?.reduce((acc, item) => {
+        if (!acc[item?.report_id]) {
+          acc[item?.report_id] = clauses?.reduce(
             (obj, clause) => ({ ...obj, [clause]: 0 }),
             {}
           );
         }
 
         // Aquí es donde debes hacer la suma
-        acc[item.report_id][item.clause] += parseInt(item.total_cant);
+        acc[item?.report_id][item?.clause] += parseInt(item?.total_cant);
         return acc;
       }, {});
-      let groupedByReportIdAndClause = data.reduce((acc, item) => {
+      let groupedByReportIdAndClause = data?.reduce((acc, item) => {
         // Si el report_id no existe en el acumulador, añádelo como un nuevo objeto
         if (!acc[item.report_id]) {
           acc[item.report_id] = {};
@@ -68,11 +63,12 @@ export const DynamicTable = ({ data, type }) => {
 
       setGroupedData2(groupedByReportIdAndClause);
       setGroupedData(groupedData);
+      console.log(groupedData);
     }
   }, [type]);
 
-  const reportIds = Object.keys(groupedData);
-  //console.log(incidents);
+  const reportIds = groupedData ? Object.keys(groupedData) : [];
+
   // Convertir los datos agrupados a formato de array para usar en la tabla
   let tableData = [];
   for (let report_id in groupedData) {
@@ -84,149 +80,121 @@ export const DynamicTable = ({ data, type }) => {
       });
     }
   }
-  const [tooltip, setTooltip] = useState({
-    x: 0,
-    y: 0,
-    show: false,
-    text: "",
-  });
 
-  const handleCellClick = (e, text, cant) => {
-    e.target.children[0].classList.add("span-btn-hover");
-    // const span = document.querySelector(".span-btn-clause");
-
-    // span.addEventListener("blur", function() {
-    //   span.classList.remove("span-btn-hover");
-    // });
-    if (cant === 0) return;
-    console.log("Clicked text:", text); // Agrega esta línea
-    const rect = e.target.children[0].getBoundingClientRect();
-    setTooltip({
-      x: rect.x - 180,
-      y: rect.y,
-      show: true,
-      text: text,
-    });
-    console.log(rect);
-  };
   const spanRef = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
 
   const handleBlur = () => {
     setIsFocused(false);
     if (spanRef.current) {
-      spanRef.current.classList.remove("span-btn-hover");
+      spanRef.current.classList.remove("removable");
     }
   };
 
   const handleFocus = () => {
     setIsFocused(true);
     if (spanRef.current) {
-      spanRef.current.classList.add("span-btn-hover");
+      spanRef.current.classList.add("removable");
     }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (!e.target.className.includes("table-center")) {
-        setTooltip({ ...tooltip, show: false });
-      }
-    };
-    document.addEventListener("click", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [tooltip]);
-
-  //  console.log(groupedData2[4])
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Report ID</th>
-          {clauses.map((clause, index) => (
-            <th key={index}>{clause}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {reportIds.map((reportId, index) => (
-          <tr key={index}>
-            <td className="table-center">{reportId}</td>
+    <>
+      <table>
+        <thead>
+          <tr>
+            <th>Report ID</th>
             {clauses.map((clause, index) => (
-              <td
-                className="table-center"
-                key={index}
-                onClick={(e) =>
-                  handleCellClick(
-                    e,
-                    groupedData2[reportId][clause] &&
-                      groupedData2[reportId][clause].incident,
-                    groupedData[reportId][clause]
-                  )
-                }
-                onBlur={handleBlur}
-                onFocus={handleFocus}
-                tabIndex="0"
-              >
-                <span
-                  ref={spanRef}
-                  className={`${
-                    groupedData[reportId][clause] !== 0 && "span-btn-clause"
-                  } ${isFocused ? "removable" : ""}`}
-                  style={{ pointerEvents: "none" }}
-                >
-                  {groupedData[reportId][clause]}
-                </span>
-              </td>
+              <th key={index}>{clause}</th>
             ))}
           </tr>
-        ))}
-      </tbody>
-      {tooltip.show && (
-        <div
-          style={{
-            position: "fixed",
-            left: tooltip.x,
-            top: tooltip.y,
-            backgroundColor: "white",
-            border: "1px solid black",
-            padding: "5px",
-            zIndex: 100,
-          }}
-        >
-          <b>Incidencia: </b>
-          {tooltip.text}
-        </div>
-      )}
-    </table>
+        </thead>
+        <tbody>
+          {reportIds?.map((reportId, index) => (
+            <tr key={index}>
+              <td className="table-center">{reportId}</td>
+              {clauses.map((clause, index) => (
+                <td
+                  className="table-center"
+                  key={index}
+                  // onClick={(e) =>
+                  //   handleCellClick(
+                  //     e,
+                  //     groupedData2[reportId][clause] &&
+                  //       groupedData2[reportId][clause].type,
+                  //     groupedData[reportId][clause]
+                  //   )
+                  // }
+                  onBlur={handleBlur}
+                  onFocus={handleFocus}
+                  tabIndex="0"
+                >
+                  <>
+                    <Tooltip
+                      title={
+                        <>
+                          <b>Incidencia: </b>
+                          {groupedData2[reportId][clause]?.comment}
+                        </>
+                      }
+                      placement="left"
+                      arrow
+                    >
+                      {groupedData[reportId] &&
+                      groupedData[reportId][clause] ? (
+                        <Chip
+                          label={groupedData[reportId][clause]}
+                          color="success"
+                          variant="outlined"
+                        />
+                      ) : (
+                        ""
+                      )}
+                    </Tooltip>
+                  </>
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 };
 
 const TotalByPartNumber = () => {
-  const { rDetailsData, partNumber, token } = useContext(MainContext);
+  const {
+    rDetailsData,
+    partNumber,
+    token,
+    tableFilters2,
+    setTableFilters2,
+    LANG,
+    langu,    
+    serverNodeUrl
+  } = useContext(MainContext);
 
   const [total_inspected, setTotalInspected] = useState([]);
   const [showDetails, setShowDetails] = useState(false); // Nuevo estado para el toggle
   const [columnTitles, setColumnTitles] = useState([]); // Nuevo estado para los títulos de las columnas
   const [tableData, setTableData] = useState([]);
-  const [originalTableData, setOriginalTableData] = useState([]);
-
+  const [originalTableData, setOriginalTableData] = useState([]);  
+  
+  //'http://localhost:3001';
   const [isLoading, setIsLoading] = useState(false);
-
-  console.log(token)
+  const viewReportByPartNumber = (partNumber, typeDoc) =>{
+    
+    window.open(`${serverNodeUrl}rip${typeDoc === 'pdf' ? ``:`-ex`}/${partNumber}?st=${token}`, '_blank');
+  };
   useEffect(() => {
     const getAllDetails = async () => {
       setIsLoading(true); // Comienza la carga
       try {
-        const res = await getReportsByPartNumberClient({ partNumber, token });
-        const data = res.data;
-
-        
-        setColumnTitles(data.column_names);
-        setTableData(data.column_values);
-        setOriginalTableData(data.column_values); // Aquí se establecen los datos originales
+        const res = await getReportsByPartNumber({ partNumber, token });
+        const data = res?.data;
+        setColumnTitles(data?.column_names || []);
+        setTableData(data?.column_values || []);
+        setOriginalTableData(data?.column_values || []); // Aquí se establecen los datos originales
       } catch (err) {
         console.log(err);
       }
@@ -234,7 +202,6 @@ const TotalByPartNumber = () => {
     getAllDetails(partNumber);
   }, []);
   useEffect(() => {
-    //console.log(dataDb);
 
     // Sum the values of the object array
     const total_inspected = rDetailsData.reduce(
@@ -268,49 +235,72 @@ const TotalByPartNumber = () => {
       total_re_work_parts,
       total_scrap,
       total_worked_h,
-      <>
+      <Grid sx={{display:'flex', gap:'15px'}}>
         {!navigator.onLine ? (
-          <FontAwesomeIcon icon={faFilePdf} />
+          <FontAwesomeIcon icon={faFilePdf} onClick={() => viewReportByPartNumber(partNumber, 'pdf')}/>
         ) : (
-          <i className="fa-solid fa-file-pdf" style={{
-            fontSize: '1.3rem',
-            color:"#600404"
-          }}></i>
+          <i
+            className="fa-solid fa-file-pdf"
+            style={{
+              fontSize: "1.3rem",
+              color: "#600404",
+            }}
+            onClick={() => viewReportByPartNumber(partNumber, 'pdf')}
+          ></i>
         )}
-      </>,
+        <i
+            className="fa-solid fa-file-excel"
+            style={{
+              fontSize: "1.3rem",
+              color: "#107c41",
+            }}
+            onClick={() => viewReportByPartNumber(partNumber, 'excel')}
+          ></i>
+      </Grid>,
     ]);
-    //console.log(total_inspected);
-    return () => {
-      //console.log("cleanup");
-    };
   }, [rDetailsData, showDetails, partNumber]);
-
-  
 
   const [typeData, setTypeData] = useState(0);
   const getDetails = (type) => {
     setTypeData(type);
-
-    if (type === typeData) {
-      setShowDetails(!showDetails);
+    if (tableData.length > 0) {
+      if (type === typeData) {
+        setShowDetails(!showDetails);
+      } else {
+        setShowDetails(true);
+      }
     } else {
-      setShowDetails(true);
+      return;
     }
-  
   };
 
-  // definir estilos como objeto JavaScript
-  const tableStyle = {
-    maxHeight: "200px",
-    overflowY: "auto",
-    display: "block",
-    maxWidth: "590px",
-    margin: "0 auto",
-  };
   const tableContainerStyle = {
     maxHeight: "200px",
     overflowY: "auto",
   };
+  const [showFIltersT, setShowFiltersT] = useState(false);
+  const showFilterTable = () => {    
+    setShowFiltersT((prev) => !prev);
+  };
+  useEffect(() => {
+    if (
+      tableFilters2 &&
+      !showFIltersT &&
+      Object.values(tableFilters2[0]).every((value) => !value)
+    ) {
+      setTableFilters2([
+        {
+          total_in: true,
+          total_ng: true,
+          total_ok: true,
+          total_rw: true,
+          total_sc: true,
+          total_wh: true,
+        },
+      ]);
+    }
+  }, [tableFilters2]);
+
   return (
     <div className="modal-details">
       <div className="modal-details-content">
@@ -319,16 +309,47 @@ const TotalByPartNumber = () => {
           <h3>{partNumber}</h3>
         </div>
         <div className="modal-details-body">
+          <div className="table-controlls">
+            {showFIltersT && <FilterTable tableFilters2={tableFilters2} />}
+            <div className="table-controlls-left">
+              <div
+                className={`table-controlls-left-item ${
+                  showFIltersT ? "activeFilters" : ""
+                }`}
+                onClick={showFilterTable}
+              >
+                <i className="fa-solid fa-filter"></i>
+              </div>
+            </div>
+          </div>
           <Table>
             <table className="table-details">
               <thead>
                 <tr>
-                  <th>Total Inspeccionado</th>
-                  <th>Total NG Piezas</th>
-                  <th>Total OK Piezas</th>
-                  <th>Total Retrabajadas</th>
-                  <th>Total Scrap</th>
-                  <th>Total Horas Trabajadas</th>
+                  {tableFilters2[0].total_in === true && (
+                    // if value exist in array LANG
+                    <th>{LANG.find((item) => item.lang === langu).total_in}</th>
+                  )}
+                  {tableFilters2[0].total_ng === true && (
+                    // if value exist in array LANG
+                    <th>{LANG.find((item) => item.lang === langu).total_ng}</th>
+                  )}
+                  {tableFilters2[0].total_ok === true && (
+                    // if value exist in array LANG
+                    <th>{LANG.find((item) => item.lang === langu).total_ok}</th>
+                  )}
+                  {tableFilters2[0].total_rw === true && (
+                    // if value exist in array LANG
+                    <th>{LANG.find((item) => item.lang === langu).total_rw}</th>
+                  )}
+                  {tableFilters2[0].total_sc === true && (
+                    // if value exist in array LANG
+                    <th>{LANG.find((item) => item.lang === langu).total_sc}</th>
+                  )}
+                  {tableFilters2[0].total_wh === true && (
+                    // if value exist in array LANG
+                    <th>{LANG.find((item) => item.lang === langu).total_wh}</th>
+                  )}
                   <th></th>
                 </tr>
               </thead>
@@ -336,26 +357,71 @@ const TotalByPartNumber = () => {
                 <tr>
                   {total_inspected.map((item, index) => {
                     return (
-                      <td key={index} className="table-center">
-                        {index >= 1 && index <= 4 ? (
-                          <>
-                            {index !== 2 ? (
-                              <span
-                                className={`span-btn${index}`}
-                                onClick={() =>
-                                  getDetails(index !== 1 ? index - 1 : index)
-                                }
-                              >
-                                {item}
-                              </span>
-                            ) : (
-                              item
-                            )}
-                          </>
-                        ) : (
-                          item
+                      <>
+                        {index === 0 && tableFilters2[0].total_in === true && (
+                          <td key={index} className="table-center">
+                            {item}
+                          </td>
                         )}
-                      </td>
+                        {index === 1 && tableFilters2[0].total_ng === true && (
+                          <td key={index} className="table-center">
+                            <span
+                              className={`span-btn${index}`}
+                              onClick={() =>
+                                getDetails(index !== 1 ? index - 1 : index)
+                              }
+                            >
+                              {item}
+                            </span>
+                          </td>
+                        )}
+                        {index === 2 && tableFilters2[0].total_ok === true && (
+                          <td key={index} className="table-center">
+                            <span
+                              className={`span-btn${index}`}
+                              onClick={() =>
+                                getDetails(index !== 1 ? index - 1 : index)
+                              }
+                            >
+                              {item}
+                            </span>
+                          </td>
+                        )}
+                        {index === 3 && tableFilters2[0].total_rw === true && (
+                          <td key={index} className="table-center">
+                            <span
+                              className={`span-btn${index}`}
+                              onClick={() =>
+                                getDetails(index !== 1 ? index - 1 : index)
+                              }
+                            >
+                              {item}
+                            </span>
+                          </td>
+                        )}
+                        {index === 4 && tableFilters2[0].total_sc === true && (
+                          <td key={index} className="table-center">
+                            <span
+                              className={`span-btn${index}`}
+                              onClick={() =>
+                                getDetails(index !== 1 ? index - 1 : index)
+                              }
+                            >
+                              {item}
+                            </span>
+                          </td>
+                        )}
+                        {index === 5 && tableFilters2[0].total_wh === true && (
+                          <td key={index} className="table-center">
+                            {item.toFixed(2)}
+                          </td>
+                        )}
+                        {index === 6 && (
+                          <td key={index} className="table-center">
+                            {item}
+                          </td>
+                        )}
+                      </>
                     );
                   })}
                 </tr>
@@ -364,7 +430,6 @@ const TotalByPartNumber = () => {
                     <td colSpan="7">
                       <div style={tableContainerStyle}>
                         <DynamicTable data={tableData} type={typeData} />
-                       
                       </div>
                     </td>
                   </tr>

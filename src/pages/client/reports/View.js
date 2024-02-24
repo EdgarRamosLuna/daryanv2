@@ -10,12 +10,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import { StyledForm, Table } from "../../../styles/Styles";
 import SecondTableCreate from "./SecondTableCreate";
 
-import { deleteReportIn, deleteReportItem } from "../../../api/daryan.api";
+import {
+  deleteReportIn,
+  deleteReportItem,
+  getReportsByPartNumber,
+} from "../../../api/daryan.api";
 import Select from "../../employee/Select";
 import {
   Autocomplete,
   Box,
   FormControl,
+  Grid,
   InputLabel,
   MenuItem,
   Select as SelectMUI,
@@ -25,6 +30,8 @@ import InputDate from "../../../components/inputs/InputDate";
 import Create3 from "../../employee/Create3";
 import { useTranslation } from "react-i18next";
 import { LanguageContext } from "../../../context/LanguageContext";
+import useReports from "../../../hooks/useReports";
+import ReportPart3 from "./ReportPart3";
 
 const View = () => {
   const { t } = useTranslation();
@@ -77,32 +84,41 @@ const View = () => {
     suppliers,
     toast,
     isAdmin,
-    incType,
     activeTabReportInsp,
     divsSamplingTableInsp,
     setDivsSamplingTableInsp,
     setNumFilas,
-    onlyNumbers
+    onlyNumbers,
+    token,
+    setIdReport,
   } = useContext(MainContext);
-  const {lang} = useContext(LanguageContext)
-  
+  const { lang } = useContext(LanguageContext);
+
+  const [incType, setIncType] = useState([]);
+
+  const { reportIncidents, dataSes } = useReports();
+
   const params = useParams();
   const idReport = params.id;
   const eData =
     data.length === 0
       ? JSON.parse(dataTS).filter(
-          (data) => Number(data.id) === Number(idReport)
+          (d) => Number(d.report_id) === Number(idReport)
         )[0]
       : data.filter((data) => Number(data.id) === Number(idReport))[0];
 
   const [dataC, setDataC] = useState(eData);
+
+  //console.log(.filter((d) => Number(d.report_id) === Number(idReport)))
   const [producedBy, setProducedBy] = useState(eData.made_by);
   const [checkedBy, setCheckedBy] = useState(eData.checked_by);
   const [authorizedBy, setAuthorizedBy] = useState(eData.authorized_by);
   const clauses = Number(dataC.report_in.length);
   const newLength = 11 + clauses;
   const [numFilas2, setNumFilas2] = useState(Number(dataC.reports_cc.length));
-  const [numColumnas2, setNumColumnas2] = useState(newLength);
+  const [numColumnas2, setNumColumnas2] = useState(
+    newLength < 15 ? 15 : newLength
+  );
 
   useEffect(() => {
     const reports_sample_table = eData.report_sata;
@@ -120,6 +136,8 @@ const View = () => {
     }));
 
     setDivsSamplingTableInsp(newList);
+    setIdReport(idReport);
+    setDataCDb([])
 
     return () => {};
   }, []);
@@ -209,9 +227,6 @@ const View = () => {
     return () => {};
   }, [numFilas2]);
 
-  const updateData = useCallback((data) => {
-    setDataC(data);
-  }, []);
   useEffect(() => {
     setNumColumnas2(numColumnas);
   }, [numColumnas]);
@@ -451,9 +466,9 @@ const View = () => {
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
-              values: Array.from({ length: 1 }, () => rby[i - 8].realized_by),
-              id_db: Number(rby[i - 8].id),
-              type: Number(rby[i - 8].type),
+              values: Array.from({ length: 1 }, () => rby[i - 8]?.realized_by),
+              id_db: Number(rby[i - 8]?.id),
+              type: Number(rby[i - 8]?.type),
             });
           }
         }
@@ -491,9 +506,9 @@ const View = () => {
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
-              values: Array.from({ length: 1 }, () => obs[i - 8].observations),
-              id_db: Number(obs[i - 8].id),
-              type: Number(obs[i - 8].type),
+              values: Array.from({ length: 1 }, () => obs[i - 8]?.observations),
+              id_db: Number(obs[i - 8]?.id),
+              type: Number(obs[i - 8]?.type),
             });
           }
         }
@@ -533,9 +548,9 @@ const View = () => {
             // ... código para aplicar la condición solamente en el último índice ...
             filas.push({
               id: i,
-              values: Array.from({ length: 1 }, () => inc[i - 8].incidents),
-              id_db: Number(inc[i - 8].id),
-              type: Number(inc[i - 8].type),
+              values: Array.from({ length: 1 }, () => inc[i - 8]?.incidents),
+              id_db: Number(inc[i - 8]?.id),
+              type: Number(inc[i - 8]?.type),
             });
           }
         }
@@ -736,6 +751,9 @@ const View = () => {
   }, [numColumnas2, numColumnas]);
 
   useEffect(() => {
+    const filteredIncidents = reportFooter3.filter(
+      (d) => Number(d?.values[0]) !== 0
+    );
     const newArray = [
       {
         data: dataCDb,
@@ -744,12 +762,12 @@ const View = () => {
         customerControlTable: divs,
         madeBy: reportFooter,
         observations: reportFooter2,
-        incidents: reportFooter3,
+        incidents: filteredIncidents,
         producedBy: producedBy,
         checkedBy: checkedBy,
         authorizedBy: authorizedBy,
         id_report: dataC.id,
-        reports_cc: dataC.reports_cc,
+        reports_cc: dataC.reports_cc,        
         total: {
           cant: total1,
           ng: total2,
@@ -768,6 +786,7 @@ const View = () => {
         },
         incType: incType,
         sampling_table: divsSamplingTableInsp,
+        
       },
     ];
     setDataToSave(newArray);
@@ -802,7 +821,6 @@ const View = () => {
   ]);
 
   useEffect(() => {
-
     const keys = Object.keys(dataC.reports_cc[0]);
     keys.splice(1, 1); // Elimina el elemento en la posición 1 (id_report)
     keys[0] = "";
@@ -816,21 +834,21 @@ const View = () => {
     keys[3] = (
       <>
         <div className="th-title">
-        {t("reports.batch")} <span className="required">*</span>
+          {t("reports.batch")} <span className="required">*</span>
         </div>
       </>
     );
     keys[4] = (
       <>
         <div className="th-title">
-        {t("reports.series")} <span className="required">*</span>
+          {t("reports.series")} <span className="required">*</span>
         </div>
       </>
     );
     keys[5] = (
       <>
         <div className="th-title">
-        {t("reports.qntInsp")} <span className="required">*</span>
+          {t("reports.qntInsp")} <span className="required">*</span>
         </div>
       </>
     );
@@ -879,13 +897,77 @@ const View = () => {
       shift: dataC.shift,
       part_number: dataC.part_number,
       id_supplier: dataC.id_supplier,
+      downtime:dataC.downtime,
     });
   }, [t]);
+
+  useEffect(() => {
+    let dataFromDb;
+    try {
+      dataFromDb = JSON.parse(dataTS).filter(
+        (d) => Number(d.report_id) === Number(idReport)
+      );
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+      return; // Early return in case of error
+    }
+
+    if (dataFromDb.length > 0) {
+      const timerId = setTimeout(() => {
+        const {
+          plant,
+          supplier,
+          date,
+          report_number,
+          part_name,
+          worked_h,
+          rate,
+          shift,
+          part_number,
+          id_supplier,
+          report_id,
+          downtime
+        } = dataFromDb[0];
+        const getAllDetails = async (partNumber) => {
+          //setIsLoading(true); // Comienza la carga
+          try {
+            const res = await getReportsByPartNumber({ partNumber, token });
+            const data = res?.data;
+            const { column_values = [] } = data;
+
+            setIncType(column_values.filter((cv) => cv.report_id === idReport));
+            
+          } catch (err) {
+            console.log(err);
+          }
+        };
+        getAllDetails(part_number);
+        setDataCDb({
+          plant,
+          supplier,
+          date,
+          report_number,
+          part_name,
+          worked_hours: worked_h,
+          rate,
+          shift,
+          part_number,
+          id_supplier,
+          report_id,
+          downtime
+        });
+      }, 100);
+
+      // Return a cleanup function to clear the timer
+      return () => {
+        clearTimeout(timerId);
+      };
+    }
+  }, [dataTS, idReport]);
 
   const [dumpValue, setDumpValue] = useState("");
   const inputRef = useRef();
   const dataListRef = useRef();
-
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -910,8 +992,6 @@ const View = () => {
     },
   ];
   const [totalHours, setTotalHours] = useState(0);
-
-
 
   useEffect(() => {
     if (Object.keys(dataCDb).length > 0) {
@@ -938,12 +1018,12 @@ const View = () => {
     if (Object.keys(dataCDb).length > 0) {
       const totalInsp = Number(total1);
       const rate = dataCDb.rate;
-      
+
       if (onlyNumbers.test(rate)) {
         const totalHours = Number(totalInsp) / Number(rate);
         setTotalHours(totalHours);
       } else {
-        setTotalHours(0)
+        setTotalHours(0);
       }
     }
   }, [total1, dataCDb]);
@@ -954,10 +1034,10 @@ const View = () => {
         ["worked_hours"]: totalHours,
       });
     }
-    if(totalHours === 0){
+    if (totalHours === 0) {
       setDataCDb({
         ...dataCDb,
-        ["worked_hours"]: '',
+        ["worked_hours"]: "",
       });
     }
   }, [totalHours]);
@@ -1017,7 +1097,7 @@ const View = () => {
                     })
                   }
                 />
-              </Box>            
+              </Box>
               <Box
                 className="form-containers"
                 style={{
@@ -1048,9 +1128,8 @@ const View = () => {
                   }}
                   disabled
                   defaultValue={dataC.report_number}
-                  
                 />
-              </Box>            
+              </Box>
               <Box className="form-container">
                 <TextField
                   id="outlined-basic"
@@ -1084,18 +1163,13 @@ const View = () => {
                   sx={{
                     width: "95%",
                   }}
-                  defaultValue={dataC.report_number}
-                  // value={
-                  //   totalHours > 0 && typeof totalHours === "number"
-                  //     ? totalHours
-                  //     : dataCDb.worked_hours
-                  // }
+                  defaultValue={dataC.worked_h}
                   value={
                     totalHours > 0 &&
                     typeof totalHours === "number" &&
                     onlyNumbers.test(dataCDb.rate)
-                      ? totalHours.toFixed(2)
-                      : dataCDb.worked_hours
+                      ? totalHours.toFixed(0)
+                      : dataCDb.worked_h
                   }
                   onChange={(e) =>
                     setDataCDb({
@@ -1104,7 +1178,7 @@ const View = () => {
                     })
                   }
                 />
-              </Box>                          
+              </Box>
               <Box className="form-container">
                 <TextField
                   id="outlined-basic"
@@ -1117,14 +1191,16 @@ const View = () => {
                   name="rate"
                   placeholder=""
                   required
-                  defaultValue=""
+                  defaultValue={dataC.rate}
                   value={dataCDb.rate}
                   onChange={handleInputChange}
                 />
               </Box>
               <Box className="form-container">
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">{t("reports.shift_label")}</InputLabel>
+                  <InputLabel id="demo-simple-select-label">
+                    {t("reports.shift_label")}
+                  </InputLabel>
                   <SelectMUI
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
@@ -1165,7 +1241,8 @@ const View = () => {
                   name="part_number"
                   placeholder=""
                   required
-                  value={dataC.part_number}
+                  defaultValue={dataC.part_number}
+                  value={dataCDb.part_number}
                   onChange={(e) =>
                     setDataCDb({
                       ...dataCDb,
@@ -1328,6 +1405,32 @@ const View = () => {
                   </div>
                 </div>
               </Box>
+              <Grid
+                sx={{
+                  width: "24%",
+                }}
+              >
+                <TextField
+                  id="outlined-basic"
+                  variant="outlined"
+                  label={t("table.downtime")}
+                  sx={{
+                    width: "95%",
+                  }}
+                  required
+                  type="text"
+                  name="downtime"
+                  placeholder=""
+                  defaultValue={dataC.downtime}
+                  value={dataCDb.downtime}
+                  onChange={(e) =>
+                    setDataCDb({
+                      ...dataCDb,
+                      [e.target.name]: e.target.value,
+                    })
+                  }
+                />
+              </Grid>
             </StyledForm>
           </div>
           <div
@@ -1347,582 +1450,58 @@ const View = () => {
               numColumnas2={numColumnas2}
             />
           </div>
-
-          <div
-            className="container scrollX c2"
-            ref={container2Ref}
-            onScroll={handleScroll2}
-            style={{ overflow: "scroll", height: "auto" }}
-          >
-            <Table>
-              <table>
-                <thead className="no-sticky">
-                  <tr>
-                    {titulosColumnas.map((titulo, i) =>
-                      i === 0 || i === titulosColumnas.length - 1 ? (
-                        <th key={i}>
-                          <i
-                            className="fa-solid fa-circle-plus"
-                            style={{ color: "transparent" }}
-                          ></i>
-                        </th>
-                      ) : (
-                        <th key={i}>{titulo}</th>
-                      )
-                    )}
-                  </tr>
-                </thead>
-                <tbody>
-                  {divs.map(
-                    (fila, i) =>
-                      i === 0 && (
-                        <tr key={fila.id} className="hidden">
-                          {fila.values.map((valor, i) => (
-                            <>
-                              {i <= 1 || i === fila.values.length - 1 ? (
-                                <td key={i} className="table-center">
-                                   
-                                </td>
-                              ) : (
-                                <td key={i} className="table-center">
-                                  <input
-                                    name=""
-                                    value={dumpValue}
-                                    type="text"
-                                    onChange={() => setDumpValue("")}
-                                  />
-                                </td>
-                              )}
-                            </>
-                          ))}
-                        </tr>
-                      )
-                  )}
-                </tbody>
-                <tfoot className="tfooter">
-                  {divs2.map(
-                    (fila, i) =>
-                      i === 0 && (
-                        <tr key={fila.id}>
-                          {fila.values.map((valor, i) => (
-                            <>
-                              {i === 0 ||
-                              i === 1 ||
-                              i === fila.values.length - 1 ? (
-                                <>
-                                  {i === 1 && (
-                                    <td
-                                      key={i}
-                                      className="table-center"
-                                      colSpan={5}
-                                    >
-                                      Totales
-                                    </td>
-                                  )}
-                                  {i === 0 && <></>}
-                                </>
-                              ) : (
-                                <td key={i} className="table-center">
-                                  {i === 2 && (
-                                    <input
-                                      value={total1}
-                                      type="text"
-                                      onChange={(e) =>
-                                        setTotal1(e.target.value)
-                                      }
-                                    />
-                                  )}
-                                  {i === 3 && (
-                                    <input
-                                      value={total2}
-                                      type="text"
-                                      onChange={(e) =>
-                                        setTotal2(e.target.value)
-                                      }
-                                    />
-                                  )}
-                                  {i === 4 && (
-                                    <input
-                                      value={total3}
-                                      type="text"
-                                      onChange={(e) =>
-                                        setTotal3(e.target.value)
-                                      }
-                                    />
-                                  )}
-                                  {i === 5 && (
-                                    <input
-                                      value={total4}
-                                      type="text"
-                                      onChange={(e) =>
-                                        setTotal4(e.target.value)
-                                      }
-                                    />
-                                  )}
-                                  {i === 6 && (
-                                    <input
-                                      value={total5}
-                                      type="text"
-                                      onChange={(e) =>
-                                        setTotal5(e.target.value)
-                                      }
-                                    />
-                                  )}
-                                  {i === 7 && (
-                                    <input
-                                      value={total6}
-                                      type="text"
-                                      onChange={(e) =>
-                                        setTotal6(e.target.value)
-                                      }
-                                    />
-                                  )}
-                                  {i === 8 && (
-                                    <input
-                                      value={total7}
-                                      type="text"
-                                      onChange={(e) =>
-                                        setTotal7(e.target.value)
-                                      }
-                                    />
-                                  )}
-                                  {i === 9 && (
-                                    <input
-                                      value={total8}
-                                      type="text"
-                                      onChange={(e) =>
-                                        setTotal8(e.target.value)
-                                      }
-                                    />
-                                  )}
-                                  {i === 10 && (
-                                    <input
-                                      value={total9}
-                                      type="text"
-                                      onChange={(e) =>
-                                        setTotal9(e.target.value)
-                                      }
-                                    />
-                                  )}
-                                  {i === 11 && (
-                                    <input
-                                      value={isNaN(total10) ? 0 : total10}
-                                      type="text"
-                                      onChange={(e) =>
-                                        setTotal10(e.target.value)
-                                      }
-                                    />
-                                  )}
-                                  {i === 12 && (
-                                    <input
-                                      value={isNaN(total11) ? 0 : total11}
-                                      type="text"
-                                      onChange={(e) =>
-                                        setTotal11(e.target.value)
-                                      }
-                                    />
-                                  )}
-                                  {i === 13 && (
-                                    <input
-                                      value={isNaN(total12) ? 0 : total12}
-                                      type="text"
-                                      onChange={(e) =>
-                                        setTotal12(e.target.value)
-                                      }
-                                    />
-                                  )}
-                                  {i === 14 && (
-                                    <input
-                                      value={isNaN(total13) ? 0 : total13}
-                                      type="text"
-                                      onChange={(e) =>
-                                        setTotal13(e.target.value)
-                                      }
-                                    />
-                                  )}
-                                  {i === 15 && (
-                                    <input
-                                      value={isNaN(total14) ? 0 : total14}
-                                      type="text"
-                                      onChange={(e) =>
-                                        setTotal14(e.target.value)
-                                      }
-                                    />
-                                  )}
-                                </td>
-                              )}
-                            </>
-                          ))}
-                        </tr>
-                      )
-                  )}
-                  <tr>
-                    <td
-                      colSpan={numColumnas2 / 3}
-                      style={{ textAlign: "center" }}
-                    >
-                      <div>REALIZO</div>
-                      {reportFooter.map(
-                        (fila, i) =>
-                          i < reportFooter.length &&
-                          fila.values.map((valor, i) => (
-                            <>
-                              <input
-                                value={valor}
-                                type="text"
-                                onChange={(e) =>
-                                  handleUpdate(1, fila.id, i, e.target.value)
-                                }
-                                key={i}
-                              />{" "}
-                              <br />
-                            </>
-                          ))
-                      )}
-                    </td>
-                    <td
-                      colSpan={numColumnas2 / 3}
-                      style={{ textAlign: "center" }}
-                    >
-                      <div>OBSERVACIONES</div>
-                      {reportFooter2.map(
-                        (fila, j) =>
-                          j < reportFooter2.length &&
-                          fila.values.map((valor, i) => (
-                            <>
-                              <input
-                                value={valor}
-                                type="text"
-                                onChange={(e) =>
-                                  handleUpdate(2, fila.id, i, e.target.value)
-                                }
-                                key={i}
-                              />
-                              <br />
-                            </>
-                          ))
-                      )}
-                    </td>
-                    <td colSpan={1} style={{ textAlign: "center" }}>
-                      <div> </div>
-                      {divs2.map(
-                        (fila, i) =>
-                          i === 0 &&
-                          fila.values.map(
-                            (valor, i) =>
-                              i > 6 && (
-                                <>
-                                  {i === 8 && (
-                                    <>
-                                      <input
-                                        placeholder="A"
-                                        readOnly
-                                        style={{ textAlign: "center" }}
-                                        key={i}
-                                        value={dumpValue}
-                                        type="text"
-                                        onChange={() => setDumpValue("")}
-                                      />{" "}
-                                      <br />{" "}
-                                    </>
-                                  )}
-                                  {i === 9 && (
-                                    <>
-                                      <input
-                                        placeholder="B"
-                                        readOnly
-                                        style={{ textAlign: "center" }}
-                                        key={i}
-                                        value={dumpValue}
-                                        type="text"
-                                        onChange={() => setDumpValue("")}
-                                      />{" "}
-                                      <br />{" "}
-                                    </>
-                                  )}
-                                  {i === 10 && (
-                                    <>
-                                      <input
-                                        placeholder="C"
-                                        readOnly
-                                        style={{ textAlign: "center" }}
-                                        key={i}
-                                        value={dumpValue}
-                                        type="text"
-                                        onChange={() => setDumpValue("")}
-                                      />{" "}
-                                      <br />{" "}
-                                    </>
-                                  )}
-                                  {i === 11 && (
-                                    <>
-                                      <input
-                                        placeholder="D"
-                                        readOnly
-                                        style={{ textAlign: "center" }}
-                                        key={i}
-                                        value={dumpValue}
-                                        type="text"
-                                        onChange={() => setDumpValue("")}
-                                      />{" "}
-                                      <br />{" "}
-                                    </>
-                                  )}
-                                  {i === 12 && (
-                                    <>
-                                      <input
-                                        placeholder="E"
-                                        readOnly
-                                        style={{ textAlign: "center" }}
-                                        key={i}
-                                        value={dumpValue}
-                                        type="text"
-                                        onChange={() => setDumpValue("")}
-                                      />{" "}
-                                      <br />{" "}
-                                    </>
-                                  )}
-                                  {i === 13 && (
-                                    <>
-                                      <input
-                                        placeholder="F"
-                                        readOnly
-                                        style={{ textAlign: "center" }}
-                                        key={i}
-                                        value={dumpValue}
-                                        type="text"
-                                        onChange={() => setDumpValue("")}
-                                      />{" "}
-                                      <br />{" "}
-                                    </>
-                                  )}
-                                  {i === 14 && (
-                                    <>
-                                      <input
-                                        placeholder="G"
-                                        readOnly
-                                        style={{ textAlign: "center" }}
-                                        key={i}
-                                        value={dumpValue}
-                                        type="text"
-                                        onChange={() => setDumpValue("")}
-                                      />{" "}
-                                      <br />{" "}
-                                    </>
-                                  )}
-                                  {i === 15 && (
-                                    <>
-                                      <input
-                                        placeholder="H"
-                                        readOnly
-                                        style={{ textAlign: "center" }}
-                                        key={i}
-                                        value={dumpValue}
-                                        type="text"
-                                        onChange={() => setDumpValue("")}
-                                      />{" "}
-                                      <br />{" "}
-                                    </>
-                                  )}
-                                  {i === 16 && (
-                                    <>
-                                      <input
-                                        placeholder="I"
-                                        readOnly
-                                        style={{ textAlign: "center" }}
-                                        key={i}
-                                        value={dumpValue}
-                                        type="text"
-                                        onChange={() => setDumpValue("")}
-                                      />{" "}
-                                      <br />{" "}
-                                    </>
-                                  )}
-                                </>
-                              )
-                          )
-                      )}
-                    </td>
-                    <td colSpan={1} style={{ textAlign: "center" }}>
-                      <div> </div>
-                      {reportFooter3.map(
-                        (fila, i) =>
-                          i < reportFooter3.length &&
-                          fila.values.map((valor, i2) => (
-                            <>
-                              <div key={i + "clause"}>
-                                {i === 0 && (
-                                  <>
-                                    <Select
-                                      data={optionClause}
-                                      clause="A"
-                                      selected={fila.type}
-                                    />
-                                    <br />
-                                  </>
-                                )}
-                                {i === 1 && (
-                                  <>
-                                    <Select
-                                      data={optionClause}
-                                      clause="B"
-                                      selected={fila.type}
-                                    />
-                                    <br />
-                                  </>
-                                )}
-                                {i === 2 && (
-                                  <>
-                                    <Select
-                                      data={optionClause}
-                                      clause="C"
-                                      selected={fila.type}
-                                    />
-                                    <br />
-                                  </>
-                                )}
-                                {i === 3 && (
-                                  <>
-                                    <Select
-                                      data={optionClause}
-                                      clause="D"
-                                      selected={fila.type}
-                                    />
-                                    <br />
-                                  </>
-                                )}
-                                {i === 4 && (
-                                  <>
-                                    <Select
-                                      data={optionClause}
-                                      clause="E"
-                                      selected={fila.type}
-                                    />
-                                    <br />
-                                  </>
-                                )}
-                                {i === 5 && (
-                                  <>
-                                    <Select
-                                      data={optionClause}
-                                      clause="F"
-                                      selected={fila.type}
-                                    />
-                                    <br />
-                                  </>
-                                )}
-                                {i === 6 && (
-                                  <>
-                                    <Select
-                                      data={optionClause}
-                                      clause="G"
-                                      selected={fila.type}
-                                    />
-                                    <br />
-                                  </>
-                                )}
-                                {i === 7 && (
-                                  <>
-                                    <Select
-                                      data={optionClause}
-                                      clause="H"
-                                      selected={fila.type}
-                                    />
-                                    <br />
-                                  </>
-                                )}
-                                {i === 8 && (
-                                  <>
-                                    <Select
-                                      data={optionClause}
-                                      clause="I"
-                                      selected={fila.type}
-                                    />
-                                    <br />
-                                  </>
-                                )}
-                              </div>
-                            </>
-                          ))
-                      )}
-                    </td>
-                    <td
-                      colSpan={numColumnas2 > 15 ? numColumnas2 / 3 : 3}
-                      style={{ textAlign: "center" }}
-                    >
-                      <div>INCIDENTES</div>
-                      {reportFooter3.map(
-                        (fila, i) =>
-                          i < reportFooter3.length &&
-                          fila.values.map((valor, i) => (
-                            <>
-                              <input
-                                value={valor}
-                                type="text"
-                                onChange={(e) =>
-                                  handleUpdate(3, fila.id, i, e.target.value)
-                                }
-                                key={i}
-                              />{" "}
-                              <br />
-                            </>
-                          ))
-                      )}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      colSpan={numColumnas2 / 3}
-                      style={{ textAlign: "center" }}
-                    >
-                      <div>ELABORO</div>
-                      <div className="firm">
-                        <input
-                          name=""
-                          value={producedBy}
-                          type="text"
-                          onChange={(e) => setProducedBy(e.target.value)}
-                          className="firm-input"
-                        />
-                      </div>
-                    </td>
-
-                    <td
-                      colSpan={numColumnas2 / 3}
-                      style={{ textAlign: "center" }}
-                    >
-                      <div>REVISO</div>
-                      <div className="firm">
-                        <input
-                          name=""
-                          value={checkedBy}
-                          type="text"
-                          onChange={(e) => setCheckedBy(e.target.value)}
-                          className="firm-input"
-                        />
-                      </div>
-                    </td>
-
-                    <td
-                      colSpan={numColumnas2 / 3}
-                      style={{ textAlign: "center" }}
-                    >
-                      <div>AUTORIZO</div>
-                      <div className="firm">
-                        <input
-                          name=""
-                          value={authorizedBy}
-                          type="text"
-                          onChange={(e) => setAuthorizedBy(e.target.value)}
-                          className="firm-input"
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-            </Table>
-          </div>
+          <ReportPart3
+            reportFooter2={reportFooter2}
+            divs2={divs2}
+            dumpValue={dumpValue}
+            optionClause={optionClause}
+            numColumnas={numColumnas2}
+            reportFooter3={reportFooter3}
+            handleUpdate={handleUpdate}
+            reportIncidents={reportIncidents}
+            producedBy={producedBy}
+            checkedBy={checkedBy}
+            dataSes={dataSes}
+            setAuthorizedBy={setAuthorizedBy}
+            authorizedBy={authorizedBy}
+            container2Ref={container2Ref}
+            handleScroll2={handleScroll2}
+            titulosColumnas={titulosColumnas}
+            divs={divs}
+            total1={total1}
+            setTotal1={setTotal1}
+            total2={total2}
+            setTotal2={setTotal2}
+            total3={total3}
+            setTotal3={setTotal3}
+            total4={total4}
+            setTotal4={setTotal4}
+            total5={total5}
+            setTotal5={setTotal5}
+            total6={total6}
+            setTotal6={setTotal6}
+            total7={total7}
+            setTotal7={setTotal7}
+            total8={total8}
+            setTotal8={setTotal8}
+            total9={total9}
+            setTotal9={setTotal9}
+            total10={total10}
+            setTotal10={setTotal10}
+            total11={total11}
+            setTotal11={setTotal11}
+            total12={total12}
+            setTotal12={setTotal12}
+            total13={total13}
+            setTotal13={setTotal13}
+            total14={total14}
+            setTotal14={setTotal14}
+            reportFooter={reportFooter}
+            setProducedBy={setProducedBy}
+            setCheckedBy={setCheckedBy}
+            incType={incType}
+            setIncType={setIncType}
+          />
         </>
       ),
     },

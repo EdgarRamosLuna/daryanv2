@@ -12,44 +12,55 @@ import Loader from "../Loader";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
 import StatusBtn from "../StatusBtn";
-import { Button, Grid, TextField } from "@mui/material";
-import { useTranslation } from "react-i18next";
 import ComponentPagination from "../ComponentPagination";
-import ModalMui from "../modal/ModalMui";
-import SupplierDetails from "./suppliers/SupplierDetails";
-import TabComponentMUI from "../tabs/TabComponentMUI";
-import { toast } from "sonner";
-import { getTotalReportsBySupplier } from "../../api/daryan.api";
-import SupplierClients from "./suppliers/SupplierClients";
+import { useTranslation } from "react-i18next";
+import { Grid, TextField } from "@mui/material";
 
 registerLocale("es", es);
-function SuppliersTable({ data }) {
-  const { t } = useTranslation();
-  const {
-    handleDel,
-    setShowModalS,
-    setUpdateId,
-    isLoading,
-    setIsLoading,
-    showConfig,
-  } = useContext(MainContext);
+function ClientsTable({ data }) {
+  const { handleDel, setShowModalC, setUpdateId, isLoading, setIsLoading } =
+    useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
-
+  const { t } = useTranslation();
+  const today = new Date();
+  const sixDaysLater = new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000);
+  const sixDaysBefore = new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000);
+  const [dateStart, setDateStart] = useState(sixDaysBefore);
+  const [dateEnd, setDateEnd] = useState(today);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(20);
-
-  const [reportDetails, setReportDetails] = useState([]);
-  const [series, setSeries] = useState([]);
-  const [clients, setClients] = useState([]);
-  const [openModal, setOpenModal] = useState(false);
-  const [nIdSupplier, setIdSupplier] = useState(0);
-
+  const [formatedDateStart, setFormatedDateStart] = useState("");
+  const [formatedDateEnd, setFormatedDateEnd] = useState("");
   useEffect(() => {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
     }, 500);
   }, [data]);
+  useEffect(() => {
+    if (dateStart !== "") {
+      const date = new Date(dateStart);
+      const year = date.getFullYear();
+      const month = ("0" + (date.getMonth() + 1)).slice(-2);
+      const day = ("0" + date.getDate()).slice(-2);
+      const hours = ("0" + date.getHours()).slice(-2);
+      const minutes = ("0" + date.getMinutes()).slice(-2);
+      const seconds = ("0" + date.getSeconds()).slice(-2);
+      const formattedDateTime = `${year}-${month}-${day}`;
+      setFormatedDateStart(formattedDateTime);
+    }
+    if (dateEnd !== "") {
+      const date = new Date(dateEnd);
+      const year = date.getFullYear();
+      const month = ("0" + (date.getMonth() + 1)).slice(-2);
+      const day = ("0" + date.getDate()).slice(-2);
+      const hours = ("0" + date.getHours()).slice(-2);
+      const minutes = ("0" + date.getMinutes()).slice(-2);
+      const seconds = ("0" + date.getSeconds()).slice(-2);
+      const formattedDateTime = `${year}-${month}-${day}`;
+      setFormatedDateEnd(formattedDateTime);
+    }
+  }, [dateStart, dateEnd]);
 
   const handleFirstPageClick = () => {
     setCurrentPage(1);
@@ -64,9 +75,9 @@ function SuppliersTable({ data }) {
   const filterData = useCallback(() => {
     return data.filter((item) => {
       const name = item.fullname.toLowerCase();
-
-      const phone = item.phone.toLowerCase();
-      const fullName = `${name} ${phone}`; // combinamos name y id en una sola variable
+      //const user = item.username.toLowerCase();
+      const email = item.email.toLowerCase();
+      const fullName = `${name} ${email}`; // combinamos name y id en una sola variable
 
       if (nameFilter && fullName.indexOf(nameFilter.toLowerCase()) === -1) {
         // buscamos dentro de fullName
@@ -75,7 +86,7 @@ function SuppliersTable({ data }) {
 
       return true;
     });
-  }, [nameFilter, data]);
+  }, [nameFilter, dateStart, dateEnd, data]);
 
   const filteredData = filterData();
   const getPaginatedData = useCallback(() => {
@@ -107,77 +118,10 @@ function SuppliersTable({ data }) {
 
   const updateUser = (id_user) => {
     setUpdateId(id_user);
-    setShowModalS(true);
+    setShowModalC(true);
   };
-  useEffect(() => {
-    const getReportBySupplier = async () => {
-      try {
-        const response = await getTotalReportsBySupplier(nIdSupplier);
-        const { error: errorDb, message, data: dataResponse } = response.data;
-        if (typeof errorDb !== "boolean") {
-          toast.error("Ocurrio un error intentalo mas tarde");
-        } else {
-          if (dataResponse.length > 0) {
-            const {
-              totalInp,
-              totalNG,
-              totalOK,
-              totalRework,
-              totalScrap,
-              TotalsByPartName,
-              ClientsBySupplier,
-            } = dataResponse[0];
-            setReportDetails(JSON.parse(TotalsByPartName));
-            setClients(JSON.parse(ClientsBySupplier));
-            setSeries([totalNG, totalOK, totalRework, totalScrap]);
-          }
-        }
-        //setTotalReports()
-      } catch (error) {
-        toast.error("Ocurrio un error intentalo mas tarde");
-      }
-    };
-
-    if (Number(nIdSupplier) > 0) {
-      getReportBySupplier();
-    }
-  }, [nIdSupplier]);
-
-  const handleShowModal = (nIdSupplier) => {
-    setOpenModal(true);
-    setIdSupplier(nIdSupplier);
-  };
-  const tabsData = [
-    {
-      label: t("Reportes"),
-      content: (
-        <SupplierDetails
-          nIdSupplier={nIdSupplier}
-          reportDetails={reportDetails}
-          series={series}
-        />
-      ),
-    },
-    {
-      label: t("Usuarios"),
-      content: <SupplierClients data={clients} />,
-    },
-  ];
-
-  useEffect(() => {
-    setOpenModal(false);
-  }, [showConfig]);
-
   return (
     <>
-      <ModalMui
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        title={t("Detalles proveedor")}
-        maxWidth={"80%"}
-      >
-        <TabComponentMUI tabs={tabsData} />
-      </ModalMui>
       <Table>
         <div className="table-container">
           <div className="header-container">
@@ -191,7 +135,7 @@ function SuppliersTable({ data }) {
                 }}
               >
                 <label htmlFor="name-filter">
-                  {t("suppliers_section.table.searchProvider")}
+                  {t("clients_section.searchClient")}:
                 </label>
                 <Grid
                   className=""
@@ -204,7 +148,7 @@ function SuppliersTable({ data }) {
                     id="name-filter"
                     value={nameFilter}
                     onChange={handleNameFilterChange}
-                    placeholder={t("suppliers_section.table.placeholder")}
+                    placeholder={t("clients_section.table.placeholder")}
                     fullWidth
                   />
                 </Grid>
@@ -215,11 +159,10 @@ function SuppliersTable({ data }) {
             <table>
               <thead>
                 <tr>
-                  <th>{t("suppliers_section.table.name")}</th>
-                  <th>{t("suppliers_section.table.phone")}</th>
-                  <th>{t("suppliers_section.table.address")}</th>
-                  <th>{t("suppliers_section.table.status")}</th>
-                  <th>{t("suppliers_section.table.actions")}</th>
+                  <th>{t("clients_section.clientName")}</th>
+                  <th>{t("clients_section.email")}</th>
+                  <th>{t("clients_section.status")}</th>
+                  <th>{t("clients_section.actions")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -246,17 +189,8 @@ function SuppliersTable({ data }) {
                         isLoading === false ? "tr-h rloaderContainer" : "tr-hd"
                       }
                     >
-                      <td className="table-center">
-                        <Button
-                          variant="outlined"
-                          sx={{ cursor: "pointer !important" }}
-                          onClick={() => handleShowModal(item.id)}
-                        >
-                          {item.fullname}
-                        </Button>
-                      </td>
-                      <td className="table-center">{item.phone}</td>
-                      <td className="table-center">{item.address}</td>
+                      <td className="table-center">{item.fullname}</td>
+                      <td className="table-center">{item.email}</td>
                       <td
                         className="table-center"
                         style={{ width: 120, padding: "0 25px" }}
@@ -264,14 +198,14 @@ function SuppliersTable({ data }) {
                         <StatusBtn
                           status={Number(item.status)}
                           id={item.id}
-                          table="suppliers"
+                          table="clients"
                         />
                       </td>
                       <td className="table-center">
                         <div className="actions">
                           <i
                             className="fa-solid fa-trash"
-                            onClick={() => handleDel(item.id, "suppliers")}
+                            onClick={() => handleDel(item.id, "clients")}
                           ></i>
                           <i
                             className="fa-solid fa-pen-to-square"
@@ -301,4 +235,4 @@ function SuppliersTable({ data }) {
   );
 }
 
-export default SuppliersTable;
+export default ClientsTable;

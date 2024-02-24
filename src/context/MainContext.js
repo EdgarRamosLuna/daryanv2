@@ -179,11 +179,11 @@ export const MainContextProvider = ({ children }) => {
       dT.data.length < 9 ||
       dT.producedBy === "" ||
       dT.checkedBy === "" ||
-      dT.authorizedBy === "" ||
+      // dT.authorizedBy === "" ||
       dT.serviceType.length === 0 ||
       dT.customerControl.length === 0
     ) {
-      toast.error("Todos los campos con * con obligatorios", {
+      toast.error(t("Todos los campos con * con obligatorios"), {
         duration: 5000,
       });
 
@@ -197,7 +197,7 @@ export const MainContextProvider = ({ children }) => {
         //
         if (j > 2 && j <= 9) {
           if (el === "") {
-            toast.error("Todos los campos con * con obligatorios", {
+            toast.error(t("Todos los campos con * con obligatorios"), {
               duration: 5000,
             });
             return;
@@ -809,11 +809,13 @@ export const MainContextProvider = ({ children }) => {
   const [showModalUser, setShowModalUser] = useState(false);
   const [showModalSupplier, setShowModalSupplier] = useState(false);
   const [suppliers, setSuppliers] = useState([]);
+  const [suppliersByClient, setSuppliersByClient] = useState([]);
   useEffect(() => {
     async function loadTask() {
       const res2 = await getSuppliers();
 
-      const {data:response} = res2;
+      const {data:response} = res2;      
+      setSuppliersByClient(response)
       const suppliers = response.filter(r => Number(r.bUsado) > 0)
       setSuppliers(suppliers);
     }
@@ -1129,7 +1131,8 @@ export const MainContextProvider = ({ children }) => {
     InfoIcon,
     ABECEDARIO,
     serverNodeUrl,
-  hoverBtnsStyle
+    hoverBtnsStyle,
+    suppliersByClient, setSuppliersByClient
   };
   return (
     <MainContext.Provider value={PROPS}>

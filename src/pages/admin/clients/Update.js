@@ -19,7 +19,7 @@ const UpdateClient = () => {
     dataClients,
     setDataClients,
     updateId,
-    suppliers,
+    suppliersByClient,
   } = useContext(MainContext);
   const [saving, setSaving] = useState(false);
   const { t } = useTranslation();
@@ -105,7 +105,7 @@ const UpdateClient = () => {
             }}
           >
             <MenuItem value="0">{t("clients_section.selectSupplier")}</MenuItem>
-            {suppliers.map((supplier, indx) => (
+            {suppliersByClient.map((supplier, indx) => (
               <MenuItem key={indx} value={supplier.id}>
                 {supplier.fullname}
               </MenuItem>

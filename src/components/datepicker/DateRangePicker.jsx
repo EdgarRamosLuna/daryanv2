@@ -35,8 +35,8 @@ const DatePickerRange = ({ setDateStart, setDateEnd, dLastDateByPartNumber, dfir
     });
     const [state, setState] = useState([
         {
-            startDate: new Date().setUTCHours(5, 0, 0, 999),
-            endDate: new Date().setUTCHours(5, 0, 0, 999),
+            startDate: new Date().setUTCHours(6, 0, 0, 999),
+            endDate: new Date().setUTCHours(6, 0, 0, 999),
             key: 'selection'
         }
     ]);

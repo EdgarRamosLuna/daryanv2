@@ -3,9 +3,10 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,  useState,
+  useMemo,
+  useState,
 } from "react";
-import { registerLocale } from "react-datepicker";
+import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import { debounce } from "lodash";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
@@ -13,13 +14,20 @@ import Loader from "../Loader";
 import Checkbox from "../Checkbox";
 import { Table } from "../../styles/Styles";
 import { MainContext } from "../../context/MainContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import FilterSearch from "./FilterSearch";
+import TableTotals from "./TableTotals";
 import TableComponent from "./TableComponent";
-
-import { getAuthClients, getClientsInfo, getDatesByPartNumber } from "../../api/daryan.api";
+import Chart1 from "../Chart1";
+import Chart2 from "../Chart2";
+import { getAuthClients, getClientsInfo } from "../../api/daryan.api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendarDays,
+  faFilePdf,
+  faTimes,
+  faTrash,
+  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 
 import ReportsByH from "./ReportsByH";
@@ -41,37 +49,41 @@ import {
   Checkbox as CheckboxMUI,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
+import NoInfo from "../helpers/NoInfo";
 import { useTranslation } from "react-i18next";
 import FilterTable from "./FilterTable";
-import Charts from "./Charts";
-import TableRowComponent from "./TableRowComponent";
 registerLocale("es", es);
 function ReportsTable({ data, dataReportByH }) {
   const { t } = useTranslation();
   const {
     handleDel,
+    setSort,
     toast,
     activeTab,
     setActiveTab,
+    checkList,
     setCheckList,
     uniqueClients,
     setUniqueClients,
     clientsToReport,
     setClientsToReport,
+    showModalAuth,
     setShowModalAuth,
+    authClientsT,
     setAuthClientsT,
     showCharts,
     firstDayOfYear,
+    isAdmin,
     handleCheckBox,
-    setIsDownloading,
-    isDownloading,
-    serverNodeUrl
   } = useContext(MainContext);
   const [nameFilter, setNameFilter] = useState("");
   const [nameFilter2, setNameFilter2] = useState("");
   const [nameFilterByH, setNameFilterByH] = useState("");
-
+  const [lastnameFilter, setLastnameFilter] = useState("");
+  const [idSupplier, setIdSupplier] = useState(0);
   const today = new Date();
+  const sixDaysLater = new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000);
+  const sixDaysBefore = new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000);
 
   const [dateStart, setDateStart] = useState(firstDayOfYear);
   const [dateEnd, setDateEnd] = useState(today);
@@ -277,21 +289,28 @@ function ReportsTable({ data, dataReportByH }) {
         const id_supplier = item.id_supplier;
         const suppliers = item.supplier.toLowerCase();
         const planta = item.plant.toLowerCase();
-        const fullName = `${id}${id_supplier}${part_number}${item.reports_cc
+        const fullName = `${id}${id_supplier} ${part_number}${item.reports_cc
           .map((cc) => cc.lot)
           .join(", ")} ${item.reports_cc
           .map((cc) => cc.serial)
           .join(", ")} ${suppliers} ${planta} `;
-    
         const date = new Date(item.date);
-        date.setUTCHours(6, 0, 0, 999);
+
+        // Ajusta la fecha 'date' para que solo tenga año, mes y día
+        date.setHours(0, 0, 0, 0);
+        // Luego ajusta para tener en cuenta el desplazamiento de la zona horaria
+        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
 
         const startDate = new Date(dateStart);
-        startDate.setUTCHours(6, 0, 0, 999);
+        startDate.setHours(0, 0, 0, 0);
+        startDate.setMinutes(
+          startDate.getMinutes() + startDate.getTimezoneOffset()
+        );
 
         const endDate = new Date(dateEnd);
-        endDate.setUTCHours(6, 0, 0, 999);
-    
+        endDate.setHours(23, 59, 59, 999);
+        endDate.setMinutes(endDate.getMinutes() + endDate.getTimezoneOffset());
+
         if (
           nameFilter &&
           fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
@@ -313,46 +332,14 @@ function ReportsTable({ data, dataReportByH }) {
     [nameFilter, dateStart, dateEnd]
   );
 
-  const [dLastDate, setDLastDate] = useState('');
-  const [dfirstDate, setDFirstDate] = useState('');
 
-  const [reportDates, setReportDates] = useState([]);
-  const getDatesByPartNumbers = async(partNumber) =>{
-    const token = localStorage.getItem("t");
-    try {
-      const response =  await getDatesByPartNumber(partNumber, token);
-
-      
-      const {nCodigo, sType, dFirstDate, dLastDate, dates} = response.data;
-      const formattedDates = JSON.parse(dates);
-      if(Number(nCodigo) === 0){
-        setDLastDate(dFirstDate)
-        setDFirstDate(dLastDate)
-        setDateStart(dFirstDate)
-        setDateEnd(dLastDate)
-        setReportDates(formattedDates)
-      }
-
-    } catch (error) {
-      
-    }
-    
-  }  
   useEffect(() => {
     const data = getPaginatedData();
-    
+
     if (data.length > 0) {
       const uniqueValues = Array.from(
         new Set(data.map((item) => item.id_supplier))
-        );
-      const uniqueValuesParNumber = Array.from(
-        new Set(data.map((item) => item.part_number))
-        );
-        
-      if(uniqueValuesParNumber.length === 1 && nameFilter.length > 5){
-        const partNumber =  uniqueValuesParNumber[0];
-        getDatesByPartNumbers(partNumber);
-      }
+      );
       const options = uniqueValues.map((value) => ({ id_supplier: value }));
       if (options.length === 1) {
         const id_supplier = options[0].id_supplier;
@@ -423,6 +410,8 @@ function ReportsTable({ data, dataReportByH }) {
   const [totalGeneral, setTotalGeneral] = useState([]);
   useEffect(() => {
     if (data.length > 0) {
+      
+      
       const filterLot = filtersLot;
       const filterSerial = filtersSerial;
       const filterPartNumber = filtersPartNumber;
@@ -432,7 +421,7 @@ function ReportsTable({ data, dataReportByH }) {
       // Definir las fechas del filtro
       const startDate = dateStart;
       const endDate = dateEnd;
-
+      
       for (let i = 0; i < data.length; i++) {
         const date = new Date(data[i].date);
         const report_totals = data[i].report_totals;
@@ -526,8 +515,7 @@ function ReportsTable({ data, dataReportByH }) {
             )) ||
           (filterPartNumber.length && !filterPartNumber.includes(partNumber)) || // Nueva condición para el filtro de búsqueda de part_number
           (filterSupplier.length && !filterSupplier.includes(supplier)) ||
-          date < adjustedStartDate ||
-          date > adjustedEndDate
+          ((date < adjustedStartDate || date > adjustedEndDate))
         ) {
           continue; // Saltar a la siguiente iteración del loop
         }
@@ -539,6 +527,7 @@ function ReportsTable({ data, dataReportByH }) {
 
         const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
 
+    
         temp2[i] = {
           part_number: partNumber,
           total_inspected: total_inspected,
@@ -626,6 +615,7 @@ function ReportsTable({ data, dataReportByH }) {
         });
       });
 
+
       setDataToTable(summedData);
       const totalesArray = [];
 
@@ -661,7 +651,7 @@ function ReportsTable({ data, dataReportByH }) {
     filtersSerial,
     filtersSupplier,
   ]);
-
+ 
   const filteredData = filterData(data);
   const filteredData2 = filterData2(data);
 
@@ -703,9 +693,11 @@ function ReportsTable({ data, dataReportByH }) {
   const navigate = useNavigate();
   const singleView = (id) => {
     // window.location.href = `/admin/reports/${id}`;
-    navigate(`/client/reports_insp/${id}`);
+    navigate(`/admin/reports_insp/${id}`);
   };
-
+  const singleView2 = (id) => {
+    navigate(`/user/reports/2/${id}`);
+  };
 
   const tabSwitch = (tab) => {
     setCheckList([]);
@@ -728,6 +720,7 @@ function ReportsTable({ data, dataReportByH }) {
         }
       });
       setUniqueSuppliers([...new Set(res0)]);
+  
 
       const res1 = [];
       const seen = {};
@@ -866,25 +859,21 @@ function ReportsTable({ data, dataReportByH }) {
     return obj;
   }, {});
 
-
-  //Añade un cliente a la lista para autorizar
   const addClientToList = (e) => {
     const id = e.target.value;
+    setSelectedClient(id);
 
     // Look up the client name by id
-    const clientName = clientsById[id]?.fullname
-      ? clientsById[id].fullname
-      : "";
-    setSelectedClient(id);
-    if (clientName !== "") {
-      setClientsToReport((prev) => {
-        if (!prev.some((client) => client.id === id && Number(id) !== 0)) {
-          return [...prev, { id, clientName }];
-        }
-        return prev;
-      });
-    }
+    const clientName = clientsById[id].fullname;
+
+    setClientsToReport((prev) => {
+      if (!prev.some((client) => client.id === id) && id !== "0") {
+        return [...prev, { id, clientName }];
+      }
+      return prev;
+    });
   };
+
 
   const removeClient = (id) => {
     setClientsToReport((prev) => prev.filter((client) => client.id !== id));
@@ -899,19 +888,17 @@ function ReportsTable({ data, dataReportByH }) {
     insp: {
       p: <p>{t("reports.inspection_reports")}</p>,
     },
-    byh: {
-      p: <p>{t("reports.hourly_reports")}</p>,
-    },
-    total_insp: {
-      p: <p>{t("reports.total_inspection_reports")}</p>,
-    },
+    // byh: {
+    //   p: <p>{t("reports.hourly_reports")}</p>,
+    // },
+
   };
 
   const tabContent = {
     1: {
       componenteTitle: reportesComponents["insp"].p,
       componenteTop: (
-        <div className="header-container">
+        <div className="header-container">         
           <form autoComplete="off">
             <Grid
               sx={{
@@ -933,18 +920,57 @@ function ReportsTable({ data, dataReportByH }) {
                   name="buscar"
                   value={nameFilter}
                   onChange={(e) => handleNameFilterChange(e)}
-                  placeholder={t("reports.search")}
+                  placeholder={t("reports.search_by_date")}
                 />
               </div>
               <div className="filter-item">
-              
+                <Box
+                  sx={{
+                    visibility: uniqueClients.length > 0 ? "visible" : "hidden",
+                  }}
+                >
+                  <Box>
+                    <Select
+                      value={selectedClient}
+                      onChange={addClientToList}
+                      sx={{
+                        width: "90%",
+                      }}
+                    >
+                      <MenuItem value="0">
+                        {t("reports.selectAClient")}
+                      </MenuItem>
+                      {uniqueClients.map((option) => (
+                        <MenuItem key={option} value={option.id}>
+                          {option.fullname}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Box>
+                  <Box>
+                    <List
+                      sx={{
+                        display: `${
+                          clientsToReport.length > 0 ? "flex" : "none"
+                        }`,
+                        flexDirection: "column",
+                      }}
+                    >
+                      {clientsToReport.map((client, ind) => (
+                        <ListItem key={ind}>
+                          <span>{client.clientName}</span>
+                          <IconButton onClick={() => removeClient(client.id)}>
+                            <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
+                          </IconButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                </Box>
               </div>
               <DatePickerRange
                 setDateStart={setDateStart}
                 setDateEnd={setDateEnd}
-                dLastDateByPartNumber={dLastDate}
-                dfirstDateByPartNumber={dfirstDate}
-                reportDates={reportDates}
               />
             </Grid>
           </form>
@@ -952,64 +978,100 @@ function ReportsTable({ data, dataReportByH }) {
       ),
       componenteMiddle: (
         <div className="table-body table-reports">
-          <table>
-            <thead>
+        <table>
+          <thead>
+            <tr>
+              <th>
+                <Checkbox
+                  type="all"
+                  id={0}
+                  callback={handleCheckBox}
+                  data={getPaginatedData()}
+                />
+              </th>
+              <th>{t('reports.part_number')}</th>
+              <th>{t('reports.plant')}</th>
+              <th>{t('reports.supplier')}</th>
+              <th>{t('reports.date')}</th>
+              <th>{t('reports.status')}</th>
+              <th>{t('reports.actions')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <div className={loader === false ? "loaderContainer" : ""}>
+              <Loader>
+                <img src="/assets/img/loading2.svg" alt="" />
+              </Loader>
+            </div>
+            {getPaginatedData().length === 0 ? (
               <tr>
-                <th>
-                  <Checkbox
-                    type="all"
-                    id={0}
-                    callback={handleCheckBox}
-                    data={getPaginatedData()}
-                  />
-                </th>
-                <th>{t("reports.part_number")}</th>
-                <th>{t("reports.plant")}</th>
-                <th>{t("reports.supplier")}</th>
-                <th>{t("reports.date")}</th>
-                <th>Usuario modifica{/*t('reports.date')*/}</th>
-                <th>Empleado captura{/*t('reports.date')*/}</th>
-                <th>{t("reports.status")}</th>
-                <th>Tabla muestreo{/*t('reports.date')*/}</th>
-                <th>{t("reports.actions")}</th>
+                <td
+                  colSpan="7"
+                  className="table-center"
+                  style={{ opacity: `${loader ? 0 : 1}` }}
+                >
+                  <h1>{t('reports.noDatabaseInformation')}</h1>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              <div className={loader === false ? "loaderContainer" : ""}>
-                <Loader>
-                  <img src="/assets/img/loading2.svg" alt="" />
-                </Loader>
-              </div>
-              {getPaginatedData().length === 0 ? (
-                <tr>
+            ) : (
+              getPaginatedData().map((item, index) => (
+                <tr key={index} onClick={(e) => singleView(item.id)}>
                   <td
-                    colSpan="10"
                     className="table-center"
-                    style={{ opacity: `${loader ? 0 : 1}` }}
+                    onClick={(e) => e.stopPropagation()}
+                    colSpan={1}
                   >
-                    <h1>{t("reports.noDatabaseInformation")}</h1>
+                    <Checkbox
+                      type="single"
+                      id={item.id}
+                      callback={handleCheckBox}
+                      data={getPaginatedData()}
+                    />
+                  </td>
+                  <td className="table-center">{item.part_number}</td>
+                  <td className="table-center">{item.plant}</td>
+                  <td className="table-center">{item.supplier}</td>
+                  <td className="table-center">{item.date}</td>
+                  <td className="table-center">
+                    {Number(item.status) === 1 && t('reports.notApproved')} 
+                    {Number(item.status) === 3 && t('reports.approved')}
+                  </td>
+                  <td
+                    className="table-center"
+                    onClick={(e) => e.stopPropagation()}
+                    colSpan={1}
+                  >
+                    <div className="actions">
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        onClick={() => handleDel(item.id, "reports")}
+                      />
+                      <a
+                        href={`http://phpstack-1070657-3746640.cloudwaysapps.com/reporte-inspeccion/${item.id}`}
+                        target="_blank"
+                        className="btn-pdf"
+                        rel="noreferrer"
+                      >
+                        {!navigator.onLine ? (
+                          <FontAwesomeIcon icon={faFilePdf} />
+                        ) : (
+                          <i className="fa-solid fa-file-pdf"></i>
+                        )}
+                      </a>
+                      <FontAwesomeIcon
+                        icon={faUsers}
+                        color="green"
+                        onClick={() => authClientsC(item.id)}
+                      />
+                    </div>
                   </td>
                 </tr>
-              ) : (
-                getPaginatedData().map((item, index) => (
-                  <TableRowComponent
-                    item={item}
-                    singleView={singleView}
-                    index={index}
-                    handleDel={handleDel}
-                    handleCheckBox={handleCheckBox}
-                    getPaginatedData={getPaginatedData}
-                    authClientsC={authClientsC}
-                    t={t}
-                    key={index}
-                    serverNodeUrl={serverNodeUrl}
-                    
-                  />
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+      
       ),
       componenteBottom: (
         <ComponentPagination
@@ -1024,393 +1086,101 @@ function ReportsTable({ data, dataReportByH }) {
         />
       ),
     },
-    2: {
-      componenteTitle: reportesComponents["byh"].p,
-      componenteTop: (
-        <>
-          <div className="header-container">
-            <form autoComplete="off">
-              <Grid
-                sx={{
-                  marginTop: "15px",
-                  display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
-                }}
-              >
-                <div className="filter-item">
-                  <TextField
-                    id="outlined-basic"
-                    label={t("reports.search")}
-                    variant="outlined"
-                    autoComplete="off"
-                    sx={{
-                      width: "90%",
-                    }}
-                    type="text"
-                    name="buscar"
-                    value={nameFilterByH}
-                    onChange={(e) => handleNameFilterChange(e)}
-                    placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
-                  />
-                </div>
-                <div className="filter-item">
-                  <Box
-                    sx={{
-                      visibility:
-                        uniqueClients.length > 0 ? "visible" : "hidden",
-                    }}
-                  >
-                    <Box>
-                      <Select
-                        value={selectedClient}
-                        onChange={addClientToList}
-                        sx={{
-                          width: "90%",
-                        }}
-                      >
-                        <MenuItem value="0">
-                          {t("reports.selectAClient")}
-                        </MenuItem>
-                        {uniqueClients.map((option) => (
-                          <MenuItem key={option} value={option.id}>
-                            {option.fullname}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </Box>
-                    <Box>
-                      <List
-                        sx={{
-                          display: `${
-                            clientsToReport.length > 0 ? "flex" : "none"
-                          }`,
-                          flexDirection: "column",
-                        }}
-                      >
-                        {clientsToReport.map((client, ind) => (
-                          <ListItem key={ind}>
-                            <span>{client.clientName}</span>
-                            <IconButton onClick={() => removeClient(client.id)}>
-                              <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
-                            </IconButton>
-                          </ListItem>
-                        ))}
-                      </List>
-                    </Box>
-                  </Box>
-                </div>
-                <DatePickerRange
-                  setDateStart={setDateStart}
-                  setDateEnd={setDateEnd}
-                />
-              </Grid>
-            </form>
-          </div>
-        </>
-      ),
-      componenteMiddle: (
-        <ReportsByH
-          data={dataReportByH}
-          dateStart={dateStart}
-          dateEnd={dateEnd}
-          setDateStart={setDateStart}
-          setDateEnd={setDateEnd}
-          nameFilterByH={nameFilterByH}
-          loader={loader}
-        />
-      ),
-    },
-    3: {
-      componenteTitle: reportesComponents["total_insp"].p,
-      componenteTop: (
-        <div className="header-container2">
-          <form autoComplete="off">
-            <Box
-              className=""
-              sx={{
-                width: "99%",
-              }}
-            >
-              {Number(filterOption) === 0 && (
-                <Box
-                  className=""
-                  sx={{
-                    width: "100%",
-                  }}
-                >
-                  <TextField
-                    id="serial"
-                    label={t("reports.search")}
-                    value={nameFilter2}
-                    onChange={handleNameFilterChange5}
-                    select
-                    sx={{
-                      width: "100%",
-                    }}
-                  >
-                    {uniqueSuppliers.map((serial, indx) => (
-                      <MenuItem key={indx} value={serial}>
-                        {serial}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Box>
-              )}
-              {Number(filterOption) === 1 && (
-                <Box
-                  className=""
-                  sx={{
-                    width: "100%",
-                  }}
-                >
-                  <TextField
-                    id="part_number"
-                    label={t("reports.partNumber")}
-                    value={nameFilter2}
-                    onChange={handleNameFilterChange2}
-                    disabled={filtersSupplier.length === 0}
-                    select
-                    sx={{
-                      width: "99%",
-                    }}
-                  >
-                    {uniquePart_number.map((part_number, indx) => (
-                      <MenuItem key={indx} value={part_number}>
-                        {t("reports.partNumber")} #{part_number}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Box>
-              )}
-              {Number(filterOption) === 2 && (
-                <Box
-                  className=""
-                  sx={{
-                    width: "100%",
-                  }}
-                >
-                  <TextField
-                    id="lot"
-                    label={t("reports.lot")}
-                    value={nameFilter2}
-                    onChange={handleNameFilterChange3}
-                    disabled={filtersPartNumber.length === 0}
-                    select
-                    sx={{
-                      width: "99%",
-                    }}
-                  >
-                    {uniqueLots.map((lot, indx) => (
-                      <MenuItem key={indx} value={lot}>
-                        {t("reports.lot")} #{lot}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Box>
-              )}
-              {Number(filterOption) === 3 && (
-                <Box
-                  className=""
-                  sx={{
-                    width: "100%",
-                  }}
-                >
-                  <TextField
-                    id="serial"
-                    label={t("reports.serialNumber")}
-                    value={nameFilter2}
-                    onChange={handleNameFilterChange4}
-                    disabled={filtersPartNumber.length === 0}
-                    select
-                    sx={{
-                      width: "99%",
-                    }}
-                  >
-                    {uniqueSerial.map((serial, indx) => (
-                      <MenuItem key={indx} value={serial}>
-                        {t("reports.series")} #{serial}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Box>
-              )}
-            </Box>
-            <Box className="filter-options">
-              <Box className="filter-items">
-                <Box className="filter-item-checkbox">
-                  <FormControlLabel
-                    control={
-                      <CheckboxMUI
-                        checked={Number(filterOption) === 0}
-                        onChange={(e) => setFilterOption(e.target.value)}
-                        value={0}
-                      />
-                    }
-                    label={t("reports.suppliers")}
-                  />
-                  <List
-                    sx={{
-                      display: `${
-                        filtersSupplier.length > 0 ? "flex" : "none"
-                      }`,
-                      flexDirection: "column",
-                    }}
-                  >
-                    {filtersSupplier.map((filterSupplier, ind) => (
-                      <ListItem key={ind}>
-                        <span>{filterSupplier}</span>
-                        <IconButton
-                          onClick={() =>
-                            setFiltersSupplier((prev) =>
-                              prev.filter((pre) => pre !== filterSupplier)
-                            )
-                          }
-                        >
-                          <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
-                        </IconButton>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Box>
-                <Box className="filter-item-checkbox">
-                  <FormControlLabel
-                    control={
-                      <CheckboxMUI
-                        checked={Number(filterOption) === 1}
-                        onChange={(e) => setFilterOption(e.target.value)}
-                        value={1}
-                      />
-                    }
-                    label={t("reports.partNumber")}
-                  />
-                  <List
-                    sx={{
-                      display: `${
-                        filtersPartNumber.length > 0 ? "flex" : "none"
-                      }`,
-                      flexDirection: "column",
-                    }}
-                  >
-                    {filtersPartNumber.map((filterPartNumber, ind) => (
-                      <ListItem key={ind}>
-                        <span>{filterPartNumber}</span>
-                        <IconButton
-                          onClick={() =>
-                            setFiltersPartNumber((prev) =>
-                              prev.filter((pre) => pre !== filterPartNumber)
-                            )
-                          }
-                        >
-                          <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
-                        </IconButton>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Box>
-                <Box className="filter-item-checkbox">
-                  <FormControlLabel
-                    control={
-                      <CheckboxMUI
-                        checked={Number(filterOption) === 2}
-                        onChange={(e) => setFilterOption(e.target.value)}
-                        value={2}
-                      />
-                    }
-                    label={t("reports.lot")}
-                  />
-                  <List
-                    sx={{
-                      display: `${filtersLot.length > 0 ? "flex" : "none"}`,
-                      flexDirection: "column",
-                    }}
-                  >
-                    {filtersLot.map((filterLot, ind) => (
-                      <ListItem key={ind}>
-                        <span>{filterLot}</span>
-                        <IconButton
-                          onClick={() =>
-                            setFiltersLot((prev) =>
-                              prev.filter((pre) => pre !== filterLot)
-                            )
-                          }
-                        >
-                          <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
-                        </IconButton>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Box>
-                <Box className="filter-item-checkbox">
-                  <FormControlLabel
-                    control={
-                      <CheckboxMUI
-                        checked={Number(filterOption) === 3}
-                        onChange={(e) => setFilterOption(e.target.value)}
-                        value={3}
-                      />
-                    }
-                    label={t("reports.serialNumber")}
-                  />
-                  <List
-                    sx={{
-                      display: `${filtersSerial.length > 0 ? "flex" : "none"}`,
-                      flexDirection: "column",
-                    }}
-                  >
-                    {filtersSerial.map((filterSerial, ind) => (
-                      <ListItem key={ind}>
-                        <span>{filterSerial}</span>
-                        <IconButton
-                          onClick={() =>
-                            setFiltersSerial((prev) =>
-                              prev.filter((pre) => pre !== filterSerial)
-                            )
-                          }
-                        >
-                          <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
-                        </IconButton>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Box>
-              </Box>
-            </Box>
-            <DatePickerRange
-              setDateStart={setDateStart}
-              setDateEnd={setDateEnd}
-            />
-
-            <div className="table-controlls">
-              {showFIltersT && <FilterTable />}
-              <div className="table-controlls-left">
-                <div
-                  className={`table-controlls-left-item ${
-                    showFIltersT ? "activeFilters" : ""
-                  }`}
-                  onClick={showFilterTable}
-                >
-                  <i className="fa-solid fa-filter"></i>
-                </div>
-              </div>
-            </div>
-          </form>
-          <div className={`charts ${showCharts === true && "smoothFadeIn"}`}>
-            {showCharts === true && (
-              <Charts
-                totalGeneral={totalGeneral}
-                setIsDownloading={setIsDownloading}
-                isDownloading={isDownloading}
-              />
-            )}
-          </div>
-        </div>
-      ),
-      componenteMiddle: (
-        <div className="table-body table-reports">
-          <TableComponent groupedData={dataToTable} loader={loader} />
-        </div>
-      ),
-    },
+    // 2: {
+    //   componenteTitle: reportesComponents["byh"].p,
+    //   componenteTop: (
+    //     <>
+    //       <div className="header-container">
+    //         <form autoComplete="off">
+    //           <Grid
+    //             sx={{
+    //               marginTop: "15px",
+    //               display: "grid",
+    //               gridTemplateColumns: "repeat(3, 1fr)",
+    //             }}
+    //           >
+    //             <div className="filter-item">
+    //               <TextField
+    //                 id="outlined-basic"
+    //                 label={t("reports.search")}
+    //                 variant="outlined"
+    //                 autoComplete="off"
+    //                 sx={{
+    //                   width: "90%",
+    //                 }}
+    //                 type="text"
+    //                 name="buscar"
+    //                 value={nameFilterByH}
+    //                 onChange={(e) => handleNameFilterChange(e)}
+    //                 placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
+    //               />
+    //             </div>
+    //             <div className="filter-item">
+    //               <Box
+    //                 sx={{
+    //                   visibility:
+    //                     uniqueClients.length > 0 ? "visible" : "hidden",
+    //                 }}
+    //               >
+    //                 <Box>
+    //                   <Select
+    //                     value={selectedClient}
+    //                     onChange={addClientToList}
+    //                     sx={{
+    //                       width: "90%",
+    //                     }}
+    //                   >
+    //                     <MenuItem value="0">{t("reports.selectAClient")}</MenuItem>
+    //                     {uniqueClients.map((option) => (
+    //                       <MenuItem key={option} value={option.id}>
+    //                         {option.fullname}
+    //                       </MenuItem>
+    //                     ))}
+    //                   </Select>
+    //                 </Box>
+    //                 <Box>
+    //                   <List
+    //                     sx={{
+    //                       display: `${
+    //                         clientsToReport.length > 0 ? "flex" : "none"
+    //                       }`,
+    //                       flexDirection: "column",
+    //                     }}
+    //                   >
+    //                     {clientsToReport.map((client, ind) => (
+    //                       <ListItem key={ind}>
+    //                         <span>{client.clientName}</span>
+    //                         <IconButton onClick={() => removeClient(client.id)}>
+    //                           <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
+    //                         </IconButton>
+    //                       </ListItem>
+    //                     ))}
+    //                   </List>
+    //                 </Box>
+    //               </Box>
+    //             </div>
+    //             <DatePickerRange
+    //               setDateStart={setDateStart}
+    //               setDateEnd={setDateEnd}
+    //             />
+    //           </Grid>
+    //         </form>
+    //       </div>
+    //     </>
+    //   ),
+    //   componenteMiddle: (
+    //     <ReportsByH
+    //       data={dataReportByH}
+    //       dateStart={dateStart}
+    //       dateEnd={dateEnd}
+    //       setDateStart={setDateStart}
+    //       setDateEnd={setDateEnd}
+    //       nameFilterByH={nameFilterByH}
+    //       loader={loader}
+    //     />
+    //   ),
+    // },
+   
   };
   return (
     <>

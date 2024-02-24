@@ -36,7 +36,7 @@
       "reports": "Reportes",
       "users": "Usuarios",
       "employees": "Empleados",
-      "clients": "Clientes",
+      "clients": "Usuarios proveedor",
       "suppliers": "Proveedores",
       "myAccount": "Configuración",
       "logout": "Salir",
@@ -232,6 +232,7 @@
     "Usuarios":"Usuarios",
     "Total Retrabajo":"Total Retrabajo",
     "Total inspeccionado":"Total inspeccionado",
-    "Total de incidencias":"Total de incidencias"
+    "Total de incidencias":"Total de incidencias",
+    "Todos los campos con * con obligatorios":"Todos los campos con * con obligatorios"
   }
   
