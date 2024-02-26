@@ -137,13 +137,13 @@ const View = () => {
 
     setDivsSamplingTableInsp(newList);
     setIdReport(idReport);
-    setDataCDb([])
+    setDataCDb([]);
 
     return () => {};
   }, []);
 
-  const [divs, setDivs] = useState(() => {
-    const filas = [];
+  const createDivs = () => {
+    const filas = [];    
     for (let i = 1; i <= numFilas2; i++) {
       //filas
       filas.push({
@@ -157,6 +157,9 @@ const View = () => {
       //filas
       const fil = filas[j]; //fila
       const values = fil.values; //valores de la fila
+
+      console.log(dataC.reports_cc[j]);
+
       if (dataC.reports_cc && dataC.reports_cc[j]) {
         //si hay datos en el reporte
         const keys = Object.keys(dataC.reports_cc[j]); //obtener las llaves de cada objeto
@@ -221,15 +224,22 @@ const View = () => {
       }
     }
     return filas;
-  });
+  };
+  const [divs, setDivs] = useState(createDivs());
   useEffect(() => {
     setNumFilas(numFilas2);
     return () => {};
   }, [numFilas2]);
 
   useEffect(() => {
-    setNumColumnas2(numColumnas);
-  }, [numColumnas]);
+    if(numColumnas2 > 0){      
+      setDivs(createDivs(numColumnas2));
+    }
+  }, [numColumnas2]);
+
+  useEffect(() => {
+    setNumColumnas2();
+  }, [newLength]);
 
   const eliminarFila = async (itemId, idDb) => {
     const confirmMessage =
@@ -767,7 +777,7 @@ const View = () => {
         checkedBy: checkedBy,
         authorizedBy: authorizedBy,
         id_report: dataC.id,
-        reports_cc: dataC.reports_cc,        
+        reports_cc: dataC.reports_cc,
         total: {
           cant: total1,
           ng: total2,
@@ -786,7 +796,6 @@ const View = () => {
         },
         incType: incType,
         sampling_table: divsSamplingTableInsp,
-        
       },
     ];
     setDataToSave(newArray);
@@ -897,7 +906,7 @@ const View = () => {
       shift: dataC.shift,
       part_number: dataC.part_number,
       id_supplier: dataC.id_supplier,
-      downtime:dataC.downtime,
+      downtime: dataC.downtime,
     });
   }, [t]);
 
@@ -926,7 +935,7 @@ const View = () => {
           part_number,
           id_supplier,
           report_id,
-          downtime
+          downtime,
         } = dataFromDb[0];
         const getAllDetails = async (partNumber) => {
           //setIsLoading(true); // Comienza la carga
@@ -936,7 +945,6 @@ const View = () => {
             const { column_values = [] } = data;
 
             setIncType(column_values.filter((cv) => cv.report_id === idReport));
-            
           } catch (err) {
             console.log(err);
           }
@@ -954,7 +962,7 @@ const View = () => {
           part_number,
           id_supplier,
           report_id,
-          downtime
+          downtime,
         });
       }, 100);
 

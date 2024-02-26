@@ -8,11 +8,11 @@ import StatusBtn from "../StatusBtn";
 
 const AuthUsers = ({ data, deleteAU }) => {
   //
-  const { isAdmin, lang } = useContext(MainContext);
+  const { isAdmin, lang, t } = useContext(MainContext);
 
   return (
     <AuthUsersContainer>
-      <h3>Usuarios autorizados</h3>
+      <h3>{t("Usuarios autorizados")}</h3>
       <div className="table-body table-reports"
       style={{
         width:"100%",
@@ -23,9 +23,9 @@ const AuthUsers = ({ data, deleteAU }) => {
           <table>
             <thead>
               <tr>
-                <th>Usuario</th>
-                <th>Status</th>
-                <th>Fecha de autorizacion</th>
+                <th>{t("Usuario")}</th>
+                <th>{t("reports.status")}</th>
+                <th>{t("Fecha de autorizacion")}</th>
                 <th></th>
               </tr>
             </thead>

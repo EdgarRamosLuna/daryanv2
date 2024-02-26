@@ -16,7 +16,7 @@ const TableRowComponent = ({item, singleView, handleDel, handleCheckBox, getPagi
         setTablaMuestreo(prev => !prev)
     }
   return (
-    <tr onClick={(e) => singleView(item.id)}>
+    <tr onClick={(e) => singleView(item.id, 'client')}>
       <td
         className="table-center"
         onClick={(e) => e.stopPropagation()}

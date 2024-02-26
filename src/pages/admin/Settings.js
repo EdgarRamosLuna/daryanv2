@@ -32,7 +32,10 @@ const Settings = () => {
           <h2>{t('settings')}</h2>
         </div>
         <div className="my-acc-input">
-          <label>{t('language')}</label>
+          <Grid py={'10px'}>
+            <label>{t('language')}</label>
+
+          </Grid>
           <Box>
             <Select
               value={globalLang}

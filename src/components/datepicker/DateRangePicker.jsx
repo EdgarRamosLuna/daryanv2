@@ -19,7 +19,7 @@ import {
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import "react-datepicker/dist/react-datepicker.css";
-import { DateRange, DateRangePicker, DefinedRange } from 'react-date-range';
+import { DateRange, DefinedRange } from 'react-date-range';
 import { es, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { parseISO } from 'date-fns';
@@ -35,8 +35,8 @@ const DatePickerRange = ({ setDateStart, setDateEnd, dLastDateByPartNumber, dfir
     });
     const [state, setState] = useState([
         {
-            startDate: new Date().setUTCHours(6, 0, 0, 999),
-            endDate: new Date().setUTCHours(6, 0, 0, 999),
+            startDate: new Date(),
+            endDate: new Date(),
             key: 'selection'
         }
     ]);
@@ -56,28 +56,7 @@ const DatePickerRange = ({ setDateStart, setDateEnd, dLastDateByPartNumber, dfir
         }
 
     }, [dLastDateByPartNumber, dfirstDateByPartNumber])
-    // function customDayContent(day) {
-    //     let extraDot = null;
-    //     if (reportDates.some(specialDate => isSameDay(day, specialDate))) {
-    //       extraDot = (
-    //         <div style={{
-    //           height: "5px",
-    //           width: "5px",
-    //           borderRadius: "100%",
-    //           background: "red", // El color que prefieras
-    //           position: "absolute",
-    //           top: 2,
-    //           right: 2,
-    //         }} />
-    //       );
-    //     }
-    //     return (
-    //       <div>
-    //         {extraDot}
-    //         <span>{format(day, "d")}</span>
-    //       </div>
-    //     )
-    //   }
+    
     const defineds = {
         startOfWeek: startOfWeek(new Date()),
         endOfWeek: endOfWeek(new Date()),
@@ -92,12 +71,6 @@ const DatePickerRange = ({ setDateStart, setDateEnd, dLastDateByPartNumber, dfir
         startOfLastMonth: startOfMonth(addMonths(new Date(), -1)),
         endOfLastMonth: endOfMonth(addMonths(new Date(), -1)),
     };
-    function isDateInMarkedRange(date) {
-        return isWithinInterval(date, {
-            start: markedDatesRange.startDate,
-            end: markedDatesRange.endDate
-        });
-    }
     function customDayContent(day) {
         let extraDot = null;
         const { startDate, endDate } = markedDatesRange; // Asumiendo que estas son tus fechas de inicio y fin

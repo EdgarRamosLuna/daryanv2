@@ -494,6 +494,16 @@ export const MainContextProvider = ({ children }) => {
 
   useEffect(() => {
     setActiveTab(1);
+    const resetScroll = () => {
+      // Selecciona todos los elementos que potencialmente pueden tener scroll
+      const scrollableElements = document.querySelectorAll('#maincontainer');
+  
+      // Itera sobre cada elemento y resetea su posición de scroll
+      scrollableElements.forEach(element => {
+        element.scrollTop = 0;
+      });
+    };
+    resetScroll();
   }, [pathname]);
 
   const [numColumnas, setNumColumnas] = useState(15);
@@ -950,7 +960,9 @@ export const MainContextProvider = ({ children }) => {
      }
       
   }
+  const [reportsByHour, setReportsByHour] = useState();
   const PROPS = {
+    reportsByHour, setReportsByHour,
     nIdReport, setIdReport,
     adminCallback,
     dataSes,
@@ -1132,8 +1144,12 @@ export const MainContextProvider = ({ children }) => {
     ABECEDARIO,
     serverNodeUrl,
     hoverBtnsStyle,
-    suppliersByClient, setSuppliersByClient
+    suppliersByClient, 
+    setSuppliersByClient,
+    t
   };
+
+  
   return (
     <MainContext.Provider value={PROPS}>
       {isDownloading &&

@@ -29,7 +29,7 @@ if (typeof window !== "undefined") {
 export default function Header() {
   const { t } = useTranslation();
   const { lang, changeLanguage } = useContext(LanguageContext);
-
+  
   
   const {
     toast,
@@ -39,6 +39,8 @@ export default function Header() {
     langu,
     isAdmin,
     setIsAdmin,
+    setReportsByHour,
+    reportsByHour
   } = useContext(MainContext);
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
@@ -265,6 +267,7 @@ export default function Header() {
         await checkUser(token)
           .then((res) => {
             const datares = res.data;
+            const {h:reportByHour, id:idSesion} = datares;
             if (datares.error) {
               toast.error(datares.message, {
                 duration: 5000,
@@ -273,7 +276,7 @@ export default function Header() {
               navigate("/admin/login");
             } else {
               // get token from local storage
-
+              setReportsByHour(Boolean(Number(reportByHour)))
               if (Number(datares.i) === 1) {
                 setIsAdmin(true);
                 setLinksAdmin([
@@ -363,6 +366,7 @@ export default function Header() {
         await checkEmployee(token)
           .then((res) => {
             const datares = res.data;
+            const {h:reportByHour, id:idSesion} = datares;
             if (datares.error) {
               toast.error(datares.message, {
                 duration: 5000,
@@ -370,6 +374,7 @@ export default function Header() {
               localStorage.removeItem("sesType");
               navigate("/user/login");
             }else{
+              setReportsByHour(Boolean(Number(reportByHour)))
               setLinksUser([
                 {
                   label: t("button_texts.reports"),
@@ -405,7 +410,9 @@ export default function Header() {
       if (val === "client") {
         await checkClient(token)
           .then((res) => {
-            const datares = res.data;
+            const datares = res?.data;
+
+            const {h:reportByHour, id:idSesion} = datares;
             if (datares.error) {
               toast.error(datares.message, {
                 duration: 5000,
@@ -413,6 +420,7 @@ export default function Header() {
               localStorage.removeItem("sesType");
               navigate("/client/login");
             }else{
+              setReportsByHour(Boolean(Number(reportByHour)))
               setLinksClient([
                 {
                   label: t("button_texts.reports"),
@@ -520,7 +528,7 @@ export default function Header() {
       </header>
       <div className={`${style.childrenContainer} container-app`}>
         <SubHeader />
-        <div className={style.children}>
+        <div className={style.children} id="maincontainer">
           <Outlet />
         </div>
       </div>

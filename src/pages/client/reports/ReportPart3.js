@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { Table } from "../../../styles/Styles";
 import { LanguageContext } from "../../../context/LanguageContext";
 import Incidents from "./Incidents";
@@ -53,17 +53,32 @@ const ReportPart3 = ({
   setProducedBy,
   setCheckedBy,
   incType,
-  setIncType
+  setIncType,
 }) => {
+  // Ref para el contenedor
+  const contenedorRef = useRef(null);
   const { t } = useContext(LanguageContext);
+  useEffect(() => {
+    // Buscar todos los elementos input dentro del contenedor
+    const inputs = contenedorRef.current.querySelectorAll("input");
+    // Deshabilitar cada input encontrado
+    inputs.forEach((input) => {
+      input.disabled = true;
+    });
+    const textareas = contenedorRef.current.querySelectorAll("textarea");
+    // Deshabilitar cada input encontrado
+    textareas.forEach((textarea) => {
+      textarea.disabled = true;
+    });
+  }, [divs]); // El array vacío asegura que el efecto se ejecute solo una vez después del montaje inicial
   return (
     <div
       className="container scrollX c2"
       ref={container2Ref}
       onScroll={handleScroll2}
-      style={{ overflow: "scroll", height: "auto" }}
+      style={{ overflow: "scroll", height: "auto" }} 
     >
-      <Table>
+      <Table ref={contenedorRef}>
         <table>
           <thead className="no-sticky">
             <tr>

@@ -137,13 +137,13 @@ const View = () => {
 
     setDivsSamplingTableInsp(newList);
     setIdReport(idReport);
-    setDataCDb([])
+    setDataCDb([]);
 
     return () => {};
   }, []);
 
-  const [divs, setDivs] = useState(() => {
-    const filas = [];
+  const createDivs = () => {
+    const filas = [];    
     for (let i = 1; i <= numFilas2; i++) {
       //filas
       filas.push({
@@ -157,6 +157,9 @@ const View = () => {
       //filas
       const fil = filas[j]; //fila
       const values = fil.values; //valores de la fila
+
+      console.log(dataC.reports_cc[j]);
+
       if (dataC.reports_cc && dataC.reports_cc[j]) {
         //si hay datos en el reporte
         const keys = Object.keys(dataC.reports_cc[j]); //obtener las llaves de cada objeto
@@ -221,15 +224,22 @@ const View = () => {
       }
     }
     return filas;
-  });
+  };
+  const [divs, setDivs] = useState(createDivs());
   useEffect(() => {
     setNumFilas(numFilas2);
     return () => {};
   }, [numFilas2]);
 
   useEffect(() => {
-    setNumColumnas2(numColumnas);
-  }, [numColumnas]);
+    if(numColumnas2 > 0){      
+      setDivs(createDivs(numColumnas2));
+    }
+  }, [numColumnas2]);
+
+  useEffect(() => {
+    setNumColumnas2();
+  }, [newLength]);
 
   const eliminarFila = async (itemId, idDb) => {
     const confirmMessage =
@@ -1041,11 +1051,23 @@ const View = () => {
       });
     }
   }, [totalHours]);
+  // Ref para el contenedor
+  const contenedorRef = useRef(null);
+
+    useEffect(() => {
+      // Buscar todos los elementos input dentro del contenedor
+      const inputs = contenedorRef.current.querySelectorAll('input');
+      // Deshabilitar cada input encontrado
+      inputs.forEach(input => {
+        input.disabled = true;
+      });
+    }, []); // El array vacío asegura que el efecto se ejecute solo una vez después del montaje inicial
+  
   const tabContent = {
     1: {
       component: (
         <>
-          <div className="container">
+          <div className="container disabledC" ref={contenedorRef}>
             <div className="title">
               <h3>{t("reports.inspection_report_title")}</h3>
               <br />
@@ -1103,15 +1125,20 @@ const View = () => {
                 style={{
                   width: "24%",
                 }}
-              >
-                <InputDate
-                  id="data3"
-                  name="date"
-                  style={{ textAlign: "left", padding: "12px 20px" }}
-                  defaultValue={dataC.date}
+              >               
+                  <TextField
+                  id="outlined-basic"
+                  label={t("table.plant")}
+                  required
+                  variant="outlined"
+                  sx={{
+                    width: "95%",
+                  }}
                   type="text"
-                  data={dataCDb}
-                  setData={setDataCDb}
+                  name="plant"
+                  placeholder=""
+                  defaultValue={dataC.date}
+                
                 />
               </Box>
               <Box className="form-container">

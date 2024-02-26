@@ -142,11 +142,11 @@ export default function Login3() {
                   <span className="error">{errors.password.message}</span>
                 )}
               </div>
-              <div className={style.forget_container}>
+              {/* <div className={style.forget_container}>
                 <div className="">
                   <span>Olvidaste tu contraseña?</span>
                 </div>
-              </div>
+              </div> */}
               <div className={style.button_container}>
                 
                 <LoginButton loader={loader} hoverBtnsStyle={hoverBtnsStyle} />

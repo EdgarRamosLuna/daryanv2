@@ -233,5 +233,12 @@
   "Total Retrabajo":"Total Rework",
   "Total inspeccionado":"Total inspected",
   "Total de incidencias":"Total incidences",
-  "Todos los campos con * con obligatorios":"All fields marked with * are mandatory"
+  "Todos los campos con * con obligatorios":"All fields marked with * are mandatory",
+  "Usuario modifica":"User modifies",
+  "Piezas":"Pieces",
+  "Inspeccionado":"Inspected",
+  "Descargar":"Download",
+  "Usuarios autorizados":"Authorized users",
+  "Fecha de autorizacion":"Authorization date",
+  "Usuario":"User"
 }
