@@ -4,6 +4,8 @@ import { Table } from "../../../styles/Styles";
 
 import { useRef } from "react";
 import DatePickerInputU from "../../../components/DateInputUpdate";
+import useThClick from "./useThClick";
+import CustomInput from "../../employee/utils/CustomInput";
 
 export default function SecondTableCreate({
   dataC,
@@ -12,7 +14,7 @@ export default function SecondTableCreate({
   divs,
   setDivs,
   agregarFila,
-  eliminarFila
+  eliminarFila,
 }) {
   const {
     numColumnas,
@@ -31,27 +33,11 @@ export default function SecondTableCreate({
     setTotal12,
     setTotal13,
     setTotal14,
+    setDivsSamplingTableInsp,
+    divsSamplingTableInsp,
   } = useContext(MainContext);
-
-  //console.log(numColumnas);
-
-  //console.log(numColumnas);
-
-  /*function handleAddDiv() {
-    const newId = divs.length + 1;
-    const newValues = ["", "", "", "", "", "", "", "", "", "", "", "", "", ""];
-    setDivs([...divs, { id: newId, values: newValues }]);
-    const tableWrapper = document.querySelector(".c2");
-    const scrollHeight = tableWrapper.scrollHeight;
-    const clientHeight = tableWrapper.clientHeight;
-    if (scrollHeight > clientHeight) {
-      //tableWrapper.scrollTop = scrollHeight - clientHeight;
-      setTimeout(() => {
-        tableWrapper.scrollTo({ top: scrollHeight, behavior: "smooth" });
-      }, 100);
-    }
-  }*/
   const handleInputChange = (divId, inputIndex, newValue) => {
+    // 1. Actualizar divs basado en el cambio de entrada
     setDivs((prevDivs) => {
       const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
       const updatedDiv = { ...prevDivs[divToUpdateIndex] };
@@ -60,10 +46,28 @@ export default function SecondTableCreate({
       updatedDivs[divToUpdateIndex] = updatedDiv;
       return updatedDivs;
     });
+
+    // 2. Sincronizar divsSamplingTableInsp con divs
+    const updatedSamplingTable = divs.map((divItem) => {
+      // Obtiene el item correspondiente de divsSamplingTableInsp
+      const originalItem = divsSamplingTableInsp.find(
+        (item) => item.id === divItem.id
+      );
+      return {
+        id: divItem.id,
+        values: [
+          originalItem.values[0], // id se mantiene igual
+          0, // lote se sincroniza desde divs
+          0, // serial se sincroniza desde divs
+          divItem.values[5], // total insp se sincroniza desde divs
+          ...originalItem.values.slice(4), // El resto de los valores se mantienen sin cambios
+        ],
+      };
+    });
+    setDivsSamplingTableInsp(updatedSamplingTable);
   };
 
   useEffect(() => {
-    //console.log(divs);
     let newValue1 = 0;
     let newValue2 = 0;
     let newValue3 = 0;
@@ -177,8 +181,7 @@ export default function SecondTableCreate({
       });
     });
   }, [divs]);
-  //console.log(divs);
-  //const [first, setfirst] = useState(second)
+
   const [data, setData] = useState([]);
   const [isEClause, setIsEClause] = useState(false);
   const handleDate = (name, date, id, index) => {
@@ -186,7 +189,7 @@ export default function SecondTableCreate({
   };
   const btnRef = useRef(null);
   const clauses = Number(dataC.report_in.length);
- 
+
   const date = new Date();
   const year = date.getFullYear();
   const month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -196,10 +199,16 @@ export default function SecondTableCreate({
   const seconds = ("0" + date.getSeconds()).slice(-2);
   const formattedDateTime = `${year}-${month}-${day}`;
   const btnDelIncRef = useRef(null);
+  const [currentThText, previousThText, handleClick] =
+    useThClick(eliminarColumna2);
+  const handleEnter = useCallback((filaId, currentIndex) => {
+    const nextInput = document.getElementById(`input-${filaId + 1}-${3}`);
+    nextInput && nextInput.focus();
+  }, []);
   
   return (
     <Table>
-      <table >
+      <table>
         <thead>
           <tr>
             {titulosColumnas.map((titulo, i) =>
@@ -207,10 +216,8 @@ export default function SecondTableCreate({
                 <th key={i}>
                   <i
                     ref={btnRef}
-                    className="fa-solid fa-circle-plus"
-                    style={{
-                      color: "transparent"
-                    }}
+                    className="fa-solid fa-circle-plus hidden"
+                 
                   ></i>
                 </th>
               ) : (
@@ -220,37 +227,44 @@ export default function SecondTableCreate({
             {titulosColumnas.at(-1) !== "I" ? (
               <th>
                 <i
-                  className="fa-solid fa-circle-plus"
-                  style={{
-                    color: "transparent"
-                  }}
+                  className="fa-solid fa-circle-plus hidden"
+               
                 ></i>
               </th>
             ) : (
               <th></th>
             )}
-        
           </tr>
         </thead>
-        <tbody>
-          {divs.map((fila) => (
+        <tbody onClick={handleClick}>
+          {divs.map((fila, indx) => (
             <tr key={fila.id}>
               {fila.values.map((valor, i) =>
                 i === 0 || i === fila.values.length - 1 ? (
                   <>
                     {i === 0 && fila.id !== 1 ? (
                       <td>
-                        <i
-                          className="fa-solid fa-trash"
-                          style={{
-                            color: "transparent"
-                          }}
-                        ></i>
+                        {indx === divs.length - 1 && (
+                          <i
+                            className="fa-solid fa-trash"
+                            onClick={() => eliminarFila(fila.id, valor)}
+                          ></i>
+                        )}
                       </td>
                     ) : (
                       i === 0 && fila.id === 1 && <td></td>
                     )}
-                  
+
+                    {i === fila.values.length - 1 &&
+                      fila.values.length > 15 && (
+                        <td
+                          className="fa-solid fa-trash"
+                          style={{
+                            display: "table-cell",
+                            verticalAlign: "middle",
+                          }}
+                        />
+                      )}
                   </>
                 ) : i === 1 ? (
                   <td key={i} className="table-center">
@@ -266,26 +280,40 @@ export default function SecondTableCreate({
                           index={i}
                           value={valor}
                           setDate={handleDate}
-                          readOnly
                         />
                       ) : (
                         ""
                       )
                     ) : (
-                      <input
-                        value={valor}
-                        onChange={(e) =>
-                          handleInputChange(fila.id, i, e.target.value)
-                        }
-                        readOnly
-                      />
+                      <>
+                        {i >= 3 && i <= 4 ? (
+                          <CustomInput
+                          value={valor}
+                          onChange={handleInputChange}
+                          onEnter={handleEnter} // Pasar el id de la fila y el índice del input a handleEnter
+                          id={`input-${fila.id}-${i}`}
+                          key={i} // Añadir una key prop es importante cuando se mapea un array a elementos JSX
+                          filaId={fila.id}
+                          index={i}
+                        />
+                        ) : (
+                          <CustomInput
+                            value={valor}
+                            onChange={handleInputChange}
+                            onEnter={handleEnter} // Pasar el id de la fila y el índice del input a handleEnter
+                            id={`input-${fila.id}-${i}`}
+                            filaId={fila.id}
+                            index={i}
+                            key={i} // Añadir una key prop es importante cuando se mapea un array a elementos JSX
+                          />
+                        )}
+                      </>
                     )}
                   </td>
                 )
               )}
             </tr>
-          ))}
-      
+          ))}       
         </tbody>
       </table>
     </Table>

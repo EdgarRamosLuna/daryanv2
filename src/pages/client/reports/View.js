@@ -91,6 +91,7 @@ const View = () => {
     onlyNumbers,
     token,
     setIdReport,
+    disableInputs
   } = useContext(MainContext);
   const { lang } = useContext(LanguageContext);
 
@@ -119,7 +120,21 @@ const View = () => {
   const [numColumnas2, setNumColumnas2] = useState(
     newLength < 15 ? 15 : newLength
   );
+  const contenedorRef = useRef(null);
 
+  useEffect(() => {
+    // Guardar el id del temporizador para poder cancelarlo después
+    const timerId = setTimeout(() => {
+      disableInputs(contenedorRef);
+    }, 1000);
+  
+    // Función de limpieza
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, []); // El array vacío indica que este efecto solo se ejecuta al montar y desmontar el componente
+  
+  
   useEffect(() => {
     const reports_sample_table = eData.report_sata;
     const newList = reports_sample_table.map((item) => ({
@@ -138,6 +153,7 @@ const View = () => {
     setDivsSamplingTableInsp(newList);
     setIdReport(idReport);
     setDataCDb([]);
+
 
     return () => {};
   }, []);
@@ -158,7 +174,6 @@ const View = () => {
       const fil = filas[j]; //fila
       const values = fil.values; //valores de la fila
 
-      console.log(dataC.reports_cc[j]);
 
       if (dataC.reports_cc && dataC.reports_cc[j]) {
         //si hay datos en el reporte
@@ -777,7 +792,7 @@ const View = () => {
         checkedBy: checkedBy,
         authorizedBy: authorizedBy,
         id_report: dataC.id,
-        reports_cc: dataC.reports_cc,        
+        reports_cc: dataC.reports_cc,
         total: {
           cant: total1,
           ng: total2,
@@ -796,7 +811,6 @@ const View = () => {
         },
         incType: incType,
         sampling_table: divsSamplingTableInsp,
-        
       },
     ];
     setDataToSave(newArray);
@@ -907,7 +921,7 @@ const View = () => {
       shift: dataC.shift,
       part_number: dataC.part_number,
       id_supplier: dataC.id_supplier,
-      downtime:dataC.downtime,
+      downtime: dataC.downtime,
     });
   }, [t]);
 
@@ -936,7 +950,7 @@ const View = () => {
           part_number,
           id_supplier,
           report_id,
-          downtime
+          downtime,
         } = dataFromDb[0];
         const getAllDetails = async (partNumber) => {
           //setIsLoading(true); // Comienza la carga
@@ -946,7 +960,6 @@ const View = () => {
             const { column_values = [] } = data;
 
             setIncType(column_values.filter((cv) => cv.report_id === idReport));
-            
           } catch (err) {
             console.log(err);
           }
@@ -964,7 +977,7 @@ const View = () => {
           part_number,
           id_supplier,
           report_id,
-          downtime
+          downtime,
         });
       }, 100);
 
@@ -1051,23 +1064,11 @@ const View = () => {
       });
     }
   }, [totalHours]);
-  // Ref para el contenedor
-  const contenedorRef = useRef(null);
-
-    useEffect(() => {
-      // Buscar todos los elementos input dentro del contenedor
-      const inputs = contenedorRef.current.querySelectorAll('input');
-      // Deshabilitar cada input encontrado
-      inputs.forEach(input => {
-        input.disabled = true;
-      });
-    }, []); // El array vacío asegura que el efecto se ejecute solo una vez después del montaje inicial
-  
   const tabContent = {
     1: {
       component: (
-        <>
-          <div className="container disabledC" ref={contenedorRef}>
+        <div ref={contenedorRef}>
+          <div className="container">
             <div className="title">
               <h3>{t("reports.inspection_report_title")}</h3>
               <br />
@@ -1125,21 +1126,31 @@ const View = () => {
                 style={{
                   width: "24%",
                 }}
-              >               
+              >
                   <TextField
                   id="outlined-basic"
-                  label={t("table.plant")}
+                  label={t("table.date")}
                   required
                   variant="outlined"
                   sx={{
                     width: "95%",
                   }}
                   type="text"
-                  name="plant"
+                  name="date"
                   placeholder=""
                   defaultValue={dataC.date}
+                  value={dataC.date}
                 
                 />
+                {/* <InputDate
+                  id="data3"
+                  name="date"
+                  style={{ textAlign: "left", padding: "12px 20px" }}
+                  defaultValue={dataC.date}
+                  type="text"
+                  data={dataCDb}
+                  setData={setDataCDb}
+                /> */}
               </Box>
               <Box className="form-container">
                 <TextField
@@ -1226,15 +1237,16 @@ const View = () => {
               <Box className="form-container">
                 <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">
-                    {t("reports.shift_label")}
+                
                   </InputLabel>
-                  <SelectMUI
+                  <TextField
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     name="shift"
                     type="text"
                     required
-                    defaultValue={dataC.shift}
+                    value={dataC.shift}
+                  //  defaultValue={dataC.shift}
                     label="Turno"
                     sx={{
                       width: "95%",
@@ -1249,7 +1261,7 @@ const View = () => {
                     <MenuItem value={1}>1</MenuItem>
                     <MenuItem value={2}>2</MenuItem>
                     <MenuItem value={3}>3</MenuItem>
-                  </SelectMUI>
+                  </TextField>
                 </FormControl>
               </Box>
               <Box
@@ -1529,7 +1541,7 @@ const View = () => {
             incType={incType}
             setIncType={setIncType}
           />
-        </>
+        </div>
       ),
     },
     2: {

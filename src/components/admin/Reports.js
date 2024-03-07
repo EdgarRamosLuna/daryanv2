@@ -119,7 +119,49 @@ function ReportsTable({ data, dataReportByH }) {
                 />
               </div>
               <div className="filter-item">
-              
+              <Box
+                  sx={{
+                    visibility: uniqueClients.length > 0 ? "visible" : "hidden",
+                  }}
+                >
+                  <Box>
+                    <Select
+                      value={selectedClient}
+                      onChange={addClientToList}
+                      sx={{
+                        width: "90%",
+                      }}
+                    >
+                      <MenuItem value="0">
+                        {t("reports.selectAClient")}
+                      </MenuItem>
+                      {uniqueClients.map((option) => (
+                        <MenuItem key={option} value={option.id}>
+                          {option.fullname}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Box>
+                  <Box>
+                    <List
+                      sx={{
+                        display: `${
+                          clientsToReport.length > 0 ? "flex" : "none"
+                        }`,
+                        flexDirection: "column",
+                      }}
+                    >
+                      {clientsToReport.map((client, ind) => (
+                        <ListItem key={ind}>
+                          <span>{client.clientName}</span>
+                          <IconButton onClick={() => removeClient(client.id)}>
+                            <CloseIcon sx={{ color: "rgb(87, 0, 0)" }} />
+                          </IconButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                </Box>
               </div>
               <DatePickerRange
                 setDateStart={setDateStart}

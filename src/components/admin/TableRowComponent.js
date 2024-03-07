@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import BtnReportViewPdf from "./BtnReportViewPdf";
 import {
     faCalendarDays,
@@ -9,12 +9,14 @@ import {
     faUsers,
   } from "@fortawesome/free-solid-svg-icons";
 import Checkbox from "../Checkbox";
+import { MainContext } from "../../context/MainContext";
 const TableRowComponent = ({item, singleView, handleDel, handleCheckBox, getPaginatedData, authClientsC, t, serverNodeUrl}) => {
     const [tablaMuestreo, setTablaMuestreo] = useState(true);
     const toggleCheckbox = (e) =>{
         e.stopPropagation();
         setTablaMuestreo(prev => !prev)
     }
+    const {isAdmin} = useContext(MainContext)
   return (
     <tr onClick={(e) => singleView(item.id, 'admin')}>
       <td
@@ -46,10 +48,12 @@ const TableRowComponent = ({item, singleView, handleDel, handleCheckBox, getPagi
         colSpan={1}
       >
         <div className="actions">
-          <FontAwesomeIcon
+
+          {isAdmin ? <FontAwesomeIcon
             icon={faTrash}
             onClick={() => handleDel(item.id, "reports")}
-          />
+          /> : ""}
+          
           <BtnReportViewPdf item={item} tablaMuestreo={tablaMuestreo} serverNodeUrl={serverNodeUrl} />
           <FontAwesomeIcon
             icon={faUsers}

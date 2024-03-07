@@ -1,7 +1,9 @@
 import React, { useContext, useEffect } from "react";
-import ReportsTable from "../../components/employee/Reports";
+
 import { MainContext } from "../../context/MainContext";
 import { getEmployReportsByH, getEmployReports } from "../../api/daryan.api";
+import ReportsTable from "../../components/employee/Reports";
+
 
 const Reports = () => {
   const {
@@ -18,21 +20,28 @@ const Reports = () => {
     const token = localStorage.getItem("t");
     if (activeTab === 1) {
       const request = async () => {
-        await getEmployReports(token)
-          .then((res) => {
-            const datares = res.data;
+        try {
+          const response = await getEmployReports(token);
+          const datares = response?.data.result;
+          const { error } = datares;
+          if (!error) {
+            const { result, last_report_id } = response?.data;
+            const datares = result;
             const reportes = Object.values(datares);
-            console.log(reportes);
             localStorage.setItem("dataTable", JSON.stringify(reportes));
+            localStorage.setItem("last_report_id", last_report_id);
             setData(reportes);
-          })
-          .catch((err) => {
-            toast.error(err, {
-              duration: 5000,
-            });
+          }
+        } catch (error) {
+          console.log(error)
+          toast.error("error", {
+            duration: 5000,
           });
+        }
       };
-      request();
+ 
+        request();
+
     }
     if (activeTab === 2) {
       const request = async () => {

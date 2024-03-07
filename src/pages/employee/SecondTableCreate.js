@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import { MainContext } from "../../context/MainContext";
 import { Table } from "../../styles/Styles";
 import DatePickerInput from "../../components/DateInput";
@@ -6,16 +6,12 @@ import CustomInput from "./utils/CustomInput";
 
 export default function SecondTableCreate() {
   const {
-    numFilas,
     setNumFilas,
     numColumnas,
-    setNumColumnas,
-    setTitulosColumnas,
     titulosColumnas,
     agregarColumna,
     agregarFila,
     eliminarColumna,
-    eliminarFila,
     divs,
     setDivs,
     setTotal1,
@@ -86,8 +82,8 @@ export default function SecondTableCreate() {
         id: divItem.id,
         values: [
           originalItem.values[0], // id se mantiene igual
-          divItem.values[3], // lote se sincroniza desde divs
-          divItem.values[4], // serial se sincroniza desde divs
+          0, // lote se sincroniza desde divs
+          0 , // serial se sincroniza desde divs
           divItem.values[5], // total insp se sincroniza desde divs
           divItem.values[6], // nuevo valor se sincroniza desde divs
           ...originalItem.values.slice(5), // El resto de los valores se mantienen sin cambios

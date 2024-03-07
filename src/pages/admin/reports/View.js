@@ -158,7 +158,7 @@ const View = () => {
       const fil = filas[j]; //fila
       const values = fil.values; //valores de la fila
 
-      console.log(dataC.reports_cc[j]);
+      
 
       if (dataC.reports_cc && dataC.reports_cc[j]) {
         //si hay datos en el reporte

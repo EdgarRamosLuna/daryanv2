@@ -323,6 +323,7 @@ const useReportClient = ({ data, dataReportByH}) => {
           }
         });
 
+      //  console.log(newD)
         setUniqueClients(newD);
       }
       if (nameFilter === "") {
@@ -665,6 +666,9 @@ const useReportClient = ({ data, dataReportByH}) => {
     }
     if(type === 'client'){
         navigate(`/client/reports_insp/${id}`);
+    }
+    if(type === 'user'){
+        navigate(`/user/reports_insp/${id}`);
     }
   };
 

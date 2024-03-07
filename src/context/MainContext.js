@@ -961,6 +961,14 @@ export const MainContextProvider = ({ children }) => {
       
   }
   const [reportsByHour, setReportsByHour] = useState();
+  
+  const disableInputs = (contenedorRef) =>{
+      // Acceder a los elementos input dentro del contenedor
+      const inputs = contenedorRef.current.querySelectorAll('input, select');
+      inputs.forEach(input => {
+        input.disabled = true; // Deshabilita los inputs
+      });
+  }
   const PROPS = {
     reportsByHour, setReportsByHour,
     nIdReport, setIdReport,
@@ -1146,7 +1154,8 @@ export const MainContextProvider = ({ children }) => {
     hoverBtnsStyle,
     suppliersByClient, 
     setSuppliersByClient,
-    t
+    t,
+    disableInputs
   };
 
   

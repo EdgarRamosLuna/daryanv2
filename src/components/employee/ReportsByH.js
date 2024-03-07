@@ -19,9 +19,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ComponentPagination from "../ComponentPagination";
 import DatePickerMUI2 from "../datepicker/DatePickerMUI2";
 import NoInfo from "../helpers/NoInfo";
+import { useTranslation } from "react-i18next";
 registerLocale("es", es);
-function ReportsByH({ data, dateStart, dateEnd, loader, setDateEnd }) {
-  
+function ReportsByH({ data, dateStart, dateEnd, nameFilterByH, loader }) {
+  const { t } = useTranslation();
+
 
   const { activeTab, setActiveTab, checkList, setCheckList, handleCheckBox } =
     useContext(MainContext);
@@ -47,8 +49,8 @@ function ReportsByH({ data, dateStart, dateEnd, loader, setDateEnd }) {
       // const date = new Date(item.date);
       // date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
       if (
-        nameFilter &&
-        fullName.toLowerCase().indexOf(nameFilter.toLowerCase()) === -1
+        nameFilterByH &&
+        fullName.toLowerCase().indexOf(nameFilterByH.toLowerCase()) === -1
       ) {
         //console.log(fullName.slice(3, 4));
         return false;
@@ -75,7 +77,7 @@ function ReportsByH({ data, dateStart, dateEnd, loader, setDateEnd }) {
 
       return true;
     });
-  }, [nameFilter, dateStart, dateEnd, data]);
+  }, [nameFilterByH, dateStart, dateEnd, data]);
 
   const filteredData = filterData();
   const getPaginatedData = useCallback(() => {
@@ -103,11 +105,6 @@ function ReportsByH({ data, dateStart, dateEnd, loader, setDateEnd }) {
       <i className="fa-solid fa-calendar-days"></i>
     </div>
   ));
-  const handleNameFilterChange = (event) => {
-    const value = event.target.value;
-    setNameFilter(value);
-    //debounceSetNameFilter(value);
-  };
   CustomInputD.displayName = "CustomInputD";
   //console.log(checkList);
   const navigate = useNavigate();
@@ -121,127 +118,96 @@ function ReportsByH({ data, dateStart, dateEnd, loader, setDateEnd }) {
 
   return (
     <>
-      {/* <div className="header-container">
-          <form autoComplete="off">
-            <div className="filter-container">
-              <div className="filter-item">
-                <label htmlFor="date-filter" className="label-center">
-                  Buscar por Fecha:
-                </label>
-
-                <div className="filter-item-input input-date">
-                  <DatePickerMUI2
-                    setDateStart={setDateStart}
-                    setDateEnd={setDateEnd}
+  
+    <Table>
+      <div className="table-container">
+        <div className="table-body table-reports">
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <Checkbox
+                    type="all"
+                    id={0}
+                    callback={handleCheckBox}
+                    data={getPaginatedData()}
                   />
-                </div>
-              </div>
-              <div className="filter-item">
-                <label htmlFor="name-filter" className="label-center">
-                  Buscar:
-                </label>
-                <div className="filter-item-input">
-                  <input
-                    type="text"
-                    id="name-filter"
-                    value={nameFilter}
-                    onChange={(e) => handleNameFilterChange(e)}
-                    placeholder="Proveedor, #Parte, #Lote, #Serie, #Planta"
-                  />
-                </div>
-              </div>
-            </div>
-          </form>
-        </div> */}
-      <Table>
-        <div className="table-container">
-          <div className="table-body table-reports">
-            <table>
-              <thead>
-                <tr>
-                  <th>
-                    <Checkbox
-                      type="all"
-                      id={0}
-                      callback={handleCheckBox}
-                      data={getPaginatedData()}
-                    />
-                  </th>
-                  <th># Parte</th>
-                  <th>Planta</th>
-                  <th>Fecha</th>
-                  <th>Status</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <div className={loader === false ? "loaderContainer" : ""}>
+                </th>
+                <th>{t("table.partNumber")}</th>
+                <th>{t("table.plant")}</th>
+                <th>{t("table.date")}</th>
+                <th>{t("table.status")}</th>
+                <th>{t("table.actions")}</th>
+              </tr>
+            </thead>
+            <tbody>
+            <div className={loader === false ? "loaderContainer" : ""}>
                   <Loader>
                     <img src="/assets/img/loading2.svg" alt="" />
                   </Loader>
                 </div>
-                {getPaginatedData().length === 0 ? (
+              
+            {getPaginatedData().length === 0 ? (
                   <NoInfo />
                 ) : (
-                  getPaginatedData().map((item, index) => (
-                    <tr key={index} onClick={(e) => singleView(item.id)}>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                        colSpan={1}
-                      >
-                        <Checkbox
-                          type="single"
-                          id={item.id}
-                          callback={handleCheckBox}
-                          data={getPaginatedData()}
-                        />
-                      </td>
-                      <td className="table-center">{item.part_number}</td>
-                      <td className="table-center">{item.plant}</td>
-                      {/* <td className="table-center">Proveedor</td> */}
-                      <td className="table-center">{item.date}</td>
-                      <td className="table-center">
-                        {Number(item.status) === 1 && "Sin aprobar"}{" "}
-                        {Number(item.status) === 2 && "Aprobado"}
-                      </td>
-                      <td
-                        className="table-center"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <div className="actions">
-                          <a
-                            href={`http://phpstack-1070657-3746640.cloudwaysapps.com/reporte-inspeccion/${item.id}`}
-                            target="_blank"
-                            className="btn-pdf"
-                            rel="noreferrer"
-                          >
-                            {!navigator.onLine ? (
-                              <FontAwesomeIcon icon={faFilePdf} />
-                            ) : (
-                              <i className="fa-solid fa-file-pdf"></i>
-                            )}
-                          </a>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-          <ComponentPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            handleFirstPageClick={handleFirstPageClick}
-            handlePageChange={handlePageChange}
-            handleLastPageClick={handleLastPageClick}
-            rowsPerPage={rowsPerPage}
-            setRowsPerPage={setRowsPerPage}
-            totalEntries={data.length}
-          />
+                getPaginatedData().map((item, index) => (
+                  <tr key={index} onClick={(e) => singleView(item.id)}>
+                    <td
+                      className="table-center"
+                      onClick={(e) => e.stopPropagation()}
+                      colSpan={1}
+                    >
+                      <Checkbox
+                        type="single"
+                        id={item.id}
+                        callback={handleCheckBox}
+                        data={getPaginatedData()}
+                      />
+                    </td>
+                    <td className="table-center">{item.part_number}</td>
+                    <td className="table-center">{item.plant}</td>                    
+                    <td className="table-center">{item.date}</td>
+                    <td className="table-center">
+                      {Number(item.status) === 1 && t('reports.notApproved')} 
+                      {Number(item.status) === 3 && t('reports.approved')}
+                    </td>
+                    <td
+                      className="table-center"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="actions">
+                        <a
+                          href={`http://phpstack-1070657-3746640.cloudwaysapps.com/reporte-inspeccion/${item.id}`}
+                          target="_blank"
+                          className="btn-pdf"
+                          rel="noreferrer"
+                        >
+                          {!navigator.onLine ? (
+                            <FontAwesomeIcon icon={faFilePdf} />
+                          ) : (
+                            <i className="fa-solid fa-file-pdf"></i>
+                          )}
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-      </Table>
+        <ComponentPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          handleFirstPageClick={handleFirstPageClick}
+          handlePageChange={handlePageChange}
+          handleLastPageClick={handleLastPageClick}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
+          totalEntries={data.length}
+        />
+      </div>
+    </Table>
     </>
   );
 }

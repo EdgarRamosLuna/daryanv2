@@ -12,7 +12,6 @@ export default function useThClick(eliminarColumna2) {
       const ths = td.closest('table').querySelectorAll('thead th');
       const th = ths[columnIndex];
       if(th === undefined || th === '') return false;
-      console.log(th);
   
       const thText = th.textContent;
 

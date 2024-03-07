@@ -24,59 +24,7 @@ export default function SecondTableCreate2({
     setDivs(prev => prev.filter((d, i) => i !== index));
   };
 
-  //console.log(divs);
-  // function handleInputChange(divId, inputIndex, newValue) {
-  //   setDivs((prevDivs) => {
-  //     const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
-  //     const updatedDiv = { ...prevDivs[divToUpdateIndex] };
-  //     updatedDiv.values[inputIndex] = newValue;
-  //     const updatedDivs = [...prevDivs];
-  //     updatedDivs[divToUpdateIndex] = updatedDiv;
-  //     return updatedDivs;
-  //   });
-  // }
-  // function handleInputChange(divId, inputIndex, newValue) {
-  //   setDivs((prevDivs) => {
-  //     const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
-  //     const updatedDiv = { ...prevDivs[divToUpdateIndex] };
-  //     updatedDiv.values[inputIndex] = newValue;
 
-  //     // Suma todos los números en la fila (excluyendo el último índice)
-  //     const rowSum = updatedDiv.values
-  //       .slice() // excluye el último índice
-  //       .reduce((total, value) => total + Number(value || 0), 0);
-  //     updatedDiv.values[updatedDiv.values.length - 1] = rowSum; // almacena el total en el último índice
-
-  //     const updatedDivs = [...prevDivs];
-  //     updatedDivs[divToUpdateIndex] = updatedDiv;
-  //     return updatedDivs;
-  //   });
-  // }
-  // function handleInputChange(divId, inputIndex, newValue) {
-  //   setDivs((prevDivs) => {
-  //     // Busca el índice del objeto a actualizar en el array de divs basándose en el divId.
-  //     const divToUpdateIndex = prevDivs.findIndex((div) => div.id === divId);
-  //     // Crea una copia del objeto a actualizar usando el operador de propagación.
-  //     const updatedDiv = { ...prevDivs[divToUpdateIndex] };
-
-  //     // Guarda el valor antiguo de la celda antes de actualizarlo.
-  //     const oldValue = updatedDiv.values[inputIndex];
-  //     // Actualiza el valor en la celda correspondiente.
-  //     updatedDiv.values[inputIndex] = newValue;
-
-  //     // Guarda la suma antigua de la fila.
-  //     const oldRowSum = Number(updatedDiv.values[updatedDiv.values.length - 1] || 0);
-  //     // Calcula la diferencia entre el nuevo valor y el antiguo.
-  //     const delta = Number(newValue || 0) - Number(oldValue || 0);
-  //     // Actualiza la suma de la fila restando el valor antiguo y sumando el nuevo.
-  //     updatedDiv.values[updatedDiv.values.length - 1] = oldRowSum + delta;
-
-  //     // Crea una copia de la lista de divs, reemplaza el div actualizado y devuelve la nueva lista.
-  //     const updatedDivs = [...prevDivs];
-  //     updatedDivs[divToUpdateIndex] = updatedDiv;
-  //     return updatedDivs;
-  //   });
-  // }
   function handleInputChange(divId, inputIndex, newValue) {
     setDivs((prevDivs) => {
       // Busca el índice del objeto a actualizar en el array de divs basándose en el divId.

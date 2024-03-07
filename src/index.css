@@ -478,3 +478,6 @@ table.table-totals tr:hover {
 .actions *{
   cursor: pointer !important;
 }
+.hidden{
+  color: transparent;
+}

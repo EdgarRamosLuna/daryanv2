@@ -1,10 +1,9 @@
 import style from "./styles.module.css";
 
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useContext, useState } from "react";
 import { MainContext } from "../context/MainContext";
 import { useTranslation } from "react-i18next";
-import { LanguageContext } from "../context/LanguageContext";
 
 import Modal from "./Modal";
 import CreateUser from "../pages/admin/users/Create";
@@ -106,14 +105,12 @@ export default function SubHeader() {
     showConfig,
     setShowConfig,
     isAdmin,
-    dataReportH,
-    setDataReportH,
     aproveReportH,
     activeTabReportByH,
     setActiveTabReportByH,
     activeTabReportInsp,
     setActiveTabReportInsp,
-    InfoIcon
+    InfoIcon,
   } = useContext(MainContext);
 
   //   const path = pathname.replaceAll('/', '');
@@ -339,8 +336,8 @@ export default function SubHeader() {
   const getItemName = () => {
     return t(`ui_dynamic_messages.items.${tableName}`);
   };
-  
-  const {openModalIncident, setOpenModalIncident} = useReports();
+
+  const { openModalIncident, setOpenModalIncident } = useReports();
   const itemName = getItemName();
   return (
     <>
@@ -451,13 +448,17 @@ export default function SubHeader() {
               >
                 {t("button_texts.inspectionReport")}
               </ButtonOutlined>
-              <ButtonOutlined
-                disableRipple={true}
-                icon={<PendingActionsIcon />}
-                onClick={() => singleView("/user/reports/create/2")}
-              >
-                {t("button_texts.hourlyReport")}
-              </ButtonOutlined>
+              {isAdmin ? (
+                <ButtonOutlined
+                  disableRipple={true}
+                  icon={<PendingActionsIcon />}
+                  onClick={() => singleView("/user/reports/create/2")}
+                >
+                  {t("button_texts.hourlyReport")}
+                </ButtonOutlined>
+              ) : (
+                ""
+              )}
             </>
           )}
           {pathname === "/admin/reports" && (
