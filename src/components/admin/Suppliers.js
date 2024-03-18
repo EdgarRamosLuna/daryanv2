@@ -231,7 +231,7 @@ function SuppliersTable({ data }) {
                 {getPaginatedData().length === 0 ? (
                   <tr>
                     <td
-                      colSpan="4"
+                      colSpan="5"
                       className="table-center"
                       style={{ opacity: `${isLoading ? 0 : 1}` }}
                     >

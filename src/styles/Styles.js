@@ -727,6 +727,8 @@ export const StyledModal = styled.div`
     width: 100%;
     display: flex;
     justify-content: end;
+    z-index: 999;
+    position: relative;
     button {
       background: none;
       border: 0;

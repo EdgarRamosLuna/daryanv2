@@ -34,6 +34,13 @@ export const checkUser = (token) =>
       Authorization: `Bearer ${token}`,
     },
   });
+export const getSuppliersByuser = ({token, nIdUser}) =>
+  serverApi.post("/getSuppliersByuser/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    nIdUser
+  });
 
 // Employee API
 export const getEmployee = (id) => serverApi.post("/get_employee/", id);

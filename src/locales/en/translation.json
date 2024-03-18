@@ -240,5 +240,7 @@
   "Descargar":"Download",
   "Usuarios autorizados":"Authorized users",
   "Fecha de autorizacion":"Authorization date",
-  "Usuario":"User"
+  "Usuario":"User",
+  "Solo lectura":"Read Only",
+  "Tipo de cuenta":"Account Type"
 }
