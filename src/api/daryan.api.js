@@ -7,12 +7,12 @@ const serverApi = axios.create({
 //User API
 export const getUser = (id) => serverApi.post("/get_user/", id);
 export const createIncident = (data, token) =>
-serverApi.post("/create_incident/", data, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-});
- //serverApi.post("/create_incident/", data);
+  serverApi.post("/create_incident/", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+//serverApi.post("/create_incident/", data);
 export const createUser = (data) => serverApi.post("/create_user/", data);
 export const updateUser = (data) => serverApi.post("/update_user/", data);
 export const deleteUser = (id) =>
@@ -34,13 +34,18 @@ export const checkUser = (token) =>
       Authorization: `Bearer ${token}`,
     },
   });
-export const getSuppliersByuser = ({token, nIdUser}) =>
-  serverApi.post("/getSuppliersByuser/", {
-    headers: {
-      Authorization: `Bearer ${token}`,
+export const getSuppliersByuser = ({ token, nIdUser }) =>
+  serverApi.post(
+    "/getSuppliersByuser/",
+    {
+      nIdUser,
     },
-    nIdUser
-  });
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
 // Employee API
 export const getEmployee = (id) => serverApi.post("/get_employee/", id);
@@ -231,24 +236,23 @@ export const getReportsByH = (token) =>
       Authorization: `Bearer ${token}`,
     },
   });
-export const getReportIncidents= (token) =>
+export const getReportIncidents = (token) =>
   serverApi.get("/getReportIncidents", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-export const getTotalReportsBySupplier= (nIdSupplier) =>
+export const getTotalReportsBySupplier = (nIdSupplier) =>
   serverApi.get(`/getTotalReportsBySupplier/${nIdSupplier}`, {
     // headers: {
     //   Authorization: `Bearer ${token}`,
     // },
   });
-export const getDatesByPartNumber= (sPartNumber, token) =>
+export const getDatesByPartNumber = (sPartNumber, token) =>
   serverApi.get(`/getDatesByPartNumber/${sPartNumber}`, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
   });
-export const deleteRit= (data) =>
-  serverApi.post(`/deleteRit`, data);
+export const deleteRit = (data) => serverApi.post(`/deleteRit`, data);

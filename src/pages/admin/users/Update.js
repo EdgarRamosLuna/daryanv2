@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { createUser, getSuppliersByuser } from "../../../api/daryan.api";
+import {  getSuppliersByuser, updateUser } from "../../../api/daryan.api";
 import { MainContext } from "../../../context/MainContext";
 import Autocomplete from "@mui/material/Autocomplete";
 import {
@@ -16,8 +16,6 @@ import {
   RadioGroup,
   TextField,
 } from "@mui/material";
-import ComboBoxMUI from "../../../components/inputs/ComboBoxMUI";
-import ModalMui from "../../../components/modal/ModalMui";
 
 const Create = () => {
   const { t } = useTranslation();
@@ -35,10 +33,12 @@ const Create = () => {
     token,
     updateId,
     suppliersByClient,
+    dataUsers,
+    setDataUsers,
   } = useContext(MainContext);
   const [saving, setSaving] = useState(false);
-  const [dataUsers, setDataUsers] = useState([])
-  
+  const [dataAuthSuppliers, setDataAuthSuppliers] = useState([])
+  const [accountType, setAccountType] = useState(0);
 
 
   useEffect(() => {
@@ -46,27 +46,30 @@ const Create = () => {
     const getSuppliers = async() =>{
 
       const response = await getSuppliersByuser({token, nIdUser:updateId})
-
-      console.log(response)
-
+      const {data} = response;
+      //console.log(response)
+      
       if (updateId !== 0) {
+        setDataAuthSuppliers(data)
         dataUsers.map((item) => {
           if (item.id === updateId) {
-            const { fullname, email } = item;
+            const { fullname, email, admin} = item;
             setValue("name", fullname);
             setValue("email", email);
+            setValue("accountType", Number(admin));
+            setValue("suppliers", data);
+            setAccountType(Number(admin))
           }
         });
       }
     }
     getSuppliers()
     
-  }, []);
+  }, [updateId]);
 
-  const [accountType, setAccountType] = useState(0);
 
   const suppliersSelect = suppliersByClient.map((obj) => {
-    return { id: obj.id, fullname: obj.fullname };
+    return { id: obj.id, sSupplier: obj.fullname };
   });
 
   useEffect(() => {
@@ -85,38 +88,49 @@ const Create = () => {
   const title = t("Tipo de cuenta");
   const [openModal, setOpenModal] = useState(false);
 
-  const onSubmit = async (data) => {
-    console.log(data);
+  const onSubmit = handleSubmit(async (data) => {
     setSaving(true);
-    try {
-      const res = await createUser(data);
-      const datares = res.data;
-      if (datares.error) {
-        toast.error(datares.message, { duration: 5000 });
-      } else {
-        toast.success(datares.message, { duration: 4000 });
-        const { email, name, accountType, suppliers = [] } = data;
-        const { last_id } = datares;
-        setDataUsers((prev) => [
-          {
-            id: `${last_id}`,
-            fullname: name,
-            email,
-            status: "1",
-            accountType,
-            suppliers,
-          },
-          ...prev,
-        ]);
-        btnCloseRef.current.click();
-      }
-    } catch (err) {
-      toast.error(err, { duration: 5000 });
-    }
-    setSaving(false);
-    reset(); // Reset form after submission
-  };
+    data.id = updateId;
+    await updateUser(data)
+      .then((res) => {
+        const datares = res.data;
+        if (datares.error) {
+          toast.error(datares.message, {
+            duration: 5000,
+          });
+        } else {
+          toast.success(datares.message, {
+            duration: 4000,
+          });
+          const { email, name } = data;
+          setDataUsers((prev) => {
+            const newClients = prev.map((client) => {
+              if (client.id === updateId) {
+                return {
+                  id: `${updateId}`,
+                  fullname: name,
+                  email,
+                  status: "1",
+                };
+              } else {
+                return client;
+              }
+            });
+            return newClients;
+          });
 
+          btnCloseRef.current.click();
+        }
+      })
+      .catch((err) => {
+        toast.error(err, {
+          duration: 5000,
+        });
+      });
+
+
+    setSaving(false);
+  });
   return (
     <>
       <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
@@ -187,7 +201,7 @@ const Create = () => {
                         <FormControlLabel
                           key={d.value}
                           value={d.value}
-                          control={<Radio />}
+                          control={<Radio checked={Number(accountType) === Number(d.value)} />}
                           label={d.label}
                         />
                       ))}
@@ -212,8 +226,8 @@ const Create = () => {
                         multiple
                         id="tags-outlined"
                         options={suppliersSelect}
-                        getOptionLabel={(option) => option.fullname}
-                        defaultValue={[]}
+                        getOptionLabel={(option) => option.sSupplier}
+                        defaultValue={dataAuthSuppliers}
                         filterSelectedOptions
                         onChange={(event, newValue) => {
                           field.onChange(newValue); // Actualizar el valor del campo controlado
