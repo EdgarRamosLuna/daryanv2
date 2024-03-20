@@ -39,12 +39,15 @@ const Create = () => {
   const [saving, setSaving] = useState(false);
   const [dataAuthSuppliers, setDataAuthSuppliers] = useState([])
   const [accountType, setAccountType] = useState(0);
-
+  const [defaultname, setDefaultname] = useState(null);
 
   useEffect(() => {
 
     const getSuppliers = async() =>{
-
+      setValue("name", "");
+      setValue("email", "");
+      setValue("accountType", 0);
+      setValue("suppliers", []);
       const response = await getSuppliersByuser({token, nIdUser:updateId})
       const {data} = response;
       //console.log(response)
@@ -55,6 +58,7 @@ const Create = () => {
           if (item.id === updateId) {
             const { fullname, email, admin} = item;
             setValue("name", fullname);
+            setDefaultname(fullname);
             setValue("email", email);
             setValue("accountType", Number(admin));
             setValue("suppliers", data);
@@ -111,6 +115,7 @@ const Create = () => {
                   fullname: name,
                   email,
                   status: "1",
+                  admin:accountType
                 };
               } else {
                 return client;
@@ -145,7 +150,8 @@ const Create = () => {
               {...register("name", { required: true })}
               error={!!errors.name}
               helperText={errors.name && t("Información requerida")}
-              variant="filled"
+              variant="filled"        
+              key={defaultname}
             />
           </Grid>
           <Grid item xs={12}>
@@ -163,6 +169,7 @@ const Create = () => {
               helperText={errors.email && errors.email.message}
               variant="filled"
               autoComplete="off"
+              key={openModal}
             />
           </Grid>
           <Grid item xs={12}>
@@ -170,9 +177,7 @@ const Create = () => {
               fullWidth
               type="password"
               label={t("clients_section.password")}
-              {...register("password", { required: true })}
-              error={!!errors.password}
-              helperText={errors.password && t("Información requerida")}
+              {...register("password")}              
               variant="filled"
             />
           </Grid>

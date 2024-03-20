@@ -242,6 +242,7 @@
     "Fecha de autorizacion":"Fecha de autorización",
     "Usuario":"Usuario",
     "Solo lectura":"Solo lectura",
-    "Tipo de cuenta":"Tipo de cuenta"
+    "Tipo de cuenta":"Tipo de cuenta",
+    "partNumberRequired": "Número de parte {{part}} requerido"
   }
   

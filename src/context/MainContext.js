@@ -174,7 +174,13 @@ export const MainContextProvider = ({ children }) => {
   const token = localStorage.getItem("t");
   const saveReport = async (e) => {
     const dT = dataToSave[0];
-
+    console.log(dT.data);
+    if (!dT.data.hasOwnProperty("part_number")) {
+      if (dT.data.part_number === "") {
+        toast.error(t("partNumberRequired", { part: "" }));
+        return;
+      }
+    }
     if (
       dT.data.length < 9 ||
       dT.producedBy === "" ||
@@ -183,7 +189,7 @@ export const MainContextProvider = ({ children }) => {
       dT.serviceType.length === 0 ||
       dT.customerControl.length === 0
     ) {
-      toast.error(t("Todos los campos con * con obligatorios"), {
+      toast.error(t("Todos los campos con * son obligatorios"), {
         duration: 5000,
       });
 
@@ -496,10 +502,10 @@ export const MainContextProvider = ({ children }) => {
     setActiveTab(1);
     const resetScroll = () => {
       // Selecciona todos los elementos que potencialmente pueden tener scroll
-      const scrollableElements = document.querySelectorAll('#maincontainer');
-  
+      const scrollableElements = document.querySelectorAll("#maincontainer");
+
       // Itera sobre cada elemento y resetea su posición de scroll
-      scrollableElements.forEach(element => {
+      scrollableElements.forEach((element) => {
         element.scrollTop = 0;
       });
     };
@@ -824,9 +830,9 @@ export const MainContextProvider = ({ children }) => {
     async function loadTask() {
       const res2 = await getSuppliers();
 
-      const {data:response} = res2;      
-      setSuppliersByClient(response)
-      const suppliers = response.filter(r => Number(r.bUsado) > 0)
+      const { data: response } = res2;
+      setSuppliersByClient(response);
+      const suppliers = response.filter((r) => Number(r.bUsado) > 0);
       setSuppliers(suppliers);
     }
     loadTask();
@@ -932,46 +938,49 @@ export const MainContextProvider = ({ children }) => {
     localStorage.setItem("lang", langu);
   }, [langu]);
   const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1);
-  const [isAdmin, setIsAdmin] = useState(null);  
+  const [isAdmin, setIsAdmin] = useState(null);
 
   const onlyNumbers = /^\d+$/;
   const [openModalIncident, setOpenModalIncident] = useState(false);
   const [reportIncidents, setReportIncidents] = useState([]);
   const hoverBtnsStyle = {
-    transition: 'all 0.3s',
-    border: '1px solid #fff',
-    background: '#002353',
-    color: '#fff',
+    transition: "all 0.3s",
+    border: "1px solid #fff",
+    background: "#002353",
+    color: "#fff",
   };
   const [nIdReport, setIdReport] = useState(0);
   const { t } = useTranslation();
-  const adminCallback = async(nIdRit) =>{        
+  const adminCallback = async (nIdRit) => {
     try {
-      const response =  await deleteRit({nIdRit:Number(nIdRit), nIdReport:Number(nIdReport)});
-      const {error, message} = response.data
-      if(error){
-        toast.error(t(message))
-      }else{
-        toast.success(t(message))
+      const response = await deleteRit({
+        nIdRit: Number(nIdRit),
+        nIdReport: Number(nIdReport),
+      });
+      const { error, message } = response.data;
+      if (error) {
+        toast.error(t(message));
+      } else {
+        toast.success(t(message));
       }
     } catch (error) {
-       toast.error("Ocurrio un error, favor de intentarlo mas tarde.")
-      
-     }
-      
-  }
+      toast.error("Ocurrio un error, favor de intentarlo mas tarde.");
+    }
+  };
   const [reportsByHour, setReportsByHour] = useState();
-  
-  const disableInputs = (contenedorRef) =>{
-      // Acceder a los elementos input dentro del contenedor
-      const inputs = contenedorRef.current.querySelectorAll('input, select');
-      inputs.forEach(input => {
-        input.disabled = true; // Deshabilita los inputs
-      });
-  }
+
+  const disableInputs = (contenedorRef) => {
+    // Acceder a los elementos input dentro del contenedor
+    const inputs = contenedorRef.current.querySelectorAll("input, select");
+    inputs.forEach((input) => {
+      input.disabled = true; // Deshabilita los inputs
+    });
+  };
   const PROPS = {
-    reportsByHour, setReportsByHour,
-    nIdReport, setIdReport,
+    reportsByHour,
+    setReportsByHour,
+    nIdReport,
+    setIdReport,
     adminCallback,
     dataSes,
     dataT,
@@ -1060,7 +1069,7 @@ export const MainContextProvider = ({ children }) => {
     toast,
     isLoading,
     setIsLoading,
-    isDownloading, 
+    isDownloading,
     setIsDownloading,
     formattedDate,
     getNextLetter,
@@ -1128,7 +1137,7 @@ export const MainContextProvider = ({ children }) => {
     firstDayOfYear,
     isAdmin,
     setIsAdmin,
-    token,    
+    token,
     dataReportH,
     setDataReportH,
     saveReportH,
@@ -1152,22 +1161,30 @@ export const MainContextProvider = ({ children }) => {
     ABECEDARIO,
     serverNodeUrl,
     hoverBtnsStyle,
-    suppliersByClient, 
+    suppliersByClient,
     setSuppliersByClient,
     t,
-    disableInputs
+    disableInputs,
   };
 
-  
   return (
     <MainContext.Provider value={PROPS}>
-      {isDownloading &&
-      <Grid
-      sx={{position:'fixed', width:'100%', height:'100vh', display:'flex', justifyContent:'center', alignItems:'center', zIndex:'99999', background:'#fff'}}
-      >
-      <TaLoader />
-      </Grid>
-      }
+      {isDownloading && (
+        <Grid
+          sx={{
+            position: "fixed",
+            width: "100%",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: "99999",
+            background: "#fff",
+          }}
+        >
+          <TaLoader />
+        </Grid>
+      )}
       <Toaster richColors position={position} closeButton />
       <SpanishApp>{children}</SpanishApp>
     </MainContext.Provider>

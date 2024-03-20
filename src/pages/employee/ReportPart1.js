@@ -14,6 +14,7 @@ import dayjs from "dayjs";
 import AutocompleteInput from "../../components/inputs/AutocompleteInput";
 import { useTranslation } from "react-i18next";
 import { StyledForm } from "../../styles/Styles";
+import { useEffect, useState } from "react";
 
 const ReportPart1 = ({
   data,
@@ -27,9 +28,23 @@ const ReportPart1 = ({
   setCustomerControl,
   onlyNumbers,
   downTime,
-  setDownTime
+  setDownTime,
 }) => {
   const { t } = useTranslation();
+
+  const [reportNumberValue, setreportNumberValue] = useState(
+    Number.isNaN(data.report_number) ||
+      typeof data.report_number === "undefined"
+      ? 1
+      : data.report_number
+  );
+  useEffect(() => {
+    setData({
+      ...data,
+      ["report_number"]: reportNumberValue,
+    });
+  }, [reportNumberValue]);  
+  
   return (
     <div className="container">
       <div className="title">
@@ -116,7 +131,7 @@ const ReportPart1 = ({
             sx={{
               width: "95%",
             }}
-            value={Number.isNaN(data.report_number) ? 1 : data.report_number}
+            value={reportNumberValue}
             onChange={(e) =>
               setData({
                 ...data,
@@ -124,9 +139,8 @@ const ReportPart1 = ({
               })
             }
             inputProps={{
-                readOnly:true
+              readOnly: true,
             }}
-            
           />
         </div>
         <div className="form-container">

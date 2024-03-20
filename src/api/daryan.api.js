@@ -230,6 +230,12 @@ export const getReportsIns = (token) =>
       Authorization: `Bearer ${token}`,
     },
   });
+export const getReportsInsUser = (token) =>
+  serverApi.get("/get_by_user/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 export const getReportsByH = (token) =>
   serverApi.get("/get_rh", {
     headers: {

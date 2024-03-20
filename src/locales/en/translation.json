@@ -242,5 +242,6 @@
   "Fecha de autorizacion":"Authorization date",
   "Usuario":"User",
   "Solo lectura":"Read Only",
-  "Tipo de cuenta":"Account Type"
+  "Tipo de cuenta":"Account Type",
+  "partNumberRequired": "Part number of {{part}} required"
 }

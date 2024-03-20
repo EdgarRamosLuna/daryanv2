@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import ReportsTable from "../../components/admin/Reports";
 import { MainContext } from "../../context/MainContext";
-import { getReportsByH, getReportsIns } from "../../api/daryan.api";
+import { getReportsByH, getReportsIns, getReportsInsUser } from "../../api/daryan.api";
 
 const Reports = () => {
   const { data, setData, isAdmin, activeTab, toast, data2, setData2 } =
@@ -12,7 +12,7 @@ const Reports = () => {
     if (activeTab === 1) {
       const request = async () => {
         try {
-          const response = await getReportsIns(token);
+          const response = Number(isAdmin) === 1 ? await getReportsIns(token) : await getReportsInsUser(token);          
           const datares = response?.data.result;
           const { error } = datares;
           if (!error) {
@@ -30,9 +30,9 @@ const Reports = () => {
           });
         }
       };
-      if (isAdmin) {
+
         request();
-      }
+
     }
     if (activeTab === 2) {
       const request = async () => {

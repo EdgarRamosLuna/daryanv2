@@ -441,21 +441,23 @@ export default function SubHeader() {
         <div className="btns-header">
           {(pathname === "/user/reports" || pathname === "/admin/reports") && (
             <>
-              <ButtonOutlined
-                disableRipple={true}
-                icon={<AssignmentTurnedInOutlinedIcon />}
-                onClick={() => singleView("/user/reports/create/1")}
-              >
-                {t("button_texts.inspectionReport")}
-              </ButtonOutlined>
               {isAdmin ? (
-                <ButtonOutlined
-                  disableRipple={true}
-                  icon={<PendingActionsIcon />}
-                  onClick={() => singleView("/user/reports/create/2")}
-                >
-                  {t("button_texts.hourlyReport")}
-                </ButtonOutlined>
+                <>
+                  <ButtonOutlined
+                    disableRipple={true}
+                    icon={<AssignmentTurnedInOutlinedIcon />}
+                    onClick={() => singleView("/user/reports/create/1")}
+                  >
+                    {t("button_texts.inspectionReport")}
+                  </ButtonOutlined>
+                  <ButtonOutlined
+                    disableRipple={true}
+                    icon={<PendingActionsIcon />}
+                    onClick={() => singleView("/user/reports/create/2")}
+                  >
+                    {t("button_texts.hourlyReport")}
+                  </ButtonOutlined>
+                </>
               ) : (
                 ""
               )}
