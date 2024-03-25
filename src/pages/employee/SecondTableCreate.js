@@ -82,10 +82,10 @@ export default function SecondTableCreate() {
         id: divItem.id,
         values: [
           originalItem.values[0], // id se mantiene igual
-          0, // lote se sincroniza desde divs
-          0 , // serial se sincroniza desde divs
-          divItem.values[5], // total insp se sincroniza desde divs
-          divItem.values[6], // nuevo valor se sincroniza desde divs
+          divItem.values[3], // lote se sincroniza desde divs
+          divItem.values[4], // serial se sincroniza desde divs
+          0,// divItem.values[5], // total insp se sincroniza desde divs
+          0,// divItem.values[6], // nuevo valor se sincroniza desde divs
           ...originalItem.values.slice(5), // El resto de los valores se mantienen sin cambios
         ],
       };
